@@ -1,6 +1,6 @@
 # Object Export From Tinkercad Server 2015
 
-mtllib obj.mtl
+mtllib test_sphere.mtl
 
 o obj_0
 v 25.4 		-20.393 		-0.084

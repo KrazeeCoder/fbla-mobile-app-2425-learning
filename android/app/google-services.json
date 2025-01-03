@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "381062391055",
+    "project_id": "fbla-learning-app-2425",
+    "storage_bucket": "fbla-learning-app-2425.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:381062391055:android:2998224fceeeb263178a7a",
+        "android_client_info": {
+          "package_name": "com.example.fbla_mobile_2425_learning_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCdbfvfwyH7VP26j8TGyQX8kg968ItVnb8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
