@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCdbfvfwyH7VP26j8TGyQX8kg968ItVnb8',
-    appId: '1:381062391055:android:208fd2b53db724e9178a7a',
+    appId: '1:381062391055:android:2998224fceeeb263178a7a',
     messagingSenderId: '381062391055',
     projectId: 'fbla-learning-app-2425',
     storageBucket: 'fbla-learning-app-2425.firebasestorage.app',
@@ -85,4 +85,5 @@ class DefaultFirebaseOptions {
     storageBucket: 'fbla-learning-app-2425.firebasestorage.app',
     measurementId: 'G-CMQ8W9GNSE',
   );
+
 }

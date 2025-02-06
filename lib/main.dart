@@ -4,15 +4,17 @@ import 'pages/home.dart';
 import 'pages/progress.dart';
 import 'pages/learn.dart';
 import 'pages/settings.dart';
+import 'firebase_options.dart';
 
 
 void main() async {
-  // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Now run the app
-  runApp(MyApp());
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  runApp(const MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
