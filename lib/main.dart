@@ -4,10 +4,14 @@ import 'pages/home.dart';
 import 'pages/progress.dart';
 import 'pages/learn.dart';
 import 'pages/settings.dart';
+import 'firebase_options.dart';
 
 
 void main() async {
-  await Firebase.initializeApp();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
