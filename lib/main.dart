@@ -7,25 +7,26 @@ import 'pages/settings.dart';
 
 
 void main() async {
-  await Firebase.initializeApp();
-  runApp(const MyApp());
-}
+  // Ensure Flutter bindings are initialized
+  WidgetsFlutterBinding.ensureInitialized();
 
+  // Now run the app
+  runApp(MyApp());
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false,
       ),
-      home: const HomePage(),
+      home: const MainPage(),  // Change home to MainPage
     );
   }
 }
-
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -54,10 +55,9 @@ class _MainPageState extends State<MainPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flutter Navbar Example'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: _pages[_selectedIndex], // Switches between pages
+      body: _pages[_selectedIndex],  // Show the page based on the index
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -65,16 +65,21 @@ class _MainPageState extends State<MainPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+            icon: Icon(Icons.crop_square_sharp),
+            label: 'Learn',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.query_stats_sharp),
+            label: 'Progress',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.deepPurple,
+        selectedItemColor: Color(0xFF004A01),
+        unselectedItemColor: Color(0xFF9E9E9E),
         onTap: _onItemTapped,
       ),
     );
