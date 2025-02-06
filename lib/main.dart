@@ -73,6 +73,7 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.query_stats_sharp),
             label: 'Progress',
+
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
