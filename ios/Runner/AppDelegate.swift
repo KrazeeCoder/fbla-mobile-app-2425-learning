@@ -11,5 +11,3 @@ import UIKit
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
-Presidents’ Day
-Scheduled: Feb 17, 2025

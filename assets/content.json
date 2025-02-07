@@ -1,0 +1,86 @@
+{
+  "subjects": [
+    {
+      "name": "Math",
+      "grades": [
+        {
+          "grade": "Grade 5",
+          "units": [
+            {
+              "unit": "Algebra",
+              "unit_id": 3,
+              "subtopics": [
+                {
+                  "subtopic": "One-variable Equations",
+                  "subtopic_id": 7,
+                  "reading": {
+                    "title": "Solving One-variable Equations",
+                    "content": "In this lesson, we will explore how to solve one-variable equations. A one-variable equation is an equation that contains one unknown value, represented by a variable (like x). We will learn how to isolate the variable by performing operations like addition, subtraction, multiplication, and division on both sides of the equation."
+                  },
+                  "quizPool": [1, 2, 3, 4, 5]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "question": "Solve for x: 3x = 15",
+      "answers": [
+        "x = 5",
+        "x = 3",
+        "x = 15",
+        "x = 45"
+      ],
+      "correct_answer": "x = 5"
+    },
+    {
+      "id": 2,
+      "question": "Solve for x: x + 7 = 12",
+      "answers": [
+        "x = 5",
+        "x = 19",
+        "x = 7",
+        "x = 20"
+      ],
+      "correct_answer": "x = 5"
+    },
+    {
+      "id": 3,
+      "question": "Solve for x: 4x - 8 = 12",
+      "answers": [
+        "x = 5",
+        "x = 8",
+        "x = 6",
+        "x = 3"
+      ],
+      "correct_answer": "x = 5"
+    },
+    {
+      "id": 4,
+      "question": "Solve for x: x/4 = 3",
+      "answers": [
+        "x = 12",
+        "x = 4",
+        "x = 6",
+        "x = 1"
+      ],
+      "correct_answer": "x = 12"
+    },
+    {
+      "id": 5,
+      "question": "Solve for x: 5x + 3 = 23",
+      "answers": [
+        "x = 4",
+        "x = 2",
+        "x = 6",
+        "x = 7"
+      ],
+      "correct_answer": "x = 4"
+    }
+  ]
+}

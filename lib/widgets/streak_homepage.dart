@@ -5,13 +5,40 @@ class StreakHomepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      onPressed: () => {},
+    return Container(
+      padding: const EdgeInsets.all(20.0), // Increased padding
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFF3E0),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
       child: Row(
         children: [
-          Image.asset("assets/streak_homepage_design.png", width: MediaQuery.sizeOf(context).width*0.1),
-          Text("575 Day Streak", style: TextStyle(fontSize: 35, color: Color(0xFFD83C00))) // can make this gradient orange later would look nice
-        ]
+          Image.asset(
+            "assets/streak_homepage_design.png",
+            width: MediaQuery.of(context).size.width * 0.15, // Made the image a bit bigger
+          ),
+          const SizedBox(width: 12),
+          Text(
+            "575 Day Streak!",
+            style: TextStyle(
+              fontSize: 28, // Increased font size
+              fontWeight: FontWeight.bold,
+              foreground: Paint()
+                ..shader = const LinearGradient(
+                  colors: [Color(0xFFFF8A00), Color(0xFFD83C00)],
+                ).createShader(
+                  const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0),
+                ),
+            ),
+          ),
+        ],
       ),
     );
   }

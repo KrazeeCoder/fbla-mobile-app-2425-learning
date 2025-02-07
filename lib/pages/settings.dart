@@ -13,9 +13,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
         body: EarthWidget()
     );
   }

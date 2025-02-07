@@ -17,6 +17,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -25,11 +26,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false,
       ),
-      home: const HomePage(),
+      home: const MainPage(),
     );
   }
 }
-
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -57,11 +57,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Flutter Navbar Example'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      ),
-      body: _pages[_selectedIndex], // Switches between pages
+      body: _pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -69,21 +65,23 @@ class _MainPageState extends State<MainPage> {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Search',
+            icon: Icon(Icons.menu_book),
+            label: 'Learn',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.bar_chart),
+            label: 'Progress',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: Colors.deepPurple,
+        unselectedItemColor: Colors.grey,
         onTap: _onItemTapped,
       ),
     );
   }
 }
-
-
-

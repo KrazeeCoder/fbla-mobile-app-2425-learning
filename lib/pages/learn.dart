@@ -1,3 +1,4 @@
+import 'package:fbla_mobile_2425_learning_app/pages/recentlessons.dart';
 import 'package:flutter/material.dart';
 import '../widgets/earth_widget.dart';
 
@@ -13,10 +14,7 @@ class _LearnPageState extends State<LearnPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        ),
-        body: EarthWidget()
+        body: RecentLessonsPage()
     );
   }
 }
