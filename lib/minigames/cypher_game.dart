@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
-
 import '../widgets/cypher_question.dart';
 
 final phrases = [
@@ -9,7 +8,6 @@ final phrases = [
   "Soil gives life", "Rain feeds roots", "Earth turns quietly", "The ocean calls",
   "Mountains stand tall", "Trees reach upward", "Nature is balance"
 ];
-
 
 class CypherUI extends StatefulWidget {
   CypherUI({super.key});
@@ -109,59 +107,66 @@ class _CypherUIState extends State<CypherUI> {
     int letterIndex = unsolvedQuestions[currentQuestionIndex]["letterIndex"]!;
     Map<String, dynamic> currentLetter = gameState[wordIndex]["letters"][letterIndex];
 
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: MultipleChoiceQuestion(
-              question: "${currentLetter["problem"][0]} + ${currentLetter["problem"][1]} = ?",
-              options: generateAnswerOptions(listSum(currentLetter["problem"])),
-              correctAnswer: listSum(currentLetter["problem"]).toString(),
-              onAnswerSelected: (answer) {
-                if (answer == listSum(currentLetter["problem"]).toString()) {
-                  markLetterAsSolved(wordIndex, letterIndex);
-                }
-              },
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    return Material(  // Ensuring Material widget is provided
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Cipher Game'),
+        ),
+        body: SingleChildScrollView(
+          child: Column(
             children: [
-              ElevatedButton(
-                onPressed: navigateToPreviousQuestion,
-                child: Text("Previous"),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: MultipleChoiceQuestion(
+                  question: "${currentLetter["problem"][0]} + ${currentLetter["problem"][1]} = ?",
+                  options: generateAnswerOptions(listSum(currentLetter["problem"])),
+                  correctAnswer: listSum(currentLetter["problem"]).toString(),
+                  onAnswerSelected: (answer) {
+                    if (answer == listSum(currentLetter["problem"]).toString()) {
+                      markLetterAsSolved(wordIndex, letterIndex);
+                    }
+                  },
+                ),
               ),
-              ElevatedButton(
-                onPressed: navigateToNextQuestion,
-                child: Text("Next"),
-              ),
-            ],
-          ),
-          ...gameState.map((wordItem) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: wordItem["letters"].map<Widget>((item) {
-                return GestureDetector(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: Column(
-                      children: [
-                        Visibility(
-                          visible: item["solved"],
-                          replacement: const Text(" ", style: TextStyle(fontSize: 24)),
-                          child: Text(item["letter"], style: const TextStyle(fontSize: 24)),
-                        ),
-                        Container(width: 35, height: 4, color: Colors.black),
-                        Text(listSum(item["problem"]).toString()),
-                      ],
-                    ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: navigateToPreviousQuestion,
+                    child: Text("Previous"),
                   ),
+                  ElevatedButton(
+                    onPressed: navigateToNextQuestion,
+                    child: Text("Next"),
+                  ),
+                ],
+              ),
+              ...gameState.map((wordItem) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: wordItem["letters"].map<Widget>((item) {
+                    return GestureDetector(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3.0),
+                        child: Column(
+                          children: [
+                            Visibility(
+                              visible: item["solved"],
+                              replacement: const Text(" ", style: TextStyle(fontSize: 24)),
+                              child: Text(item["letter"], style: const TextStyle(fontSize: 24)),
+                            ),
+                            Container(width: 35, height: 4, color: Colors.black),
+                            Text(listSum(item["problem"]).toString()),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 );
               }).toList(),
-            );
-          }).toList(),
-        ],
+            ],
+          ),
+        ),
       ),
     );
   }

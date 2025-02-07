@@ -11,10 +11,10 @@ class LevelBarHomepage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
+          const Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
+            children: [
               Text(
                 "Level 105",
                 style: TextStyle(
@@ -36,10 +36,10 @@ class LevelBarHomepage extends StatelessWidget {
           const SizedBox(height: 8.0), // Adds space between text and progress bar
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: LinearProgressIndicator(
+            child: const LinearProgressIndicator(
               value: 0.6, // Adjust the value here for different progress
-              backgroundColor: const Color(0xFFD9F0D1), // Softer background color
-              color: const Color(0xFF2F9B4B), // Slightly darker green for the progress bar
+              backgroundColor: Color(0xFFD9F0D1), // Softer background color
+              color: Color(0xFF2F9B4B), // Slightly darker green for the progress bar
               minHeight: 10.0, // A thicker progress bar
             ),
           ),
