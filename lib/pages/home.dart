@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
             // Reduced EarthWidget height to make it smaller
             SizedBox(
               height: screenHeight * 0.2, // Adjust EarthWidget height to 20% of screen height
-              child: const EarthWidget(),
+              child: Container(),
             ),
             const SizedBox(height: 16), // Reduced space after EarthWidget
             const StreakHomepage(),
