@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_3d_controller/flutter_3d_controller.dart';
+// import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 
+/*
 
 class EarthWidget extends StatelessWidget {
   const EarthWidget({super.key});
@@ -24,5 +25,7 @@ class EarthWidget extends StatelessWidget {
     );
   }
 }
+
+ */
 
 

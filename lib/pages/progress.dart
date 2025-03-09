@@ -13,7 +13,7 @@ class _ProgressPageState extends State<ProgressPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-        body: EarthWidget()
+        body: Container()
     );
   }
 }
