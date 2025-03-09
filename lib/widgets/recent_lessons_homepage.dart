@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter/material.dart';
 import '../minigames/cypher_game.dart';
+import '../minigames/maze_game.dart';
 import 'lessons.dart';
 import 'subtopic_widget.dart';
 
@@ -106,7 +107,7 @@ class RecentLessonsPage extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CypherUI(),
+                                builder: (context) => MazeGame(),
                               ),
                             );
                           },

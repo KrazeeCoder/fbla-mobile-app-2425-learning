@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../minigames/cypher_game.dart';
+import '../minigames/maze_game.dart';
+import '../minigames/puzzle_game.dart';
 
 
 class SubtopicPage extends StatelessWidget {
@@ -49,11 +51,11 @@ class SubtopicPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => CypherUI(),
+                    builder: (context) => MathPuzzleGame(),
                   ),
                 );
               },
-              child: const Text("Start Cipher Game"),
+              child: const Text("Start Puzzle Game"),
             ),
           ],
         ),
