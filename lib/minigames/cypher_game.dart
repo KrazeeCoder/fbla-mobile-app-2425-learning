@@ -5,11 +5,14 @@ import 'package:flutter/services.dart';
 import '../widgets/cypher_question.dart';
 
 class CypherUI extends StatefulWidget {
-  const CypherUI({super.key});
+  final int subtopicId; // ✅ Add this
+
+  const CypherUI({super.key, required this.subtopicId}); // ✅ Update constructor
 
   @override
   State<CypherUI> createState() => _CypherUIState();
 }
+
 
 class _CypherUIState extends State<CypherUI> {
   final random = Random();
@@ -30,17 +33,43 @@ class _CypherUIState extends State<CypherUI> {
     final String jsonString = await rootBundle.loadString('assets/content.json');
     final Map<String, dynamic> data = json.decode(jsonString);
 
-    final quizPool = List<int>.from(data['subjects'][0]['grades'][0]['units'][0]['subtopics'][0]['quizPool']);
-    final List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data['questions']);
+    List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data['questions']);
 
+    List<dynamic> subjects = data['subjects'];
+    List<int> quizPool = [];
+
+    for (var subject in subjects) {
+      for (var grade in subject['grades']) {
+        for (var unit in grade['units']) {
+          for (var subtopic in unit['subtopics']) {
+            if (subtopic['subtopic_id'] == widget.subtopicId) {
+              quizPool = List<int>.from(subtopic['quizPool']);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (quizPool.isEmpty) {
+      print("No quiz pool found for subtopic ID: ${widget.subtopicId}");
+      return;
+    }
+
+    // ✅ Filter only the relevant questions
     List<Map<String, dynamic>> questions = allQuestions
         .where((q) => quizPool.contains(q['id'] as int))
         .toList();
 
     if (questions.isEmpty) return;
 
-    final wordList = ["SMART", "BRAVE", "LIGHT", "STORM", "CLOUD"];
-    currentPhrase = wordList[random.nextInt(wordList.length)]; // Keep phrase in correct order
+    // ✅ Ensure phrase length is always 5 (even if more questions exist)
+    final wordList = ["SMART", "BRAVE", "LIGHT", "STORM", "CLOUD", "RAPID", "FLARE"];
+    currentPhrase = (wordList.toList()..shuffle()).first; // Pick a random meaningful word
+
+    // ✅ Randomly select 5 questions from the available pool
+    questions.shuffle();
+    questions = questions.take(5).toList();
 
     List<int> scrambledNumbers = List.generate(questions.length, (i) => i);
     scrambledNumbers.shuffle();
@@ -49,13 +78,14 @@ class _CypherUIState extends State<CypherUI> {
       quizQuestions = questions;
       gameState = List.generate(questions.length, (index) {
         return {
-          "letter": currentPhrase[index], // Keep the phrase order correct
+          "letter": currentPhrase[index],  // ✅ Phrase is always meaningful!
           "revealed": false,
-          "questionIndex": scrambledNumbers[index], // Only scramble numbers
+          "questionIndex": scrambledNumbers[index],
         };
       });
     });
   }
+
 
   void onAnswerSelected(int questionIndex, String selectedAnswer) {
     setState(() {

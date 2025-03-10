@@ -4,9 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MazeGame extends StatefulWidget {
+  final int subtopicId; // ✅ Add this
+  const MazeGame({super.key, required this.subtopicId}); // ✅ Update constructor
+
   @override
   _MazeGameState createState() => _MazeGameState();
 }
+
+
 
 class _MazeGameState extends State<MazeGame> {
   static const int mazeSize = 11;
@@ -31,10 +36,48 @@ class _MazeGameState extends State<MazeGame> {
   Future<void> _loadQuestions() async {
     final String jsonString = await rootBundle.loadString('assets/content.json');
     final Map<String, dynamic> data = json.decode(jsonString);
+
+    List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data['questions']);
+
+    List<dynamic> subjects = data['subjects'];
+    List<int> quizPool = [];
+
+    for (var subject in subjects) {
+      for (var grade in subject['grades']) {
+        for (var unit in grade['units']) {
+          for (var subtopic in unit['subtopics']) {
+            if (subtopic['subtopic_id'] == widget.subtopicId) {
+              quizPool = List<int>.from(subtopic['quizPool']);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (quizPool.isEmpty) {
+      debugPrint("⚠️ No quiz pool found for subtopic ID: ${widget.subtopicId}");
+      return;
+    }
+
+    // ✅ Filter only the relevant questions
+    List<Map<String, dynamic>> questions = allQuestions
+        .where((q) => quizPool.contains(q['id'] as int))
+        .toList();
+
+    if (questions.isEmpty) {
+      debugPrint("⚠️ No questions found in quiz pool for subtopic ID: ${widget.subtopicId}");
+      return;
+    }
+
+    // ✅ Randomly shuffle the questions
+    questions.shuffle();
+
     setState(() {
-      quizQuestions = List<Map<String, dynamic>>.from(data["questions"]);
+      quizQuestions = questions;
     });
   }
+
 
   /// Generates a **solvable maze** with a random DFS carve
   void _generateSolvableMaze() {

@@ -1,26 +1,34 @@
-
-import 'package:fbla_mobile_2425_learning_app/widgets/cypher_question.dart';
+import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_homepage.dart';
 import 'package:flutter/material.dart';
-import '../minigames/cypher_game.dart';
-import '../widgets/earth_widget.dart';
-import '../widgets/recent_lessons_homepage.dart';
 
-class LearnPage extends StatefulWidget {
+import '../widgets/chooseyourownlesson.dart';
+
+
+
+class LearnPage extends StatelessWidget {
   const LearnPage({super.key});
 
   @override
-  State<LearnPage> createState() => _LearnPageState();
-}
-
-class _LearnPageState extends State<LearnPage> {
-
-
-
-  @override
   Widget build(BuildContext context) {
-
-    return Scaffold(
-        body: RecentLessonsPage()
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Lessons"),
+          bottom: const TabBar(
+            tabs: [
+              Tab(text: "Recent Lessons"),
+              Tab(text: "Choose Your Lesson"),
+            ],
+          ),
+        ),
+        body: const TabBarView(
+          children: [
+            RecentLessonsPage(),
+            ChooseLessonPage(),
+          ],
+        ),
+      ),
     );
   }
 }

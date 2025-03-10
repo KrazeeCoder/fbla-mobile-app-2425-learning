@@ -3,24 +3,14 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-void main() {
-  runApp(MathPuzzleGame());
-}
-
-class MathPuzzleGame extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: PuzzleScreen(),
-    );
-  }
-}
 
 class PuzzleScreen extends StatefulWidget {
+  final int subtopicId; // ✅ Add this
+  const PuzzleScreen({super.key, required this.subtopicId}); // ✅ Update constructor
   @override
   _PuzzleScreenState createState() => _PuzzleScreenState();
 }
+
 
 class _PuzzleScreenState extends State<PuzzleScreen> {
   List<Map<String, dynamic>> quizQuestions = [];
@@ -46,11 +36,51 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
   Future<void> _loadQuestions() async {
     final String jsonString = await rootBundle.loadString('assets/content.json');
     final Map<String, dynamic> data = json.decode(jsonString);
-    List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data["questions"]);
 
-    List<Map<String, dynamic>> selectedQuestions = (allQuestions..shuffle()).take(4).toList();
+    List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data['questions']);
+
+    List<dynamic> subjects = data['subjects'];
+    List<int> quizPool = [];
+
+    for (var subject in subjects) {
+      for (var grade in subject['grades']) {
+        for (var unit in grade['units']) {
+          for (var subtopic in unit['subtopics']) {
+            if (subtopic['subtopic_id'] == widget.subtopicId) {
+              quizPool = List<int>.from(subtopic['quizPool']);
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if (quizPool.isEmpty) {
+      debugPrint("⚠️ No quiz pool found for subtopic ID: ${widget.subtopicId}");
+      return;
+    }
+
+    // ✅ Filter only the relevant questions
+    List<Map<String, dynamic>> selectedQuestions = allQuestions
+        .where((q) => quizPool.contains(q['id'] as int))
+        .toList();
+
+    if (selectedQuestions.isEmpty) {
+      debugPrint("⚠️ No questions found in quiz pool for subtopic ID: ${widget.subtopicId}");
+      return;
+    }
+
+    // ✅ Randomly select 4 questions for the puzzle
+    selectedQuestions.shuffle();
+    selectedQuestions = selectedQuestions.take(4).toList();
 
     setState(() {
+      quizQuestions = selectedQuestions;
+      questionAnswerPairs.clear();
+      matchedPairs.clear();
+      placedFragments.clear();
+      fragmentPositions.clear();
+
       for (int i = 0; i < selectedQuestions.length; i++) {
         var question = selectedQuestions[i];
         questionAnswerPairs[question["question"]] = question["correct_answer"];

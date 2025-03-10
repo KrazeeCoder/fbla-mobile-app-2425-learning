@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-
 import '../minigames/cypher_game.dart';
 import '../minigames/maze_game.dart';
 import '../minigames/puzzle_game.dart';
 
-
 class SubtopicPage extends StatelessWidget {
   final String subtopic;
+  final int subtopicId; // Added subtopicId
   final String readingTitle;
   final String readingContent;
   final Function onGameStart;
 
   const SubtopicPage({
     required this.subtopic,
+    required this.subtopicId, // Receive subtopicId
     required this.readingTitle,
     required this.readingContent,
     required this.onGameStart,
@@ -47,15 +47,14 @@ class SubtopicPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                // Trigger the cipher game when the button is pressed
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MathPuzzleGame(),
+                    builder: (context) => PuzzleScreen(subtopicId: subtopicId),
                   ),
                 );
               },
-              child: const Text("Start Puzzle Game"),
+              child: const Text("Start puzzle Game"),
             ),
           ],
         ),

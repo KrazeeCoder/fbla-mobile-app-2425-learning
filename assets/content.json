@@ -12,12 +12,46 @@
               "subtopics": [
                 {
                   "subtopic": "One-variable Equations",
-                  "subtopic_id": 7,
+                  "subtopic_id": 1,
                   "reading": {
                     "title": "Solving One-variable Equations",
-                    "content": "Lesson: Solving One-variable Equations\n\nIntroduction:\nWelcome to today's lesson! We will explore how to solve one-variable equations. These are equations that contain only one unknown value, usually represented by a letter like x. The goal is to find the value of x that makes the equation true.\n\nWhat is a One-variable Equation?\nA one-variable equation is an equation that has only one variable (a letter like x, y, etc.) and constants (numbers). It usually looks like this:\n\nax + b = c\n\nWhere:\n- a is a number multiplying x\n- b is a constant added or subtracted to/from ax\n- c is a constant on the other side of the equation\n\nHow to Solve a One-variable Equation?\nTo solve a one-variable equation, you need to isolate the variable (x). You can do this by performing the same operation on both sides of the equation. Here are some common steps:\n\n1. Simplify both sides of the equation if needed. This means combining like terms.\n2. Use inverse operations (the opposite of what is done to x) to isolate the variable. You can add, subtract, multiply, or divide both sides of the equation by the same number.\n3. Check your solution by substituting your value for x back into the original equation to ensure both sides are equal.\n\nExample 1: Solve 3x = 15\n- Step 1: Divide both sides of the equation by 3 to isolate x.\n- Step 2: 3x / 3 = 15 / 3\n- Step 3: x = 5\n\nExample 2: Solve x + 7 = 12\n- Step 1: Subtract 7 from both sides to isolate x.\n- Step 2: x + 7 - 7 = 12 - 7\n- Step 3: x = 5\n\nExample 3: Solve 4x - 8 = 12\n- Step 1: Add 8 to both sides of the equation.\n- Step 2: 4x = 12 + 8\n- Step 3: 4x = 20\n- Step 4: Divide both sides by 4 to isolate x.\n- Step 5: x = 5\n\nNow you can solve equations like these and check your answers by substituting the value of x back into the equation. Keep practicing with more examples to get better at solving one-variable equations!"
+                    "content": "Lesson: Solving One-variable Equations\n\nIntroduction:\nWelcome to today's lesson! In this lesson, we will learn how to solve equations with one unknown variable.\n\nKey Concepts:\n1. An equation is a mathematical statement that asserts the equality of two expressions.\n2. A one-variable equation contains only one unknown, typically represented as x.\n3. To solve an equation, perform inverse operations to isolate the variable.\n\nSteps to Solve Equations:\n1. Identify the variable and the operations applied to it.\n2. Use the **inverse operation** to undo addition, subtraction, multiplication, or division.\n3. Perform the same operation on **both sides** of the equation.\n4. Simplify step by step until the variable is isolated.\n\nExample Problems:\n1. Solve for x: x + 5 = 10\n   - Subtract 5 from both sides: x = 10 - 5\n   - Solution: x = 5\n\n2. Solve for x: 2x = 14\n   - Divide both sides by 2: x = 14 / 2\n   - Solution: x = 7\n\n3. Solve for x: 3x - 4 = 11\n   - Add 4 to both sides: 3x = 15\n   - Divide by 3: x = 5\n   - Solution: x = 5\n\n4. Solve for x: (x/2) + 3 = 7\n   - Subtract 3 from both sides: x/2 = 4\n   - Multiply by 2: x = 8\n   - Solution: x = 8\n\n5. Solve for x: 5(x - 2) = 20\n   - Divide by 5: x - 2 = 4\n   - Add 2: x = 6\n   - Solution: x = 6\n\nPractice these techniques to master solving one-variable equations!"
                   },
-                  "quizPool": [1, 2, 3, 4, 5]
+                  "quizPool": [1, 2, 3, 4, 5, 6, 7, 8]
+                },
+                {
+                  "subtopic": "Linear Equations",
+                  "subtopic_id": 2,
+                  "reading": {
+                    "title": "Understanding Linear Equations",
+                    "content": "Linear equations are equations where the highest exponent of the variable is 1..."
+                  },
+                  "quizPool": [9, 10, 11, 12, 13]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Science",
+      "grades": [
+        {
+          "grade": "Grade 6",
+          "units": [
+            {
+              "unit": "Physics",
+              "unit_id": 4,
+              "subtopics": [
+                {
+                  "subtopic": "Motion",
+                  "subtopic_id": 9,
+                  "reading": {
+                    "title": "Understanding Motion",
+                    "content": "Motion refers to the movement of an object from one place to another..."
+                  },
+                  "quizPool": [14, 15, 16, 17, 18]
                 }
               ]
             }
@@ -30,56 +64,49 @@
     {
       "id": 1,
       "question": "Solve for x: 3x = 15",
-      "answers": [
-        "x = 5",
-        "x = 3",
-        "x = 15",
-        "x = 45"
-      ],
+      "answers": ["x = 5", "x = 3", "x = 15", "x = 45"],
       "correct_answer": "x = 5"
     },
     {
       "id": 2,
       "question": "Solve for x: x + 7 = 12",
-      "answers": [
-        "x = 5",
-        "x = 19",
-        "x = 7",
-        "x = 20"
-      ],
+      "answers": ["x = 5", "x = 7", "x = 12", "x = 19"],
       "correct_answer": "x = 5"
     },
     {
       "id": 3,
-      "question": "Solve for x: 4x - 8 = 12",
-      "answers": [
-        "x = 5",
-        "x = 8",
-        "x = 6",
-        "x = 3"
-      ],
+      "question": "Solve for x: 5x = 25",
+      "answers": ["x = 1", "x = 5", "x = 25", "x = 50"],
       "correct_answer": "x = 5"
     },
     {
       "id": 4,
-      "question": "Solve for x: x/4 = 3",
-      "answers": [
-        "x = 12",
-        "x = 4",
-        "x = 6",
-        "x = 1"
-      ],
-      "correct_answer": "x = 12"
+      "question": "Solve for x: 10 - x = 6",
+      "answers": ["x = 4", "x = 6", "x = 10", "x = 16"],
+      "correct_answer": "x = 4"
     },
     {
       "id": 5,
-      "question": "Solve for x: 5x + 3 = 23",
-      "answers": [
-        "x = 4",
-        "x = 2",
-        "x = 6",
-        "x = 7"
-      ],
+      "question": "Solve for x: 4x + 2 = 18",
+      "answers": ["x = 4", "x = 5", "x = 16", "x = 18"],
+      "correct_answer": "x = 4"
+    },
+    {
+      "id": 6,
+      "question": "Solve for x: (x/2) + 3 = 7",
+      "answers": ["x = 2", "x = 4", "x = 8", "x = 10"],
+      "correct_answer": "x = 8"
+    },
+    {
+      "id": 7,
+      "question": "Solve for x: 5(x - 2) = 20",
+      "answers": ["x = 2", "x = 4", "x = 6", "x = 8"],
+      "correct_answer": "x = 6"
+    },
+    {
+      "id": 8,
+      "question": "Solve for x: 7x - 5 = 23",
+      "answers": ["x = 2", "x = 4", "x = 6", "x = 7"],
       "correct_answer": "x = 4"
     }
   ]
