@@ -4,31 +4,189 @@
       "name": "Math",
       "grades": [
         {
-          "grade": "Grade 5",
+          "grade": "Grade 8",
           "units": [
             {
-              "unit": "Algebra",
-              "unit_id": 3,
+              "unit": "Numbers and Operations",
+              "unit_id": 1,
               "subtopics": [
                 {
-                  "subtopic": "One-variable Equations",
+                  "subtopic": "Repeating Decimals",
                   "subtopic_id": 1,
                   "reading": {
-                    "title": "Solving One-variable Equations",
-                    "content": "Lesson: Solving One-variable Equations\n\nIntroduction:\nWelcome to today's lesson! In this lesson, we will learn how to solve equations with one unknown variable.\n\nKey Concepts:\n1. An equation is a mathematical statement that asserts the equality of two expressions.\n2. A one-variable equation contains only one unknown, typically represented as x.\n3. To solve an equation, perform inverse operations to isolate the variable.\n\nSteps to Solve Equations:\n1. Identify the variable and the operations applied to it.\n2. Use the **inverse operation** to undo addition, subtraction, multiplication, or division.\n3. Perform the same operation on **both sides** of the equation.\n4. Simplify step by step until the variable is isolated.\n\nExample Problems:\n1. Solve for x: x + 5 = 10\n   - Subtract 5 from both sides: x = 10 - 5\n   - Solution: x = 5\n\n2. Solve for x: 2x = 14\n   - Divide both sides by 2: x = 14 / 2\n   - Solution: x = 7\n\n3. Solve for x: 3x - 4 = 11\n   - Add 4 to both sides: 3x = 15\n   - Divide by 3: x = 5\n   - Solution: x = 5\n\n4. Solve for x: (x/2) + 3 = 7\n   - Subtract 3 from both sides: x/2 = 4\n   - Multiply by 2: x = 8\n   - Solution: x = 8\n\n5. Solve for x: 5(x - 2) = 20\n   - Divide by 5: x - 2 = 4\n   - Add 2: x = 6\n   - Solution: x = 6\n\nPractice these techniques to master solving one-variable equations!"
+                    "title": "Understanding Repeating Decimals",
+                    "content": "A repeating decimal is a decimal number where one or more digits repeat infinitely. These numbers arise when dividing integers that do not result in terminating decimals. For example:\n\n- 1 ÷ 3 = 0.333… (3 repeats indefinitely)\n- 2 ÷ 7 = 0.285714285714… (285714 repeats indefinitely)\n\n### Identifying Repeating Decimals:\nRepeating decimals are usually represented with a bar notation: \n- 0.333… = 0.\u03053 (bar over 3)\n- 0.285714285714… = 0.\u0305285714 (bar over 285714)\n\n### Converting Repeating Decimals to Fractions:\nWe can express repeating decimals as fractions using algebra. Example:\n1. Let x = 0.\u03053 (which means 0.333…)\n2. Multiply by 10: 10x = 3.333…\n3. Subtract the original equation: 10x - x = 3.333… - 0.333…\n4. Simplify: 9x = 3 → x = 3/9 = 1/3\n\nThis technique works for any repeating decimal. \n\nUnderstanding repeating decimals is essential in algebra, number theory, and rational number operations."
                   },
-                  "quizPool": [1, 2, 3, 4, 5, 6, 7, 8]
+                  "quizPool": [201, 202, 203, 204, 205, 206, 207, 208, 209, 210]
                 },
                 {
-                  "subtopic": "Linear Equations",
+                  "subtopic": "Square Roots & Cube Roots",
                   "subtopic_id": 2,
                   "reading": {
-                    "title": "Understanding Linear Equations",
-                    "content": "Linear equations are equations where the highest exponent of the variable is 1..."
+                    "title": "Mastering Square and Cube Roots",
+                    "content": "### Understanding Square Roots:\nThe **square root** of a number is a value that, when multiplied by itself, gives the original number. \n- Example: √9 = 3 because 3 × 3 = 9\n- Not all numbers have perfect square roots. For instance, √10 is **irrational** and approximately 3.162.\n\n### Properties of Square Roots:\n- √a × √b = √(a × b) → Example: √4 × √9 = √(4 × 9) = √36 = 6\n- (√a)^2 = a → Example: (√7)^2 = 7\n- Rationalizing: 1/√2 = (1 × √2) / (√2 × √2) = √2/2\n\n### Understanding Cube Roots:\nThe **cube root** of a number is a value that, when multiplied three times by itself, gives the original number.\n- Example: ∛27 = 3 because 3 × 3 × 3 = 27\n\n### Properties of Cube Roots:\n- ∛a × ∛b = ∛(a × b)\n- (∛a)^3 = a\n\n### Real-Life Applications:\n- **Engineering & Architecture**: Calculating diagonal lengths using square roots.\n- **Physics**: Cube roots appear in volume and density calculations.\n- **Finance**: Square roots are used in interest rate calculations.\n\nMastering these roots is foundational for algebra, geometry, and higher mathematics."
                   },
-                  "quizPool": [9, 10, 11, 12, 13]
+                  "quizPool": [211, 212, 213, 214, 215, 216, 217, 218, 219, 220]
+                },
+                {
+                  "subtopic": "Irrational Numbers",
+                  "subtopic_id": 3,
+                  "reading": {
+                    "title": "Introduction to Irrational Numbers",
+                    "content": "### Definition:\nAn **irrational number** is a number that **cannot be expressed as a simple fraction (a/b)** where a and b are integers. Irrational numbers have **non-repeating, non-terminating decimal expansions**.\n\n### Examples:\n- π (3.141592653...) is irrational because it **never ends and never repeats**.\n- √2 (1.414213562...) is irrational because it **cannot be written as a fraction**.\n\n### Differences Between Rational and Irrational Numbers:\n| **Property**  | **Rational Numbers** | **Irrational Numbers** |\n|--------------|--------------------|----------------------|\n| **Decimal Form** | Terminates or repeats | Non-terminating, non-repeating |\n| **Fraction Form** | Can be written as a/b | Cannot be written as a/b |\n| **Examples** | 1/2 = 0.5, 1/3 = 0.333… | π, √5, e (Euler’s number) |\n\n### Why Are Irrational Numbers Important?\n- They help define **real numbers**.\n- They appear in **geometry** (e.g., the diagonal of a square with side length 1 is √2).\n- Used in **physics, engineering, and advanced mathematics**.\n\n### Approximating Irrational Numbers:\nSince irrational numbers cannot be written exactly, we often **approximate** them:\n- π ≈ 3.14 or 22/7\n- √2 ≈ 1.414\n\nMastering irrational numbers is crucial for algebra, trigonometry, and real analysis."
+                  },
+                  "quizPool": [221, 222, 223, 224, 225, 226, 227, 228, 229, 230]
+                },
+                {
+                  "subtopic": "Approximating Irrational Numbers",
+                  "subtopic_id": 4,
+                  "reading": {
+                    "title": "Techniques for Approximating Irrational Numbers",
+                    "content": "### Why Approximate Irrational Numbers?\nIrrational numbers **cannot be written exactly** as fractions or decimals. To use them in calculations, we must approximate them.\n\n### Common Approximation Techniques:\n1. **Using Rounded Values**\n   - π ≈ 3.14 or 22/7\n   - √2 ≈ 1.414, √3 ≈ 1.732\n   - These approximations are useful for **quick calculations**.\n\n2. **Using a Number Line**\n   - We can locate irrational numbers by estimating their position.\n   - Example: √5 is between **2.2 and 2.3** because 2.2² = 4.84 and 2.3² = 5.29.\n\n3. **Using Continued Fractions**\n   - Irrational numbers can be approximated by fractions:\n   - Example: π ≈ 3.141592653… can be approximated using the fraction 355/113.\n\n4. **Using Decimal Expansion**\n   - Example: √2 = 1.414213...\n   - By cutting off digits, we get approximations like **1.41 or 1.414**.\n\n### Application of Approximations:\n- **Geometry**: Approximating **π** in circle calculations.\n- **Engineering**: Approximating **square roots** in construction.\n- **Finance**: Using approximations in **interest rate** calculations.\n\nApproximating irrational numbers is a key skill for algebra, geometry, and real-world problem-solving."
+                  },
+                  "quizPool": [231, 232, 233, 234, 235, 236, 237, 238, 239, 240]
+                },
+                {
+                  "subtopic": "Exponents with Negative Bases",
+                  "subtopic_id": 5,
+                  "reading": {
+                    "title": "Understanding Exponents with Negative Bases",
+                    "content": "### What Happens When a Base is Negative?\nWhen raising a **negative number** to an exponent, the **sign of the result depends on whether the exponent is even or odd**.\n\n### Rules:\n- **Even exponent → Positive result**\n  - (-2)^2 = (-2) × (-2) = **4**\n  - (-5)^4 = (-5) × (-5) × (-5) × (-5) = **625**\n\n- **Odd exponent → Negative result**\n  - (-2)^3 = (-2) × (-2) × (-2) = **-8**\n  - (-3)^5 = (-3) × (-3) × (-3) × (-3) × (-3) = **-243**\n\n### Properties:\n| **Exponent** | **Example** | **Result** |\n|-------------|------------|------------|\n| **Even**    | (-4)^2     | 16         |\n| **Odd**     | (-4)^3     | -64        |\n\n### Real-Life Applications:\n- **Physics**: Negative exponents appear in wave functions.\n- **Computer Science**: Used in binary exponentiation.\n- **Finance**: Exponential growth and decay formulas.\n\nUnderstanding exponents with negative bases is crucial for algebra, trigonometry, and calculus."
+                  },
+                  "quizPool": [241, 242, 243, 244, 245, 246, 247, 248, 249, 250]
+                },
+                {
+                  "subtopic": "Exponent Properties Intro",
+                  "subtopic_id": 6,
+                  "reading": {
+                    "title": "Fundamentals of Exponent Properties",
+                    "content": "### What are Exponent Rules?\nExponents help **simplify repeated multiplication**. Mastering exponent rules is essential for algebra.\n\n### Key Rules:\n1. **Product Rule**: When multiplying numbers with the same base, **add the exponents**.\n   - a^m × a^n = a^(m+n)\n   - Example: 2^3 × 2^4 = 2^(3+4) = **2^7**\n\n2. **Quotient Rule**: When dividing numbers with the same base, **subtract the exponents**.\n   - a^m / a^n = a^(m-n)\n   - Example: 5^6 ÷ 5^2 = 5^(6-2) = **5^4**\n\n3. **Power Rule**: When raising a power to another power, **multiply the exponents**.\n   - (a^m)^n = a^(m*n)\n   - Example: (3^2)^3 = 3^(2×3) = **3^6**\n\n### Additional Rules:\n- **Zero Exponent Rule**: a^0 = **1**\n  - Example: 7^0 = **1**\n- **Negative Exponent Rule**: a^(-n) = **1/a^n**\n  - Example: 2^-3 = **1/2^3 = 1/8**\n\n### Why is This Important?\n- **Physics & Engineering**: Used in formulas like E=mc².\n- **Computer Science**: Algorithms use exponentiation.\n- **Finance**: Interest calculations use exponents.\n\nMastering exponent rules is essential for simplifying algebraic expressions and solving equations."
+                  },
+                  "quizPool": [251, 252, 253, 254, 255, 256, 257, 258, 259, 260]
+                },
+                {
+                  "subtopic": "Negative Exponents",
+                  "subtopic_id": 10,
+                  "reading": {
+                    "title": "Understanding Negative Exponents",
+                    "content": "### What Do Negative Exponents Mean?\nA negative exponent **does not** make a number negative. Instead, it represents a **reciprocal**.\n\n### Rule:\n- a^(-n) = **1 / a^n**\n- Example: 2^(-3) = **1 / 2^3 = 1/8**\n\n### Examples:\n| **Expression**  | **Rewritten Form** | **Result** |\n|---------------|----------------|---------|\n| 5^(-2)       | 1 / 5^2        | 1/25    |\n| 10^(-4)      | 1 / 10^4       | 0.0001  |\n| (3/4)^(-2)   | (4/3)^2        | 16/9    |\n\n### Why Do We Use Negative Exponents?\n- **Scientific Notation**: Used to represent small numbers (e.g., 3.5 × 10^-4 = 0.00035).\n- **Algebraic Simplifications**: Helps simplify fractions with exponents.\n- **Physics & Chemistry**: Used for microscopic measurements (e.g., atomic radius, light wavelength).\n\nMastering negative exponents is essential for **scientific notation, exponential equations, and algebraic manipulation**."
+                  },
+                  "quizPool": [291, 292, 293, 294, 295, 296, 297, 298, 299, 300]
+                },
+                {
+                  "subtopic": "Exponent Properties (Integer Exponents)",
+                  "subtopic_id": 11,
+                  "reading": {
+                    "title": "Exploring Exponent Properties with Integer Exponents",
+                    "content": "### What Are Integer Exponents?\nInteger exponents include **positive, negative, and zero exponents**. They follow key rules:\n\n### Key Rules:\n1. **Product Rule**: Multiply numbers with the same base → **Add the exponents**.\n   - Example: 2^3 × 2^4 = 2^(3+4) = **2^7**\n\n2. **Quotient Rule**: Divide numbers with the same base → **Subtract the exponents**.\n   - Example: 7^5 ÷ 7^2 = 7^(5-2) = **7^3**\n\n3. **Power of a Power Rule**: (a^m)^n = **a^(m×n)**\n   - Example: (3^2)^4 = 3^(2×4) = **3^8**\n\n4. **Zero Exponent Rule**: Any number raised to **zero** is 1.\n   - Example: 9^0 = **1**\n\n5. **Negative Exponent Rule**: a^(-n) = **1 / a^n**\n   - Example: 5^(-3) = 1/5^3 = **1/125**\n\n### Applications:\n- **Physics & Chemistry**: Exponential decay in radioactive elements.\n- **Finance**: Compound interest calculations.\n- **Computer Science**: Algorithm complexity (e.g., O(2^n) growth rates).\n\nUnderstanding integer exponents is a **fundamental skill in algebra, calculus, and real-world applications**."
+                  },
+                  "quizPool": [301, 302, 303, 304, 305, 306, 307, 308, 309, 310]
+                },
+                {
+                  "subtopic": "Working with Powers of 10",
+                  "subtopic_id": 12,
+                  "reading": {
+                    "title": "Mastering Powers of 10",
+                    "content": "### What Are Powers of 10?\nPowers of 10 simplify **large and small numbers** using exponents.\n\n### Rules:\n- 10^3 = **1,000**\n- 10^-2 = **0.01** (1/100)\n- 10^0 = **1**\n\n### Scientific Notation & Powers of 10:\nScientific notation expresses numbers as **a × 10^n**.\n- Example: 5,600,000 = **5.6 × 10^6**\n- Example: 0.00042 = **4.2 × 10^-4**\n\n### Real-World Applications:\n- **Astronomy**: The Sun’s mass is **1.989 × 10^30 kg**.\n- **Medicine**: Bacteria sizes use **micrometers (10^-6 meters)**.\n- **Finance**: National debt is often written in scientific notation.\n\nPowers of 10 are essential for **scientific notation, metric conversions, and handling large numbers in calculations**."
+                  },
+                  "quizPool": [311, 312, 313, 314, 315, 316, 317, 318, 319, 320]
+                },
+                {
+                  "subtopic": "Scientific Notation Intro",
+                  "subtopic_id": 13,
+                  "reading": {
+                    "title": "Introduction to Scientific Notation",
+                    "content": "### What Is Scientific Notation?\nScientific notation expresses **very large or very small numbers** in the form:\n  - **a × 10^n**, where **1 ≤ a < 10** and **n is an integer**.\n\n### Examples:\n- **Large numbers:**\n  - 2,500,000 = **2.5 × 10^6**\n  - 1,000,000,000 = **1 × 10^9**\n\n- **Small numbers:**\n  - 0.0004 = **4 × 10^-4**\n  - 0.00000052 = **5.2 × 10^-7**\n\n### Why Use Scientific Notation?\n- **Simplifies calculations** for large and small numbers.\n- **Used in astronomy** (e.g., distance between planets).\n- **Essential in chemistry** (e.g., atomic mass units).\n\nMastering scientific notation is key for **engineering, physics, and mathematical modeling**."
+                  },
+                  "quizPool": [321, 322, 323, 324, 325, 326, 327, 328, 329, 330]
+                },
+                {
+                  "subtopic": "Arithmetic with Numbers in Scientific Notation",
+                  "subtopic_id": 14,
+                  "reading": {
+                    "title": "Performing Arithmetic with Scientific Notation",
+                    "content": "Addition and subtraction require adjusting exponents to be the same. Multiplication follows (a × 10^m) × (b × 10^n) = (a × b) × 10^(m+n), while division follows (a × 10^m) ÷ (b × 10^n) = (a/b) × 10^(m-n)."
+                  },
+                  "quizPool": [331, 332, 333, 334, 335, 336, 337, 338, 339, 340]
+                },
+                {
+                  "subtopic": "Scientific Notation Word Problems",
+                  "subtopic_id": 15,
+                  "reading": {
+                    "title": "Applying Scientific Notation in Word Problems",
+                    "content": "Scientific notation is used in real-world applications like astronomy and chemistry. For example, if the distance from Earth to the Sun is 1.5 × 10^8 km, and a spaceship travels at 3 × 10^4 km per hour, time to reach the Sun is (1.5 × 10^8) ÷ (3 × 10^4) = 5 × 10^3 hours."
+                  },
+                  "quizPool": [341, 342, 343, 344, 345, 346, 347, 348, 349, 350]
+                }
+
+              ]
+            },
+            {
+              "unit": "Solving Equations with One Unknown",
+              "unit_id": 2,
+              "subtopics": [
+                {
+                  "subtopic": "Equations with Variables on Both Sides",
+                  "subtopic_id": 7,
+                  "reading": {
+                    "title": "Solving Equations with Variables on Both Sides",
+                    "content": "### What Are Equations with Variables on Both Sides?\nThese equations have **the unknown variable (x, y, etc.) on both sides** of the equal sign.\n\n### General Form:\n- **ax + b = cx + d**\n\n### Steps to Solve:\n1. **Move all variable terms to one side** (use addition or subtraction).\n2. **Move constant terms to the other side**.\n3. **Simplify** and **solve for the variable**.\n\n### Example:\nSolve **3x + 2 = 5x - 4**\n1. Subtract **3x** from both sides → **2 = 2x - 4**\n2. Add **4** to both sides → **6 = 2x**\n3. Divide by **2** → **x = 3**\n\n### Special Cases:\n- **No solution**: If variables cancel and you get a false statement (e.g., **2 = 5**).\n- **Infinite solutions**: If variables cancel and you get a true statement (e.g., **4 = 4**).\n\n### Applications:\n- **Finance**: Comparing two salary offers.\n- **Engineering**: Calculating force balances.\n- **Physics**: Analyzing motion equations."
+                  },
+                  "quizPool": [261, 262, 263, 264, 265, 266, 267, 268, 269, 270]
+                },
+                {
+                  "subtopic": "Equations with Parentheses",
+                  "subtopic_id": 8,
+                  "reading": {
+                    "title": "Expanding and Solving Equations with Parentheses",
+                    "content": "Equations containing parentheses require distribution before solving. Example: 2(x + 3) = 10 -> Distribute: 2x + 6 = 10 -> Subtract 6: 2x = 4 -> Divide by 2: x = 2."
+                  },
+                  "quizPool": [271, 272, 273, 274, 275, 276, 277, 278, 279, 280]
+                },
+                {
+                  "subtopic": "Number of Solutions to Equations",
+                  "subtopic_id": 9,
+                  "reading": {
+                    "title": "Understanding the Number of Solutions to Equations",
+                    "content": "### How Many Solutions Can an Equation Have?\nEquations can have **one solution, no solution, or infinitely many solutions**.\n\n### 1. One Solution:\n- The equation simplifies to **x = a single number**.\n- Example: **2x + 3 = 9** → x = **3**\n\n### 2. No Solution:\n- The equation simplifies to a **false statement**.\n- Example: **3x + 2 = 3x - 4** → 2 = -4 (which is false, so no solution!)\n\n### 3. Infinitely Many Solutions:\n- The equation simplifies to a **true statement**.\n- Example: **4x + 8 = 4(x + 2)** → 4x + 8 = 4x + 8 (always true)\n\n### Identifying Solutions Easily:\n| **Equation Type**      | **What Happens?**        | **Solution Count** |\n|------------------|------------------|---------------|\n| 2x + 3 = 9       | Solve for x      | **One**       |\n| 5x - 4 = 5x + 6  | Variables cancel, false equation | **No solution** |\n| 3(x - 2) = 3x - 6 | Variables cancel, true equation | **Infinite** |\n\n### Applications:\n- **Physics**: Checking if an equation has a valid physical solution.\n- **Engineering**: Solving force and stress equations.\n- **Computer Science**: Debugging equations in algorithms."
+                  },
+                  "quizPool": [281, 282, 283, 284, 285, 286, 287, 288, 289, 290]
+                },
+                {
+                  "subtopic": "Equations Word Problems",
+                  "subtopic_id": 16,
+                  "reading": {
+                    "title": "Solving Word Problems Using Equations",
+                    "content": "### What Are Word Problems with Equations?\nWord problems require **translating real-world scenarios** into algebraic equations before solving.\n\n### Steps to Solve:\n1. **Define the variable** (what are we solving for?).\n2. **Write an equation** based on the problem description.\n3. **Solve for the unknown**.\n4. **Check if the answer makes sense**.\n\n### Example 1 (Age Problem):\n- Jake is twice as old as Sam. Together, they are 18 years old.\n- Define Sam’s age as **x** → Jake’s age is **2x**.\n- Write the equation: **x + 2x = 18**\n- Solve: **3x = 18**, so **x = 6** (Sam is 6, Jake is 12).\n\n### Example 2 (Money Problem):\n- A movie ticket costs $6 for children and $10 for adults.\n- If the total revenue was **$300**, and 20 child tickets were sold, how many adult tickets were sold?\n- Define **x = number of adult tickets**.\n- Equation: **6(20) + 10x = 300**\n- Solve: **120 + 10x = 300** → **10x = 180** → **x = 18**\n\n### Applications:\n- **Finance**: Budgeting problems.\n- **Business**: Profit and loss calculations.\n- **Engineering**: Material usage calculations.\n\nMastering word problems helps in **real-world problem-solving and critical thinking**."
+                  },
+                  "quizPool": [351, 352, 353, 354, 355, 356, 357, 358, 359, 360]
                 }
               ]
+            },
+            {
+              "unit": "Linear Equations and Functions",
+              "unit_id": 3,
+              "subtopics": []
+            },
+            {
+              "unit": "Systems of Equations",
+              "unit_id": 4,
+              "subtopics": []
+            },
+            {
+              "unit": "Geometry",
+              "unit_id": 5,
+              "subtopics": []
+            },
+            {
+              "unit": "Geometric Transformations",
+              "unit_id": 6,
+              "subtopics": []
+            },
+            {
+              "unit": "Data and Modeling",
+              "unit_id": 7,
+              "subtopics": []
             }
           ]
         }
@@ -46,7 +204,7 @@
               "subtopics": [
                 {
                   "subtopic": "Motion",
-                  "subtopic_id": 9,
+                  "subtopic_id": 100,
                   "reading": {
                     "title": "Understanding Motion",
                     "content": "Motion refers to the movement of an object from one place to another..."
@@ -62,52 +220,965 @@
   ],
   "questions": [
     {
-      "id": 1,
-      "question": "Solve for x: 3x = 15",
-      "answers": ["x = 5", "x = 3", "x = 15", "x = 45"],
-      "correct_answer": "x = 5"
+      "id": 201,
+      "question": "What is an example of a repeating decimal?",
+      "answers": ["0.5", "0.25", "0.333...", "0.9"],
+      "correct_answer": "0.333..."
     },
     {
-      "id": 2,
-      "question": "Solve for x: x + 7 = 12",
-      "answers": ["x = 5", "x = 7", "x = 12", "x = 19"],
-      "correct_answer": "x = 5"
+      "id": 202,
+      "question": "Which of the following is NOT a repeating decimal?",
+      "answers": ["0.125", "0.666...", "0.142857...", "0.3"],
+      "correct_answer": "0.125"
     },
     {
-      "id": 3,
-      "question": "Solve for x: 5x = 25",
-      "answers": ["x = 1", "x = 5", "x = 25", "x = 50"],
-      "correct_answer": "x = 5"
+      "id": 203,
+      "question": "How do you convert 0.777... into a fraction?",
+      "answers": ["7/9", "7/10", "3/4", "5/6"],
+      "correct_answer": "7/9"
     },
     {
-      "id": 4,
-      "question": "Solve for x: 10 - x = 6",
-      "answers": ["x = 4", "x = 6", "x = 10", "x = 16"],
-      "correct_answer": "x = 4"
+      "id": 204,
+      "question": "What is the fraction equivalent of 0.142857142857...?",
+      "answers": ["1/7", "3/8", "2/9", "5/11"],
+      "correct_answer": "1/7"
     },
     {
-      "id": 5,
-      "question": "Solve for x: 4x + 2 = 18",
-      "answers": ["x = 4", "x = 5", "x = 16", "x = 18"],
-      "correct_answer": "x = 4"
+      "id": 205,
+      "question": "Which of the following is an example of a terminating decimal?",
+      "answers": ["0.75", "0.333...", "0.999...", "0.142857..."],
+      "correct_answer": "0.75"
     },
     {
-      "id": 6,
-      "question": "Solve for x: (x/2) + 3 = 7",
-      "answers": ["x = 2", "x = 4", "x = 8", "x = 10"],
-      "correct_answer": "x = 8"
+      "id": 206,
+      "question": "Which method is commonly used to convert a repeating decimal to a fraction?",
+      "answers": ["Long division", "Multiplying by powers of 10", "Prime factorization", "Cross-multiplication"],
+      "correct_answer": "Multiplying by powers of 10"
     },
     {
-      "id": 7,
-      "question": "Solve for x: 5(x - 2) = 20",
-      "answers": ["x = 2", "x = 4", "x = 6", "x = 8"],
+      "id": 207,
+      "question": "Which decimal expansion is repeating?",
+      "answers": ["0.500", "0.333...", "0.75", "1.125"],
+      "correct_answer": "0.333..."
+    },
+    {
+      "id": 208,
+      "question": "What is the repeating part of 0.636363...?",
+      "answers": ["6", "63", "36", "636"],
+      "correct_answer": "63"
+    },
+    {
+      "id": 209,
+      "question": "How can you write 0.999... as a fraction?",
+      "answers": ["1", "9/10", "99/100", "1/9"],
+      "correct_answer": "1"
+    },
+    {
+      "id": 210,
+      "question": "Which of the following is NOT a characteristic of a repeating decimal?",
+      "answers": ["Has a predictable repeating pattern", "Can be expressed as a fraction", "Has an infinite sequence of digits", "Cannot be converted to a fraction"],
+      "correct_answer": "Cannot be converted to a fraction"
+    },
+    {
+      "id": 211,
+      "question": "What is the square root of 49?",
+      "answers": ["5", "6", "7", "8"],
+      "correct_answer": "7"
+    },
+    {
+      "id": 212,
+      "question": "What is the cube root of 27?",
+      "answers": ["2", "3", "4", "5"],
+      "correct_answer": "3"
+    },
+    {
+      "id": 213,
+      "question": "Which of the following is a perfect square?",
+      "answers": ["10", "15", "25", "35"],
+      "correct_answer": "25"
+    },
+    {
+      "id": 214,
+      "question": "What is the square root of 121?",
+      "answers": ["10", "11", "12", "13"],
+      "correct_answer": "11"
+    },
+    {
+      "id": 215,
+      "question": "Which of the following numbers has an integer cube root?",
+      "answers": ["7", "15", "64", "100"],
+      "correct_answer": "64"
+    },
+    {
+      "id": 216,
+      "question": "Which of the following is NOT a perfect square?",
+      "answers": ["36", "49", "50", "64"],
+      "correct_answer": "50"
+    },
+    {
+      "id": 217,
+      "question": "The square root of 81 is:",
+      "answers": ["7", "8", "9", "10"],
+      "correct_answer": "9"
+    },
+    {
+      "id": 218,
+      "question": "Which of the following is a perfect cube?",
+      "answers": ["10", "16", "27", "35"],
+      "correct_answer": "27"
+    },
+    {
+      "id": 219,
+      "question": "What is the approximate value of sqrt(50)?",
+      "answers": ["6.5", "7.0", "7.1", "7.5"],
+      "correct_answer": "7.1"
+    },
+    {
+      "id": 220,
+      "question": "What is the cube root of 8?",
+      "answers": ["1", "2", "3", "4"],
+      "correct_answer": "2"
+    },
+    {
+      "id": 221,
+      "question": "Which of the following numbers is irrational?",
+      "answers": ["4", "9", "sqrt(2)", "16"],
+      "correct_answer": "sqrt(2)"
+    },
+    {
+      "id": 222,
+      "question": "Which of the following is NOT an irrational number?",
+      "answers": ["π", "3.14159", "5", "sqrt(3)"],
+      "correct_answer": "5"
+    },
+    {
+      "id": 223,
+      "question": "What makes a number irrational?",
+      "answers": ["It has a repeating decimal", "It cannot be written as a fraction", "It is always negative", "It is always a whole number"],
+      "correct_answer": "It cannot be written as a fraction"
+    },
+    {
+      "id": 224,
+      "question": "Which of the following numbers is an example of an irrational number?",
+      "answers": ["22/7", "3.5", "sqrt(5)", "7"],
+      "correct_answer": "sqrt(5)"
+    },
+    {
+      "id": 225,
+      "question": "What is the best approximation for sqrt(3)?",
+      "answers": ["1.5", "1.732", "2.5", "3.14"],
+      "correct_answer": "1.732"
+    },
+    {
+      "id": 226,
+      "question": "Which of the following is NOT a characteristic of an irrational number?",
+      "answers": ["It cannot be written as a simple fraction", "It has a non-repeating decimal expansion", "It is always greater than 1", "It cannot be expressed as a ratio of two integers"],
+      "correct_answer": "It is always greater than 1"
+    },
+    {
+      "id": 227,
+      "question": "Which of the following is a rational number?",
+      "answers": ["π", "sqrt(2)", "1.5", "sqrt(7)"],
+      "correct_answer": "1.5"
+    },
+    {
+      "id": 228,
+      "question": "Which of the following numbers has a non-repeating, non-terminating decimal expansion?",
+      "answers": ["1/2", "3/4", "sqrt(11)", "5"],
+      "correct_answer": "sqrt(11)"
+    },
+    {
+      "id": 229,
+      "question": "What is the decimal approximation of π?",
+      "answers": ["3.14159", "3.5", "22/7", "3.75"],
+      "correct_answer": "3.14159"
+    },
+    {
+      "id": 230,
+      "question": "Which of the following statements is true?",
+      "answers": ["All square roots are irrational", "All irrational numbers are real numbers", "All real numbers are irrational", "Irrational numbers can be expressed as exact fractions"],
+      "correct_answer": "All irrational numbers are real numbers"
+    },
+    {
+      "id": 231,
+      "question": "Which of the following is the best approximation for sqrt(2)?",
+      "answers": ["1.4", "1.5", "1.41", "1.42"],
+      "correct_answer": "1.41"
+    },
+    {
+      "id": 232,
+      "question": "Which of the following is closest to sqrt(10)?",
+      "answers": ["2.5", "3.1", "3.2", "3.5"],
+      "correct_answer": "3.2"
+    },
+    {
+      "id": 233,
+      "question": "Which number is approximately equal to sqrt(7)?",
+      "answers": ["2.5", "2.6", "2.7", "2.8"],
+      "correct_answer": "2.6"
+    },
+    {
+      "id": 234,
+      "question": "Which number is closest to the value of sqrt(5)?",
+      "answers": ["2.1", "2.2", "2.3", "2.4"],
+      "correct_answer": "2.2"
+    },
+    {
+      "id": 235,
+      "question": "Which is the closest approximation for sqrt(15)?",
+      "answers": ["3.6", "3.7", "3.8", "3.9"],
+      "correct_answer": "3.9"
+    },
+    {
+      "id": 236,
+      "question": "Which irrational number is closest to 3.14?",
+      "answers": ["π", "sqrt(8)", "sqrt(10)", "e"],
+      "correct_answer": "π"
+    },
+    {
+      "id": 237,
+      "question": "Which of the following is NOT a method for approximating irrational numbers?",
+      "answers": ["Using a calculator", "Using continued fractions", "Estimating square roots", "Dividing the number by 2"],
+      "correct_answer": "Dividing the number by 2"
+    },
+    {
+      "id": 238,
+      "question": "Which of these is closest to sqrt(20)?",
+      "answers": ["4.2", "4.3", "4.4", "4.5"],
+      "correct_answer": "4.5"
+    },
+    {
+      "id": 239,
+      "question": "What is the best decimal approximation of sqrt(3)?",
+      "answers": ["1.73", "1.75", "1.8", "1.85"],
+      "correct_answer": "1.73"
+    },
+    {
+      "id": 240,
+      "question": "What is the approximate value of sqrt(50)?",
+      "answers": ["6.8", "7.0", "7.1", "7.5"],
+      "correct_answer": "7.1"
+    },
+    {
+      "id": 241,
+      "question": "What is the value of (-2)^4?",
+      "answers": ["-16", "16", "-8", "8"],
+      "correct_answer": "16"
+    },
+    {
+      "id": 242,
+      "question": "What is (-3)^3?",
+      "answers": ["-27", "27", "-9", "9"],
+      "correct_answer": "-27"
+    },
+    {
+      "id": 243,
+      "question": "What is the result of (-5)^2?",
+      "answers": ["-25", "25", "-10", "10"],
+      "correct_answer": "25"
+    },
+    {
+      "id": 244,
+      "question": "What happens when you raise a negative number to an even exponent?",
+      "answers": ["It remains negative", "It becomes positive", "It stays the same", "It depends on the base"],
+      "correct_answer": "It becomes positive"
+    },
+    {
+      "id": 245,
+      "question": "Which of the following is NOT true about negative bases?",
+      "answers": ["Odd exponents keep the negative sign", "Even exponents make the result positive", "Negative bases always result in a negative number", "(-1)^n depends on whether n is even or odd"],
+      "correct_answer": "Negative bases always result in a negative number"
+    },
+    {
+      "id": 246,
+      "question": "What is the value of (-4)^3?",
+      "answers": ["-64", "64", "-16", "16"],
+      "correct_answer": "-64"
+    },
+    {
+      "id": 247,
+      "question": "What is (-1)^100?",
+      "answers": ["1", "-1", "100", "-100"],
+      "correct_answer": "1"
+    },
+    {
+      "id": 248,
+      "question": "What is (-7)^2?",
+      "answers": ["-49", "49", "-14", "14"],
+      "correct_answer": "49"
+    },
+    {
+      "id": 249,
+      "question": "What is the result of (-2)^5?",
+      "answers": ["-32", "32", "-10", "10"],
+      "correct_answer": "-32"
+    },
+    {
+      "id": 250,
+      "question": "Which of the following results in a positive value?",
+      "answers": ["(-3)^5", "(-4)^6", "(-2)^7", "(-5)^9"],
+      "correct_answer": "(-4)^6"
+    },
+    {
+      "id": 251,
+      "question": "What is the product rule for exponents?",
+      "answers": ["a^m * a^n = a^(m+n)", "a^m / a^n = a^(m-n)", "(a^m)^n = a^(m*n)", "a^m * b^n = (a*b)^(m+n)"],
+      "correct_answer": "a^m * a^n = a^(m+n)"
+    },
+    {
+      "id": 252,
+      "question": "What is the quotient rule for exponents?",
+      "answers": ["a^m * a^n = a^(m+n)", "a^m / a^n = a^(m-n)", "(a^m)^n = a^(m*n)", "(ab)^m = a^m * b^m"],
+      "correct_answer": "a^m / a^n = a^(m-n)"
+    },
+    {
+      "id": 253,
+      "question": "What is the power rule for exponents?",
+      "answers": ["a^m * a^n = a^(m+n)", "a^m / a^n = a^(m-n)", "(a^m)^n = a^(m*n)", "(ab)^m = a^m * b^m"],
+      "correct_answer": "(a^m)^n = a^(m*n)"
+    },
+    {
+      "id": 254,
+      "question": "What is (2^3)^2?",
+      "answers": ["6", "8", "16", "64"],
+      "correct_answer": "64"
+    },
+    {
+      "id": 255,
+      "question": "What is the value of (x^4 * x^3)?",
+      "answers": ["x^7", "x^12", "x^1", "x^4"],
+      "correct_answer": "x^7"
+    },
+    {
+      "id": 256,
+      "question": "What is (x^5 / x^2)?",
+      "answers": ["x^2", "x^3", "x^7", "x^10"],
+      "correct_answer": "x^3"
+    },
+    {
+      "id": 257,
+      "question": "What is x^0?",
+      "answers": ["0", "1", "x", "Undefined"],
+      "correct_answer": "1"
+    },
+    {
+      "id": 258,
+      "question": "What is 3^4 * 3^2?",
+      "answers": ["3^2", "3^6", "3^8", "3^12"],
+      "correct_answer": "3^6"
+    },
+    {
+      "id": 259,
+      "question": "What is (x^3)^4?",
+      "answers": ["x^7", "x^12", "x^9", "x^10"],
+      "correct_answer": "x^12"
+    },
+    {
+      "id": 260,
+      "question": "What is (2^5)/(2^2)?",
+      "answers": ["2^3", "2^7", "2^10", "2^2"],
+      "correct_answer": "2^3"
+    },
+    {
+      "id": 261,
+      "question": "Solve for x: 3x + 2 = 5x - 4",
+      "answers": ["x = -3", "x = 3", "x = -1", "x = 1"],
+      "correct_answer": "x = 3"
+    },
+    {
+      "id": 262,
+      "question": "What is the first step in solving 4x - 7 = 2x + 5?",
+      "answers": ["Subtract 2x from both sides", "Add 7 to both sides", "Divide by 4", "Multiply by 2"],
+      "correct_answer": "Subtract 2x from both sides"
+    },
+    {
+      "id": 263,
+      "question": "Solve for x: 6x - 3 = 4x + 9",
+      "answers": ["x = 6", "x = 5", "x = 4", "x = 3"],
       "correct_answer": "x = 6"
     },
     {
-      "id": 8,
-      "question": "Solve for x: 7x - 5 = 23",
-      "answers": ["x = 2", "x = 4", "x = 6", "x = 7"],
+      "id": 264,
+      "question": "If 5x - 2 = 2x + 4, what is x?",
+      "answers": ["x = 2", "x = 3", "x = -2", "x = -3"],
+      "correct_answer": "x = 2"
+    },
+    {
+      "id": 265,
+      "question": "Solve for x: 7x + 1 = 5x + 9",
+      "answers": ["x = 4", "x = -4", "x = 2", "x = -2"],
       "correct_answer": "x = 4"
+    },
+    {
+      "id": 266,
+      "question": "What should you do first when solving 8x - 3 = 6x + 5?",
+      "answers": ["Add 3 to both sides", "Subtract 6x from both sides", "Subtract 8x from both sides", "Multiply both sides by 2"],
+      "correct_answer": "Subtract 6x from both sides"
+    },
+    {
+      "id": 267,
+      "question": "Solve for x: 10x - 2 = 8x + 4",
+      "answers": ["x = -2", "x = 3", "x = 1", "x = 2"],
+      "correct_answer": "x = 3"
+    },
+    {
+      "id": 268,
+      "question": "If 12x - 7 = 10x + 9, what is x?",
+      "answers": ["x = -8", "x = 6", "x = 4", "x = 5"],
+      "correct_answer": "x = 8"
+    },
+    {
+      "id": 269,
+      "question": "Which step should come first when solving 3x + 6 = 2x + 10?",
+      "answers": ["Subtract 3x", "Subtract 2x", "Add 6 to both sides", "Subtract 6 from both sides"],
+      "correct_answer": "Subtract 2x"
+    },
+    {
+      "id": 270,
+      "question": "Solve for x: 9x - 5 = 7x + 11",
+      "answers": ["x = -8", "x = 6", "x = 4", "x = 8"],
+      "correct_answer": "x = 8"
+    },
+    {
+      "id": 271,
+      "question": "What is the first step in solving 2(x + 3) = 14?",
+      "answers": ["Distribute the 2", "Subtract 3 from both sides", "Divide by 2", "Multiply both sides by 2"],
+      "correct_answer": "Distribute the 2"
+    },
+    {
+      "id": 272,
+      "question": "Solve for x: 3(x - 2) = 12",
+      "answers": ["x = 4", "x = 6", "x = -4", "x = -6"],
+      "correct_answer": "x = 6"
+    },
+    {
+      "id": 273,
+      "question": "Which step comes first when solving 4(x + 5) = 24?",
+      "answers": ["Divide by 4", "Subtract 5", "Multiply by 4", "Add 5"],
+      "correct_answer": "Divide by 4"
+    },
+    {
+      "id": 274,
+      "question": "What is the solution to 5(x + 2) = 20?",
+      "answers": ["x = 2", "x = 3", "x = 4", "x = 5"],
+      "correct_answer": "x = 2"
+    },
+    {
+      "id": 275,
+      "question": "Solve for x: 6(x - 1) = 18",
+      "answers": ["x = 1", "x = 2", "x = 3", "x = 4"],
+      "correct_answer": "x = 4"
+    },
+    {
+      "id": 276,
+      "question": "Which equation is equivalent to 3(x + 4) = 18?",
+      "answers": ["3x + 12 = 18", "x + 4 = 6", "x = 2", "x - 4 = 3"],
+      "correct_answer": "3x + 12 = 18"
+    },
+    {
+      "id": 277,
+      "question": "Solve for x: 8(x - 3) = 32",
+      "answers": ["x = 4", "x = 5", "x = 6", "x = 7"],
+      "correct_answer": "x = 7"
+    },
+    {
+      "id": 278,
+      "question": "Which step comes first when solving 2(x - 4) = 10?",
+      "answers": ["Subtract 4 from both sides", "Distribute the 2", "Divide by 2", "Multiply by 2"],
+      "correct_answer": "Distribute the 2"
+    },
+    {
+      "id": 279,
+      "question": "What is the solution to 4(x - 3) = 16?",
+      "answers": ["x = 4", "x = 5", "x = 6", "x = 7"],
+      "correct_answer": "x = 7"
+    },
+    {
+      "id": 280,
+      "question": "Solve for x: 7(x + 1) = 35",
+      "answers": ["x = 4", "x = 5", "x = 6", "x = 7"],
+      "correct_answer": "x = 4"
+    },
+    {
+      "id": 281,
+      "question": "How many solutions does the equation 3x + 4 = 3x + 4 have?",
+      "answers": ["One solution", "No solution", "Infinitely many solutions", "Exactly two solutions"],
+      "correct_answer": "Infinitely many solutions"
+    },
+    {
+      "id": 282,
+      "question": "Which equation has no solution?",
+      "answers": ["x + 2 = x + 2", "3x - 5 = 3x + 1", "2x - 4 = 2x - 4", "x - 3 = x - 3"],
+      "correct_answer": "3x - 5 = 3x + 1"
+    },
+    {
+      "id": 283,
+      "question": "Which equation has exactly one solution?",
+      "answers": ["2x + 5 = 9", "x + 3 = x + 3", "4x - 2 = 4x - 2", "5x + 1 = 5x + 1"],
+      "correct_answer": "2x + 5 = 9"
+    },
+    {
+      "id": 284,
+      "question": "If an equation simplifies to 4 = 4, how many solutions does it have?",
+      "answers": ["No solution", "One solution", "Infinitely many solutions", "Exactly two solutions"],
+      "correct_answer": "Infinitely many solutions"
+    },
+    {
+      "id": 285,
+      "question": "Which equation has an infinite number of solutions?",
+      "answers": ["x - 2 = x - 2", "3x + 1 = 3x + 4", "4x - 7 = 4x - 6", "5x - 3 = 5x + 2"],
+      "correct_answer": "x - 2 = x - 2"
+    },
+    {
+      "id": 286,
+      "question": "What is an equation with no solution?",
+      "answers": ["2x - 3 = 2x + 1", "x + 4 = x + 4", "3x - 2 = 3x - 2", "5x + 2 = 5x + 2"],
+      "correct_answer": "2x - 3 = 2x + 1"
+    },
+    {
+      "id": 287,
+      "question": "How many solutions does the equation 2x - 5 = 2x + 7 have?",
+      "answers": ["One solution", "No solution", "Infinitely many solutions", "Exactly two solutions"],
+      "correct_answer": "No solution"
+    },
+    {
+      "id": 288,
+      "question": "An equation simplifies to x = 7. How many solutions does it have?",
+      "answers": ["No solution", "One solution", "Infinitely many solutions", "Exactly two solutions"],
+      "correct_answer": "One solution"
+    },
+    {
+      "id": 289,
+      "question": "If an equation reduces to 0 = 3, what does this mean?",
+      "answers": ["No solution", "One solution", "Infinitely many solutions", "Exactly two solutions"],
+      "correct_answer": "No solution"
+    },
+    {
+      "id": 290,
+      "question": "Which equation has one solution?",
+      "answers": ["2x + 3 = 7", "x + 2 = x + 2", "3x - 1 = 3x - 1", "5x + 4 = 5x + 4"],
+      "correct_answer": "2x + 3 = 7"
+    },
+    {
+      "id": 291,
+      "question": "What is the value of 2^-3?",
+      "answers": ["-8", "8", "1/8", "1/6"],
+      "correct_answer": "1/8"
+    },
+    {
+      "id": 292,
+      "question": "Which expression is equivalent to 5^-2?",
+      "answers": ["1/25", "25", "1/10", "10"],
+      "correct_answer": "1/25"
+    },
+    {
+      "id": 293,
+      "question": "What does a negative exponent indicate?",
+      "answers": ["A negative number", "Reciprocal of the base", "Multiplication", "Square root"],
+      "correct_answer": "Reciprocal of the base"
+    },
+    {
+      "id": 294,
+      "question": "Which is equivalent to 10^-4?",
+      "answers": ["1000", "1/10000", "0.0001", "10"],
+      "correct_answer": "0.0001"
+    },
+    {
+      "id": 295,
+      "question": "What is the result of 4^-2?",
+      "answers": ["16", "1/16", "8", "1/8"],
+      "correct_answer": "1/16"
+    },
+    {
+      "id": 296,
+      "question": "Which of the following is equal to (3^2)^3?",
+      "answers": ["3^5", "3^6", "3^9", "3^12"],
+      "correct_answer": "3^6"
+    },
+    {
+      "id": 297,
+      "question": "What is (10^5) ÷ (10^2)?",
+      "answers": ["10^3", "10^7", "10^10", "10^2"],
+      "correct_answer": "10^3"
+    },
+    {
+      "id": 298,
+      "question": "What is the value of (5^3)/(5^6)?",
+      "answers": ["5^-3", "5^9", "5^2", "5^3"],
+      "correct_answer": "5^-3"
+    },
+    {
+      "id": 299,
+      "question": "What does (x^-2) * (x^4) equal?",
+      "answers": ["x^6", "x^2", "x^-6", "x^8"],
+      "correct_answer": "x^2"
+    },
+    {
+      "id": 300,
+      "question": "Which of the following is the correct scientific notation for 0.00007?",
+      "answers": ["7 × 10^-5", "7 × 10^5", "0.7 × 10^-4", "7 × 10^-6"],
+      "correct_answer": "7 × 10^-5"
+    },
+    {
+      "id": 301,
+      "question": "What is the product of (2 × 10^3) × (4 × 10^2)?",
+      "answers": ["8 × 10^6", "8 × 10^5", "8 × 10^4", "6 × 10^6"],
+      "correct_answer": "8 × 10^5"
+    },
+    {
+      "id": 302,
+      "question": "What is (6 × 10^4) ÷ (2 × 10^2)?",
+      "answers": ["3 × 10^2", "3 × 10^3", "3 × 10^4", "3 × 10^6"],
+      "correct_answer": "3 × 10^2"
+    },
+    {
+      "id": 303,
+      "question": "Which number is written correctly in scientific notation?",
+      "answers": ["0.5 × 10^3", "5 × 10^3", "50 × 10^3", "500 × 10^3"],
+      "correct_answer": "5 × 10^3"
+    },
+    {
+      "id": 304,
+      "question": "What is (7 × 10^-3) × (2 × 10^2)?",
+      "answers": ["14 × 10^-1", "1.4 × 10^0", "1.4 × 10^-1", "14 × 10^1"],
+      "correct_answer": "1.4 × 10^0"
+    },
+    {
+      "id": 305,
+      "question": "If Earth is 1.5 × 10^8 km from the Sun and a spaceship travels 3 × 10^4 km/hour, how long does it take to reach the Sun?",
+      "answers": ["5 × 10^3 hours", "4 × 10^3 hours", "5 × 10^4 hours", "6 × 10^3 hours"],
+      "correct_answer": "5 × 10^3 hours"
+    },
+    {
+      "id": 306,
+      "question": "What is the sum of (2 × 10^4) + (3 × 10^3)?",
+      "answers": ["2.3 × 10^4", "2.3 × 10^3", "23 × 10^3", "2.3 × 10^5"],
+      "correct_answer": "2.3 × 10^4"
+    },
+    {
+      "id": 307,
+      "question": "Which of the following expressions is equivalent to (4 × 10^5) ÷ (2 × 10^2)?",
+      "answers": ["2 × 10^3", "2 × 10^2", "2 × 10^4", "8 × 10^3"],
+      "correct_answer": "2 × 10^3"
+    },
+    {
+      "id": 308,
+      "question": "Convert 5,600,000 into scientific notation.",
+      "answers": ["5.6 × 10^6", "56 × 10^5", "0.56 × 10^7", "5.6 × 10^5"],
+      "correct_answer": "5.6 × 10^6"
+    },
+    {
+      "id": 309,
+      "question": "What is the result of (6 × 10^3) × (2 × 10^-2)?",
+      "answers": ["1.2 × 10^2", "1.2 × 10^3", "1.2 × 10^5", "1.2 × 10^1"],
+      "correct_answer": "1.2 × 10^2"
+    },
+    {
+      "id": 310,
+      "question": "What is the value of (3 × 10^-4) ÷ (1.5 × 10^-2)?",
+      "answers": ["2 × 10^-2", "2 × 10^2", "2 × 10^-1", "2 × 10^3"],
+      "correct_answer": "2 × 10^-2"
+    },
+    {
+      "id": 311,
+      "question": "What is the standard form of 4.2 × 10^7?",
+      "answers": ["420,000", "4,200,000", "42,000,000", "420,000,000"],
+      "correct_answer": "42,000,000"
+    },
+    {
+      "id": 312,
+      "question": "Which number is equivalent to 6.5 × 10^-3?",
+      "answers": ["6500", "0.0065", "0.065", "0.00065"],
+      "correct_answer": "0.0065"
+    },
+    {
+      "id": 313,
+      "question": "What is (5 × 10^8) ÷ (2.5 × 10^2)?",
+      "answers": ["2 × 10^5", "2 × 10^6", "2 × 10^4", "20 × 10^5"],
+      "correct_answer": "2 × 10^5"
+    },
+    {
+      "id": 314,
+      "question": "Which expression simplifies to 3 × 10^6?",
+      "answers": ["(6 × 10^7) ÷ (2 × 10^1)", "(6 × 10^5) × (2 × 10^1)", "(9 × 10^7) ÷ (3 × 10^1)", "(3 × 10^5) × (10)"],
+      "correct_answer": "(6 × 10^7) ÷ (2 × 10^1)"
+    },
+    {
+      "id": 315,
+      "question": "What is the result of (7 × 10^-3) × (4 × 10^5)?",
+      "answers": ["2.8 × 10^3", "2.8 × 10^4", "2.8 × 10^2", "28 × 10^3"],
+      "correct_answer": "2.8 × 10^3"
+    },
+    {
+      "id": 316,
+      "question": "Which of the following numbers is closest to 5.1 × 10^-2?",
+      "answers": ["0.51", "0.051", "5.1", "0.0051"],
+      "correct_answer": "0.051"
+    },
+    {
+      "id": 317,
+      "question": "What is the best way to express 0.00023 in scientific notation?",
+      "answers": ["2.3 × 10^-4", "23 × 10^-3", "0.23 × 10^-3", "2.3 × 10^4"],
+      "correct_answer": "2.3 × 10^-4"
+    },
+    {
+      "id": 318,
+      "question": "What is (4 × 10^-5) ÷ (2 × 10^-2)?",
+      "answers": ["2 × 10^-3", "2 × 10^-2", "2 × 10^3", "2 × 10^2"],
+      "correct_answer": "2 × 10^-3"
+    },
+    {
+      "id": 319,
+      "question": "If a bacterium doubles every hour and starts at 1.5 × 10^2, how many bacteria will there be in 3 hours?",
+      "answers": ["1.2 × 10^3", "1.2 × 10^4", "1.2 × 10^2", "6 × 10^2"],
+      "correct_answer": "1.2 × 10^3"
+    },
+    {
+      "id": 320,
+      "question": "What is the value of (8 × 10^5) × (2 × 10^-4)?",
+      "answers": ["1.6 × 10^2", "1.6 × 10^3", "1.6 × 10^4", "1.6 × 10^1"],
+      "correct_answer": "1.6 × 10^2"
+    },
+    {
+      "id": 321,
+      "question": "If the mass of the Earth is 5.97 × 10^24 kg and the mass of the Moon is 7.35 × 10^22 kg, what is their mass ratio?",
+      "answers": ["8.1 × 10^1", "8.1 × 10^2", "8.1 × 10^3", "8.1 × 10^4"],
+      "correct_answer": "8.1 × 10^1"
+    },
+    {
+      "id": 322,
+      "question": "Which equation correctly expresses (9 × 10^3) × (3 × 10^4)?",
+      "answers": ["27 × 10^7", "2.7 × 10^7", "2.7 × 10^6", "27 × 10^6"],
+      "correct_answer": "2.7 × 10^7"
+    },
+    {
+      "id": 323,
+      "question": "If a grain of sand has a mass of 3 × 10^-4 g, what is the mass of 1000 grains of sand?",
+      "answers": ["3 × 10^-1", "3 × 10^1", "3 × 10^0", "3 × 10^-3"],
+      "correct_answer": "3 × 10^0"
+    },
+    {
+      "id": 324,
+      "question": "The distance from Earth to the nearest star is approximately 4 × 10^16 meters. If a spaceship could travel 2 × 10^8 meters per second, how long would it take to reach the star?",
+      "answers": ["2 × 10^8 seconds", "2 × 10^10 seconds", "2 × 10^14 seconds", "2 × 10^6 seconds"],
+      "correct_answer": "2 × 10^8 seconds"
+    },
+    {
+      "id": 325,
+      "question": "A computer processor runs at 3 × 10^9 cycles per second. How many cycles does it perform in a day?",
+      "answers": ["2.6 × 10^14", "2.6 × 10^15", "2.6 × 10^16", "2.6 × 10^17"],
+      "correct_answer": "2.6 × 10^15"
+    },
+    {
+      "id": 326,
+      "question": "What is the result of (10^3) * (10^2)?",
+      "answers": ["10^5", "10^6", "10^2", "10^4"],
+      "correct_answer": "10^5"
+    },
+    {
+      "id": 327,
+      "question": "Which of the following is equivalent to 10^-3?",
+      "answers": ["1/1000", "1/100", "1000", "0.3"],
+      "correct_answer": "1/1000"
+    },
+    {
+      "id": 328,
+      "question": "Which exponent rule is used in the expression (10^4) / (10^2)?",
+      "answers": ["Product rule", "Power rule", "Quotient rule", "Zero exponent rule"],
+      "correct_answer": "Quotient rule"
+    },
+    {
+      "id": 329,
+      "question": "What is 5.6 × 10^4 in standard notation?",
+      "answers": ["560", "56,000", "5,600", "560,000"],
+      "correct_answer": "56,000"
+    },
+    {
+      "id": 330,
+      "question": "What is 7.2 × 10^-3 in standard notation?",
+      "answers": ["0.072", "0.0072", "72", "7200"],
+      "correct_answer": "0.0072"
+    },
+    {
+      "id": 331,
+      "question": "Which of the following numbers is written in correct scientific notation?",
+      "answers": ["45 × 10^3", "3.2 × 10^5", "0.45 × 10^2", "12 × 10^1"],
+      "correct_answer": "3.2 × 10^5"
+    },
+    {
+      "id": 332,
+      "question": "Which of the following is equivalent to 4 × 10^6?",
+      "answers": ["40,000", "400,000", "4,000,000", "40,000,000"],
+      "correct_answer": "4,000,000"
+    },
+    {
+      "id": 333,
+      "question": "What is (3 × 10^5) × (2 × 10^3) in scientific notation?",
+      "answers": ["6 × 10^8", "5 × 10^15", "9 × 10^5", "6 × 10^6"],
+      "correct_answer": "6 × 10^8"
+    },
+    {
+      "id": 334,
+      "question": "What is (8 × 10^4) ÷ (2 × 10^2) in scientific notation?",
+      "answers": ["4 × 10^3", "4 × 10^2", "16 × 10^2", "8 × 10^3"],
+      "correct_answer": "4 × 10^2"
+    },
+    {
+      "id": 335,
+      "question": "What is the sum of (5 × 10^3) and (3 × 10^3) in scientific notation?",
+      "answers": ["8 × 10^3", "15 × 10^3", "5.3 × 10^3", "8 × 10^6"],
+      "correct_answer": "8 × 10^3"
+    },
+    {
+      "id": 336,
+      "question": "Which of the following is equal to 9.1 × 10^4 + 2.3 × 10^4?",
+      "answers": ["11.4 × 10^4", "1.14 × 10^5", "9.3 × 10^4", "2.1 × 10^5"],
+      "correct_answer": "1.14 × 10^5"
+    },
+    {
+      "id": 337,
+      "question": "What is the difference of (7.5 × 10^6) - (2.1 × 10^6) in scientific notation?",
+      "answers": ["5.4 × 10^6", "9.6 × 10^6", "6.2 × 10^5", "1.05 × 10^7"],
+      "correct_answer": "5.4 × 10^6"
+    },
+    {
+      "id": 338,
+      "question": "Which of the following correctly expresses 6.3 × 10^3 multiplied by 2 × 10^2 in scientific notation?",
+      "answers": ["1.26 × 10^6", "1.26 × 10^5", "8.3 × 10^4", "3.1 × 10^3"],
+      "correct_answer": "1.26 × 10^6"
+    },
+    {
+      "id": 339,
+      "question": "A planet is 4.5 × 10^7 km from its star. Another planet is 2.1 × 10^8 km away. How much farther is the second planet?",
+      "answers": ["1.65 × 10^8 km", "2.55 × 10^8 km", "1.2 × 10^7 km", "2.0 × 10^8 km"],
+      "correct_answer": "1.65 × 10^8 km"
+    },
+    {
+      "id": 340,
+      "question": "Which of the following is an example of a real-world use of scientific notation?",
+      "answers": ["Counting apples", "Expressing the distance between stars", "Calculating simple interest", "Adding small numbers"],
+      "correct_answer": "Expressing the distance between stars"
+    },
+    {
+      "id": 341,
+      "question": "If the mass of Earth is approximately 5.97 × 10^24 kg, how would you write this number in standard form?",
+      "answers": ["597,000", "5,970,000,000,000,000", "5,970,000,000,000,000,000,000,000", "5.97 × 10^12"],
+      "correct_answer": "5,970,000,000,000,000,000,000,000"
+    },
+    {
+      "id": 342,
+      "question": "A certain virus is 2.5 × 10^-8 meters in diameter. How would you write this in standard notation?",
+      "answers": ["0.0000000025", "0.000000025", "0.00000025", "0.000000002"],
+      "correct_answer": "0.000000025"
+    },
+    {
+      "id": 343,
+      "question": "A light-year is about 9.46 × 10^12 km. How would this be written in standard form?",
+      "answers": ["946,000", "9,460,000,000,000", "946,000,000,000,000", "94.6 × 10^10"],
+      "correct_answer": "9,460,000,000,000"
+    },
+    {
+      "id": 344,
+      "question": "A laboratory sample has a concentration of 4.2 × 10^-6 g/mL. What is this in standard notation?",
+      "answers": ["0.00042", "0.0000042", "0.00000042", "0.000000042"],
+      "correct_answer": "0.0000042"
+    },
+    {
+      "id": 345,
+      "question": "What is the best way to compare 3.5 × 10^6 and 2.1 × 10^7?",
+      "answers": ["Compare the coefficients", "Compare the exponents first", "Convert both to standard notation", "Divide the numbers"],
+      "correct_answer": "Compare the exponents first"
+    },
+    {
+      "id": 346,
+      "question": "If a star is 6.2 × 10^9 km away and another is 3.8 × 10^10 km away, how much farther is the second?",
+      "answers": ["3.18 × 10^10 km", "3.18 × 10^9 km", "9.8 × 10^8 km", "1.3 × 10^11 km"],
+      "correct_answer": "3.18 × 10^10 km"
+    },
+    {
+      "id": 347,
+      "question": "Which exponent rule applies when multiplying numbers in scientific notation?",
+      "answers": ["Add the exponents", "Subtract the exponents", "Multiply the exponents", "Divide the exponents"],
+      "correct_answer": "Add the exponents"
+    },
+    {
+      "id": 348,
+      "question": "How would you express 7.4 × 10^3 in standard form?",
+      "answers": ["740", "7,400", "74,000", "0.074"],
+      "correct_answer": "7,400"
+    },
+    {
+      "id": 349,
+      "question": "How do you express 0.00056 in scientific notation?",
+      "answers": ["5.6 × 10^-4", "5.6 × 10^-3", "5.6 × 10^4", "5.6 × 10^3"],
+      "correct_answer": "5.6 × 10^-4"
+    },
+    {
+      "id": 350,
+      "question": "What is 2.3 × 10^5 + 4.7 × 10^5 in scientific notation?",
+      "answers": ["7.0 × 10^5", "6.0 × 10^5", "5.0 × 10^5", "4.9 × 10^5"],
+      "correct_answer": "7.0 × 10^5"
+    },
+    {
+      "id": 351,
+      "question": "A car rental company charges a base fee of $25 plus $0.50 per mile driven. If the total cost of renting a car was $50, how many miles were driven?",
+      "answers": ["30 miles", "40 miles", "50 miles", "60 miles"],
+      "correct_answer": "50 miles"
+    },
+    {
+      "id": 352,
+      "question": "Jake has twice as many apples as Sam. Together, they have 18 apples. How many apples does Sam have?",
+      "answers": ["4", "6", "8", "9"],
+      "correct_answer": "6"
+    },
+    {
+      "id": 353,
+      "question": "A train travels 80 miles per hour. How long does it take to travel 240 miles?",
+      "answers": ["2 hours", "3 hours", "4 hours", "5 hours"],
+      "correct_answer": "3 hours"
+    },
+    {
+      "id": 354,
+      "question": "A rectangle has a length that is 3 times its width. If the perimeter is 48 cm, what is the width?",
+      "answers": ["6 cm", "8 cm", "10 cm", "12 cm"],
+      "correct_answer": "6 cm"
+    },
+    {
+      "id": 355,
+      "question": "A store is selling a laptop for $800 after a 20% discount. What was the original price?",
+      "answers": ["$900", "$950", "$1000", "$1050"],
+      "correct_answer": "$1000"
+    },
+    {
+      "id": 356,
+      "question": "A movie theater sells child tickets for $6 and adult tickets for $10. If the total revenue for one showing was $300, and 20 child tickets were sold, how many adult tickets were sold?",
+      "answers": ["10", "15", "20", "25"],
+      "correct_answer": "15"
+    },
+    {
+      "id": 357,
+      "question": "Lena has $20 more than twice the amount of money Sam has. If Lena has $50, how much does Sam have?",
+      "answers": ["$10", "$15", "$20", "$25"],
+      "correct_answer": "$15"
+    },
+    {
+      "id": 358,
+      "question": "A phone plan costs $40 per month plus $0.05 per text message. If the total bill was $50, how many text messages were sent?",
+      "answers": ["100", "150", "200", "250"],
+      "correct_answer": "200"
+    },
+    {
+      "id": 359,
+      "question": "A bus leaves at 9 AM and travels 50 miles per hour. If the destination is 250 miles away, what time will it arrive?",
+      "answers": ["1 PM", "2 PM", "3 PM", "4 PM"],
+      "correct_answer": "2 PM"
+    },
+    {
+      "id": 360,
+      "question": "Emma has $5 more than twice the amount that Jake has. If Emma has $25, how much does Jake have?",
+      "answers": ["$10", "$15", "$20", "$25"],
+      "correct_answer": "$10"
     }
+
   ]
 }
