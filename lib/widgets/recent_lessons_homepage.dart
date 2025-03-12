@@ -1,123 +1,115 @@
-import 'dart:convert';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart' show rootBundle;
+import 'package:fbla_mobile_2425_learning_app/widgets/subtopic_widget.dart';
 import 'package:flutter/material.dart';
-import '../minigames/cypher_game.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart' show rootBundle;
+import 'dart:convert';
 import 'lessons.dart';
-import 'subtopic_widget.dart';
 
 
-class RecentLessonsPage extends StatelessWidget {
+class RecentLessonsPage extends StatefulWidget {
   const RecentLessonsPage({super.key});
 
-  // Method to load JSON from assets
-  Future<Map<String, dynamic>> loadJsonData() async {
+  @override
+  _RecentLessonsPageState createState() => _RecentLessonsPageState();
+}
+
+class _RecentLessonsPageState extends State<RecentLessonsPage> {
+  List<int> completedSubtopics = [];
+
+  Future<void> fetchUserCompletedLessons() async {
+    try {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc('SKFMYGD4oclNQ2focMJN')
+          .get();
+
+      if (userDoc.exists) {
+        setState(() {
+          completedSubtopics = List<int>.from(userDoc['subtopicsCompleted']);
+        });
+      }
+    } catch (e) {
+      print("Error fetching user data: $e");
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> loadCompletedLessons() async {
     String jsonString = await rootBundle.loadString('assets/content.json');
-    return json.decode(jsonString);
+    Map<String, dynamic> data = json.decode(jsonString);
+    List<Map<String, dynamic>> lessons = [];
+
+    for (var subject in data['subjects']) {
+      for (var grade in subject['grades']) {
+        for (var unit in grade['units']) {
+          for (var subtopic in unit['subtopics']) {
+            int subtopicId = subtopic['subtopic_id'];
+            if (completedSubtopics.contains(subtopicId)) {
+              lessons.add({
+                'subject': subject['name'],
+                'grade': grade['grade'],
+                'unit': unit['unit'],
+                'subtopic': subtopic['subtopic'],
+                'subtopicId': subtopicId, // Pass subtopicId
+                'readingTitle': subtopic['reading']['title'],
+                'readingContent': subtopic['reading']['content']
+              });
+            }
+          }
+        }
+      }
+    }
+    return lessons;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchUserCompletedLessons();
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<String, dynamic>>(
-      future: loadJsonData(),
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: loadCompletedLessons(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No recently completed lessons.'));
         }
 
-        if (!snapshot.hasData) {
-          return const Center(child: Text('No data found.'));
-        }
+        final lessons = snapshot.data!;
 
-        final data = snapshot.data!;
+        return ListView.builder(
+          itemCount: lessons.length,
+          itemBuilder: (context, index) {
+            final lesson = lessons[index];
 
-        // Predefined list of lessons (with static content)
-        final List<Lesson> lessons = [
-          Lesson(subject: 'Math', grade: 'Grade 5', unit: 'Algebra', subtopic: 'One-variable Equations'),
-          Lesson(subject: 'Science', grade: 'Grade 6', unit: 'Physics', subtopic: 'Motion'),
-          Lesson(subject: 'English', grade: 'Grade 7', unit: 'Literature', subtopic: 'Shakespeare'),
-          Lesson(subject: 'History', grade: 'Grade 8', unit: 'Ancient Civilizations', subtopic: 'Rome'),
-        ];
-
-        return Scaffold(
-          body: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ListView.builder(
-              itemCount: lessons.length,
-              itemBuilder: (context, index) {
-                final lesson = lessons[index];
-
-                // Fetch content from the JSON dynamically when tapped
-                return LessonCard(
-                  lesson: lesson,
-                  onTap: () async {
-                    if (kDebugMode) {
-                      print("Card tapped");
-                    }
-
-                    // Find the subtopic data based on the lesson
-                    final subject = data['subjects'].firstWhere(
-                          (subject) => subject['name'] == lesson.subject,
-                      orElse: () => null,
-                    );
-                    if (subject == null) {
-                      return;
-                    }
-
-                    final grade = subject['grades'].firstWhere(
-                          (grade) => grade['grade'] == lesson.grade,
-                      orElse: () => null,
-                    );
-                    if (grade == null) {
-                      return;
-                    }
-
-                    final unit = grade['units'].firstWhere(
-                          (unit) => unit['unit'] == lesson.unit,
-                      orElse: () => null,
-                    );
-                    if (unit == null) {
-                      return;
-                    }
-
-                    final subtopic = unit['subtopics'].firstWhere(
-                          (sub) => sub['subtopic'] == lesson.subtopic,
-                      orElse: () => null,
-                    );
-
-                    // Set content fallback if no content found
-                    final readingTitle = subtopic?['reading']?['title'] ?? 'No title available';
-                    final readingContent = subtopic?['reading']?['content'] ?? 'No content available';
-
-                    // Navigate to the SubtopicPage with the lesson content
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => SubtopicPage(
-                          subtopic: lesson.subtopic,
-                          readingTitle: readingTitle,
-                          readingContent: readingContent,
-                          onGameStart: () {
-                            // When game starts, navigate to the cipher game
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => CypherUI(),
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  },
+            return LessonCard(
+              lesson: Lesson(
+                subject: lesson['subject'],
+                grade: lesson['grade'],
+                unit: lesson['unit'],
+                subtopic: lesson['subtopic'],
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => SubtopicPage(
+                      subtopic: lesson['subtopic'],
+                      subtopicId: lesson['subtopicId'], // Pass subtopicId
+                      readingTitle: lesson['readingTitle'],
+                      readingContent: lesson['readingContent'],
+                      onGameStart: () {},
+                    ),
+                  ),
                 );
               },
-            ),
-          ),
+            );
+          },
         );
       },
     );
