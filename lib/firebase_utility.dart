@@ -42,6 +42,23 @@ Future<String?> gainXP(int xpGained) async {
   }
 }
 
+Future<int?> getStreak() async {
+  try {
+    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userInfo.userId)
+        .get();
+
+    if (docSnapshot.exists){
+      return docSnapshot.get('streakDays');
+    } else{
+      return null;
+    }
+  } catch(e){
+    return null;
+  }
+} // can change later to have firestore store specific days instead of just days of streaks
+
 
 // need to add custom exceptions later based on how we decide to structure firestore
 

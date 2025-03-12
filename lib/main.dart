@@ -15,6 +15,37 @@ void main() async {
   runApp(const MyApp());
 }
 
+Map<String, Map> allLessons = {
+  "math":{
+    "grade 1": 85,
+    "grade 2": 75,
+    "grade 3": 90,
+    "grade 4": 95,
+    "grade 5": 80
+  },
+  "english":{
+    "grade 1": 67,
+    "grade 2": 56,
+    "grade 3": 90,
+    "grade 4": 76,
+    "grade 5": 75
+  },
+  "science":{
+    "grade 1": 68,
+    "grade 2": 98,
+    "grade 3": 56,
+    "grade 4": 96,
+    "grade 5": 85
+  },
+  "history":{
+    "grade 1": 80,
+    "grade 2": 70,
+    "grade 3": 82,
+    "grade 4": 98,
+    "grade 5": 87
+  }
+};
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

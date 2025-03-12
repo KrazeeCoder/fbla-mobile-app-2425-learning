@@ -20,6 +20,9 @@ class UserInfo {
 UserInfo userInfo = new UserInfo();
 
 
+
+
+
 Future<String?> registerUser(String email, String password, String firstName, String lastName) async {
   try {
     // Create a user with email and password
