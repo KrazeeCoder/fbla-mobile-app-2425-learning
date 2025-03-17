@@ -1,12 +1,12 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'pages/home.dart';
 import 'pages/progress.dart';
 import 'pages/learn.dart';
 import 'pages/settings.dart';
 import 'firebase_options.dart';
-
+import 'pages/signin_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,28 +17,28 @@ void main() async {
 }
 
 Map<String, Map> allLessons = {
-  "math":{
+  "math": {
     "grade 1": 85,
     "grade 2": 75,
     "grade 3": 90,
     "grade 4": 95,
     "grade 5": 80
   },
-  "english":{
+  "english": {
     "grade 1": 67,
     "grade 2": 56,
     "grade 3": 90,
     "grade 4": 76,
     "grade 5": 75
   },
-  "science":{
+  "science": {
     "grade 1": 68,
     "grade 2": 98,
     "grade 3": 56,
     "grade 4": 96,
     "grade 5": 85
   },
-  "history":{
+  "history": {
     "grade 1": 80,
     "grade 2": 70,
     "grade 3": 82,
@@ -58,11 +58,32 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: false,
       ),
-      home: const MainPage(),
+      home: AuthWrapper(), // ✅ Check if user is logged in
     );
   }
 }
 
+// ✅ Decides whether to show Login Screen or Home Page
+class AuthWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+              body: Center(child: CircularProgressIndicator())); // Show loading
+        } else if (snapshot.hasData) {
+          return const MainPage(); // ✅ If user is logged in → Show Home Page
+        } else {
+          return SignInScreen(); // ❌ If not logged in → Show Login Screen
+        }
+      },
+    );
+  }
+}
+
+// ✅ Main Page (Home Page with Bottom Navigation)
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
 
@@ -116,6 +137,4 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
-
 }
-
