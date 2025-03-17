@@ -15,7 +15,7 @@ class AuthService {
     try {
       // Create user with Firebase Auth
       UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -23,35 +23,26 @@ class AuthService {
       User? user = userCredential.user;
       if (user == null) return "Invalid registration information";
 
-      // Save user data in Firestore
+      // Save user data & settings in Firestore
       await _firestore.collection('users').doc(user.uid).set({
         'email': email,
         'firstName': firstName,
         'lastName': lastName,
         'currentLevel': 0,
         'currentXP': 0,
-      });
+        'fontSize': 14,
+        'profilePic': "",
+        'stayOnTrack': false,
+      }, SetOptions(merge: true)); // ✅ Prevents overwriting existing data
 
       // Create subtopicsCompleted in a separate collection
       await _firestore.collection('user_subtopics').doc(user.uid).set({
         'subtopicsCompleted': [],
       });
 
-      // Add default settings in a subcollection
-      await _firestore
-          .collection('users')
-          .doc(user.uid)
-          .collection('settings')
-          .doc(user.uid)
-          .set({
-        'fontSize': 14,
-        'profilePic': 'default_pfp_202538.jpg',
-        'stayOnTrack': false,
-      });
-
       return "Success";
     } catch (e) {
-      print("Error registering user: $e");
+      print("❌ Error registering user: $e");
       return e.toString();
     }
   }
@@ -64,12 +55,9 @@ class AuthService {
         password: password,
       );
 
-      User? user = userCredential.user;
-      if (user == null) return null;
-
-      return user;
+      return userCredential.user;
     } catch (e) {
-      print("Login Error: $e");
+      print("❌ Login Error: $e");
       return null;
     }
   }
@@ -85,7 +73,7 @@ class AuthService {
 
       return result.docs.isNotEmpty;
     } catch (e) {
-      print("Error checking user existence: $e");
+      print("❌ Error checking user existence: $e");
       return false;
     }
   }
@@ -99,34 +87,26 @@ class AuthService {
     required String? profilePic,
   }) async {
     try {
+      // Save LinkedIn user data & settings in Firestore
       await _firestore.collection('users').doc(userId).set({
         'email': email,
         'firstName': firstName,
         'lastName': lastName,
         'currentLevel': 0,
         'currentXP': 0,
-      });
+        'fontSize': 14,
+        'profilePic': profilePic ?? "",
+        'stayOnTrack': false,
+      }, SetOptions(merge: true)); // ✅ Ensures existing data is not overwritten
 
       // Create `user_subtopics` collection
       await _firestore.collection('user_subtopics').doc(userId).set({
         'subtopicsCompleted': [],
       });
 
-      // Add default settings in a subcollection
-      await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('settings')
-          .doc('preferences')
-          .set({
-        'fontSize': 14,
-        'profilePic': profilePic ?? "",
-        'stayOnTrack': false,
-      });
-
       print("✅ New LinkedIn user added to Firestore!");
     } catch (e) {
-      print("Error registering LinkedIn user: $e");
+      print("❌ Error registering LinkedIn user: $e");
     }
   }
 }
