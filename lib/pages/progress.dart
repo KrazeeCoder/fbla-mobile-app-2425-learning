@@ -24,8 +24,12 @@ class _ProgressPageState extends State<ProgressPage> {
 
   Future<void> processDataFromFirebase() async {
     try {
-      List<String>? lessonData = await getCompletedSubtopics();
-      int? streakData = await getStreak();
+      FirestoreService _firestoreService =
+      FirestoreService(); // Create instance
+
+      List<String>? lessonData =
+      await _firestoreService.getCompletedSubtopics();
+      int? streakData = await _firestoreService.getStreak();
 
       List<Map<String, dynamic>> tempLesson = [
         {"ID": 1, "subject": "math", "grade": "2"},
@@ -39,11 +43,11 @@ class _ProgressPageState extends State<ProgressPage> {
         {"ID": 1, "subject": "english", "grade": "2"},
         {"ID": 1, "subject": "science", "grade": "2"},
       ];
-      int tempStreak = 5;
+
       int tempLevel = 37;
 
       Map<String, dynamic> tempData = {
-        "streak": tempStreak,
+        "streak": streakData ?? 0, // Use real streak data
         "lessons": processLessonData(tempLesson),
         "level": tempLevel
       };
@@ -63,7 +67,10 @@ class _ProgressPageState extends State<ProgressPage> {
   Map<String, List<Map<String, dynamic>>> processLessonData(
       List<Map<String, dynamic>> subtopicsCompleted) {
     Map<String, List<Map<String, dynamic>>> recentLessons = {
-      "math": [], "english": [], "science": [], "history": []
+      "math": [],
+      "english": [],
+      "science": [],
+      "history": []
     };
 
     for (var subtopic in subtopicsCompleted) {
@@ -116,32 +123,44 @@ class _ProgressPageState extends State<ProgressPage> {
               ),
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Evenly space the buttons
+              mainAxisAlignment: MainAxisAlignment
+                  .spaceEvenly, // Evenly space the buttons
               children: [
                 // First Button
                 Container(
-                  padding: EdgeInsets.all(16), // Add padding around the button
+                  padding: EdgeInsets.all(
+                      16), // Add padding around the button
                   child: ElevatedButton(
                     onPressed: () => {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF358A2B), // Light green background
-                      shadowColor: Colors.lightGreenAccent, // Glow effect color
-                      elevation: 10, // Add a slight glow with elevation
+                      backgroundColor:
+                      Color(0xFF358A2B), // Light green background
+                      shadowColor: Colors
+                          .lightGreenAccent, // Glow effect color
+                      elevation:
+                      10, // Add a slight glow with elevation
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12), // Slightly rounded corners
+                        borderRadius: BorderRadius.circular(
+                            12), // Slightly rounded corners
                       ),
-                      fixedSize: Size(150, 150), // Make the button square
+                      fixedSize:
+                      Size(150, 150), // Make the button square
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Center content vertically
                       children: [
                         Text(
                           _data!["level"].toString(),
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 50),
                         ),
                         Text(
                           "levels achieved",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
                         ),
                       ],
                     ),
@@ -150,28 +169,39 @@ class _ProgressPageState extends State<ProgressPage> {
 
                 // Second Button
                 Container(
-                  padding: EdgeInsets.all(16), // Add padding around the button
+                  padding: EdgeInsets.all(
+                      16), // Add padding around the button
                   child: ElevatedButton(
                     onPressed: () => {},
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF358A2B), // Light green background
-                      shadowColor: Colors.lightGreenAccent, // Glow effect color
-                      elevation: 10, // Add a slight glow with elevation
+                      backgroundColor:
+                      Color(0xFF358A2B), // Light green background
+                      shadowColor: Colors
+                          .lightGreenAccent, // Glow effect color
+                      elevation:
+                      10, // Add a slight glow with elevation
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12), // Slightly rounded corners
+                        borderRadius: BorderRadius.circular(
+                            12), // Slightly rounded corners
                       ),
-                      fixedSize: Size(150, 150), // Make the button square
+                      fixedSize:
+                      Size(150, 150), // Make the button square
                     ),
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center, // Center content vertically
+                      mainAxisAlignment: MainAxisAlignment
+                          .center, // Center content vertically
                       children: [
                         Text(
                           _data!["lessons"].length.toString(),
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 50),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 50),
                         ),
                         Text(
                           "subtopics completed",
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20),
                         ),
                       ],
                     ),

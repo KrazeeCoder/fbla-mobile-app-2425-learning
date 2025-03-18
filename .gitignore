@@ -43,4 +43,6 @@ app.*.map.json
 /android/app/release
 
 # FVM Version Cache
-.fvm/
+.fvm/linkedin-auth-backend/functions/node_modules/
+linkedin-auth-backend/node_modules/
+linkedin-auth-backend/functions/node_modules/

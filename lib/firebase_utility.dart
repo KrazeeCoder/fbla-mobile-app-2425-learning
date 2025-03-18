@@ -1,67 +1,76 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'auth_utility.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-Future<List<String>?> getCompletedSubtopics() async {
-  try {
-    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userInfo.userId)
-        .get();
+class FirestoreService {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-    if (docSnapshot.exists){
-      return docSnapshot.get('subtopicsCompleted');
-    } else{
+  /// **Gets the current user ID securely**
+  String? get _userId => _auth.currentUser?.uid;
+
+  /// **Fetch completed subtopics from `user_subtopics` collection**
+  Future<List<String>?> getCompletedSubtopics() async {
+    if (_userId == null) return null;
+
+    try {
+      DocumentSnapshot docSnapshot =
+      await _firestore.collection('user_subtopics').doc(_userId).get();
+
+      if (docSnapshot.exists) {
+        return List<String>.from(docSnapshot.get('subtopicsCompleted'));
+      }
+      return [];
+    } catch (e) {
+      print("Error fetching completed subtopics: $e");
       return null;
     }
-  } catch(e){
-    return null;
   }
-}
 
-Future<String?> completeSubtopic(String subtopicId) async {
-  try {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    await FirebaseFirestore.instance.collection('users').doc(userInfo.userId).update({
-      'subtopicsCompleted': FieldValue.arrayUnion([subtopicId]),
-    });
+  /// **Marks a subtopic as completed in `user_subtopics` collection**
+  Future<String?> completeSubtopic(String subtopicId) async {
+    if (_userId == null) return "User not logged in";
 
-  } catch(e){
-    return e.toString();
+    try {
+      await _firestore.collection('user_subtopics').doc(_userId).update({
+        'subtopicsCompleted': FieldValue.arrayUnion([subtopicId]),
+      });
+      return "Success";
+    } catch (e) {
+      print("Error completing subtopic: $e");
+      return e.toString();
+    }
   }
-}
 
-Future<String?> gainXP(int xpGained) async {
-  try {
-    CollectionReference users = FirebaseFirestore.instance.collection('users');
-    await FirebaseFirestore.instance.collection('users').doc(userInfo.userId).update({
-      'currentXP': FieldValue.increment(xpGained),
-    });
+  /// **Increases XP in `users` collection**
+  Future<String?> gainXP(int xpGained) async {
+    if (_userId == null) return "User not logged in";
 
-  } catch(e){
-    return e.toString();
+    try {
+      await _firestore.collection('users').doc(_userId).update({
+        'currentXP': FieldValue.increment(xpGained),
+      });
+      return "XP updated successfully";
+    } catch (e) {
+      print("Error updating XP: $e");
+      return e.toString();
+    }
   }
-}
 
-Future<int?> getStreak() async {
-  try {
-    DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-        .collection('users')
-        .doc(userInfo.userId)
-        .get();
+  /// **Retrieves the user's current streak days**
+  Future<int?> getStreak() async {
+    if (_userId == null) return null;
 
-    if (docSnapshot.exists){
-      return docSnapshot.get('streakDays');
-    } else{
+    try {
+      DocumentSnapshot docSnapshot =
+      await _firestore.collection('users').doc(_userId).get();
+
+      if (docSnapshot.exists) {
+        return docSnapshot.get('streakDays') ?? 0;
+      }
+      return 0;
+    } catch (e) {
+      print("Error fetching streak: $e");
       return null;
     }
-  } catch(e){
-    return null;
   }
-} // can change later to have firestore store specific days instead of just days of streaks
-
-
-// need to add custom exceptions later based on how we decide to structure firestore
-
-
-
-
+}
