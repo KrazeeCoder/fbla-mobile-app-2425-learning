@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-const apiKey = "AIzaSyB6cpbKGMdZeY8p28TRRPzzkFRUzMjG_SQ";
+const apiKey = "[insert api key]";
 
 final model = GenerativeModel(
   model: 'gemini-1.5-flash-latest',
