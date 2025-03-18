@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-const apiKey = "[insert api key]";
+const apiKey = "AIzaSyB6cpbKGMdZeY8p28TRRPzzkFRUzMjG_SQ";
 
-final model = GenerativeModel(
+final contentHelpModel = GenerativeModel(
   model: 'gemini-1.5-flash-latest',
   apiKey: apiKey,
 );
@@ -17,19 +20,50 @@ final safetySettings = [
 ];
 
 
-Future<String?> generateSentenceSuggestion(int phraseLength, BuildContext context) async {
+Future<String?> generateResponseForTextContentQuestion(String text, String topicId, ChatSession currentChat, BuildContext context) async {
+  String subtopicContent = await loadTopicContent(topicId);
+
   try{
-    print(apiKey);
     String prompt =
     '''
-        NOT BEING USED YET
-        ''';
-    final content = [Content.text(prompt)];
-    final response = await model.generateContent(content, safetySettings: safetySettings);
+    Answer this question: $text. Here is the content for the lesson that the user is asking about $subtopicContent. Keep your response such that the relevant grade level for the topic will understand.
+    Keep responses under 2 paragraphs (or more concise response if applicable) and do not repeat the content that I gave you.
+    ''';
+    final content = Content.text(prompt);
+    final response = await currentChat.sendMessage(content);
 
-    return response.text;
+    return response.text?.trim();
   } catch(e){
     print("ai not working: $e");
   }
   return null;
+}
+
+
+Future<String> loadTopicContent(String topicId) async {
+  Map<String, dynamic> data = await loadJsonData();
+
+  for (Map subject in data["subjects"]){
+    for (Map grade in subject["grades"]){
+      for (Map unit in grade["units"]){
+        for (Map subtopic in unit["subtopics"]){
+          if (topicId == subtopic["subtopic_id"].toString()){
+            return subtopic["reading"]["content"];
+          }
+        }
+      }
+    }
+  }
+
+  return " ";
+}
+
+Future<Map<String, dynamic>> loadJsonData() async {
+  // Load the JSON file as a string
+  String jsonString = await rootBundle.loadString('assets/content.json');
+
+  // Decode the JSON string into a Map
+  Map<String, dynamic> jsonData = jsonDecode(jsonString);
+
+  return jsonData;
 }

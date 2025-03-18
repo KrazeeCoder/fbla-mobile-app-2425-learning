@@ -1,87 +1,95 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../minigames/puzzle_game.dart';
-import '../pages/chatbot_screen.dart';
+import 'package:dash_chat_2/dash_chat_2.dart';
+import 'package:google_generative_ai/google_generative_ai.dart';
 
-class SubtopicPage extends StatelessWidget {
-  final String subtopic;
-  final int subtopicId;
-  final String readingTitle;
-  final String readingContent;
-  final Function onGameStart;
+import '../ai_utility.dart';
 
-  const SubtopicPage({
-    required this.subtopic,
-    required this.subtopicId,
-    required this.readingTitle,
-    required this.readingContent,
-    required this.onGameStart,
-    Key? key,
-  }) : super(key: key);
+class ChatbotScreen extends StatefulWidget {
+  final String topicId;
+  const ChatbotScreen({required this.topicId});
+
+  @override
+  State<ChatbotScreen> createState() => _ChatbotScreenState();
+}
+
+class _ChatbotScreenState extends State<ChatbotScreen> {
+  ChatUser user = ChatUser(
+    id: '2',
+    firstName: FirebaseAuth.instance.currentUser?.displayName ?? 'User',
+  );
+
+  ChatUser aiUser = ChatUser(
+    id: '1',
+    firstName: "EarthPal AI",
+    profileImage: 'assets/mushroom.png',
+  );
+
+  final ChatSession _chat = contentHelpModel.startChat(safetySettings: safetySettings);
+
+  List<ChatMessage> messages = <ChatMessage>[];
+
+  @override
+  void initState() {
+    super.initState();
+    messages.insert(
+      0,
+      ChatMessage(
+        text: 'Hello, how can I assist you?',
+        user: aiUser,
+        createdAt: DateTime.now(),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(subtopic),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: Text('Chatbot'),
       ),
-      body: Stack(
-        children: [SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title Styling
-              Text(
-                readingTitle,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
+      body: Column(
+        children: [
+          Expanded(
+            child: DashChat(
+              currentUser: user,
+              onSend: (ChatMessage message) async {
+                setState(() {
+                  messages.insert(0, message);
+                });
 
-              // Splitting the content into formatted text widgets
-              ..._formatText(readingContent),
+                try {
+                  String? aiResponse = await generateResponseForTextContentQuestion(
+                    message.text,
+                    widget.topicId,
+                    _chat,
+                    context,
+                  );
 
-              const SizedBox(height: 20),
-
-              // Button to Start Game
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PuzzleScreen(subtopicId: subtopicId),
-                      ),
-                    );
-                  },
-                  child: const Text("Start Puzzle Game"),
-                ),
-              ),
-            ],
+                  if (aiResponse != null) {
+                    setState(() {
+                      messages.insert(
+                        0,
+                        ChatMessage(
+                          text: aiResponse,
+                          user: aiUser,
+                          createdAt: DateTime.now(),
+                        ),
+                      );
+                    });
+                  }
+                } catch (e) {
+                  print("Error generating AI response: $e");
+                }
+              },
+              messages: messages,
+            ),
           ),
-        ),
-          Positioned(
-            right: 20,
-            bottom: 50,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: CircleBorder(), // Makes the button circular
-                padding: EdgeInsets.all(20), // Adjust padding to control the size
-              ),
-              onPressed: () {Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChatbotScreen(topicId: subtopicId.toString(),)),
-              );},
-              child: Icon(Icons.live_help),
-          ))
-      ]),
+        ],
+      ),
     );
   }
 
-  /// Function to format the structured content using headings, bold text, and bullet points
   List<Widget> _formatText(String content) {
     List<Widget> formattedTextWidgets = [];
     List<String> lines = content.split("\n");
