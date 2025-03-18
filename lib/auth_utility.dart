@@ -11,6 +11,7 @@ class AuthService {
     required String password,
     required String firstName,
     required String lastName,
+    required int age,
   }) async {
     try {
       // Create user with Firebase Auth
@@ -23,17 +24,20 @@ class AuthService {
       User? user = userCredential.user;
       if (user == null) return "Invalid registration information";
 
-      // Save user data & settings in Firestore
-      await _firestore.collection('users').doc(user.uid).set({
-        'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
-        'currentLevel': 0,
-        'currentXP': 0,
+     // 📌 Store user data in Firestore (Settings grouped under 'settings' field)
+    await _firestore.collection('users').doc(user.uid).set({
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'age': age, // ✅ Save age in Firestore
+      'currentLevel': 0,
+      'currentXP': 0,
+      'settings': {  // ✅ Grouping settings inside a single object
         'fontSize': 14,
         'profilePic': "",
         'stayOnTrack': false,
-      }, SetOptions(merge: true)); // ✅ Prevents overwriting existing data
+      }
+    });
 
       // Create subtopicsCompleted in a separate collection
       await _firestore.collection('user_subtopics').doc(user.uid).set({
@@ -87,17 +91,21 @@ class AuthService {
     required String? profilePic,
   }) async {
     try {
-      // Save LinkedIn user data & settings in Firestore
-      await _firestore.collection('users').doc(userId).set({
-        'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
-        'currentLevel': 0,
-        'currentXP': 0,
+      // Save LinkedIn user data with structured settings
+    await _firestore.collection('users').doc(userId).set({
+      'email': email,
+      'firstName': firstName,
+      'lastName': lastName,
+      'age': 0, // ✅ Default age set to 0
+      'currentLevel': 0,
+      'currentXP': 0,
+      'settings': {  // ✅ Properly grouping settings
         'fontSize': 14,
         'profilePic': profilePic ?? "",
         'stayOnTrack': false,
-      }, SetOptions(merge: true)); // ✅ Ensures existing data is not overwritten
+      }
+    }, SetOptions(merge: true)); // ✅ Ensures existing data is not overwritten
+
 
       // Create `user_subtopics` collection
       await _firestore.collection('user_subtopics').doc(userId).set({
