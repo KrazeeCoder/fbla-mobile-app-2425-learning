@@ -159,34 +159,146 @@ class _MazeGameState extends State<MazeGame> {
     }
   }
 
-  /// Shows a random question from the JSON
-  void _showQuestion(int checkpointX, int checkpointY) {
-    final random = Random();
-    Map<String, dynamic> question = quizQuestions[random.nextInt(quizQuestions.length)];
+ /// Shows a formatted question matching the screenshot design
+void _showQuestion(int checkpointX, int checkpointY) {
+  final random = Random();
+  Map<String, dynamic> question = quizQuestions[random.nextInt(quizQuestions.length)];
 
+  setState(() {
+    showQuestion = true;
+    currentQuestion = question;
+    selectedOption = null;
+  });
+}
+
+/// Handles answer selection (with UI update)
+void _answerQuestion(String selected, int checkpointX, int checkpointY) {
+  if (selected == currentQuestion!["correct_answer"]) {
+    // Correct: Mark as answered, hide question
     setState(() {
-      showQuestion = true;
-      currentQuestion = question;
-      selectedOption = null;
+      answeredCheckpoints.add("$checkpointX-$checkpointY");
+      checkpoints[checkpointX][checkpointY] = false;
+      showQuestion = false;
+    });
+  } else {
+    // Incorrect: mark the chosen option as selected (turns red)
+    setState(() {
+      selectedOption = selected;
     });
   }
+}
 
-  /// Handles answer selection
-  void _answerQuestion(String selected, int checkpointX, int checkpointY) {
-    if (selected == currentQuestion!["correct_answer"]) {
-      // Correct: Mark as answered, hide question
-      setState(() {
-        answeredCheckpoints.add("$checkpointX-$checkpointY");
-        checkpoints[checkpointX][checkpointY] = false;
-        showQuestion = false;
-      });
-    } else {
-      // Incorrect: mark the chosen option as selected (turns red)
-      setState(() {
-        selectedOption = selected;
-      });
-    }
-  }
+
+Widget _buildQuestionBox() {
+  if (!showQuestion || currentQuestion == null) return Container();
+
+  return Container(
+    width: MediaQuery.of(context).size.width * 0.85, // ✅ Slightly reduced width
+    margin: const EdgeInsets.all(8), // ✅ Less margin for compact look
+    padding: const EdgeInsets.all(12), // ✅ Reduced padding
+    decoration: BoxDecoration(
+      color: Colors.green[50], // Light green background
+      borderRadius: BorderRadius.circular(12), // ✅ Softer, rounded edges
+      border: Border.all(color: Colors.black, width: 1),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.15),
+          blurRadius: 6,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // Title and Close Button
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              "Question",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close, color: Colors.black),
+              onPressed: () => setState(() => showQuestion = false),
+            ),
+          ],
+        ),
+
+        // Question Text
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Text(
+            currentQuestion!["question"],
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+          ),
+        ),
+
+        // Answer Choices with better spacing
+        ...currentQuestion!["answers"].asMap().entries.map((entry) {
+          int index = entry.key;
+          String option = entry.value;
+          bool isSelected = (option == selectedOption);
+          bool isCorrect = (option == currentQuestion!["correct_answer"]);
+          Color bgColor = isSelected
+              ? (isCorrect ? Colors.green : Colors.red)
+              : Colors.white;
+
+          return Container(
+            margin: const EdgeInsets.symmetric(vertical: 4),
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () => _answerQuestion(option, playerX, playerY),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: bgColor,
+                foregroundColor: Colors.black,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                padding: const EdgeInsets.symmetric(vertical: 10), // ✅ Reduced padding
+                side: const BorderSide(color: Colors.black, width: 1),
+              ),
+              child: Row(
+                children: [
+                  const SizedBox(width: 8), // ✅ Added left padding
+                  _optionLabel(index), // ✅ Properly centered option label
+                  const SizedBox(width: 12), // ✅ Spaced from text
+                  Expanded(
+                    child: Text(option, style: const TextStyle(fontSize: 14)), // ✅ Smaller font for elegance
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ],
+    ),
+  );
+}
+
+
+
+/// Generates option labels (A, B, C, D)
+Widget _optionLabel(int index) {
+  List<String> labels = ["A", "B", "C", "D"];
+  return Container(
+    width: 30, // ✅ Slightly smaller for balance
+    height: 30,
+    alignment: Alignment.center,
+    decoration: BoxDecoration(
+      shape: BoxShape.circle,
+      border: Border.all(color: Colors.black, width: 1.5),
+      color: Colors.white,
+    ),
+    child: Text(
+      labels[index],
+      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+    ),
+  );
+}
+
+
+
 
   /// Navigates to the next lesson (Placeholder)
   void _goToNextLesson() {
@@ -196,152 +308,153 @@ class _MazeGameState extends State<MazeGame> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Maze Quiz Game")),
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(10),
-            child: Text(
-              "🔹 Start from outside and enter the maze!\n"
-                  "🔹 Reach the red goal outside the maze.\n"
-                  "🔹 Answer questions at blue checkpoints 🌍.\n"
-                  "🔹 Use the arrows to move!",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+@override
+@override
+Widget build(BuildContext context) {
+  return Scaffold(
+    appBar: AppBar(title: const Text("Maze Quiz Game")),
+    body: Column(
+      children: [
+        const Padding(
+          padding: EdgeInsets.all(10),
+          child: Text(
+            "🔹 Start from outside and enter the maze!\n"
+                "🔹 Reach the red goal outside the maze.\n"
+                "🔹 Answer questions at blue checkpoints 🌍.\n"
+                "🔹 Use the arrows to move!",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
           ),
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(10),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: mazeSize,
-              ),
-              itemCount: mazeSize * mazeSize,
-              itemBuilder: (context, index) {
-                int x = index ~/ mazeSize;
-                int y = index % mazeSize;
+        ),
 
-                // Decide the color for each cell
-                Color tileColor;
-                if (x == playerX && y == playerY) {
-                  // Player tile
-                  tileColor = Colors.blue;
-                } else if (x == goalX && y == goalY) {
-                  // Goal tile
-                  tileColor = Colors.red;
-                } else if (maze[x][y] == 1) {
-                  // Wall
-                  tileColor = Colors.grey;
-                } else if (answeredCheckpoints.contains("$x-$y")) {
-                  // Already answered checkpoint
-                  tileColor = Colors.green;
-                } else if (checkpoints[x][y]) {
-                  // Unanswered checkpoint
-                  tileColor = Colors.blue.withOpacity(0.7);
-                } else {
-                  // Normal open path
-                  tileColor = Colors.white;
-                }
+        // ✅ Game Grid (Maze)
+       Expanded(
+  child: GridView.builder(
+    padding: const EdgeInsets.all(10),
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: mazeSize,
+    ),
+    itemCount: mazeSize * mazeSize,
+    itemBuilder: (context, index) {
+      int x = index ~/ mazeSize;
+      int y = index % mazeSize;
 
-                return Container(
-                  margin: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: tileColor,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: (checkpoints[x][y] && !answeredCheckpoints.contains("$x-$y"))
-                      ? const Center(child: Icon(Icons.public, color: Colors.white))
-                      : null,
-                );
-              },
-            ),
-          ),
+      // Decide the color for each cell
+      Color tileColor;
+      if (x == playerX && y == playerY) {
+        // Player tile
+        tileColor = Colors.blue;
+      } else if (x == goalX && y == goalY) {
+        // Goal tile
+        tileColor = Colors.red;
+      } else if (maze[x][y] == 1) {
+        // ✅ IMPASSABLE WALL (Now Grey)
+        tileColor = Colors.grey[800]!;
+      } else if (answeredCheckpoints.contains("$x-$y")) {
+        // Already answered checkpoint
+        tileColor = Colors.green.withOpacity(0.5);
+      } else if (checkpoints[x][y]) {
+        // Unanswered checkpoint
+        tileColor = Colors.blue.withOpacity(0.7);
+      } else {
+        // Normal open path
+        tileColor = Colors.white;
+      }
 
-          // If a question is active, show it at the bottom
-          if (showQuestion && currentQuestion != null)
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  top: BorderSide(color: Colors.black, width: 2),
-                ),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    currentQuestion!["question"],
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-                  // Render answer choices
-                  ...currentQuestion!["answers"].map<Widget>((option) {
-                    bool isSelected = (option == selectedOption);
-                    bool isCorrect = (option == currentQuestion!["correct_answer"]);
-                    Color bgColor;
+      return Container(
+        margin: const EdgeInsets.all(2),
+        decoration: BoxDecoration(
+          color: tileColor,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: (checkpoints[x][y] && !answeredCheckpoints.contains("$x-$y"))
+            ? const Center(child: Icon(Icons.public, color: Colors.white))
+            : null,
+      );
+    },
+  ),
+),
 
-                    if (isSelected) {
-                      bgColor = isCorrect ? Colors.green : Colors.red;
-                    } else {
-                      bgColor = Colors.white;
-                    }
 
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 4),
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () => _answerQuestion(option, playerX, playerY),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: bgColor,
-                          // Make text black so it's visible on white/green/red
-                          foregroundColor: Colors.black,
-                        ),
-                        child: Text(option),
-                      ),
-                    );
-                  }).toList(),
-                ],
-              ),
-            )
-          else
-          // Otherwise, show the arrow controls
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_left),
-                    onPressed: () => _movePlayer(0, -1),
-                  ),
-                  Column(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.arrow_upward),
-                        onPressed: () => _movePlayer(-1, 0),
-                      ),
-                      const SizedBox(height: 10),
-                      IconButton(
-                        icon: const Icon(Icons.arrow_downward),
-                        onPressed: () => _movePlayer(1, 0),
-                      ),
-                    ],
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.arrow_right),
-                    onPressed: () => _movePlayer(0, 1),
-                  ),
-                ],
-              ),
-            ),
-        ],
-      ),
-    );
-  }
+        // ✅ Show Question Box instead of Arrows when active
+        if (showQuestion)
+          _buildQuestionBox()
+        else
+          // ✅ Show Arrow Controls when no question is active
+          Padding(
+  padding: const EdgeInsets.only(bottom: 16), // Adjusted padding for better alignment
+  child: Container(
+    width: MediaQuery.of(context).size.width * 0.7, // Smaller outer box
+    padding: const EdgeInsets.all(8), // Reduced padding for compact size
+    decoration: BoxDecoration(
+      color: Colors.green[100], // Light green background
+      borderRadius: BorderRadius.circular(15), // More elegant corners
+      border: Border.all(color: Colors.black, width: 1),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black.withOpacity(0.1),
+          blurRadius: 6,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Text(
+          "Use arrows to move", // Simplified instruction
+          style: TextStyle(color: Colors.grey, fontSize: 14),
+        ),
+        const SizedBox(height: 5),
+
+        // 🔼 Up Arrow (Centered)
+        _arrowButton(Icons.keyboard_arrow_up, () => _movePlayer(-1, 0)),
+
+        // ⬅ Left Arrow + ⬇ Down Arrow + ➡ Right Arrow (Aligned)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _arrowButton(Icons.keyboard_arrow_left, () => _movePlayer(0, -1)),
+            const SizedBox(width: 5), // Space between arrows
+            _arrowButton(Icons.keyboard_arrow_down, () => _movePlayer(1, 0)),
+            const SizedBox(width: 5),
+            _arrowButton(Icons.keyboard_arrow_right, () => _movePlayer(0, 1)),
+          ],
+        ),
+      ],
+    ),
+  ),
+),
+
+      ],
+    ),
+  );
 }
+
+
+
+}
+/// Custom Arrow Button with Consistent Design
+Widget _arrowButton(IconData icon, VoidCallback onPressed) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4), // Uniform spacing
+    child: ElevatedButton(
+      onPressed: onPressed,
+      style: ElevatedButton.styleFrom(
+        shape: const CircleBorder(), // Circle shape for consistency
+        padding: const EdgeInsets.all(12), // Smaller size for compact look
+        backgroundColor: Colors.white, // White button
+        foregroundColor: Colors.black, // Black icon for contrast
+        shadowColor: Colors.grey.withOpacity(0.3), // Soft shadow
+        elevation: 5, // Balanced depth effect
+      ),
+      child: Icon(icon, size: 28), // Consistent arrow size
+    ),
+  );
+}
+
+
+
 
 class NextLessonScreen extends StatelessWidget {
   @override
