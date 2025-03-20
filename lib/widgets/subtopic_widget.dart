@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import '../minigames/puzzle_game.dart';
-<<<<<<< HEAD
-import '../pages/chatbot_screen.dart';
-=======
 import '../minigames/maze_game.dart';
->>>>>>> 873907b (maze game beautify)
+import '../minigames/puzzle_game.dart';
+
+import '../pages/chatbot_screen.dart';
+
+
+
 
 class SubtopicPage extends StatelessWidget {
   final String subtopic;
@@ -50,7 +51,7 @@ class SubtopicPage extends StatelessWidget {
 
               const SizedBox(height: 20),
 
-<<<<<<< HEAD
+
               // Button to Start Game
               Center(
                 child: ElevatedButton(
@@ -64,7 +65,7 @@ class SubtopicPage extends StatelessWidget {
                   },
                   child: const Text("Start Puzzle Game"),
                 ),
-=======
+              ),
             // Button to Start Game
             Center(
               child: ElevatedButton(
@@ -76,10 +77,9 @@ class SubtopicPage extends StatelessWidget {
                     ),
                   );
                 },
-                child: const Text("Start maze Game"),
->>>>>>> 873907b (maze game beautify)
+                child: const Text("Start maze Game")
               ),
-            ],
+              )],
           ),
         ),
           Positioned(
