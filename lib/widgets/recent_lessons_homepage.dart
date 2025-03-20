@@ -103,7 +103,6 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
                       subtopicId: lesson['subtopicId'], // Pass subtopicId
                       readingTitle: lesson['readingTitle'],
                       readingContent: lesson['readingContent'],
-                      onGameStart: () {},
                     ),
                   ),
                 );

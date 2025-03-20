@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 
 class PuzzleScreen extends StatefulWidget {
-  final int subtopicId; // ✅ Add this
+  final String subtopicId; // ✅ Add this
   const PuzzleScreen({super.key, required this.subtopicId}); // ✅ Update constructor
   @override
   _PuzzleScreenState createState() => _PuzzleScreenState();

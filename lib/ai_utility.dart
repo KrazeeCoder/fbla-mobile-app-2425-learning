@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
+import 'jsonUtility.dart';
+
 const apiKey = "AIzaSyB6cpbKGMdZeY8p28TRRPzzkFRUzMjG_SQ";
 
 final contentHelpModel = GenerativeModel(
@@ -56,14 +58,4 @@ Future<String> loadTopicContent(String topicId) async {
   }
 
   return " ";
-}
-
-Future<Map<String, dynamic>> loadJsonData() async {
-  // Load the JSON file as a string
-  String jsonString = await rootBundle.loadString('assets/content.json');
-
-  // Decode the JSON string into a Map
-  Map<String, dynamic> jsonData = jsonDecode(jsonString);
-
-  return jsonData;
 }

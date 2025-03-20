@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
-import '../main.dart';
-
 class RecentLessonsTabWidget extends StatefulWidget {
-  final Map<String, List<dynamic>> lessonsData;
+  final List<Map<String, dynamic>> lessonsData;
 
   const RecentLessonsTabWidget({Key? key, required this.lessonsData}) : super(key: key);
 
@@ -15,7 +13,40 @@ class RecentLessonsTabWidget extends StatefulWidget {
 class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  final List<String> categories = ["Math", "Science", "Reading", "History"];
+  final List<String> categories = ["Math", "Science", "English", "History"];
+
+  // Map to store the total number of subtopics for each grade
+  final Map<String, Map<String, int>> allLessons = {
+    "math": {
+      "grade 1": 85,
+      "grade 2": 75,
+      "grade 3": 90,
+      "grade 4": 95,
+      "grade 5": 80,
+      "grade 8": 48
+    },
+    "english": {
+      "grade 1": 67,
+      "grade 2": 56,
+      "grade 3": 90,
+      "grade 4": 76,
+      "grade 5": 75
+    },
+    "science": {
+      "grade 1": 68,
+      "grade 2": 98,
+      "grade 3": 56,
+      "grade 4": 96,
+      "grade 5": 85
+    },
+    "history": {
+      "grade 1": 80,
+      "grade 2": 70,
+      "grade 3": 82,
+      "grade 4": 98,
+      "grade 5": 87
+    }
+  };
 
   @override
   void initState() {
@@ -29,28 +60,38 @@ class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget>
     super.dispose();
   }
 
-  Map<String, int> calculateCompletedSubtopics(String category) {
-    Map<String, int> completedPerGrade = {};
-    List<dynamic> lessons = widget.lessonsData[category.toLowerCase()] ?? [];
+  // Helper function to group lessons by subject and grade
+  Map<String, Map<String, int>> groupLessonsBySubjectAndGrade() {
+    Map<String, Map<String, int>> groupedData = {};
 
-    for (var subtopic in lessons) {
-      if (completedPerGrade.containsKey(subtopic["grade"])) {
-        completedPerGrade[subtopic["grade"]] = (completedPerGrade[subtopic["grade"]]! + 1);
-      } else {
-        completedPerGrade[subtopic["grade"]] = 1;
+    for (var lesson in widget.lessonsData) {
+      String subject = lesson["subject"].toLowerCase(); // Ensure lowercase to match allLessons keys
+      String grade = "grade ${lesson["grade"]}"; // Ensure grade is in "grade X" format
+
+      if (!groupedData.containsKey(subject)) {
+        groupedData[subject] = {};
       }
+
+      if (!groupedData[subject]!.containsKey(grade)) {
+        groupedData[subject]![grade] = 0;
+      }
+
+      groupedData[subject]![grade] = groupedData[subject]![grade]! + 1;
     }
 
-    return completedPerGrade;
+    return groupedData;
   }
 
   @override
   Widget build(BuildContext context) {
+    // Group lessons by subject and grade
+    Map<String, Map<String, int>> groupedData = groupLessonsBySubjectAndGrade();
+
     return Column(
       children: [
         Container(
           decoration: BoxDecoration(
-            color: Colors.lightGreen[200],  // Light green background
+            color: Colors.lightGreen[200], // Light green background
             borderRadius: BorderRadius.circular(8),
           ),
           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -71,20 +112,30 @@ class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget>
           child: TabBarView(
             controller: _tabController,
             children: categories.map((category) {
-              Map<String, int> completedPerGrade = calculateCompletedSubtopics(category);
-              List<String> gradeLevels = completedPerGrade.keys.toList();
+              // Get the data for the current category
+              Map<String, int>? gradeData = groupedData[category.toLowerCase()];
 
+              if (gradeData == null || gradeData.isEmpty) {
+                return Center(
+                  child: Text("No data available for $category"),
+                );
+              }
+
+              // Convert the grade data into a list of widgets
               return ListView.builder(
-                itemCount: gradeLevels.length,
+                itemCount: gradeData.length,
                 itemBuilder: (context, index) {
-                  String grade = gradeLevels[index];
-                  int completed = completedPerGrade[grade] ?? 0;
-                  int total = allLessons[category.toLowerCase()]?["grade " + grade] ?? 1;
+                  String grade = gradeData.keys.elementAt(index);
+                  int completed = gradeData[grade] ?? 0;
+
+                  // Get the total number of subtopics for this grade from allLessons
+                  int total = allLessons[category.toLowerCase()]?[grade] ?? 1;
                   double progress = completed / total;
 
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
                     elevation: 4,
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -104,8 +155,9 @@ class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "Grade $grade",
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  grade,
+                                  style: TextStyle(
+                                      fontSize: 18, fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(height: 4),
                                 Text("$completed/$total subtopics completed"),
@@ -113,8 +165,11 @@ class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget>
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.play_arrow, color: Colors.green, size: 32),
-                            onPressed: () {},
+                            icon: Icon(Icons.play_arrow,
+                                color: Colors.green, size: 32),
+                            onPressed: () {
+                              // Handle play button press
+                            },
                           ),
                         ],
                       ),

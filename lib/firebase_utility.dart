@@ -26,6 +26,25 @@ class FirestoreService {
     }
   }
 
+  Future<List<Map<String, dynamic>>?> getCompleted() async {
+    if (_userId == null) return null;
+
+    try {
+      DocumentSnapshot docSnapshot =
+      await _firestore.collection('user_completed').doc(_userId).get();
+
+      if (docSnapshot.exists) {
+        return List<Map<String, dynamic>>.from(docSnapshot.get('completed'));
+      }
+      return [];
+    } catch (e) {
+      print("Error fetching completed subtopics: $e");
+      return null;
+    }
+  }
+
+
+
   /// **Marks a subtopic as completed in `user_subtopics` collection**
   Future<String?> completeSubtopic(String subtopicId) async {
     if (_userId == null) return "User not logged in";
@@ -39,6 +58,30 @@ class FirestoreService {
       print("Error completing subtopic: $e");
       return e.toString();
     }
+  }
+
+  Future<String> completeStep(String id, String type, DateTime datetime) async {
+    if (_userId == null) return "User not logged in";
+    final docRef = FirebaseFirestore.instance.collection('user_completed').doc(_userId);
+
+    try {
+      // Create the new map to add
+      Map<String, dynamic> newEntry = {
+        'datetime': datetime,
+        'id': id,
+        'type': type,
+      };
+
+      // Update the document by appending the new map to the "completed" list
+      await docRef.update({
+        'completed': FieldValue.arrayUnion([newEntry]),
+      });
+
+      return "Success";
+    } catch (e) {
+      return e.toString();
+    }
+
   }
 
   /// **Increases XP in `users` collection**
@@ -66,6 +109,24 @@ class FirestoreService {
 
       if (docSnapshot.exists) {
         return docSnapshot.get('streakDays') ?? 0;
+      }
+      return 0;
+    } catch (e) {
+      print("Error fetching streak: $e");
+      return null;
+    }
+  }
+
+  /// **Retrieves the user's current streak days**
+  Future<int?> getLevel() async {
+    if (_userId == null) return null;
+
+    try {
+      DocumentSnapshot docSnapshot =
+      await _firestore.collection('users').doc(_userId).get();
+
+      if (docSnapshot.exists) {
+        return docSnapshot.get('currentLevel') ?? 0;
       }
       return 0;
     } catch (e) {

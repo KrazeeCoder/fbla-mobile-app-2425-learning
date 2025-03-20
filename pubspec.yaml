@@ -23,6 +23,7 @@ dependencies:
   percent_indicator: ^4.2.4
   flutter_web_auth: ^0.5.0
   dash_chat_2: ^0.0.21
+  uuid: ^4.2.2
 
 
 dev_dependencies:

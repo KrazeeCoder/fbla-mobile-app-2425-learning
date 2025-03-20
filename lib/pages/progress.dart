@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fbla_mobile_2425_learning_app/firebase_utility.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_progress.dart';
 import 'package:flutter/material.dart';
+import '../jsonUtility.dart';
 import '../widgets/earth_widget.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
 
@@ -19,18 +22,15 @@ class _ProgressPageState extends State<ProgressPage> {
   @override
   void initState() {
     super.initState();
-    processDataFromFirebase();
+    processAllDataFromFirebase();
   }
 
-  Future<void> processDataFromFirebase() async {
+  Future<void> processAllDataFromFirebase() async {
     try {
-      FirestoreService _firestoreService =
-      FirestoreService(); // Create instance
-
-      List<String>? lessonData =
-      await _firestoreService.getCompletedSubtopics();
-      int? streakData = await _firestoreService.getStreak();
-
+      List<Map<String, dynamic>> lessonData = await parseCompletedSteps();
+      FirestoreService firestoreService = FirestoreService(); // Create instance
+      int? streakData = await firestoreService.getStreak();
+      int? levelData = await firestoreService.getLevel();
       List<Map<String, dynamic>> tempLesson = [
         {"ID": 1, "subject": "math", "grade": "2"},
         {"ID": 2, "subject": "math", "grade": "2"},
@@ -44,16 +44,14 @@ class _ProgressPageState extends State<ProgressPage> {
         {"ID": 1, "subject": "science", "grade": "2"},
       ];
 
-      int tempLevel = 37;
-
-      Map<String, dynamic> tempData = {
+      Map<String, dynamic> allData = {
         "streak": streakData ?? 0, // Use real streak data
-        "lessons": processLessonData(tempLesson),
-        "level": tempLevel
+        "lessons": lessonData,
+        "level": levelData
       };
 
       setState(() {
-        _data = tempData;
+        _data = allData;
         _isLoading = false;
       });
     } catch (e) {
@@ -64,24 +62,50 @@ class _ProgressPageState extends State<ProgressPage> {
     }
   }
 
-  Map<String, List<Map<String, dynamic>>> processLessonData(
-      List<Map<String, dynamic>> subtopicsCompleted) {
-    Map<String, List<Map<String, dynamic>>> recentLessons = {
-      "math": [],
-      "english": [],
-      "science": [],
-      "history": []
-    };
 
-    for (var subtopic in subtopicsCompleted) {
-      String subject = subtopic["subject"].toLowerCase();
-      if (recentLessons.containsKey(subject)) {
-        recentLessons[subject]!.add(subtopic);
+  Future<List<Map<String, dynamic>>> parseCompletedSteps() async {
+    final Map<String, dynamic> jsonData = await loadJsonData();
+    FirestoreService firestoreService = FirestoreService();
+    List<Map<String, dynamic>>? completedSteps = await firestoreService.getCompleted();
+    print(completedSteps);
+
+    // Result list
+    List<Map<String, dynamic>> result = [];
+
+    // Iterate through completed steps
+    for (var step in completedSteps!) {
+      // Check if the step is a subtopic
+      if (step["type"] == "subtopic") {
+        final String subtopicId = step["id"];
+        final DateTime datetime = step["datetime"].toDate(); // Convert Firestore timestamp to DateTime
+
+        // Search for the subtopic in the JSON data
+        for (var subject in jsonData["subjects"]) {
+          for (var grade in subject["grades"]) {
+            for (var unit in grade["units"]) {
+              for (var subtopic in unit["subtopics"]) {
+                if (subtopic["subtopic_id"] == subtopicId) {
+                  // Add the result to the list
+                  result.add({
+                    "subject": subject["name"],
+                    "grade": int.parse(grade["grade"].replaceAll(RegExp('[^0-9]'), '')),
+                    "subtopic_id": subtopicId,
+                    "datetime": datetime,
+                  });
+                  break; // Exit the inner loop once the subtopic is found
+                }
+              }
+            }
+          }
+        }
       }
     }
+    print(result);
 
-    return recentLessons;
+    return result;
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +181,7 @@ class _ProgressPageState extends State<ProgressPage> {
                               fontSize: 50),
                         ),
                         Text(
+                          textAlign: TextAlign.center,
                           "levels achieved",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -198,6 +223,7 @@ class _ProgressPageState extends State<ProgressPage> {
                               fontSize: 50),
                         ),
                         Text(
+                          textAlign: TextAlign.center,
                           "subtopics completed",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
