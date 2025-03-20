@@ -6,7 +6,7 @@ class StreakHomepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20.0), // Increased padding
+      padding: const EdgeInsets.all(10.0), // Increased padding
       decoration: BoxDecoration(
         color: const Color(0xFFFFF3E0),
         borderRadius: BorderRadius.circular(12),
@@ -19,12 +19,13 @@ class StreakHomepage extends StatelessWidget {
         ],
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Image.asset(
             "assets/streak_homepage_design.png",
-            width: MediaQuery.of(context).size.width * 0.15, // Made the image a bit bigger
+            width: MediaQuery.of(context).size.width * 0.12, // Made the image a bit bigger
           ),
-          const SizedBox(width: 12),
+          const SizedBox(width: 10),
           Text(
             "575 Day Streak!",
             style: TextStyle(

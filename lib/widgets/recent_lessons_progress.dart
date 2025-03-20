@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../pages/learn_pathway.dart';
+
 class RecentLessonsTabWidget extends StatefulWidget {
   final List<Map<String, dynamic>> lessonsData;
 
@@ -168,7 +170,15 @@ class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget>
                             icon: Icon(Icons.play_arrow,
                                 color: Colors.green, size: 32),
                             onPressed: () {
-                              // Handle play button press
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => PathwayUI(
+                                    grade: 8, subject: categories[_tabController.index],
+
+                                  ),
+                                ),
+                              );
                             },
                           ),
                         ],

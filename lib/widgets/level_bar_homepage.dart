@@ -38,8 +38,8 @@ class LevelBarHomepage extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: const LinearProgressIndicator(
               value: 0.6, // Adjust the value here for different progress
-              backgroundColor: Color(0xFFD9F0D1), // Softer background color
-              color: Color(0xFF2F9B4B), // Slightly darker green for the progress bar
+              backgroundColor: Color(0xFFF0DED1), // Softer background color
+              color: Color(0xFFF4903D), // Slightly darker green for the progress bar
               minHeight: 10.0, // A thicker progress bar
             ),
           ),

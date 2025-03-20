@@ -14,7 +14,7 @@ class RecentLessonsPage extends StatefulWidget {
 }
 
 class _RecentLessonsPageState extends State<RecentLessonsPage> {
-  List<int> completedSubtopics = [];
+  List<String> completedSubtopics = [];
 
   Future<void> fetchUserCompletedLessons() async {
     User? user = FirebaseAuth.instance.currentUser;
@@ -22,17 +22,17 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
 
     try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('user_subtopics')
+          .collection('user_completed')
           .doc(user.uid)
           .get();
 
-      if (userDoc.exists && userDoc['subtopicsCompleted'] != null) {
-        List<dynamic> fetchedSubtopics = userDoc['subtopicsCompleted'];
+      if (userDoc.exists && userDoc['completed'] != null) {
+        List<dynamic> fetchedSubtopics = userDoc['completed'];
 
         setState(() {
-          // ✅ Extract only subtopicId (ignoring timestamps)
           completedSubtopics = fetchedSubtopics
-              .map<int>((item) => item['subtopicId'] as int)
+              .where((item) => item['type'] == 'subtopic') // Filter by type
+              .map<String>((item) => item['id'] as String) // Extract id
               .toList();
         });
       }
@@ -50,16 +50,15 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
       for (var grade in subject['grades']) {
         for (var unit in grade['units']) {
           for (var subtopic in unit['subtopics']) {
-            int subtopicId = subtopic['subtopic_id'];
+            String subtopicId = subtopic['subtopic_id'];
 
-            // ✅ Check if subtopicId exists in completed list
             if (completedSubtopics.contains(subtopicId)) {
               lessons.add({
                 'subject': subject['name'],
                 'grade': grade['grade'],
                 'unit': unit['unit'],
                 'subtopic': subtopic['subtopic'],
-                'subtopicId': subtopicId, // ✅ Pass subtopicId correctly
+                'subtopicId': subtopicId,
                 'readingTitle': subtopic['reading']['title'],
                 'readingContent': subtopic['reading']['content'],
               });
@@ -92,11 +91,9 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
 
         final lessons = snapshot.data!;
 
-        return ListView.builder(
-          itemCount: lessons.length,
-          itemBuilder: (context, index) {
-            final lesson = lessons[index];
-
+        // Use Column instead of ListView.builder to make it non-scrollable
+        return Column(
+          children: lessons.map((lesson) {
             return LessonCard(
               lesson: Lesson(
                 subject: lesson['subject'],
@@ -110,7 +107,7 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
                   MaterialPageRoute(
                     builder: (context) => SubtopicPage(
                       subtopic: lesson['subtopic'],
-                      subtopicId: lesson['subtopicId'], // ✅ Pass subtopicId
+                      subtopicId: lesson['subtopicId'],
                       readingTitle: lesson['readingTitle'],
                       readingContent: lesson['readingContent'],
                     ),
@@ -118,7 +115,7 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
                 );
               },
             );
-          },
+          }).toList(),
         );
       },
     );
