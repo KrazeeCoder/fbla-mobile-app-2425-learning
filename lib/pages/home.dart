@@ -17,8 +17,9 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    // Get the screen height using MediaQuery
+    // Get the screen height and width using MediaQuery
     final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: CustomAppBar(),
@@ -48,49 +49,17 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ],
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: const LevelBarHomepage(),
-                ),
+                child: const LevelBarHomepage(),
               ),
             ),
             const SizedBox(height: 16),
             // Earth Widget with Green Curved Shapes
-            Stack(
-              alignment: Alignment.center,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // Green Curved Shape on the Left
-                Positioned(
-                  left: -screenHeight * 0.01, // Adjust position
-                  child: ClipPath(
-                    clipper: _CurvedShapeClipper(),
-                    child: Container(
-                      width: screenHeight * 0.2, // Adjust size
-                      height: screenHeight * 0.35, // Match Earth height
-                      color: Colors.green.withOpacity(0.3), // Subtle green
-                    ),
-                  ),
-                ),
-                // Green Curved Shape on the Right
-                Positioned(
-                  right: -screenHeight * 0.1, // Adjust position
-                  child: ClipPath(
-                    clipper: _CurvedShapeClipper(),
-                    child: Container(
-                      width: screenHeight * 0.2, // Adjust size
-                      height: screenHeight * 0.35, // Match Earth height
-                      color: Colors.green.withOpacity(0.3), // Subtle green
-                    ),
-                  ),
-                ),
-                // Earth Widget
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: SizedBox(
-                    height: screenHeight * 0.35, // Adjust EarthWidget height
-                    child: SvgPicture.asset('assets/earths/4.svg'),
-                  ),
-                ),
+                SvgPicture.asset('assets/homepage_design/left.svg', height: screenHeight * 0.25,),
+                SvgPicture.asset('assets/earths/4.svg', height: screenHeight * 0.38),
+                SvgPicture.asset('assets/homepage_design/right.svg', height: screenHeight * 0.25,),
               ],
             ),
             const SizedBox(height: 16),
@@ -139,31 +108,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-class _CurvedShapeClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final path = Path();
-    path.moveTo(0, size.height * 0.5); // Start at the middle-left
-
-    // First curve: Gradual curve upwards
-    path.quadraticBezierTo(
-      size.width * 0.25, size.height * 0.3, // Control point (closer to start)
-      size.width * 0.5, size.height * 0.5, // End point (middle)
-    );
-
-    // Second curve: Gradual curve downwards
-    path.quadraticBezierTo(
-      size.width * 0.75, size.height * 0.7, // Control point (closer to end)
-      size.width, size.height * 0.5, // End at the middle-right
-    );
-
-    // Close the path
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(covariant CustomClipper<Path> oldClipper) => false;
 }

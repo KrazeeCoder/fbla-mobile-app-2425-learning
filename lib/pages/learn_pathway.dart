@@ -29,39 +29,74 @@ class _PathwayUIState extends State<PathwayUI> {
       appBar: AppBar(
         title: Text('Learning Pathway'),
       ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: _pathwayData,
-        builder: (context, snapshot) {
-          int stepPos = 0;
-          int offset = 0;
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('No pathway data available.'));
-          } else {
-            final steps = snapshot.data!;
-            return ListView.builder(
-              reverse: true,
-              itemCount: steps.length,
-              itemBuilder: (context, index) {
-                final step = steps[index];
-                if (step["type"] == "unit_separator") {
-                  return _buildUnitSeparator(step["title"]);
+      body: Column(
+        children: [
+          // Grade and Subject Indicator
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.1), // Light blue background
+              border: Border(
+                bottom: BorderSide(color: Colors.blue.withOpacity(0.2), width: 1),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.school, // School icon
+                  color: Colors.blue,
+                  size: 24,
+                ),
+                SizedBox(width: 8),
+                Text(
+                  'Grade ${widget.grade} - ${widget.subject}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // Pathway Steps
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _pathwayData,
+              builder: (context, snapshot) {
+                int stepPos = 0;
+                int offset = 0;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No pathway data available.'));
                 } else {
-                  stepPos++;
-                  offset++;
-                  return _buildPathwayStep(
-                    stepType: step["type"],
-                    isCompleted: step["isCompleted"],
-                    index: stepPos,
+                  final steps = snapshot.data!;
+                  return ListView.builder(
+                    reverse: true,
+                    itemCount: steps.length,
+                    itemBuilder: (context, index) {
+                      final step = steps[index];
+                      if (step["type"] == "unit_separator") {
+                        return _buildUnitSeparator(step["title"]);
+                      } else {
+                        stepPos++;
+                        offset++;
+                        return _buildPathwayStep(
+                          stepType: step["type"],
+                          isCompleted: step["isCompleted"],
+                          index: stepPos,
+                        );
+                      }
+                    },
                   );
                 }
               },
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -92,7 +127,7 @@ class _PathwayUIState extends State<PathwayUI> {
   Widget _buildPathwayStep({required String stepType, required bool isCompleted, required int index}) {
     final double screenWidth = MediaQuery.of(context).size.width;
     const List<double> offsets = [0.65, 0.55, 0.45, 0.35, 0.25, 0.35, 0.45, 0.55,];
-    double horizontalOffset = offsets[index%8]*screenWidth;
+    double horizontalOffset = offsets[index % 8] * screenWidth;
 
     return Padding(
       padding: EdgeInsets.only(left: horizontalOffset),
@@ -181,7 +216,7 @@ class PathwayStep extends StatelessWidget {
             shape: CircleBorder(),
             backgroundColor: isCompleted ? Colors.green[100] : Colors.grey[200],
           ),
-          onPressed: ()=>{},
+          onPressed: () {},
           child: Icon(
             icon,
             color: isCompleted ? Colors.green : Colors.grey,
@@ -207,6 +242,4 @@ class PathwayStep extends StatelessWidget {
       ],
     );
   }
-
-
 }

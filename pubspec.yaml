@@ -57,3 +57,5 @@ flutter:
     - assets/branding/logo.svg
     - assets/branding/logo_and_name.svg
     - assets/branding/name.svg
+    - assets/homepage_design/left.svg
+    - assets/homepage_design/right.svg
