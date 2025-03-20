@@ -1,6 +1,8 @@
+import 'package:fbla_mobile_2425_learning_app/minigames/cypher_game.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'minigames/puzzle_game.dart';
 import 'pages/home.dart';
 import 'pages/progress.dart';
 import 'pages/learn.dart';
@@ -98,7 +100,8 @@ class _MainPageState extends State<MainPage> {
     HomePage(),
     LearnPage(),
     ProgressPage(),
-    SettingsPage()
+    SettingsPage(),
+    CypherUI(subtopicId: "f51f2584-8b3b-42f2-b10c-3c47f93fbd37",)
   ];
 
   void _onItemTapped(int index) {
@@ -128,6 +131,10 @@ class _MainPageState extends State<MainPage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'Settings',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.developer_board),
+            label: 'Test Page',
           ),
         ],
         currentIndex: _selectedIndex,

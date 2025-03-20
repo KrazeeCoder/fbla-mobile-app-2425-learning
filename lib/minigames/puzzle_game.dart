@@ -3,29 +3,30 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 class PuzzleScreen extends StatefulWidget {
-  final String subtopicId; // ✅ Add this
-  const PuzzleScreen({super.key, required this.subtopicId}); // ✅ Update constructor
+  final String subtopicId;
+  const PuzzleScreen({super.key, required this.subtopicId});
+
   @override
   _PuzzleScreenState createState() => _PuzzleScreenState();
 }
 
-
-class _PuzzleScreenState extends State<PuzzleScreen> {
+class _PuzzleScreenState extends State<PuzzleScreen> with SingleTickerProviderStateMixin {
   List<Map<String, dynamic>> quizQuestions = [];
-  String selectedImage = "";
-  Map<String, String> questionAnswerPairs = {};
-  Map<String, bool> matchedPairs = {};
-  Map<int, bool> placedFragments = {};
-  Map<int, int?> fragmentPositions = {};
-  bool isGameComplete = false;
+  String selectedImage = '';
+  List<bool> answered = [];
+  List<bool> placed = [];
+  late AnimationController _glowController;
 
   @override
   void initState() {
     super.initState();
     _loadQuestions();
     _randomizeImage();
+    _glowController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
   }
 
   void _randomizeImage() {
@@ -39,10 +40,8 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
 
     List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data['questions']);
 
-    List<dynamic> subjects = data['subjects'];
     List<int> quizPool = [];
-
-    for (var subject in subjects) {
+    for (var subject in data['subjects']) {
       for (var grade in subject['grades']) {
         for (var unit in grade['units']) {
           for (var subtopic in unit['subtopics']) {
@@ -55,197 +54,245 @@ class _PuzzleScreenState extends State<PuzzleScreen> {
       }
     }
 
-    if (quizPool.isEmpty) {
-      debugPrint("⚠️ No quiz pool found for subtopic ID: ${widget.subtopicId}");
-      return;
-    }
-
-    // ✅ Filter only the relevant questions
-    List<Map<String, dynamic>> selectedQuestions = allQuestions
-        .where((q) => quizPool.contains(q['id'] as int))
-        .toList();
-
-    if (selectedQuestions.isEmpty) {
-      debugPrint("⚠️ No questions found in quiz pool for subtopic ID: ${widget.subtopicId}");
-      return;
-    }
-
-    // ✅ Randomly select 4 questions for the puzzle
+    List<Map<String, dynamic>> selectedQuestions =
+    allQuestions.where((q) => quizPool.contains(q['id'] as int)).toList();
     selectedQuestions.shuffle();
     selectedQuestions = selectedQuestions.take(4).toList();
 
     setState(() {
       quizQuestions = selectedQuestions;
-      questionAnswerPairs.clear();
-      matchedPairs.clear();
-      placedFragments.clear();
-      fragmentPositions.clear();
-
-      for (int i = 0; i < selectedQuestions.length; i++) {
-        var question = selectedQuestions[i];
-        questionAnswerPairs[question["question"]] = question["correct_answer"];
-        matchedPairs[question["question"]] = false;
-        placedFragments[i] = false;
-        fragmentPositions[i] = null;
-      }
+      answered = List.filled(4, false);
+      placed = List.filled(4, false);
     });
   }
 
-  void _onMatch(String question) {
-    setState(() {
-      matchedPairs[question] = true;
-      int index = questionAnswerPairs.keys.toList().indexOf(question);
-      fragmentPositions[index] = index;
-    });
-  }
+  void _showQuestionDialog(int index) {
+    final question = quizQuestions[index]['question'];
+    final List<String> answers = List<String>.from(quizQuestions[index]['answers']);
+    final String correctAnswer = quizQuestions[index]['correct_answer'];
 
-  void _onPlaceFragment(int index) {
-    setState(() {
-      placedFragments[index] = true;
-      fragmentPositions[index] = null;
-      if (placedFragments.values.every((placed) => placed)) {
-        isGameComplete = true;
-      }
-    });
+    String? selectedAnswer;
+
+    showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) {
+          return AlertDialog(
+            title: Text(question, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: answers
+                  .map((answer) => RadioListTile<String>(
+                title: Text(answer),
+                value: answer,
+                groupValue: selectedAnswer,
+                onChanged: (value) {
+                  setState(() => selectedAnswer = value);
+                },
+              ))
+                  .toList(),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  if (selectedAnswer == correctAnswer) {
+                    setState(() => answered[index] = true);
+                    Navigator.pop(context);
+                    this.setState(() {});
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Incorrect answer, try again!')),
+                    );
+                  }
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          );
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    double pieceSize = 150;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Math Puzzle Game"),
+        title: const Text('Puzzle Game'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {},
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Column(
+      body: quizQuestions.isEmpty
+          ? const Center(child: CircularProgressIndicator())
+          : Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text("Match the equations to reveal puzzle pieces!",
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          ),
-          Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(border: Border.all(color: Colors.black, width: 2)),
+          const SizedBox(height: 20),
+          const Text('Complete the Puzzle!', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 20),
+
+          // Puzzle Board (Fixed Position)
+          SizedBox(
+            width: pieceSize * 2,
+            height: pieceSize * 2,
             child: GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              physics: const NeverScrollableScrollPhysics(),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+              ),
               itemCount: 4,
-              itemBuilder: (context, index) {
-                return DragTarget<int>(
-                  onAccept: (data) {
-                    _onPlaceFragment(data);
-                  },
-                  builder: (context, candidateData, rejectedData) {
-                    return placedFragments[index]!
-                        ? ImageFragment(imagePath: selectedImage, index: index)
-                        : Container(color: Colors.grey[300]);
-                  },
-                );
-              },
+              itemBuilder: (context, index) => DragTarget<int>(
+                onAccept: (data) => setState(() => placed[data] = true),
+                onWillAccept: (data) => data == index,
+                builder: (context, _, __) => ClipRect(  /// 🔥 FIX: Clip the placed puzzle pieces
+                  child: placed[index]
+                      ? PuzzlePiece(
+                    imagePath: selectedImage,
+                    index: index,
+                    isPlaced: true,
+                    size: pieceSize,
+                  )
+                      : Container(
+                    width: pieceSize,
+                    height: pieceSize,
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey.shade300),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
-          Expanded(
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: questionAnswerPairs.keys.map((question) {
-                      int index = questionAnswerPairs.keys.toList().indexOf(question);
-                      return matchedPairs[question]!
-                          ? fragmentPositions[index] != null
-                          ? Draggable<int>(
-                        data: index,
-                        feedback: Material(
-                          color: Colors.transparent,
-                          child: ImageFragment(imagePath: selectedImage, index: index),
-                        ),
-                        childWhenDragging: Opacity(
-                          opacity: 0.5,
-                          child: ImageFragment(imagePath: selectedImage, index: index),
-                        ),
-                        child: ImageFragment(imagePath: selectedImage, index: index),
-                      )
-                          : SizedBox()
-                          : Draggable<String>(
-                        data: question,
-                        feedback: Material(
-                          color: Colors.transparent,
-                          child: AnswerSlot(text: question),
-                        ),
-                        childWhenDragging: Opacity(
-                          opacity: 0.5,
-                          child: AnswerSlot(text: question),
-                        ),
-                        child: AnswerSlot(text: question),
-                      );
-                    }).toList(),
-                  ),
+
+          const SizedBox(height: 30),
+
+          // Puzzle Pieces
+          Wrap(
+            spacing: 20,
+            runSpacing: 20,
+            children: List.generate(4, (index) {
+              if (placed[index]) return const SizedBox.shrink();
+              return answered[index]
+                  ? Draggable<int>(
+                data: index,
+                feedback: PuzzlePiece(imagePath: selectedImage, index: index, size: pieceSize),
+                childWhenDragging: PuzzlePiece(imagePath: selectedImage, index: index, opacity: 0.5, size: pieceSize),
+                child: GlowingPuzzlePiece(
+                  imagePath: selectedImage,
+                  index: index,
+                  controller: _glowController,
+                  size: pieceSize,
                 ),
-                Expanded(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: questionAnswerPairs.keys.map((question) {
-                      return DragTarget<String>(
-                        onAccept: (data) {
-                          if (data == question) {
-                            _onMatch(question);
-                          }
-                        },
-                        builder: (context, candidateData, rejectedData) {
-                          return matchedPairs[question]!
-                              ? SizedBox()
-                              : AnswerSlot(text: questionAnswerPairs[question]!);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
-            ),
+              )
+                  : GestureDetector(
+                onTap: () => _showQuestionDialog(index),
+                child: PuzzlePiece(imagePath: selectedImage, index: index, opacity: 0.5, size: pieceSize),
+              );
+            }),
           ),
         ],
       ),
     );
   }
-}
-
-class ImageFragment extends StatelessWidget {
-  final String imagePath;
-  final int index;
-
-  ImageFragment({required this.imagePath, required this.index});
 
   @override
-  Widget build(BuildContext context) {
-    return ClipRect(
-      child: Align(
-        alignment: Alignment(-1 + (index % 2) * 2, -1 + (index ~/ 2) * 2),
-        widthFactor: 0.5,
-        heightFactor: 0.5,
-        child: Image.asset(imagePath, fit: BoxFit.cover, width: 100, height: 100),
-      ),
-    );
+  void dispose() {
+    _glowController.dispose();
+    super.dispose();
   }
 }
 
-class AnswerSlot extends StatelessWidget {
-  final String text;
-  AnswerSlot({required this.text});
+class PuzzlePiece extends StatelessWidget {
+  final String imagePath;
+  final int index;
+  final bool isPlaced;
+  final double opacity;
+  final double size;
+
+  const PuzzlePiece({
+    super.key,
+    required this.imagePath,
+    required this.index,
+    this.isPlaced = false,
+    this.opacity = 1.0,
+    required this.size,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.all(8),
-      margin: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.lightGreen,
-        borderRadius: BorderRadius.circular(8),
+    return Opacity(
+      opacity: opacity,
+      child: ClipRect(
+        child: Align(
+          alignment: _getAlignment(index),
+          widthFactor: 0.5,
+          heightFactor: 0.5,
+          child: Image.asset(
+            imagePath,
+            fit: BoxFit.cover,
+            width: size * 2,
+            height: size * 2,
+          ),
+        ),
       ),
-      child: Text(text, style: TextStyle(fontSize: 14, color: Colors.white)),
+    );
+  }
+
+  Alignment _getAlignment(int index) {
+    switch (index) {
+      case 0: return Alignment.topLeft;
+      case 1: return Alignment.topRight;
+      case 2: return Alignment.bottomLeft;
+      case 3: return Alignment.bottomRight;
+      default: return Alignment.center;
+    }
+  }
+}
+
+class GlowingPuzzlePiece extends StatelessWidget {
+  final String imagePath;
+  final int index;
+  final AnimationController controller;
+  final double size;
+
+  const GlowingPuzzlePiece({
+    super.key,
+    required this.imagePath,
+    required this.index,
+    required this.controller,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        return Container(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.yellow.withOpacity(controller.value),
+                blurRadius: 15,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: child,
+        );
+      },
+      child: PuzzlePiece(
+        imagePath: imagePath,
+        index: index,
+        size: size,
+      ),
     );
   }
 }

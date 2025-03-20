@@ -5,28 +5,38 @@ import 'package:flutter/services.dart';
 import '../widgets/cypher_question.dart';
 
 class CypherUI extends StatefulWidget {
-  final int subtopicId; // ✅ Add this
-
-  const CypherUI({super.key, required this.subtopicId}); // ✅ Update constructor
+  final String subtopicId;
+  const CypherUI({super.key, required this.subtopicId});
 
   @override
   State<CypherUI> createState() => _CypherUIState();
 }
 
-
-class _CypherUIState extends State<CypherUI> {
+class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   final random = Random();
   List<Map<String, dynamic>> quizQuestions = [];
   List<Map<String, dynamic>> gameState = [];
   String currentPhrase = "";
   int currentQuestionIndex = 0;
   Map<int, String> answeredQuestions = {};
-  Set<int> correctAnswers = {}; // Store correct answers to disable further clicks
+  Set<int> correctAnswers = {};
+  late AnimationController _revealController;
 
   @override
   void initState() {
     super.initState();
     _loadQuestions();
+
+    _revealController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    _revealController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadQuestions() async {
@@ -34,10 +44,10 @@ class _CypherUIState extends State<CypherUI> {
     final Map<String, dynamic> data = json.decode(jsonString);
 
     List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data['questions']);
-
     List<dynamic> subjects = data['subjects'];
     List<int> quizPool = [];
 
+    // ✅ Select quiz pool based on the subtopic ID
     for (var subject in subjects) {
       for (var grade in subject['grades']) {
         for (var unit in grade['units']) {
@@ -56,20 +66,18 @@ class _CypherUIState extends State<CypherUI> {
       return;
     }
 
-    // ✅ Filter only the relevant questions
     List<Map<String, dynamic>> questions = allQuestions
         .where((q) => quizPool.contains(q['id'] as int))
         .toList();
 
     if (questions.isEmpty) return;
 
-    // ✅ Ensure phrase length is always 5 (even if more questions exist)
+    // ✅ Improved randomization
     final wordList = ["SMART", "BRAVE", "LIGHT", "STORM", "CLOUD", "RAPID", "FLARE"];
-    currentPhrase = (wordList.toList()..shuffle()).first; // Pick a random meaningful word
+    currentPhrase = wordList[random.nextInt(wordList.length)];  // Randomly pick a word
 
-    // ✅ Randomly select 5 questions from the available pool
     questions.shuffle();
-    questions = questions.take(5).toList();
+    questions = questions.take(5).toList();  // Ensure 5 questions only
 
     List<int> scrambledNumbers = List.generate(questions.length, (i) => i);
     scrambledNumbers.shuffle();
@@ -78,7 +86,7 @@ class _CypherUIState extends State<CypherUI> {
       quizQuestions = questions;
       gameState = List.generate(questions.length, (index) {
         return {
-          "letter": currentPhrase[index],  // ✅ Phrase is always meaningful!
+          "letter": currentPhrase[index],
           "revealed": false,
           "questionIndex": scrambledNumbers[index],
         };
@@ -86,15 +94,14 @@ class _CypherUIState extends State<CypherUI> {
     });
   }
 
-
   void onAnswerSelected(int questionIndex, String selectedAnswer) {
     setState(() {
       answeredQuestions[questionIndex] = selectedAnswer;
 
       if (selectedAnswer == quizQuestions[questionIndex]["correct_answer"]) {
-        correctAnswers.add(questionIndex); // Mark question as correctly answered
+        correctAnswers.add(questionIndex);
+        _revealController.forward(from: 0);  // Trigger animation
 
-        // Reveal the letter only when the answer is correct
         for (var item in gameState) {
           if (item["questionIndex"] == questionIndex) {
             item["revealed"] = true;
@@ -132,11 +139,15 @@ class _CypherUIState extends State<CypherUI> {
     final currentQuestion = quizQuestions[currentQuestionIndex];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Cipher Game')),
+      appBar: AppBar(
+        title: const Text('Cipher Game'),
+        centerTitle: true,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // 🎯 Question Progress
             Text(
               "Question ${currentQuestionIndex + 1} / ${quizQuestions.length}",
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -148,7 +159,9 @@ class _CypherUIState extends State<CypherUI> {
               children: [
                 IconButton(
                   onPressed: previousQuestion,
-                  icon: const Icon(Icons.arrow_left, color: Colors.black, size: 28),
+                  icon: const Icon(Icons.arrow_left),
+                  color: Colors.blueAccent,
+                  iconSize: 36,
                 ),
                 Expanded(
                   child: MultipleChoiceQuestion(
@@ -164,61 +177,99 @@ class _CypherUIState extends State<CypherUI> {
                         onAnswerSelected(currentQuestionIndex, answer);
                       }
                     },
+                    questionTextStyle: const TextStyle(fontSize: 16),  // ✅ Smaller Question Text
                   ),
                 ),
                 IconButton(
                   onPressed: nextQuestion,
-                  icon: const Icon(Icons.arrow_right, color: Colors.black, size: 28),
+                  icon: const Icon(Icons.arrow_right),
+                  color: Colors.blueAccent,
+                  iconSize: 36,
                 ),
               ],
             ),
 
             const SizedBox(height: 30),
 
-            Wrap(
-              alignment: WrapAlignment.center,
-              spacing: 10,
-              children: gameState.map((item) {
-                return Column(
-                  children: [
-                    Text(
-                      item["revealed"] ? item["letter"] : "_",
-                      style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      (item["questionIndex"] + 1).toString(),
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ],
+            // 🎯 Phrase Reveal with Animation
+            AnimatedBuilder(
+              animation: _revealController,
+              builder: (context, child) {
+                return Wrap(
+                  alignment: WrapAlignment.center,
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: gameState.map((item) {
+                    return AnimatedOpacity(
+                      duration: const Duration(milliseconds: 300),
+                      opacity: item["revealed"] ? 1.0 : 0.3,
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: item["revealed"] ? Colors.green[400] : Colors.grey[700],
+                          borderRadius: BorderRadius.circular(10),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Text(
+                              item["revealed"] ? item["letter"] : "_",
+                              style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              (item["questionIndex"] + 1).toString(),
+                              style: const TextStyle(fontSize: 16, color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 );
-              }).toList(),
+              },
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
 
+            // 🎯 Instructions or Completion Message
             if (isGameCompleted)
               Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       color: Colors.green,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(
-                      "🎉 You're Done! Move on to the next lesson! 🎉",
+                      "🎉 Well Done! You've solved the cipher! 🎉",
                       style: TextStyle(fontSize: 18, color: Colors.white),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+                    onPressed: () => Navigator.pop(context),
                     child: const Text("Next Lesson"),
                   ),
                 ],
+              )
+            else
+              const Text(
+                "🔑 Instructions: Answer the questions correctly to reveal the letters and solve the cipher.",
+                style: TextStyle(fontSize: 16, color: Colors.black54),
+                textAlign: TextAlign.center,
               ),
           ],
         ),
