@@ -5,6 +5,16 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+/// **Logs out the current user and clears session**
+  Future<void> logoutUser() async {
+    try {
+      await _auth.signOut(); // Sign out the user
+      print("✅ User successfully logged out.");
+    } catch (e) {
+      print("❌ Logout Error: $e");
+    }
+  }
+  
   /// **Registers a new user with email and password**
   Future<String?> registerUser({
     required String email,
