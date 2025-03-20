@@ -1,10 +1,8 @@
 import 'package:fbla_mobile_2425_learning_app/firebase_utility.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:core';
 
 import '../jsonUtility.dart';
-import '../widgets/subtopic_widget.dart';
 
 class PathwayUI extends StatefulWidget {
   final int grade;

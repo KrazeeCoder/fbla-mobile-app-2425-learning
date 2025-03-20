@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class MazeGame extends StatefulWidget {
-  final int subtopicId; // ✅ Add this
+  final String subtopicId; // ✅ Add this
   const MazeGame({super.key, required this.subtopicId}); // ✅ Update constructor
 
   @override

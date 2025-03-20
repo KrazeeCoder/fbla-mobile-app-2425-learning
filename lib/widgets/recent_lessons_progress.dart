@@ -155,7 +155,7 @@ class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  grade,
+                                  grade.replaceFirst(grade[0], grade[0].toUpperCase()),
                                   style: TextStyle(
                                       fontSize: 18, fontWeight: FontWeight.bold),
                                 ),

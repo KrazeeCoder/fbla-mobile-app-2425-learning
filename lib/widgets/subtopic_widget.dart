@@ -63,9 +63,22 @@ class SubtopicPage extends StatelessWidget {
                     child: const Text("Start Puzzle Game"),
                   ),
                 ),
-              ],
+                // Button to Start Game
+                Center(
+                  child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MazeGame(subtopicId: subtopicId),
+                          ),
+                        );
+                      },
+                      child: const Text("Start maze Game")
+                  ),
+                )],
             ),
-          ),
+            ),
             Positioned(
                 right: 20,
                 bottom: 50,
@@ -80,49 +93,6 @@ class SubtopicPage extends StatelessWidget {
                   );},
                   child: Icon(Icons.live_help),
                 )),
-              // Button to Start Game
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => PuzzleScreen(subtopicId: subtopicId),
-                      ),
-                    );
-                  },
-                  child: const Text("Start Puzzle Game"),
-                ),
-              ),
-            // Button to Start Game
-            Center(
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => MazeGame(subtopicId: subtopicId),
-                    ),
-                  );
-                },
-                child: const Text("Start maze Game")
-              ),
-              )],
-          ),
-          Positioned(
-            right: 20,
-            bottom: 50,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: CircleBorder(), // Makes the button circular
-                padding: EdgeInsets.all(20), // Adjust padding to control the size
-              ),
-              onPressed: () {Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChatbotScreen(topicId: subtopicId.toString(),)),
-              );},
-              child: Icon(Icons.live_help),
-          ))
       ]),
     );
   }
