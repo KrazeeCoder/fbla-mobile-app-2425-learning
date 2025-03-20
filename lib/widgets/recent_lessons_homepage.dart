@@ -1,10 +1,10 @@
 import 'package:fbla_mobile_2425_learning_app/widgets/subtopic_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'dart:convert';
 import 'lessons.dart';
-
 
 class RecentLessonsPage extends StatefulWidget {
   const RecentLessonsPage({super.key});
@@ -17,15 +17,23 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
   List<int> completedSubtopics = [];
 
   Future<void> fetchUserCompletedLessons() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
     try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc('SKFMYGD4oclNQ2focMJN')
+          .collection('user_subtopics')
+          .doc(user.uid)
           .get();
 
-      if (userDoc.exists) {
+      if (userDoc.exists && userDoc['subtopicsCompleted'] != null) {
+        List<dynamic> fetchedSubtopics = userDoc['subtopicsCompleted'];
+
         setState(() {
-          completedSubtopics = List<int>.from(userDoc['subtopicsCompleted']);
+          // ✅ Extract only subtopicId (ignoring timestamps)
+          completedSubtopics = fetchedSubtopics
+              .map<int>((item) => item['subtopicId'] as int)
+              .toList();
         });
       }
     } catch (e) {
@@ -43,15 +51,17 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
         for (var unit in grade['units']) {
           for (var subtopic in unit['subtopics']) {
             int subtopicId = subtopic['subtopic_id'];
+
+            // ✅ Check if subtopicId exists in completed list
             if (completedSubtopics.contains(subtopicId)) {
               lessons.add({
                 'subject': subject['name'],
                 'grade': grade['grade'],
                 'unit': unit['unit'],
                 'subtopic': subtopic['subtopic'],
-                'subtopicId': subtopicId, // Pass subtopicId
+                'subtopicId': subtopicId, // ✅ Pass subtopicId correctly
                 'readingTitle': subtopic['reading']['title'],
-                'readingContent': subtopic['reading']['content']
+                'readingContent': subtopic['reading']['content'],
               });
             }
           }
@@ -100,7 +110,7 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
                   MaterialPageRoute(
                     builder: (context) => SubtopicPage(
                       subtopic: lesson['subtopic'],
-                      subtopicId: lesson['subtopicId'], // Pass subtopicId
+                      subtopicId: lesson['subtopicId'], // ✅ Pass subtopicId
                       readingTitle: lesson['readingTitle'],
                       readingContent: lesson['readingContent'],
                     ),

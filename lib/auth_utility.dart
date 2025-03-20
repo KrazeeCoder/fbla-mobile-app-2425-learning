@@ -5,6 +5,16 @@ class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+/// **Logs out the current user and clears session**
+  Future<void> logoutUser() async {
+    try {
+      await _auth.signOut(); // Sign out the user
+      print("✅ User successfully logged out.");
+    } catch (e) {
+      print("❌ Logout Error: $e");
+    }
+  }
+  
   /// **Registers a new user with email and password**
   Future<String?> registerUser({
     required String email,
@@ -14,9 +24,8 @@ class AuthService {
     required int age,
   }) async {
     try {
-      // Create user with Firebase Auth
       UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
+      await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -24,22 +33,21 @@ class AuthService {
       User? user = userCredential.user;
       if (user == null) return "Invalid registration information";
 
-     // 📌 Store user data in Firestore (Settings grouped under 'settings' field)
-    await _firestore.collection('users').doc(user.uid).set({
-      'email': email,
-      'firstName': firstName,
-      'lastName': lastName,
-      'age': age, // ✅ Save age in Firestore
-      'currentLevel': 0,
-      'currentXP': 0,
-      'settings': {  // ✅ Grouping settings inside a single object
-        'fontSize': 14,
-        'profilePic': "",
-        'stayOnTrack': false,
-      }
-    });
+      await _firestore.collection('users').doc(user.uid).set({
+        'email': email,
+        'firstName': firstName,
+        'lastName': lastName,
+        'age': age,
+        'currentLevel': 0,
+        'currentXP': 0,
+        'settings': {
+          'fontSize': 14,
+          'profilePic': "",
+          'stayOnTrack': false,
+        }
+      });
 
-      // Create subtopicsCompleted in a separate collection
+      // Store subtopicsCompleted with timestamps
       await _firestore.collection('user_subtopics').doc(user.uid).set({
         'subtopicsCompleted': [],
       });
@@ -51,6 +59,22 @@ class AuthService {
     }
   }
 
+  /// **Adds a completed subtopic with a timestamp**
+  Future<void> completeSubtopic(int subtopicId) async {
+    User? user = _auth.currentUser;
+    if (user == null) return;
+
+    try {
+      await _firestore.collection('user_subtopics').doc(user.uid).update({
+        'subtopicsCompleted': FieldValue.arrayUnion([
+          {'subtopicId': subtopicId, 'timestamp': Timestamp.now()}
+        ])
+      });
+      print("✅ Subtopic $subtopicId marked as completed.");
+    } catch (e) {
+      print("❌ Error updating subtopics: $e");
+    }
+  }
   /// **Logs in a user with email and password**
   Future<User?> loginUser(String email, String password) async {
     try {
@@ -118,3 +142,5 @@ class AuthService {
     }
   }
 }
+
+

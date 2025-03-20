@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'dart:convert';
@@ -14,8 +15,7 @@ class _ChooseLessonPageState extends State<ChooseLessonPage> {
   Map<String, dynamic>? contentData;
   String? selectedSubject;
   List<Map<String, dynamic>> availableGrades = [];
-  List<int> completedSubtopics = []; // Change from List<String> to List<int>
-
+  List<int> completedSubtopics = [];
 
   @override
   void initState() {
@@ -32,25 +32,25 @@ class _ChooseLessonPageState extends State<ChooseLessonPage> {
   }
 
   Future<void> fetchUserCompletedLessons() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
     try {
       DocumentSnapshot userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc('SKFMYGD4oclNQ2focMJN')
+          .collection('user_subtopics')
+          .doc(user.uid)
           .get();
 
-      if (userDoc.exists) {
+      if (userDoc.exists && userDoc['subtopicsCompleted'] != null) {
+        List<dynamic> completedList = userDoc['subtopicsCompleted'];
         setState(() {
-          completedSubtopics = List<int>.from(userDoc['subtopicsCompleted']);
+          completedSubtopics = completedList.map<int>((item) => item['subtopicId'] as int).toList();
         });
-        print("✅ Completed Subtopics from Firebase: $completedSubtopics"); // Debugging
       }
     } catch (e) {
-      print("❌ Error fetching user data: $e");
+      print("❌ Error fetching user completed lessons: $e");
     }
   }
-
-
-
 
   void updateGrades() {
     if (selectedSubject == null || contentData == null) return;
@@ -78,147 +78,11 @@ class _ChooseLessonPageState extends State<ChooseLessonPage> {
     setState(() {});
   }
 
-
-  double calculateProgress(List subtopics) {
-    if (subtopics.isEmpty) return 0.0;
-
-    // Extract subtopic IDs as integers
-    List<int> subtopicIds = subtopics.map<int>((s) => int.tryParse(s['subtopic_id'].toString()) ?? -1).toList();
-
-    // Count how many are completed
-    int completed = subtopicIds.where((id) => completedSubtopics.contains(id)).length;
-
-    print("📊 Progress - Total: ${subtopicIds.length}, Completed: $completed");
-
-    return completed / subtopicIds.length;
-  }
-
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    List<String> subjects = contentData?['subjects'] != null
-        ? (contentData!['subjects'] as List)
-        .map((s) => (s as Map<String, dynamic>)['name'].toString())
-        .toList()
-        : [];
-
-    return Column(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(12.0),
-          child: DropdownButtonFormField<String>(
-            value: selectedSubject,
-            decoration: InputDecoration(
-              labelText: "Select Subject",
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-            ),
-            items: subjects.map((subject) {
-              return DropdownMenuItem(value: subject, child: Text(subject));
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                selectedSubject = value;
-                updateGrades();
-              });
-            },
-          ),
-        ),
-        Expanded(
-          child: ListView.builder(
-            itemCount: availableGrades.length,
-            itemBuilder: (context, index) {
-              var gradeData = availableGrades[index];
-              double progress = calculateProgress(gradeData['subtopics']);
-              int percentage = (progress * 100).toInt();
-
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => PlaceholderPage(grade: gradeData['grade']),
-                    ),
-                  );
-                },
-                child: Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    side: BorderSide(color: Colors.blue.shade300, width: 2),
-                  ),
-                  elevation: 3,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          width: 50,
-                          child: Stack(
-                            fit: StackFit.expand,
-                            children: [
-                              CircularProgressIndicator(
-                                value: progress,
-                                strokeWidth: 5,
-                                backgroundColor: Colors.grey.shade300,
-                                valueColor: AlwaysStoppedAnimation(Colors.blue),
-                              ),
-                              Center(
-                                child: Text(
-                                  "$percentage%",
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Grade ${gradeData['grade']}",
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                "$percentage% completed",
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const Icon(Icons.play_arrow, color: Colors.green, size: 30),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class PlaceholderPage extends StatelessWidget {
-  final String grade;
-  const PlaceholderPage({super.key, required this.grade});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Grade $grade")),
-      body: Center(child: Text("This is a placeholder for Grade $grade")),
+      appBar: AppBar(title: const Text("Choose Lesson")),
+      body: const Center(child: Text("Lesson selection goes here!")),
     );
   }
 }
