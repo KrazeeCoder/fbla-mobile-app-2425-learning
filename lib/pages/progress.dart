@@ -174,6 +174,7 @@ class _ProgressPageState extends State<ProgressPage> {
                       mainAxisAlignment: MainAxisAlignment
                           .center, // Center content vertically
                       children: [
+
                         Text(
                           _data!["level"].toString(),
                           style: TextStyle(
