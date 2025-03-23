@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import './security.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-/// **Logs out the current user and clears session**
+  /// **Logs out the current user and clears session**
   Future<void> logoutUser() async {
     try {
       await _auth.signOut(); // Sign out the user
@@ -14,8 +15,8 @@ class AuthService {
       print("❌ Logout Error: $e");
     }
   }
-  
-  /// **Registers a new user with email and password**
+
+  /// Registers a new user with email and password, and stores encrypted info
   Future<String?> registerUser({
     required String email,
     required String password,
@@ -25,7 +26,7 @@ class AuthService {
   }) async {
     try {
       UserCredential userCredential =
-      await _auth.createUserWithEmailAndPassword(
+          await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -33,21 +34,35 @@ class AuthService {
       User? user = userCredential.user;
       if (user == null) return "Invalid registration information";
 
+      await setLoginUserKeys(user);
+
+      // 🔐 Encrypt user info
+      final encryptedUserInfo = await encryptUserInfoWithIV(
+        user.uid,
+        email,
+        firstName,
+        lastName,
+        '', // profilePic is stored under settings, keep this empty
+      );
+
+      // Store encrypted fields in Firestore, keep profilePic under settings
       await _firestore.collection('users').doc(user.uid).set({
-        'email': email,
-        'firstName': firstName,
-        'lastName': lastName,
+        'email': encryptedUserInfo['email'],
+        'firstName': encryptedUserInfo['firstname'],
+        'lastName': encryptedUserInfo['lastname'],
+        'iv': encryptedUserInfo['iv'],
         'age': age,
         'currentLevel': 0,
         'currentXP': 0,
         'settings': {
           'fontSize': 14,
-          'profilePic': "",
+          'profilePic':
+              "", // This is where profilePic stays (unencrypted or encrypted separately later)
           'stayOnTrack': false,
         }
       });
 
-      // Store subtopicsCompleted with timestamps
+      // Initialize subtopics collection
       await _firestore.collection('user_subtopics').doc(user.uid).set({
         'subtopicsCompleted': [],
       });
@@ -75,6 +90,7 @@ class AuthService {
       print("❌ Error updating subtopics: $e");
     }
   }
+
   /// **Logs in a user with email and password**
   Future<User?> loginUser(String email, String password) async {
     try {
@@ -106,7 +122,7 @@ class AuthService {
     }
   }
 
-  /// **Registers a new LinkedIn user in Firestore**
+  /// **Registers a new LinkedIn user in Firestore with encryption**
   Future<void> registerUserFromLinkedIn({
     required String userId,
     required String email,
@@ -115,32 +131,49 @@ class AuthService {
     required String? profilePic,
   }) async {
     try {
-      // Save LinkedIn user data with structured settings
-    await _firestore.collection('users').doc(userId).set({
-      'email': email,
-      'firstName': firstName,
-      'lastName': lastName,
-      'age': 0, // ✅ Default age set to 0
-      'currentLevel': 0,
-      'currentXP': 0,
-      'settings': {  // ✅ Properly grouping settings
-        'fontSize': 14,
-        'profilePic': profilePic ?? "",
-        'stayOnTrack': false,
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null || user.uid != userId) {
+        throw Exception("Logged-in user doesn't match LinkedIn UID.");
       }
-    }, SetOptions(merge: true)); // ✅ Ensures existing data is not overwritten
 
+      // 🔐 Step 1: Set encryption key for this LinkedIn user
+      await setLoginUserKeys(user);
 
-      // Create `user_subtopics` collection
-      await _firestore.collection('user_subtopics').doc(userId).set({
+      // 🔒 Step 2: Encrypt user info (email, firstName, lastName)
+      final encryptedUserInfo = await encryptUserInfoWithIV(
+        user.uid,
+        email,
+        firstName,
+        lastName,
+        profilePic ??
+            '', // Provide a default empty string if profilePic is null
+      );
+
+      // 📝 Step 3: Save encrypted user info in Firestore
+      await _firestore.collection('users').doc(user.uid).set({
+        'email': encryptedUserInfo['email'],
+        'firstName': encryptedUserInfo['firstname'],
+        'lastName': encryptedUserInfo['lastname'],
+        'iv': encryptedUserInfo['iv'],
+        'age': 0, // default age
+        'currentLevel': 0,
+        'currentXP': 0,
+        'settings': {
+          'fontSize': 14,
+          'profilePic': encryptedUserInfo['profilePic'] ?? "",
+          'stayOnTrack': false,
+        }
+      }, SetOptions(merge: true));
+
+      // 📚 Step 4: Initialize user_subtopics
+      await _firestore.collection('user_subtopics').doc(user.uid).set({
         'subtopicsCompleted': [],
       });
 
-      print("✅ New LinkedIn user added to Firestore!");
+      print("✅ LinkedIn user registered with encryption!");
     } catch (e) {
-      print("❌ Error registering LinkedIn user: $e");
+      print("❌ Error registering LinkedIn user with encryption: $e");
     }
   }
 }
-
-

@@ -8,6 +8,7 @@ import 'signup_screen.dart';
 import 'home.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
 import '/auth_utility.dart';
+import '/security.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -18,7 +19,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthService _authService =
-  AuthService(); // Avoid redundant instantiation
+      AuthService(); // Avoid redundant instantiation
   bool isLoading = false;
   bool rememberMe = false;
   bool obscureText = true; // Password visibility toggle
@@ -40,6 +41,8 @@ class _SignInScreenState extends State<SignInScreen> {
       );
 
       if (user != null) {
+        await setLoginUserKeys(user);
+
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => MainPage()));
       } else {
@@ -51,7 +54,6 @@ class _SignInScreenState extends State<SignInScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Login failed: ${e.toString()}")));
     }
-
     setState(() => isLoading = false);
   }
 
@@ -83,7 +85,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
       print("🔵 Signing in with Firebase Custom Token...");
       UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+          await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
 
       User? user = userCredential.user;
       if (user == null) {
@@ -141,6 +143,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
       if (!exists) {
         print("🟢 New LinkedIn user detected, saving to Firestore...");
+        await setLoginUserKeys(user);
+
         await _authService.registerUserFromLinkedIn(
           userId: user.uid,
           email: email,
@@ -153,6 +157,7 @@ class _SignInScreenState extends State<SignInScreen> {
       }
 
       print("🚀 Redirecting to MainPage...");
+
       if (mounted) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => MainPage()));
@@ -218,12 +223,12 @@ class _SignInScreenState extends State<SignInScreen> {
             isLoading
                 ? CircularProgressIndicator()
                 : ElevatedButton(
-              style:
-              ElevatedButton.styleFrom(backgroundColor: Colors.green),
-              onPressed: signInWithEmail,
-              child:
-              Text("Sign In", style: TextStyle(color: Colors.white)),
-            ),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                    onPressed: signInWithEmail,
+                    child:
+                        Text("Sign In", style: TextStyle(color: Colors.white)),
+                  ),
             TextButton(
               onPressed: () => Navigator.push(
                   context, MaterialPageRoute(builder: (_) => SignUpScreen())),
