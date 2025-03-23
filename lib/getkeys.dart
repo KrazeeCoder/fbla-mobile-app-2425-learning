@@ -219,6 +219,7 @@ class UserSession {
   }) {
     this.uid = uid;
     this.secureKey = secureKey;
+    print("UserSession initialized with: $uid, $secureKey");
   }
 
   void clear() {

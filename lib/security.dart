@@ -142,7 +142,6 @@ Future<Map<String, String>> encryptUserInfoWithIV(
   return encryptedData;
 }
 
-// Decrypt user details from Firestore
 Future<Map<String, String>?> decryptUserDetails(String userId) async {
   try {
     DocumentSnapshot userDoc =
@@ -157,6 +156,9 @@ Future<Map<String, String>?> decryptUserDetails(String userId) async {
     String? encodedIV = userData['iv'];
     Uint8List key = await getEncryptionKey();
 
+    print("Decrypting user data for $userId");
+    print("encryption key: ${base64Encode(key)}");
+
     Map<String, String> decryptedDetails = {};
 
     if (encodedIV == null || encodedIV.trim().isEmpty) {
@@ -164,18 +166,38 @@ Future<Map<String, String>?> decryptUserDetails(String userId) async {
       decryptedDetails['email'] = userData['email'] ?? '';
       decryptedDetails['firstname'] = userData['firstName'] ?? '';
       decryptedDetails['lastname'] = userData['lastName'] ?? '';
-      decryptedDetails['profilePic'] = userData['profilePic'] ?? '';
+      decryptedDetails['profilePic'] =
+          userData['settings']?['profilePic'] ?? '';
     } else {
       Uint8List iv = base64Decode(encodedIV);
 
-      decryptedDetails['email'] =
-          utf8.decode(aesGcmDecrypt(base64Decode(userData['email']), key, iv));
-      decryptedDetails['firstname'] = utf8
-          .decode(aesGcmDecrypt(base64Decode(userData['firstName']), key, iv));
-      decryptedDetails['lastname'] = utf8
-          .decode(aesGcmDecrypt(base64Decode(userData['lastName']), key, iv));
-      decryptedDetails['profilePic'] = utf8
-          .decode(aesGcmDecrypt(base64Decode(userData['profilePic']), key, iv));
+      if (userData['email'] != null) {
+        decryptedDetails['email'] = utf8.decode(
+          aesGcmDecrypt(base64Decode(userData['email']), key, iv),
+        );
+      }
+
+      if (userData['firstName'] != null) {
+        decryptedDetails['firstname'] = utf8.decode(
+          aesGcmDecrypt(base64Decode(userData['firstName']), key, iv),
+        );
+      }
+
+      if (userData['lastName'] != null) {
+        decryptedDetails['lastname'] = utf8.decode(
+          aesGcmDecrypt(base64Decode(userData['lastName']), key, iv),
+        );
+      }
+
+      if (userData['settings']?['profilePic'] != null) {
+        decryptedDetails['profilePic'] = utf8.decode(
+          aesGcmDecrypt(
+            base64Decode(userData['settings']['profilePic']),
+            key,
+            iv,
+          ),
+        );
+      }
     }
 
     return decryptedDetails;

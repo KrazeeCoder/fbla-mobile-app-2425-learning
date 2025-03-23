@@ -9,6 +9,7 @@ import 'pages/learn.dart';
 import 'pages/settings.dart';
 import 'firebase_options.dart';
 import 'pages/signin_screen.dart';
+import '/security.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,6 +77,7 @@ class AuthWrapper extends StatelessWidget {
           return const Scaffold(
               body: Center(child: CircularProgressIndicator())); // Show loading
         } else if (snapshot.hasData) {
+          setLoginUserKeys(snapshot.data!);
           return const MainPage(); // ✅ If user is logged in → Show Home Page
         } else {
           return SignInScreen(); // ❌ If not logged in → Show Login Screen
@@ -101,7 +103,9 @@ class _MainPageState extends State<MainPage> {
     LearnPage(),
     ProgressPage(),
     SettingsPage(),
-    CypherUI(subtopicId: "f51f2584-8b3b-42f2-b10c-3c47f93fbd37",)
+    CypherUI(
+      subtopicId: "f51f2584-8b3b-42f2-b10c-3c47f93fbd37",
+    )
   ];
 
   void _onItemTapped(int index) {
@@ -145,7 +149,3 @@ class _MainPageState extends State<MainPage> {
     );
   }
 }
-
-
-
-

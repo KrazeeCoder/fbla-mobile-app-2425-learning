@@ -176,4 +176,32 @@ class AuthService {
       print("❌ Error registering LinkedIn user with encryption: $e");
     }
   }
+
+  Future<void> updateUserProfile({
+    required String uid,
+    required String email,
+    required String firstName,
+    required String lastName,
+    required String profilePic,
+  }) async {
+    // 🔒 Step 1: Encrypt all fields using your utility
+    final encryptedUserInfo = await encryptUserInfoWithIV(
+      uid,
+      email,
+      firstName,
+      lastName,
+      profilePic,
+    );
+
+    // 📝 Step 2: Save encrypted user info in Firestore
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      'email': encryptedUserInfo['email'],
+      'firstName': encryptedUserInfo['firstname'],
+      'lastName': encryptedUserInfo['lastname'],
+      'iv': encryptedUserInfo['iv'],
+      'settings': {
+        'profilePic': encryptedUserInfo['profilepic'] ?? "",
+      }
+    }, SetOptions(merge: true)); // ✅ Prevents overwriting unrelated fields
+  }
 }
