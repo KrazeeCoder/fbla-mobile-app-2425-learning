@@ -145,19 +145,33 @@ Future<Map<String, String>?> decryptUserDetails(String userId) async {
     if (!userDoc.exists) return null;
 
     final userData = userDoc.data() as Map<String, dynamic>?;
-
     if (userData == null) return null;
+
+    print("User data: $userData");
 
     String? encodedIV = userData['iv'];
     Uint8List key = await getEncryptionKey();
 
     print("Decrypting user data for $userId");
-    print("encryption key: ${base64Encode(key)}");
+    print("Encryption key: ${base64Encode(key)}");
 
     Map<String, String> decryptedDetails = {};
 
+    // Helper to safely decode and decrypt
+    String safeDecrypt(String? base64String, Uint8List key, Uint8List iv) {
+      if (base64String == null || base64String.trim().isEmpty) return '';
+      try {
+        return utf8.decode(
+          aesGcmDecrypt(base64Decode(base64String), key, iv),
+        );
+      } catch (e) {
+        print("⚠️ Error decrypting field: $e");
+        return '';
+      }
+    }
+
     if (encodedIV == null || encodedIV.trim().isEmpty) {
-      // No IV means unencrypted
+      // Unencrypted fallback
       decryptedDetails['email'] = userData['email'] ?? '';
       decryptedDetails['firstname'] = userData['firstName'] ?? '';
       decryptedDetails['lastname'] = userData['lastName'] ?? '';
@@ -166,38 +180,19 @@ Future<Map<String, String>?> decryptUserDetails(String userId) async {
     } else {
       Uint8List iv = base64Decode(encodedIV);
 
-      if (userData['email'] != null) {
-        decryptedDetails['email'] = utf8.decode(
-          aesGcmDecrypt(base64Decode(userData['email']), key, iv),
-        );
-      }
+      decryptedDetails['email'] = safeDecrypt(userData['email'], key, iv);
+      decryptedDetails['firstname'] =
+          safeDecrypt(userData['firstName'], key, iv);
+      decryptedDetails['lastname'] = safeDecrypt(userData['lastName'], key, iv);
 
-      if (userData['firstName'] != null) {
-        decryptedDetails['firstname'] = utf8.decode(
-          aesGcmDecrypt(base64Decode(userData['firstName']), key, iv),
-        );
-      }
-
-      if (userData['lastName'] != null) {
-        decryptedDetails['lastname'] = utf8.decode(
-          aesGcmDecrypt(base64Decode(userData['lastName']), key, iv),
-        );
-      }
-
-      if (userData['settings']?['profilePic'] != null) {
-        decryptedDetails['profilePic'] = utf8.decode(
-          aesGcmDecrypt(
-            base64Decode(userData['settings']['profilePic']),
-            key,
-            iv,
-          ),
-        );
-      }
+      final profilePicEncrypted = userData['settings']?['profilePic'];
+      decryptedDetails['profilePic'] =
+          safeDecrypt(profilePicEncrypted, key, iv);
     }
 
     return decryptedDetails;
   } catch (e) {
-    print("Error decrypting user data: $e");
+    print("❌ Error decrypting user data: $e");
     return null;
   }
 }
