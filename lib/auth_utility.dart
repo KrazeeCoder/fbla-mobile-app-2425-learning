@@ -25,6 +25,7 @@ class AuthService {
     required int age,
   }) async {
     try {
+      print("🔐 Registering user with encryption for $email");
       UserCredential userCredential =
           await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -106,18 +107,39 @@ class AuthService {
     }
   }
 
-  /// **Checks if a user exists in Firestore by email**
   Future<bool> userExists(String email) async {
     try {
-      QuerySnapshot result = await _firestore
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .limit(1)
-          .get();
+      // Attempt sign-in with wrong password to check if email exists
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: "random-wrong-password",
+      );
+      return true; // this shouldn't succeed
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'user-not-found') {
+        return false; // ✅ Email does NOT exist
+      } else if (e.code == 'invalid-credential') {
+        print("❌  error: ${e.code} - ${e.message}");
 
-      return result.docs.isNotEmpty;
+        return true; // ✅ Email exists
+      } else {
+        print("❌ FirebaseAuth error: ${e.code} - ${e.message}");
+        return false;
+      }
     } catch (e) {
-      print("❌ Error checking user existence: $e");
+      print("❌ Unexpected error checking user existence: $e");
+      return false;
+    }
+  }
+
+  Future<bool> useridExists(String aid) async {
+    try {
+      final docSnapshot =
+          await FirebaseFirestore.instance.collection('users').doc(aid).get();
+
+      return docSnapshot.exists;
+    } catch (e) {
+      print("❌ Error checking document existence: $e");
       return false;
     }
   }
@@ -131,6 +153,7 @@ class AuthService {
     required String? profilePic,
   }) async {
     try {
+      print("🔐 Registering LinkedIn user with encryption for $userId");
       final user = FirebaseAuth.instance.currentUser;
 
       if (user == null || user.uid != userId) {
@@ -185,6 +208,7 @@ class AuthService {
     required String profilePic,
   }) async {
     // 🔒 Step 1: Encrypt all fields using your utility
+    print("🔐 Updating profile Encrypting user profile for $uid");
     final encryptedUserInfo = await encryptUserInfoWithIV(
       uid,
       email,
@@ -200,7 +224,7 @@ class AuthService {
       'lastName': encryptedUserInfo['lastname'],
       'iv': encryptedUserInfo['iv'],
       'settings': {
-        'profilePic': encryptedUserInfo['profilepic'] ?? "",
+        'profilePic': encryptedUserInfo['profilePic'] ?? "",
       }
     }, SetOptions(merge: true)); // ✅ Prevents overwriting unrelated fields
   }

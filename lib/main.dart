@@ -10,12 +10,15 @@ import 'pages/settings.dart';
 import 'firebase_options.dart';
 import 'pages/signin_screen.dart';
 import '/security.dart';
+import 'package:fbla_mobile_2425_learning_app/getkeys.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await ApiService.initialize();
+
   runApp(const MyApp());
 }
 
@@ -68,6 +71,26 @@ class MyApp extends StatelessWidget {
 
 // ✅ Decides whether to show Login Screen or Home Page
 class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
+
+  Future<bool> checkUserStillExists(User user) async {
+    try {
+      await user.reload(); // Tries to get fresh data from Firebase
+      if (FirebaseAuth.instance.currentUser == null) {
+        return false;
+      }
+      return true;
+    } catch (e) {
+      // Handles cases like user deleted manually or invalid token
+      if (e is FirebaseAuthException &&
+          (e.code == 'user-not-found' || e.code == 'invalid-user-token')) {
+        await FirebaseAuth.instance.signOut();
+        return false;
+      }
+      return false;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
@@ -75,12 +98,27 @@ class AuthWrapper extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-              body: Center(child: CircularProgressIndicator())); // Show loading
+              body: Center(child: CircularProgressIndicator()));
         } else if (snapshot.hasData) {
-          setLoginUserKeys(snapshot.data!);
-          return const MainPage(); // ✅ If user is logged in → Show Home Page
+          return FutureBuilder<bool>(
+            future: checkUserStillExists(snapshot.data!),
+            builder: (context, existenceSnapshot) {
+              if (existenceSnapshot.connectionState ==
+                  ConnectionState.waiting) {
+                return const Scaffold(
+                    body: Center(child: CircularProgressIndicator()));
+              }
+
+              if (existenceSnapshot.hasData && existenceSnapshot.data == true) {
+                setLoginUserKeys(snapshot.data!);
+                return const MainPage(); // ✅ User exists → Proceed
+              } else {
+                return SignInScreen(); // ❌ User deleted → Go to sign-in
+              }
+            },
+          );
         } else {
-          return SignInScreen(); // ❌ If not logged in → Show Login Screen
+          return SignInScreen(); // ❌ No logged-in user
         }
       },
     );

@@ -80,7 +80,6 @@ class ApiService {
   Future<Uint8List> getEncryptionKeyfromVault(
       Map<String, dynamic> requestBody) async {
     final signature = generateHMACSignature(requestBody);
-    print("Signature: $signature");
 
     int retryCount = 0;
     const maxRetries = 3;
@@ -94,10 +93,6 @@ class ApiService {
       "x-signature": signature,
     };
 
-    print("🔐 Requesting Encryption Key from Vault...");
-    print("🔗 URL: $url");
-    print("📦 Request Body: ${jsonEncode(requestBody)}");
-    print("🛡️ Headers:");
     headers.forEach((key, value) => print("   $key: $value"));
 
     while (retryCount < maxRetries) {
@@ -108,29 +103,22 @@ class ApiService {
           body: jsonEncode(requestBody),
         );
 
-        print("📬 Response Status: ${response.statusCode}");
-        print("📬 Response Body: ${response.body}");
-
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
 
           if (responseData.containsKey('key')) {
-            print("✅ Successfully received encryption key from vault.");
             return base64Decode(responseData['key']);
           } else {
             throw Exception("Key not found in the response body.");
           }
         } else {
-          print("❌ Failed to get encryption key: ${response.body}");
           throw Exception(
               "Error: ${response.statusCode} - ${response.reasonPhrase}");
         }
       } catch (e) {
         retryCount++;
-        print("⚠️ Attempt $retryCount failed: $e");
 
         if (retryCount >= maxRetries) {
-          print("🛑 Error in getEncryptionKey after $maxRetries attempts: $e");
           throw Exception(
               "Failed to retrieve encryption key after retries: $e");
         }
@@ -151,16 +139,13 @@ class ApiService {
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
-        print("token generate success ${responseData['token']}");
 
         return responseData['token'];
       } else {
-        log("Failed to get Firebase token: ${response.body}");
         throw Exception(
             "Error: ${response.statusCode} - ${response.reasonPhrase}");
       }
     } catch (e) {
-      log("Error in getFirebaseToken: $e");
       throw Exception("Failed to retrieve Firebase token: $e");
     }
   }
@@ -188,7 +173,6 @@ Future<Map<String, String>> fetchRemoteConfig() async {
     final hmacSecret = remoteConfig.getString('hmac_secret');
     final authToken = remoteConfig.getString('auth_token');
 
-    print('Fetched remote config: $hmacSecret, $authToken');
     return {
       'hmac_secret': hmacSecret,
       'auth_token': authToken,
@@ -219,7 +203,6 @@ class UserSession {
   }) {
     this.uid = uid;
     this.secureKey = secureKey;
-    print("UserSession initialized with: $uid, $secureKey");
   }
 
   void clear() {
@@ -229,7 +212,6 @@ class UserSession {
 
   void dispose() {
     clear();
-    log('UserSession disposed');
   }
 
   @override

@@ -139,7 +139,7 @@ class _SignInScreenState extends State<SignInScreen> {
         throw Exception("❌ Email is still missing after Firebase sign-in!");
       }
 
-      bool exists = await _authService.userExists(email!);
+      bool exists = await _authService.useridExists(user.uid);
 
       if (!exists) {
         print("🟢 New LinkedIn user detected, saving to Firestore...");
@@ -147,7 +147,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
         await _authService.registerUserFromLinkedIn(
           userId: user.uid,
-          email: email,
+          email: email ?? '',
           firstName: displayName?.split(" ").first ?? "Unknown",
           lastName: displayName?.split(" ").skip(1).join(" ") ?? "Unknown",
           profilePic: photoUrl,

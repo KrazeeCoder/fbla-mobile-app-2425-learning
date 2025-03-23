@@ -11,18 +11,12 @@ import 'getkeys.dart'; // Your ApiService and UserSession implementation
 // Set user keys after login
 Future<void> setLoginUserKeys(User user) async {
   String? token = await user.getIdToken();
-  await ApiService.initialize();
   final apiService = ApiService.instance;
 
   final requestBodyForKey = {'token': token};
 
-  print('token: $token');
-
   final encryptionKey =
       await apiService.getEncryptionKeyfromVault(requestBodyForKey);
-
-  print("Encryption Key: ${base64Encode(encryptionKey)}");
-  print("User UID: ${user.uid}");
 
   UserSession.instance.initialize(
     uid: user.uid,
@@ -138,6 +132,7 @@ Future<Map<String, String>> encryptUserInfoWithIV(
   encryptedData['profilePic'] =
       base64Encode(aesGcmEncrypt(utf8.encode(profilepic), key, iv));
   encryptedData['iv'] = base64Encode(iv);
+  print("Encrypted data: $encryptedData");
 
   return encryptedData;
 }
