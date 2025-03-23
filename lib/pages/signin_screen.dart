@@ -150,7 +150,7 @@ class _SignInScreenState extends State<SignInScreen> {
           email: email ?? '',
           firstName: displayName?.split(" ").first ?? "Unknown",
           lastName: displayName?.split(" ").skip(1).join(" ") ?? "Unknown",
-          profilePic: photoUrl,
+          profilePic: user?.photoURL,
         );
       } else {
         print("🔵 Existing LinkedIn user detected, skipping Firestore update.");

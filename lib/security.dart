@@ -122,6 +122,7 @@ Future<Map<String, String>> encryptUserInfoWithIV(
 
   print("Encrypting user data for $userId");
   print("encryption key: ${base64Encode(key)}");
+  print("profilepic tpo encyrpt: $profilepic");
 
   encryptedData['email'] =
       base64Encode(aesGcmEncrypt(utf8.encode(email), key, iv));
@@ -188,6 +189,7 @@ Future<Map<String, String>?> decryptUserDetails(String userId) async {
       final profilePicEncrypted = userData['settings']?['profilePic'];
       decryptedDetails['profilePic'] =
           safeDecrypt(profilePicEncrypted, key, iv);
+      print("Decrypted data: $decryptedDetails['profilePic'] ");
     }
 
     return decryptedDetails;

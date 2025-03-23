@@ -162,7 +162,7 @@ class AuthService {
 
       // 🔐 Step 1: Set encryption key for this LinkedIn user
       await setLoginUserKeys(user);
-
+      print('profile pic from LinkedIn: $profilePic');
       // 🔒 Step 2: Encrypt user info (email, firstName, lastName)
       final encryptedUserInfo = await encryptUserInfoWithIV(
         user.uid,

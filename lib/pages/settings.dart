@@ -20,9 +20,15 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
-  final TextEditingController _profilePicController = TextEditingController();
+  final TextEditingController _profilePicUrlController =
+      TextEditingController();
 
   bool isLoading = false;
+  bool stayOnTrack = false;
+  double fontSize = 14;
+  int currentXP = 0;
+  int currentLevel = 0;
+  String profilePicUrl = '';
 
   @override
   void initState() {
@@ -34,15 +40,25 @@ class _SettingsPageState extends State<SettingsPage> {
     final user = _auth.currentUser;
     if (user == null) return;
 
-    final decryptedData = await decryptUserDetails(user.uid);
-    print("🔐 Decrypted Data: $decryptedData");
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+    final settings = doc['settings'] ?? {};
 
-    if (decryptedData != null) {
+    setState(() {
+      currentLevel = doc['currentLevel'] ?? 0;
+      currentXP = doc['currentXP'] ?? 0;
+      stayOnTrack = settings['stayOnTrack'] ?? false;
+      fontSize = (settings['fontSize'] ?? 14).toDouble();
+    });
+
+    final decrypted = await decryptUserDetails(user.uid);
+    if (decrypted != null) {
       setState(() {
-        _emailController.text = decryptedData['email'] ?? '';
-        _firstNameController.text = decryptedData['firstname'] ?? '';
-        _lastNameController.text = decryptedData['lastname'] ?? '';
-        _profilePicController.text = decryptedData['profilePic'] ?? '';
+        _emailController.text = decrypted['email'] ?? '';
+        _firstNameController.text = decrypted['firstname'] ?? '';
+        _lastNameController.text = decrypted['lastname'] ?? '';
+        profilePicUrl = decrypted['profilePic'] ?? '';
+        print("Profile Pic URL: $profilePicUrl");
+        _profilePicUrlController.text = profilePicUrl;
       });
     }
   }
@@ -56,23 +72,54 @@ class _SettingsPageState extends State<SettingsPage> {
     try {
       await _authService.updateUserProfile(
         uid: user.uid,
-        email: _emailController.text.trim(), // 🔐 pass email for encryption
+        email: _emailController.text.trim(),
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
-        profilePic: _profilePicController.text.trim(),
+        profilePic: _profilePicUrlController.text.trim(),
       );
+
+      await _firestore.collection('users').doc(user.uid).update({
+        'settings.stayOnTrack': stayOnTrack,
+        'settings.fontSize': fontSize,
+      });
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('✅ Profile updated')),
       );
     } catch (e) {
-      print("❌ Failed to update profile: $e");
+      print("❌ Update error: $e");
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('❌ Error updating profile: $e')),
       );
     } finally {
       setState(() => isLoading = false);
     }
+  }
+
+  void _editProfilePicture() {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Update Profile Picture URL"),
+        content: TextField(
+          controller: _profilePicUrlController,
+          decoration: const InputDecoration(
+            labelText: "Profile Picture URL",
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                profilePicUrl = _profilePicUrlController.text.trim();
+              });
+              Navigator.pop(context);
+            },
+            child: const Text("Save"),
+          ),
+        ],
+      ),
+    );
   }
 
   void _showLogoutDialog() {
@@ -109,41 +156,61 @@ class _SettingsPageState extends State<SettingsPage> {
     _emailController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
-    _profilePicController.dispose();
+    _profilePicUrlController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Settings"),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text("Settings"), centerTitle: true),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
+                  // Profile Picture
+                  Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        backgroundImage: profilePicUrl.isNotEmpty
+                            ? NetworkImage(profilePicUrl)
+                            : const AssetImage('assets/default_avatar.png')
+                                as ImageProvider,
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.deepPurple),
+                        onPressed: _editProfilePicture,
+                      )
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Email (read-only)
                   TextFormField(
                     controller: _emailController,
                     readOnly: true,
                     decoration: InputDecoration(
                       labelText: 'Email',
-                      border: const OutlineInputBorder(),
-                      fillColor: Colors.grey.shade200,
+                      border: OutlineInputBorder(),
+                      fillColor: Colors.grey.shade100,
                       filled: true,
-                      prefixIcon: const Icon(Icons.email),
+                      prefixIcon: const Icon(Icons.email_outlined),
                     ),
+                    style: TextStyle(color: Colors.grey.shade700),
                   ),
                   const SizedBox(height: 16),
+
+                  // Name Fields
                   TextField(
                     controller: _firstNameController,
                     decoration: const InputDecoration(
                       labelText: 'First Name',
-                      border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -151,40 +218,86 @@ class _SettingsPageState extends State<SettingsPage> {
                     controller: _lastNameController,
                     decoration: const InputDecoration(
                       labelText: 'Last Name',
-                      border: OutlineInputBorder(),
                       prefixIcon: Icon(Icons.person_outline),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _profilePicController,
-                    decoration: const InputDecoration(
-                      labelText: 'Profile Picture URL',
                       border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.image),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 20),
+
+                  // XP & Level (Read-Only Display)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Chip(
+                        label: Text("Level: $currentLevel"),
+                        avatar: const Icon(Icons.star, color: Colors.amber),
+                      ),
+                      Chip(
+                        label: Text("XP: $currentXP"),
+                        avatar:
+                            const Icon(Icons.flash_on, color: Colors.orange),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Stay On Track Toggle
+                  SwitchListTile(
+                    title: const Text("Stay On Track"),
+                    value: stayOnTrack,
+                    onChanged: (val) => setState(() => stayOnTrack = val),
+                    activeColor: Colors.deepPurple,
+                  ),
+                  const SizedBox(height: 10),
+
+                  // Font Size Slider
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text("Font Size",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
+                      Slider(
+                        min: 10,
+                        max: 24,
+                        divisions: 7,
+                        label: fontSize.toStringAsFixed(0),
+                        value: fontSize,
+                        onChanged: (val) => setState(() => fontSize = val),
+                        activeColor: Colors.deepPurple,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Save Button
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _saveChanges,
-                      child: const Text("Save Changes"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.deepPurple,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                      ),
+                      child: const Text("Save Changes",
+                          style: TextStyle(fontSize: 16)),
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 12),
+
+                  // Logout
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton.icon(
+                    child: OutlinedButton.icon(
                       onPressed: _showLogoutDialog,
                       icon: const Icon(Icons.logout),
                       label: const Text("Logout"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.redAccent,
-                        foregroundColor: Colors.white,
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: Colors.redAccent,
+                        side: const BorderSide(color: Colors.redAccent),
                       ),
                     ),
-                  ),
+                  )
                 ],
               ),
             ),
