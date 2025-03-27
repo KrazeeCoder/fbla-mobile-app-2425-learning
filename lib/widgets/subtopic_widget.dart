@@ -4,9 +4,6 @@ import '../minigames/puzzle_game.dart';
 
 import '../pages/chatbot_screen.dart';
 
-
-
-
 class SubtopicPage extends StatelessWidget {
   final String subtopic;
   final String subtopicId;
@@ -28,71 +25,79 @@ class SubtopicPage extends StatelessWidget {
         title: Text(subtopic),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Stack(
-          children: [SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title Styling
-                Text(
-                  readingTitle,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+      body: Stack(children: [
+        SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Title Styling
+              Text(
+                readingTitle,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
-                const SizedBox(height: 16),
+              ),
+              const SizedBox(height: 16),
 
-                // Splitting the content into formatted text widgets
-                ..._formatText(readingContent),
+              // Splitting the content into formatted text widgets
+              ..._formatText(readingContent),
 
-                const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-                // Button to Start Game
-                Center(
-                  child: ElevatedButton(
+              // Button to Start Game
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            PuzzleScreen(subtopicId: subtopicId),
+                      ),
+                    );
+                  },
+                  child: const Text("Start Puzzle Game"),
+                ),
+              ),
+              // Button to Start Game
+              Center(
+                child: ElevatedButton(
                     onPressed: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => PuzzleScreen(subtopicId: subtopicId),
+                          builder: (context) =>
+                              MazeGame(subtopicId: subtopicId),
                         ),
                       );
                     },
-                    child: const Text("Start Puzzle Game"),
-                  ),
-                ),
-                // Button to Start Game
-                Center(
-                  child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MazeGame(subtopicId: subtopicId),
-                          ),
-                        );
-                      },
-                      child: const Text("Start maze Game")
-                  ),
-                )],
-            ),
-            ),
-            Positioned(
-                right: 20,
-                bottom: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    shape: CircleBorder(), // Makes the button circular
-                    padding: EdgeInsets.all(20), // Adjust padding to control the size
-                  ),
-                  onPressed: () {Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ChatbotScreen(topicId: subtopicId.toString(),)),
-                  );},
-                  child: Icon(Icons.live_help),
-                )),
+                    child: const Text("Start maze Game")),
+              )
+            ],
+          ),
+        ),
+        Positioned(
+            right: 20,
+            bottom: 50,
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                shape: CircleBorder(), // Makes the button circular
+                padding:
+                    EdgeInsets.all(20), // Adjust padding to control the size
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ChatbotScreen(
+                            topicId: subtopicId.toString(),
+                          )),
+                );
+              },
+              child: Icon(Icons.live_help),
+            )),
       ]),
     );
   }
@@ -131,7 +136,8 @@ class SubtopicPage extends StatelessWidget {
                   child: RichText(
                     text: TextSpan(
                       style: const TextStyle(fontSize: 16, color: Colors.black),
-                      children: _formatBoldText(line.replaceFirst("- ", "")), // Apply bold formatting inside bullet points
+                      children: _formatBoldText(line.replaceFirst("- ",
+                          "")), // Apply bold formatting inside bullet points
                     ),
                   ),
                 ),

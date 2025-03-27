@@ -1,8 +1,11 @@
-import 'package:fbla_mobile_2425_learning_app/firebase_utility.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:core';
-
 import '../jsonUtility.dart';
+import '../minigames/cypher_game.dart';
+import '../minigames/maze_game.dart';
+import '../minigames/puzzle_game.dart';
+import '../widgets/subtopic_widget.dart';
 
 class PathwayUI extends StatefulWidget {
   final int grade;
@@ -26,46 +29,36 @@ class _PathwayUIState extends State<PathwayUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Learning Pathway'),
-      ),
+      appBar: AppBar(title: Text('Learning Pathway')),
       body: Column(
         children: [
-          // Grade and Subject Indicator
           Container(
             padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
             decoration: BoxDecoration(
-              color: Colors.blue.withOpacity(0.1), // Light blue background
+              color: Colors.blue.withOpacity(0.1),
               border: Border(
-                bottom: BorderSide(color: Colors.blue.withOpacity(0.2), width: 1),
-              ),
+                  bottom: BorderSide(
+                      color: Colors.blue.withOpacity(0.2), width: 1)),
             ),
             child: Row(
               children: [
-                Icon(
-                  Icons.school, // School icon
-                  color: Colors.blue,
-                  size: 24,
-                ),
+                Icon(Icons.school, color: Colors.blue, size: 24),
                 SizedBox(width: 8),
                 Text(
                   'Grade ${widget.grade} - ${widget.subject}',
                   style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blue,
-                  ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
                 ),
               ],
             ),
           ),
-          // Pathway Steps
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: _pathwayData,
               builder: (context, snapshot) {
                 int stepPos = 0;
-                int offset = 0;
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
@@ -75,7 +68,6 @@ class _PathwayUIState extends State<PathwayUI> {
                 } else {
                   final steps = snapshot.data!;
                   return ListView.builder(
-                    reverse: true,
                     itemCount: steps.length,
                     itemBuilder: (context, index) {
                       final step = steps[index];
@@ -83,11 +75,14 @@ class _PathwayUIState extends State<PathwayUI> {
                         return _buildUnitSeparator(step["title"]);
                       } else {
                         stepPos++;
-                        offset++;
                         return _buildPathwayStep(
                           stepType: step["type"],
                           isCompleted: step["isCompleted"],
+                          isNextToDo: step["isNextToDo"] ?? false,
                           index: stepPos,
+                          subtopicTitle: step["title"],
+                          subtopicId: step["subId"],
+                          readingContent: step["reading"] ?? "",
                         );
                       }
                     },
@@ -106,73 +101,142 @@ class _PathwayUIState extends State<PathwayUI> {
       padding: EdgeInsets.symmetric(vertical: 24.0),
       child: Row(
         children: [
-          Expanded(
-            child: Divider(color: Colors.grey[400], thickness: 1),
-          ),
+          Expanded(child: Divider(color: Colors.grey[400], thickness: 1)),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Text(
-              title,
-              style: TextStyle(color: Colors.grey[600], fontWeight: FontWeight.w500),
-            ),
+            child: Text(title,
+                style: TextStyle(
+                    color: Colors.grey[600], fontWeight: FontWeight.w500)),
           ),
-          Expanded(
-            child: Divider(color: Colors.grey[400], thickness: 1),
-          ),
+          Expanded(child: Divider(color: Colors.grey[400], thickness: 1)),
         ],
       ),
     );
   }
 
-  Widget _buildPathwayStep({required String stepType, required bool isCompleted, required int index}) {
+  Widget _buildPathwayStep({
+    required String stepType,
+    required bool isCompleted,
+    required bool isNextToDo,
+    required int index,
+    required String subtopicTitle,
+    required String subtopicId,
+    required String readingContent,
+  }) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    const List<double> offsets = [0.65, 0.55, 0.45, 0.35, 0.25, 0.35, 0.45, 0.55,];
-    double horizontalOffset = offsets[index % 8] * screenWidth;
+    const List<double> offsets = [
+      0.65,
+      0.55,
+      0.45,
+      0.35,
+      0.25,
+      0.35,
+      0.45,
+      0.55
+    ];
+    double horizontalOffset = offsets[index % offsets.length] * screenWidth;
 
     return Padding(
-      padding: EdgeInsets.only(left: horizontalOffset),
+      padding: EdgeInsets.only(left: horizontalOffset, bottom: 20),
       child: PathwayStep(
         stepType: stepType,
         isCompleted: isCompleted,
+        isNextToDo: isNextToDo,
+        onTap: (isCompleted || isNextToDo)
+            ? () {
+                if (stepType == 'subtopic') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SubtopicPage(
+                        subtopic: subtopicTitle,
+                        subtopicId: subtopicId,
+                        readingTitle: subtopicTitle,
+                        readingContent: readingContent,
+                      ),
+                    ),
+                  );
+                } else if (stepType == 'game') {
+                  final games = [
+                    CypherUI(subtopicId: subtopicId),
+                    MazeGame(subtopicId: subtopicId),
+                    PuzzleScreen(subtopicId: subtopicId),
+                  ];
+                  games.shuffle();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => games.first),
+                  );
+                }
+              }
+            : null,
       ),
     );
   }
 
   Future<List<Map<String, dynamic>>> parsePathwayData() async {
-    Map<String, dynamic> data = await loadJsonData();
-    List<Map<String, dynamic>> pathwayList = [];
-    FirestoreService firestoreService = FirestoreService();
-    List<Map<String, dynamic>>? completed = await firestoreService.getCompleted();
+    final data = await loadJsonData();
+    List<Map<String, dynamic>> rawSteps = [];
 
-    // Iterate through subjects
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final docId =
+        '${userId.replaceAll(':', '_')}_${widget.subject.replaceAll(' ', '')}_Grade${widget.grade}';
+
+    final resumeSnapshot = await FirebaseFirestore.instance
+        .collection('resume_points')
+        .doc(docId)
+        .get();
+    final resumeData = resumeSnapshot.data();
+
+    final resumeSubId = resumeData?['subtopic_id']?.toString();
+    final resumeType = resumeData?['action_type'];
+    final resumeStatus = resumeData?['action_state'];
+
     for (Map<String, dynamic> subjectMap in data["subjects"]) {
       if (subjectMap["name"].toLowerCase() == widget.subject.toLowerCase()) {
-        // Iterate through grades
         for (Map<String, dynamic> gradeMap in subjectMap["grades"]) {
-          if (gradeMap["grade"].toLowerCase() == "grade ${widget.grade.toString()}") {
-            // Safely cast gradeMap["units"] to List<Map<String, dynamic>>
-            List<Map<String, dynamic>> units = List<Map<String, dynamic>>.from(gradeMap["units"]);
+          if (gradeMap["grade"].toLowerCase() ==
+              "grade ${widget.grade.toString()}") {
+            List<Map<String, dynamic>> units =
+                List<Map<String, dynamic>>.from(gradeMap["units"]);
 
-            // Build pathwayList from units
             for (int i = 0; i < units.length; i++) {
-              pathwayList.add({
+              rawSteps.add({
                 "type": "unit_separator",
                 "title": "Unit ${i + 1}: ${units[i]["unit"]}"
               });
 
-              // Add subtopics
-              List<Map<String, dynamic>> subtopics = List<Map<String, dynamic>>.from(units[i]["subtopics"]);
+              List<Map<String, dynamic>> subtopics =
+                  List<Map<String, dynamic>>.from(units[i]["subtopics"]);
+
               for (int j = 0; j < subtopics.length; j++) {
-                pathwayList.add({
+                final sub = subtopics[j];
+                final subId = sub["subtopic_id"].toString();
+
+                final isResumeContent =
+                    resumeType == 'content' && resumeSubId == subId;
+                final isResumeGame =
+                    resumeType == 'game' && resumeSubId == subId;
+
+                rawSteps.add({
                   "type": "subtopic",
-                  "title": subtopics[j]["subtopic"],
-                  "isCompleted": completed?.any((map) => map.containsKey("id") && map["id"] == subtopics[j]["subtopic_id"] && map["type"] == "subtopic"),
+                  "title": sub["subtopic"],
+                  "subId": subId,
+                  "unit": i,
+                  "subIndex": j,
+                  "isResume": isResumeContent,
+                  "isCompleted": false,
+                  "reading": sub["reading"]?["content"] ?? "",
                 });
 
-                pathwayList.add({
+                rawSteps.add({
                   "type": "game",
-                  "title": subtopics[j]["subtopic"],
-                  "isCompleted": completed?.any((map) => map.containsKey("id") && map["id"] == subtopics[j]["subtopic_id"] && map["type"] == "game"),
+                  "title": sub["subtopic"],
+                  "subId": subId,
+                  "unit": i,
+                  "subIndex": j,
+                  "isResume": isResumeGame,
+                  "isCompleted": false,
                 });
               }
             }
@@ -181,64 +245,98 @@ class _PathwayUIState extends State<PathwayUI> {
       }
     }
 
-    return pathwayList;
+    int matchedIndex = rawSteps.indexWhere(
+      (step) => step["type"] != "unit_separator" && step["isResume"] == true,
+    );
+
+    if (matchedIndex != -1) {
+      // ✅ Mark all previous steps as completed
+      for (int i = 0; i < matchedIndex; i++) {
+        if (rawSteps[i]["type"] != "unit_separator") {
+          rawSteps[i]["isCompleted"] = true;
+        }
+      }
+
+      if (resumeStatus == 'in_progress') {
+        // ✅ Highlight current step
+        rawSteps[matchedIndex]["isNextToDo"] = true;
+      } else if (resumeStatus == 'completed') {
+        // ✅ Mark current as completed too
+        rawSteps[matchedIndex]["isCompleted"] = true;
+
+        // ✅ Move to next actionable step
+        for (int i = matchedIndex + 1; i < rawSteps.length; i++) {
+          if (rawSteps[i]["type"] != "unit_separator") {
+            rawSteps[i]["isNextToDo"] = true;
+            break;
+          }
+        }
+      }
+    } else {
+      // No match — fallback to first step
+      for (int i = 0; i < rawSteps.length; i++) {
+        if (rawSteps[i]["type"] != "unit_separator") {
+          rawSteps[i]["isNextToDo"] = true;
+          break;
+        }
+      }
+    }
+
+    return rawSteps;
   }
 }
 
 class PathwayStep extends StatelessWidget {
   final String stepType;
   final bool isCompleted;
+  final bool isNextToDo;
+  final VoidCallback? onTap;
 
-  // Map to associate stepType with icons
   static const Map<String, IconData> stepTypeIcons = {
-    "game": Icons.videogame_asset, // Game icon
-    "subtopic": Icons.menu_book, // Learn icon
-    "quiz": Icons.quiz, // Quiz icon
+    "game": Icons.videogame_asset,
+    "subtopic": Icons.menu_book,
+    "quiz": Icons.quiz,
   };
 
-  PathwayStep({required this.stepType, required this.isCompleted});
+  PathwayStep({
+    required this.stepType,
+    required this.isCompleted,
+    this.isNextToDo = false,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    // Get the icon based on stepType, default to a generic icon if stepType is not found
     final IconData icon = stepTypeIcons[stepType] ?? Icons.help_outline;
+    final Color borderColor = isCompleted
+        ? Colors.green
+        : isNextToDo
+            ? Colors.blue
+            : Colors.grey;
+    final Color bgColor = isCompleted
+        ? Colors.green[100]!
+        : isNextToDo
+            ? Colors.blue[100]!
+            : Colors.grey[200]!;
+    final Color iconColor = isCompleted
+        ? Colors.green
+        : isNextToDo
+            ? Colors.blue
+            : Colors.grey;
 
     return Stack(
-      clipBehavior: Clip.none, // Allow children to overflow without clipping
+      clipBehavior: Clip.none,
       children: [
         OutlinedButton(
+          onPressed: onTap,
           style: OutlinedButton.styleFrom(
             padding: EdgeInsets.all(30),
-            side: BorderSide(
-              color: isCompleted ? Colors.green : Colors.grey,
-              width: 1,
-            ),
+            side: BorderSide(color: borderColor, width: 1),
             shape: CircleBorder(),
-            backgroundColor: isCompleted ? Colors.green[100] : Colors.grey[200],
+            backgroundColor: bgColor,
           ),
-          onPressed: () {},
-          child: Icon(
-            icon,
-            color: isCompleted ? Colors.green : Colors.grey,
-          ),
+          child: Icon(icon, color: iconColor),
         ),
-        if (isCompleted)
-          Positioned(
-            top: -10,
-            left: 50,
-            child: Container(
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.check,
-                size: 16,
-                color: Colors.white,
-              ),
-            ),
-          ),
       ],
     );
   }

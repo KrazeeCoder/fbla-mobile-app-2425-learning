@@ -1,9 +1,6 @@
-import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_homepage.dart';
 import 'package:flutter/material.dart';
-
-import '../widgets/chooseyourownlesson.dart';
-
-
+import 'package:fbla_mobile_2425_learning_app/pages/recent_lessons_homepage_UI.dart';
+import 'package:fbla_mobile_2425_learning_app/pages/chooseyourownlesson_UI.dart';
 
 class LearnPage extends StatelessWidget {
   const LearnPage({super.key});
@@ -24,8 +21,8 @@ class LearnPage extends StatelessWidget {
         ),
         body: const TabBarView(
           children: [
-            RecentLessonsPage(),
-            ChooseLessonPage(),
+            RecentLessonsUIPage(),
+            ChooseLessonUIPage(),
           ],
         ),
       ),
