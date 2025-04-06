@@ -98,7 +98,7 @@ class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget>
                         userProgress: widget.userProgress, // ✅ Map input
                         contentData: snapshot.data!,
                         showSubjectTitle: false,
-                        showPlayButton: true,
+                        showPlayButton: false,
                         onPlayPressed: (grade) {
                           Navigator.push(
                             context,

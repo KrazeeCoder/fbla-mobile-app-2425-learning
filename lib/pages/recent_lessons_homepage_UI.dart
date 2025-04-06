@@ -18,6 +18,8 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
     super.initState();
     final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
     _lessonsFuture = ProgressService.fetchRecentLessons(userId);
+    print("User ID: $userId");
+    print("Lessons Future: $_lessonsFuture.toString()");
   }
 
   @override

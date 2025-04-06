@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 Future<void> updateResumePoint({
   required String userId,
@@ -8,19 +9,18 @@ Future<void> updateResumePoint({
   required String unitName,
   required String subtopicId,
   required String subtopicName,
-  required String actionType, // 'game' or 'content'
+  required String actionType, // 'content' or 'game'
   required String actionState, // 'in_progress' or 'completed'
 }) async {
   try {
-    // Normalize document ID parts
+    // Normalize parts for document ID
     final cleanedUserId = userId.replaceAll(':', '_');
     final cleanedGrade = grade.replaceAll(' ', '');
     final cleanedSubject = subject.replaceAll(' ', '');
 
-    // Construct document ID
     final docId = '${cleanedUserId}_${cleanedSubject}_$cleanedGrade';
 
-    final docRef =
+    final DocumentReference<Map<String, dynamic>> docRef =
         FirebaseFirestore.instance.collection('resume_points').doc(docId);
 
     final data = {
@@ -30,16 +30,55 @@ Future<void> updateResumePoint({
       'unit_name': unitName,
       'subtopic_id': subtopicId,
       'subtopic_name': subtopicName,
-      'action_type': actionType, // e.g., 'game' or 'content'
-      'action_state': actionState, // e.g., 'in_progress' or 'completed'
+      'action_type': actionType,
+      'action_state': actionState,
       'last_accessed': FieldValue.serverTimestamp(),
     };
 
     await docRef.set(data, SetOptions(merge: true));
 
-    print(
-        '✅ Resume point saved for $userId → $grade - $subtopicName [$actionType | $actionState]');
+    print('✅ Resume point updated: $docId [$actionType | $actionState]');
   } catch (e) {
-    print('❌ Error updating resume point: $e');
+    print('❌ Failed to update resume point: $e');
   }
+}
+
+Future<void> markSubtopicAsCompleted({
+  required String subtopicId,
+  required String subtopicTitle,
+  required String unitTitle,
+  required int grade,
+  required int unitId,
+  required String subject,
+}) async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  final userId = user.uid;
+  final now = Timestamp.now();
+
+  final userDocRef =
+      FirebaseFirestore.instance.collection('user_progress').doc(userId);
+
+  // Prepare progress map
+  final progressData = {
+    'subtopic_id': subtopicId,
+    'subtopic': subtopicTitle,
+    'unit': unitTitle,
+    'unit_id': unitId,
+    'grade': grade,
+    'subject': subject,
+    'isCompleted': true,
+    'contentCompleted': true,
+    'contentCompletedAt': now,
+    'quizCompleted': false,
+    'quizCompletedAt': null,
+    'marksEarned': 0,
+    'lastAccessed': now,
+    'lastActivityType': 'reading',
+    'startedAt': now,
+    'updatedAt': now,
+  };
+
+  await userDocRef.set({subtopicId: progressData}, SetOptions(merge: true));
 }

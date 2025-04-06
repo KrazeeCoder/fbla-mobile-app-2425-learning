@@ -83,6 +83,8 @@ class _PathwayUIState extends State<PathwayUI> {
                           subtopicTitle: step["title"],
                           subtopicId: step["subId"],
                           readingContent: step["reading"] ?? "",
+                          unitId: step["unitId"],
+                          unitTitle: step["unitTitle"],
                         );
                       }
                     },
@@ -122,6 +124,8 @@ class _PathwayUIState extends State<PathwayUI> {
     required String subtopicTitle,
     required String subtopicId,
     required String readingContent,
+    required int unitId, // ✅ add this
+    required String unitTitle, // ✅ add this
   }) {
     final double screenWidth = MediaQuery.of(context).size.width;
     const List<double> offsets = [
@@ -153,6 +157,11 @@ class _PathwayUIState extends State<PathwayUI> {
                         subtopicId: subtopicId,
                         readingTitle: subtopicTitle,
                         readingContent: readingContent,
+                        isCompleted: isCompleted,
+                        subject: widget.subject,
+                        grade: widget.grade,
+                        unitId: unitId, // ✅ pass properly
+                        unitTitle: unitTitle,
                       ),
                     ),
                   );
@@ -223,6 +232,8 @@ class _PathwayUIState extends State<PathwayUI> {
                   "title": sub["subtopic"],
                   "subId": subId,
                   "unit": i,
+                  "unitId": units[i]["unit_id"],
+                  "unitTitle": units[i]["unit"],
                   "subIndex": j,
                   "isResume": isResumeContent,
                   "isCompleted": false,
@@ -234,6 +245,8 @@ class _PathwayUIState extends State<PathwayUI> {
                   "title": sub["subtopic"],
                   "subId": subId,
                   "unit": i,
+                  "unitId": units[i]["unit_id"],
+                  "unitTitle": units[i]["unit"],
                   "subIndex": j,
                   "isResume": isResumeGame,
                   "isCompleted": false,

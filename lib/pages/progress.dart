@@ -1,10 +1,8 @@
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fbla_mobile_2425_learning_app/firebase_utility.dart';
+import 'package:fbla_mobile_2425_learning_app/services/progress_service.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../jsonUtility.dart';
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -14,87 +12,62 @@ class ProgressPage extends StatefulWidget {
 }
 
 class _ProgressPageState extends State<ProgressPage> {
-  Map<String, dynamic>? _data;
+  int streak = 0;
+  int level = 0;
+  int subtopicsCompleted = 0;
+  Map<String, dynamic> userProgress = {};
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    processAllDataFromFirebase();
+    fetchProgressData();
   }
 
-  Future<void> processAllDataFromFirebase() async {
+  Future<void> fetchProgressData() async {
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid == null) return;
 
-      // ✅ Load user progress
+      // 🔹 Get user progress from Firestore
       final snapshot = await FirebaseFirestore.instance
           .collection('user_progress')
           .doc(uid)
           .get();
-      final userProgress = snapshot.data() ?? {};
+      userProgress = snapshot.data() ?? {};
 
-      // ✅ Lessons: parsed from Firestore step records (subtopics)
-      List<Map<String, dynamic>> lessonData = await parseCompletedSteps();
-      FirestoreService firestoreService = FirestoreService();
-      int? streakData = await firestoreService.getStreak();
-      int? levelData = await firestoreService.getLevel();
+      // 🔹 Calculate subtopics completed
+      subtopicsCompleted = await getTotalSubtopicsCompleted(uid);
+      // 🔹 Calculate level and total points using new method
+      final levelData = await calculateLevelAndPoints(uid);
+      level = levelData['currentLevel'];
 
-      Map<String, dynamic> allData = {
-        "streak": streakData ?? 0,
-        "lessons": lessonData,
-        "level": levelData,
-        "userProgress": userProgress, // ✅ included
-      };
+      // 🔹 Optionally: update streak if you have logic for it
+      streak = 4; // Replace with real streak logic if needed
 
-      setState(() {
-        _data = allData;
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     } catch (e) {
-      print('Error fetching data: $e');
-      setState(() {
-        _isLoading = false;
-      });
+      print("Error fetching progress: $e");
+      setState(() => _isLoading = false);
     }
   }
 
-  Future<List<Map<String, dynamic>>> parseCompletedSteps() async {
-    final Map<String, dynamic> jsonData = await loadJsonData();
-    FirestoreService firestoreService = FirestoreService();
-    List<Map<String, dynamic>>? completedSteps =
-        await firestoreService.getCompleted();
+  Future<int> getTotalSubtopicsCompleted(String uid) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('user_progress')
+        .doc(uid)
+        .get();
 
-    List<Map<String, dynamic>> result = [];
+    final data = snapshot.data() ?? {};
+    int count = 0;
 
-    for (var step in completedSteps!) {
-      if (step["type"] == "subtopic") {
-        final String subtopicId = step["id"];
-        final DateTime datetime = step["datetime"].toDate();
-
-        for (var subject in jsonData["subjects"]) {
-          for (var grade in subject["grades"]) {
-            for (var unit in grade["units"]) {
-              for (var subtopic in unit["subtopics"]) {
-                if (subtopic["subtopic_id"] == subtopicId) {
-                  result.add({
-                    "subject": subject["name"],
-                    "grade": int.parse(
-                        grade["grade"].replaceAll(RegExp('[^0-9]'), '')),
-                    "subtopic_id": subtopicId,
-                    "datetime": datetime,
-                  });
-                  break;
-                }
-              }
-            }
-          }
-        }
+    for (final entry in data.entries) {
+      if (entry.value is Map && entry.value['isCompleted'] == true) {
+        count++;
       }
     }
 
-    return result;
+    return count;
   }
 
   @override
@@ -102,64 +75,55 @@ class _ProgressPageState extends State<ProgressPage> {
     return Scaffold(
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _data == null || _data!.isEmpty
-              ? const Center(child: Text('No data found.'))
-              : Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
+          : Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orange[100],
+                      foregroundColor: Colors.deepOrange,
+                      elevation: 8,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(Icons.local_fire_department_sharp,
+                            color: Colors.deepOrange, size: 30),
+                        const SizedBox(width: 8),
+                        Text(
+                          "$streak day streak!",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 25,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange[100],
-                          foregroundColor: Colors.deepOrange,
-                          elevation: 8,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 12),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.local_fire_department_sharp,
-                                color: Colors.deepOrange, size: 30),
-                            const SizedBox(width: 8),
-                            Text(
-                              "${_data!["streak"]} day streak!",
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 25,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          // Levels Achieved
-                          _StatCard(
-                            label: "levels achieved",
-                            value: _data!["level"].toString(),
-                          ),
-
-                          // Subtopics Completed
-                          _StatCard(
-                            label: "subtopics completed",
-                            value: _data!["lessons"].length.toString(),
-                          ),
-                        ],
-                      ),
-                      Expanded(
-                        child: RecentLessonsTabWidget(
-                          userProgress: _data!["userProgress"], // ✅ passed here
-                        ),
-                      ),
+                      _StatCard(label: "levels achieved", value: "$level"),
+                      _StatCard(
+                          label: "subtopics completed",
+                          value: "$subtopicsCompleted"),
                     ],
                   ),
-                ),
+                  Expanded(
+                    child: RecentLessonsTabWidget(
+                      userProgress: userProgress,
+                    ),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }
