@@ -31,8 +31,8 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
 
         setState(() {
           completedSubtopics = fetchedSubtopics
-              .where((item) => item['type'] == 'subtopic') // Filter by type
-              .map<String>((item) => item['id'] as String) // Extract id
+              .where((item) => item['type'] == 'subtopic')
+              .map<String>((item) => item['id'] as String)
               .toList();
         });
       }
@@ -57,6 +57,7 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
                 'subject': subject['name'],
                 'grade': grade['grade'],
                 'unit': unit['unit'],
+                'unitId': unit['unit_id'],
                 'subtopic': subtopic['subtopic'],
                 'subtopicId': subtopicId,
                 'readingTitle': subtopic['reading']['title'],
@@ -91,7 +92,6 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
 
         final lessons = snapshot.data!;
 
-        // Use Column instead of ListView.builder to make it non-scrollable
         return Column(
           children: lessons.map((lesson) {
             return LessonCard(
@@ -110,6 +110,12 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
                       subtopicId: lesson['subtopicId'],
                       readingTitle: lesson['readingTitle'],
                       readingContent: lesson['readingContent'],
+                      isCompleted: true,
+                      subject: lesson['subject'], // ✅ added
+                      grade: int.parse(lesson['grade'].toString().replaceAll(
+                          RegExp(r'[^0-9]'), '')), // ✅ parse "Grade 2" to 2
+                      unitId: lesson['unitId'], // ✅ added
+                      unitTitle: lesson['unit'], // ✅ added
                     ),
                   ),
                 );

@@ -1,8 +1,1045 @@
 {
   "subjects": [
+    
     {
       "name": "Math",
       "grades": [
+        {
+          "grade": "Grade 2",
+          "units": [
+            {
+              "unit": "Place Value and Number Sense",
+              "unit_id": 1,
+              "subtopics": [
+                {
+                  "subtopic": "Understanding Place Value",
+                  "subtopic_id": "bfc1c5ac-ae9a-47c9-b213-3b89c3b6f001",
+                  "reading": {
+                    "title": "Understanding Place Value",
+                    "content": "Place value tells us the value of each digit in a number based on its position. In the number 345:\n- 3 is in the hundreds place → 300\n- 4 is in the tens place → 40\n- 5 is in the ones place → 5\nThis helps us understand the size and meaning of numbers."
+                  },
+                  "quizPool": [1001, 1002, 1003, 1004, 1005, 1006, 1007, 1008, 1009, 1010]
+                },
+                {
+                  "subtopic": "Comparing Numbers",
+                  "subtopic_id": "bbcb9e39-4f1b-4a6d-8bc3-1c4517a2f0d0",
+                  "reading": {
+                    "title": "Comparing Numbers",
+                    "content": "We compare numbers using >, <, or =.\n- 56 > 42 (56 is greater than 42)\n- 30 < 45 (30 is less than 45)\n- 77 = 77 (both are equal)\nWe look at the biggest place value first (hundreds, then tens, then ones)."
+                  },
+                  "quizPool": [1011, 1012, 1013, 1014, 1015, 1016, 1017, 1018, 1019, 1020]
+                }
+              ]
+            },
+            {
+              "unit": "Addition and Subtraction",
+              "unit_id": 2,
+              "subtopics": [
+                {
+                  "subtopic": "Two-Digit Addition Without Regrouping",
+                  "subtopic_id": "ca232c18-d8ac-41d2-aab3-4ec09dbaaf71",
+                  "reading": {
+                    "title": "Adding Without Regrouping",
+                    "content": "To add two-digit numbers without regrouping:\nExample: 32 + 14\n- Add the ones: 2 + 4 = 6\n- Add the tens: 30 + 10 = 40\n- Final answer: 46"
+                  },
+                  "quizPool": [1021, 1022, 1023, 1024, 1025, 1026, 1027, 1028, 1029, 1030]
+                },
+                {
+                  "subtopic": "Two-Digit Addition With Regrouping",
+                  "subtopic_id": "e33a58a3-d35c-4e59-9a1c-11b57f2dc9d8",
+                  "reading": {
+                    "title": "Adding With Regrouping",
+                    "content": "Regrouping means carrying over to the next place value.\nExample: 58 + 26\n- Ones: 8 + 6 = 14 → write 4, carry 1\n- Tens: 5 + 2 = 7 + 1 (carried) = 8\n- Final answer: 84"
+                  },
+                  "quizPool": [1031, 1032, 1033, 1034, 1035, 1036, 1037, 1038, 1039, 1040]
+                },
+                {
+                  "subtopic": "Subtraction With and Without Regrouping",
+                  "subtopic_id": "60d9a558-4107-4ab5-9cd4-43852e048210",
+                  "reading": {
+                    "title": "Subtracting Numbers",
+                    "content": "To subtract:\nWithout regrouping:\n  54 - 21 = 33\nWith regrouping:\n  62 - 38 → We borrow from the tens to subtract the ones\n  → 12 - 8 = 4, then 5 - 3 = 2\n  → Final answer: 24"
+                  },
+                  "quizPool": [1041, 1042, 1043, 1044, 1045, 1046, 1047, 1048, 1049, 1050]
+                }
+              ]
+            },
+            {
+              "unit": "Time and Money",
+              "unit_id": 3,
+              "subtopics": [
+                {
+                  "subtopic": "Telling Time to the Nearest 5 Minutes",
+                  "subtopic_id": "f41430f3-24d2-4c2f-93cd-85b3ea88a09c",
+                  "reading": {
+                    "title": "Reading the Clock",
+                    "content": "We tell time using the hour and minute hands:\n- The hour hand points to the hour\n- The minute hand counts in 5s (5, 10, 15, ...)\nExample: If the hands point to 2 and 3 → 2:15"
+                  },
+                  "quizPool": [1051, 1052, 1053, 1054, 1055, 1056, 1057, 1058, 1059, 1060]
+                },
+                {
+                  "subtopic": "Identifying Coins and Their Values",
+                  "subtopic_id": "72c18983-8033-4ce4-8b0a-96c2232e143d",
+                  "reading": {
+                    "title": "Coins and Their Values",
+                    "content": "Common coins:\n- Penny = 1 cent\n- Nickel = 5 cents\n- Dime = 10 cents\n- Quarter = 25 cents\nYou can count coins by adding their values. Example: 2 dimes and a nickel = 10 + 10 + 5 = 25 cents"
+                  },
+                  "quizPool": [1061, 1062, 1063, 1064, 1065, 1066, 1067, 1068, 1069, 1070]
+                }
+              ]
+            },
+            {
+              "unit": "Measurement and Data",
+              "unit_id": 4,
+              "subtopics": [
+                {
+                  "subtopic": "Measuring Length in Inches and Centimeters",
+                  "subtopic_id": "d99d7f61-76ef-4a0e-9487-76444741e0d1",
+                  "reading": {
+                    "title": "Measuring Length",
+                    "content": "We use rulers to measure:\n- Inches (standard units)\n- Centimeters (metric units)\nExample: A pencil might be 6 inches or 15 cm long."
+                  },
+                  "quizPool": [1071, 1072, 1073, 1074, 1075, 1076, 1077, 1078, 1079, 1080]
+                },
+                {
+                  "subtopic": "Reading Bar Graphs",
+                  "subtopic_id": "b4c91e45-29de-4302-bdad-3f1638cf7cd3",
+                  "reading": {
+                    "title": "Understanding Bar Graphs",
+                    "content": "Bar graphs help us show and compare information visually.\n- Each bar shows a number\n- We look at the height of the bar to find values\nExample: If the bar for apples is at 5 and bananas is at 3, then there are more apples."
+                  },
+                  "quizPool": [1081, 1082, 1083, 1084, 1085, 1086, 1087, 1088, 1089, 1090]
+                }
+              ]
+            }
+          ]
+        }
+,        
+{
+  "grade": "Grade 3",
+  "units": [
+    {
+      "unit": "Number Sense",
+      "unit_id": 1,
+      "subtopics": [
+        {
+          "subtopic": "Number Sense - Subtopic 1",
+          "subtopic_id": "grade_3_1_1",
+          "reading": {
+            "title": "Learn about Number Sense - Subtopic 1",
+            "content": "This section covers the key ideas in Number Sense, part 1."
+          },
+          "quizPool": [3001, 3002, 3003]
+        },
+        {
+          "subtopic": "Number Sense - Subtopic 2",
+          "subtopic_id": "grade_3_1_2",
+          "reading": {
+            "title": "Learn about Number Sense - Subtopic 2",
+            "content": "This section covers the key ideas in Number Sense, part 2."
+          },
+          "quizPool": [3004, 3005, 3006]
+        },
+        {
+          "subtopic": "Number Sense - Subtopic 3",
+          "subtopic_id": "grade_3_1_3",
+          "reading": {
+            "title": "Learn about Number Sense - Subtopic 3",
+            "content": "This section covers the key ideas in Number Sense, part 3."
+          },
+          "quizPool": [3007, 3008, 3009]
+        }
+      ]
+    },
+    {
+      "unit": "Addition and Subtraction",
+      "unit_id": 2,
+      "subtopics": [
+        {
+          "subtopic": "Addition and Subtraction - Subtopic 1",
+          "subtopic_id": "grade_3_2_1",
+          "reading": {
+            "title": "Learn about Addition and Subtraction - Subtopic 1",
+            "content": "This section covers the key ideas in Addition and Subtraction, part 1."
+          },
+          "quizPool": [3010, 3011, 3012]
+        },
+        {
+          "subtopic": "Addition and Subtraction - Subtopic 2",
+          "subtopic_id": "grade_3_2_2",
+          "reading": {
+            "title": "Learn about Addition and Subtraction - Subtopic 2",
+            "content": "This section covers the key ideas in Addition and Subtraction, part 2."
+          },
+          "quizPool": [3013, 3014, 3015]
+        },
+        {
+          "subtopic": "Addition and Subtraction - Subtopic 3",
+          "subtopic_id": "grade_3_2_3",
+          "reading": {
+            "title": "Learn about Addition and Subtraction - Subtopic 3",
+            "content": "This section covers the key ideas in Addition and Subtraction, part 3."
+          },
+          "quizPool": [3016, 3017, 3018]
+        }
+      ]
+    },
+    {
+      "unit": "Multiplication and Division",
+      "unit_id": 3,
+      "subtopics": [
+        {
+          "subtopic": "Multiplication and Division - Subtopic 1",
+          "subtopic_id": "grade_3_3_1",
+          "reading": {
+            "title": "Learn about Multiplication and Division - Subtopic 1",
+            "content": "This section covers the key ideas in Multiplication and Division, part 1."
+          },
+          "quizPool": [3019, 3020, 3021]
+        },
+        {
+          "subtopic": "Multiplication and Division - Subtopic 2",
+          "subtopic_id": "grade_3_3_2",
+          "reading": {
+            "title": "Learn about Multiplication and Division - Subtopic 2",
+            "content": "This section covers the key ideas in Multiplication and Division, part 2."
+          },
+          "quizPool": [3022, 3023, 3024]
+        },
+        {
+          "subtopic": "Multiplication and Division - Subtopic 3",
+          "subtopic_id": "grade_3_3_3",
+          "reading": {
+            "title": "Learn about Multiplication and Division - Subtopic 3",
+            "content": "This section covers the key ideas in Multiplication and Division, part 3."
+          },
+          "quizPool": [3025, 3026, 3027]
+        }
+      ]
+    },
+    {
+      "unit": "Fractions",
+      "unit_id": 4,
+      "subtopics": [
+        {
+          "subtopic": "Fractions - Subtopic 1",
+          "subtopic_id": "grade_3_4_1",
+          "reading": {
+            "title": "Learn about Fractions - Subtopic 1",
+            "content": "This section covers the key ideas in Fractions, part 1."
+          },
+          "quizPool": [3028, 3029, 3030]
+        },
+        {
+          "subtopic": "Fractions - Subtopic 2",
+          "subtopic_id": "grade_3_4_2",
+          "reading": {
+            "title": "Learn about Fractions - Subtopic 2",
+            "content": "This section covers the key ideas in Fractions, part 2."
+          },
+          "quizPool": [3031, 3032, 3033]
+        },
+        {
+          "subtopic": "Fractions - Subtopic 3",
+          "subtopic_id": "grade_3_4_3",
+          "reading": {
+            "title": "Learn about Fractions - Subtopic 3",
+            "content": "This section covers the key ideas in Fractions, part 3."
+          },
+          "quizPool": [3034, 3035, 3036]
+        }
+      ]
+    },
+    {
+      "unit": "Measurement",
+      "unit_id": 5,
+      "subtopics": [
+        {
+          "subtopic": "Measurement - Subtopic 1",
+          "subtopic_id": "grade_3_5_1",
+          "reading": {
+            "title": "Learn about Measurement - Subtopic 1",
+            "content": "This section covers the key ideas in Measurement, part 1."
+          },
+          "quizPool": [3037, 3038, 3039]
+        },
+        {
+          "subtopic": "Measurement - Subtopic 2",
+          "subtopic_id": "grade_3_5_2",
+          "reading": {
+            "title": "Learn about Measurement - Subtopic 2",
+            "content": "This section covers the key ideas in Measurement, part 2."
+          },
+          "quizPool": [3040, 3041, 3042]
+        },
+        {
+          "subtopic": "Measurement - Subtopic 3",
+          "subtopic_id": "grade_3_5_3",
+          "reading": {
+            "title": "Learn about Measurement - Subtopic 3",
+            "content": "This section covers the key ideas in Measurement, part 3."
+          },
+          "quizPool": [3043, 3044, 3045]
+        }
+      ]
+    },
+    {
+      "unit": "Geometry",
+      "unit_id": 6,
+      "subtopics": [
+        {
+          "subtopic": "Geometry - Subtopic 1",
+          "subtopic_id": "grade_3_6_1",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 1",
+            "content": "This section covers the key ideas in Geometry, part 1."
+          },
+          "quizPool": [3046, 3047, 3048]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 2",
+          "subtopic_id": "grade_3_6_2",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 2",
+            "content": "This section covers the key ideas in Geometry, part 2."
+          },
+          "quizPool": [3049, 3050, 3051]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 3",
+          "subtopic_id": "grade_3_6_3",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 3",
+            "content": "This section covers the key ideas in Geometry, part 3."
+          },
+          "quizPool": [3052, 3053, 3054]
+        }
+      ]
+    }
+  ]
+}
+
+,
+{
+  "grade": "Grade 4",
+  "subject": "Math",
+  "units": [
+    {
+      "unit": "Place Value",
+      "unit_id": 1,
+      "subtopics": [
+        {
+          "subtopic": "Place Value - Subtopic 1",
+          "subtopic_id": "grade_4_1_1",
+          "reading": {
+            "title": "Learn about Place Value - Subtopic 1",
+            "content": "This section covers the key ideas in Place Value, part 1."
+          },
+          "quizPool": [4001, 4002, 4003]
+        },
+        {
+          "subtopic": "Place Value - Subtopic 2",
+          "subtopic_id": "grade_4_1_2",
+          "reading": {
+            "title": "Learn about Place Value - Subtopic 2",
+            "content": "This section covers the key ideas in Place Value, part 2."
+          },
+          "quizPool": [4004, 4005, 4006]
+        },
+        {
+          "subtopic": "Place Value - Subtopic 3",
+          "subtopic_id": "grade_4_1_3",
+          "reading": {
+            "title": "Learn about Place Value - Subtopic 3",
+            "content": "This section covers the key ideas in Place Value, part 3."
+          },
+          "quizPool": [4007, 4008, 4009]
+        }
+      ]
+    },
+    {
+      "unit": "Multiplication",
+      "unit_id": 2,
+      "subtopics": [
+        {
+          "subtopic": "Multiplication - Subtopic 1",
+          "subtopic_id": "grade_4_2_1",
+          "reading": {
+            "title": "Learn about Multiplication - Subtopic 1",
+            "content": "This section covers the key ideas in Multiplication, part 1."
+          },
+          "quizPool": [4010, 4011, 4012]
+        },
+        {
+          "subtopic": "Multiplication - Subtopic 2",
+          "subtopic_id": "grade_4_2_2",
+          "reading": {
+            "title": "Learn about Multiplication - Subtopic 2",
+            "content": "This section covers the key ideas in Multiplication, part 2."
+          },
+          "quizPool": [4013, 4014, 4015]
+        },
+        {
+          "subtopic": "Multiplication - Subtopic 3",
+          "subtopic_id": "grade_4_2_3",
+          "reading": {
+            "title": "Learn about Multiplication - Subtopic 3",
+            "content": "This section covers the key ideas in Multiplication, part 3."
+          },
+          "quizPool": [4016, 4017, 4018]
+        }
+      ]
+    },
+    {
+      "unit": "Division",
+      "unit_id": 3,
+      "subtopics": [
+        {
+          "subtopic": "Division - Subtopic 1",
+          "subtopic_id": "grade_4_3_1",
+          "reading": {
+            "title": "Learn about Division - Subtopic 1",
+            "content": "This section covers the key ideas in Division, part 1."
+          },
+          "quizPool": [4019, 4020, 4021]
+        },
+        {
+          "subtopic": "Division - Subtopic 2",
+          "subtopic_id": "grade_4_3_2",
+          "reading": {
+            "title": "Learn about Division - Subtopic 2",
+            "content": "This section covers the key ideas in Division, part 2."
+          },
+          "quizPool": [4022, 4023, 4024]
+        },
+        {
+          "subtopic": "Division - Subtopic 3",
+          "subtopic_id": "grade_4_3_3",
+          "reading": {
+            "title": "Learn about Division - Subtopic 3",
+            "content": "This section covers the key ideas in Division, part 3."
+          },
+          "quizPool": [4025, 4026, 4027]
+        }
+      ]
+    },
+    {
+      "unit": "Fractions and Decimals",
+      "unit_id": 4,
+      "subtopics": [
+        {
+          "subtopic": "Fractions and Decimals - Subtopic 1",
+          "subtopic_id": "grade_4_4_1",
+          "reading": {
+            "title": "Learn about Fractions and Decimals - Subtopic 1",
+            "content": "This section covers the key ideas in Fractions and Decimals, part 1."
+          },
+          "quizPool": [4028, 4029, 4030]
+        },
+        {
+          "subtopic": "Fractions and Decimals - Subtopic 2",
+          "subtopic_id": "grade_4_4_2",
+          "reading": {
+            "title": "Learn about Fractions and Decimals - Subtopic 2",
+            "content": "This section covers the key ideas in Fractions and Decimals, part 2."
+          },
+          "quizPool": [4031, 4032, 4033]
+        },
+        {
+          "subtopic": "Fractions and Decimals - Subtopic 3",
+          "subtopic_id": "grade_4_4_3",
+          "reading": {
+            "title": "Learn about Fractions and Decimals - Subtopic 3",
+            "content": "This section covers the key ideas in Fractions and Decimals, part 3."
+          },
+          "quizPool": [4034, 4035, 4036]
+        }
+      ]
+    },
+    {
+      "unit": "Geometry",
+      "unit_id": 5,
+      "subtopics": [
+        {
+          "subtopic": "Geometry - Subtopic 1",
+          "subtopic_id": "grade_4_5_1",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 1",
+            "content": "This section covers the key ideas in Geometry, part 1."
+          },
+          "quizPool": [4037, 4038, 4039]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 2",
+          "subtopic_id": "grade_4_5_2",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 2",
+            "content": "This section covers the key ideas in Geometry, part 2."
+          },
+          "quizPool": [4040, 4041, 4042]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 3",
+          "subtopic_id": "grade_4_5_3",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 3",
+            "content": "This section covers the key ideas in Geometry, part 3."
+          },
+          "quizPool": [4043, 4044, 4045]
+        }
+      ]
+    },
+    {
+      "unit": "Measurement and Data",
+      "unit_id": 6,
+      "subtopics": [
+        {
+          "subtopic": "Measurement and Data - Subtopic 1",
+          "subtopic_id": "grade_4_6_1",
+          "reading": {
+            "title": "Learn about Measurement and Data - Subtopic 1",
+            "content": "This section covers the key ideas in Measurement and Data, part 1."
+          },
+          "quizPool": [4046, 4047, 4048]
+        },
+        {
+          "subtopic": "Measurement and Data - Subtopic 2",
+          "subtopic_id": "grade_4_6_2",
+          "reading": {
+            "title": "Learn about Measurement and Data - Subtopic 2",
+            "content": "This section covers the key ideas in Measurement and Data, part 2."
+          },
+          "quizPool": [4049, 4050, 4051]
+        },
+        {
+          "subtopic": "Measurement and Data - Subtopic 3",
+          "subtopic_id": "grade_4_6_3",
+          "reading": {
+            "title": "Learn about Measurement and Data - Subtopic 3",
+            "content": "This section covers the key ideas in Measurement and Data, part 3."
+          },
+          "quizPool": [4052, 4053, 4054]
+        }
+      ]
+    }
+  ]
+}
+
+,{
+  "grade": "Grade 5",
+  "units": [
+    {
+      "unit": "Decimals",
+      "unit_id": 1,
+      "subtopics": [
+        {
+          "subtopic": "Decimals - Subtopic 1",
+          "subtopic_id": "grade_5_1_1",
+          "reading": {
+            "title": "Learn about Decimals - Subtopic 1",
+            "content": "This section covers the key ideas in Decimals, part 1."
+          },
+          "quizPool": [5001, 5002, 5003]
+        },
+        {
+          "subtopic": "Decimals - Subtopic 2",
+          "subtopic_id": "grade_5_1_2",
+          "reading": {
+            "title": "Learn about Decimals - Subtopic 2",
+            "content": "This section covers the key ideas in Decimals, part 2."
+          },
+          "quizPool": [5004, 5005, 5006]
+        },
+        {
+          "subtopic": "Decimals - Subtopic 3",
+          "subtopic_id": "grade_5_1_3",
+          "reading": {
+            "title": "Learn about Decimals - Subtopic 3",
+            "content": "This section covers the key ideas in Decimals, part 3."
+          },
+          "quizPool": [5007, 5008, 5009]
+        }
+      ]
+    },
+    {
+      "unit": "Operations with Fractions",
+      "unit_id": 2,
+      "subtopics": [
+        {
+          "subtopic": "Operations with Fractions - Subtopic 1",
+          "subtopic_id": "grade_5_2_1",
+          "reading": {
+            "title": "Learn about Operations with Fractions - Subtopic 1",
+            "content": "This section covers the key ideas in Operations with Fractions, part 1."
+          },
+          "quizPool": [5010, 5011, 5012]
+        },
+        {
+          "subtopic": "Operations with Fractions - Subtopic 2",
+          "subtopic_id": "grade_5_2_2",
+          "reading": {
+            "title": "Learn about Operations with Fractions - Subtopic 2",
+            "content": "This section covers the key ideas in Operations with Fractions, part 2."
+          },
+          "quizPool": [5013, 5014, 5015]
+        },
+        {
+          "subtopic": "Operations with Fractions - Subtopic 3",
+          "subtopic_id": "grade_5_2_3",
+          "reading": {
+            "title": "Learn about Operations with Fractions - Subtopic 3",
+            "content": "This section covers the key ideas in Operations with Fractions, part 3."
+          },
+          "quizPool": [5016, 5017, 5018]
+        }
+      ]
+    },
+    {
+      "unit": "Volume and Measurement",
+      "unit_id": 3,
+      "subtopics": [
+        {
+          "subtopic": "Volume and Measurement - Subtopic 1",
+          "subtopic_id": "grade_5_3_1",
+          "reading": {
+            "title": "Learn about Volume and Measurement - Subtopic 1",
+            "content": "This section covers the key ideas in Volume and Measurement, part 1."
+          },
+          "quizPool": [5019, 5020, 5021]
+        },
+        {
+          "subtopic": "Volume and Measurement - Subtopic 2",
+          "subtopic_id": "grade_5_3_2",
+          "reading": {
+            "title": "Learn about Volume and Measurement - Subtopic 2",
+            "content": "This section covers the key ideas in Volume and Measurement, part 2."
+          },
+          "quizPool": [5022, 5023, 5024]
+        },
+        {
+          "subtopic": "Volume and Measurement - Subtopic 3",
+          "subtopic_id": "grade_5_3_3",
+          "reading": {
+            "title": "Learn about Volume and Measurement - Subtopic 3",
+            "content": "This section covers the key ideas in Volume and Measurement, part 3."
+          },
+          "quizPool": [5025, 5026, 5027]
+        }
+      ]
+    },
+    {
+      "unit": "Geometry",
+      "unit_id": 4,
+      "subtopics": [
+        {
+          "subtopic": "Geometry - Subtopic 1",
+          "subtopic_id": "grade_5_4_1",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 1",
+            "content": "This section covers the key ideas in Geometry, part 1."
+          },
+          "quizPool": [5028, 5029, 5030]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 2",
+          "subtopic_id": "grade_5_4_2",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 2",
+            "content": "This section covers the key ideas in Geometry, part 2."
+          },
+          "quizPool": [5031, 5032, 5033]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 3",
+          "subtopic_id": "grade_5_4_3",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 3",
+            "content": "This section covers the key ideas in Geometry, part 3."
+          },
+          "quizPool": [5034, 5035, 5036]
+        }
+      ]
+    },
+    {
+      "unit": "Patterns and Relationships",
+      "unit_id": 5,
+      "subtopics": [
+        {
+          "subtopic": "Patterns and Relationships - Subtopic 1",
+          "subtopic_id": "grade_5_5_1",
+          "reading": {
+            "title": "Learn about Patterns and Relationships - Subtopic 1",
+            "content": "This section covers the key ideas in Patterns and Relationships, part 1."
+          },
+          "quizPool": [5037, 5038, 5039]
+        },
+        {
+          "subtopic": "Patterns and Relationships - Subtopic 2",
+          "subtopic_id": "grade_5_5_2",
+          "reading": {
+            "title": "Learn about Patterns and Relationships - Subtopic 2",
+            "content": "This section covers the key ideas in Patterns and Relationships, part 2."
+          },
+          "quizPool": [5040, 5041, 5042]
+        },
+        {
+          "subtopic": "Patterns and Relationships - Subtopic 3",
+          "subtopic_id": "grade_5_5_3",
+          "reading": {
+            "title": "Learn about Patterns and Relationships - Subtopic 3",
+            "content": "This section covers the key ideas in Patterns and Relationships, part 3."
+          },
+          "quizPool": [5043, 5044, 5045]
+        }
+      ]
+    }
+  ]
+}
+
+,{
+  "grade": "Grade 6",
+  "units": [
+    {
+      "unit": "Ratios and Rates",
+      "unit_id": 1,
+      "subtopics": [
+        {
+          "subtopic": "Ratios and Rates - Subtopic 1",
+          "subtopic_id": "grade_6_1_1",
+          "reading": {
+            "title": "Learn about Ratios and Rates - Subtopic 1",
+            "content": "This section covers the key ideas in Ratios and Rates, part 1."
+          },
+          "quizPool": [6001, 6002, 6003]
+        },
+        {
+          "subtopic": "Ratios and Rates - Subtopic 2",
+          "subtopic_id": "grade_6_1_2",
+          "reading": {
+            "title": "Learn about Ratios and Rates - Subtopic 2",
+            "content": "This section covers the key ideas in Ratios and Rates, part 2."
+          },
+          "quizPool": [6004, 6005, 6006]
+        },
+        {
+          "subtopic": "Ratios and Rates - Subtopic 3",
+          "subtopic_id": "grade_6_1_3",
+          "reading": {
+            "title": "Learn about Ratios and Rates - Subtopic 3",
+            "content": "This section covers the key ideas in Ratios and Rates, part 3."
+          },
+          "quizPool": [6007, 6008, 6009]
+        }
+      ]
+    },
+    {
+      "unit": "Fractions and Decimals",
+      "unit_id": 2,
+      "subtopics": [
+        {
+          "subtopic": "Fractions and Decimals - Subtopic 1",
+          "subtopic_id": "grade_6_2_1",
+          "reading": {
+            "title": "Learn about Fractions and Decimals - Subtopic 1",
+            "content": "This section covers the key ideas in Fractions and Decimals, part 1."
+          },
+          "quizPool": [6010, 6011, 6012]
+        },
+        {
+          "subtopic": "Fractions and Decimals - Subtopic 2",
+          "subtopic_id": "grade_6_2_2",
+          "reading": {
+            "title": "Learn about Fractions and Decimals - Subtopic 2",
+            "content": "This section covers the key ideas in Fractions and Decimals, part 2."
+          },
+          "quizPool": [6013, 6014, 6015]
+        },
+        {
+          "subtopic": "Fractions and Decimals - Subtopic 3",
+          "subtopic_id": "grade_6_2_3",
+          "reading": {
+            "title": "Learn about Fractions and Decimals - Subtopic 3",
+            "content": "This section covers the key ideas in Fractions and Decimals, part 3."
+          },
+          "quizPool": [6016, 6017, 6018]
+        }
+      ]
+    },
+    {
+      "unit": "Expressions and Equations",
+      "unit_id": 3,
+      "subtopics": [
+        {
+          "subtopic": "Expressions and Equations - Subtopic 1",
+          "subtopic_id": "grade_6_3_1",
+          "reading": {
+            "title": "Learn about Expressions and Equations - Subtopic 1",
+            "content": "This section covers the key ideas in Expressions and Equations, part 1."
+          },
+          "quizPool": [6019, 6020, 6021]
+        },
+        {
+          "subtopic": "Expressions and Equations - Subtopic 2",
+          "subtopic_id": "grade_6_3_2",
+          "reading": {
+            "title": "Learn about Expressions and Equations - Subtopic 2",
+            "content": "This section covers the key ideas in Expressions and Equations, part 2."
+          },
+          "quizPool": [6022, 6023, 6024]
+        },
+        {
+          "subtopic": "Expressions and Equations - Subtopic 3",
+          "subtopic_id": "grade_6_3_3",
+          "reading": {
+            "title": "Learn about Expressions and Equations - Subtopic 3",
+            "content": "This section covers the key ideas in Expressions and Equations, part 3."
+          },
+          "quizPool": [6025, 6026, 6027]
+        }
+      ]
+    },
+    {
+      "unit": "Geometry",
+      "unit_id": 4,
+      "subtopics": [
+        {
+          "subtopic": "Geometry - Subtopic 1",
+          "subtopic_id": "grade_6_4_1",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 1",
+            "content": "This section covers the key ideas in Geometry, part 1."
+          },
+          "quizPool": [6028, 6029, 6030]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 2",
+          "subtopic_id": "grade_6_4_2",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 2",
+            "content": "This section covers the key ideas in Geometry, part 2."
+          },
+          "quizPool": [6031, 6032, 6033]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 3",
+          "subtopic_id": "grade_6_4_3",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 3",
+            "content": "This section covers the key ideas in Geometry, part 3."
+          },
+          "quizPool": [6034, 6035, 6036]
+        }
+      ]
+    },
+    {
+      "unit": "Statistics",
+      "unit_id": 5,
+      "subtopics": [
+        {
+          "subtopic": "Statistics - Subtopic 1",
+          "subtopic_id": "grade_6_5_1",
+          "reading": {
+            "title": "Learn about Statistics - Subtopic 1",
+            "content": "This section covers the key ideas in Statistics, part 1."
+          },
+          "quizPool": [6037, 6038, 6039]
+        },
+        {
+          "subtopic": "Statistics - Subtopic 2",
+          "subtopic_id": "grade_6_5_2",
+          "reading": {
+            "title": "Learn about Statistics - Subtopic 2",
+            "content": "This section covers the key ideas in Statistics, part 2."
+          },
+          "quizPool": [6040, 6041, 6042]
+        },
+        {
+          "subtopic": "Statistics - Subtopic 3",
+          "subtopic_id": "grade_6_5_3",
+          "reading": {
+            "title": "Learn about Statistics - Subtopic 3",
+            "content": "This section covers the key ideas in Statistics, part 3."
+          },
+          "quizPool": [6043, 6044, 6045]
+        }
+      ]
+    }
+  ]
+}
+
+,
+{
+  "grade": "Grade 7",
+  "units": [
+    {
+      "unit": "Proportional Relationships",
+      "unit_id": 1,
+      "subtopics": [
+        {
+          "subtopic": "Proportional Relationships - Subtopic 1",
+          "subtopic_id": "grade_7_1_1",
+          "reading": {
+            "title": "Learn about Proportional Relationships - Subtopic 1",
+            "content": "This section covers the key ideas in Proportional Relationships, part 1."
+          },
+          "quizPool": [7001, 7002, 7003]
+        },
+        {
+          "subtopic": "Proportional Relationships - Subtopic 2",
+          "subtopic_id": "grade_7_1_2",
+          "reading": {
+            "title": "Learn about Proportional Relationships - Subtopic 2",
+            "content": "This section covers the key ideas in Proportional Relationships, part 2."
+          },
+          "quizPool": [7004, 7005, 7006]
+        },
+        {
+          "subtopic": "Proportional Relationships - Subtopic 3",
+          "subtopic_id": "grade_7_1_3",
+          "reading": {
+            "title": "Learn about Proportional Relationships - Subtopic 3",
+            "content": "This section covers the key ideas in Proportional Relationships, part 3."
+          },
+          "quizPool": [7007, 7008, 7009]
+        }
+      ]
+    },
+    {
+      "unit": "Rational Numbers",
+      "unit_id": 2,
+      "subtopics": [
+        {
+          "subtopic": "Rational Numbers - Subtopic 1",
+          "subtopic_id": "grade_7_2_1",
+          "reading": {
+            "title": "Learn about Rational Numbers - Subtopic 1",
+            "content": "This section covers the key ideas in Rational Numbers, part 1."
+          },
+          "quizPool": [7010, 7011, 7012]
+        },
+        {
+          "subtopic": "Rational Numbers - Subtopic 2",
+          "subtopic_id": "grade_7_2_2",
+          "reading": {
+            "title": "Learn about Rational Numbers - Subtopic 2",
+            "content": "This section covers the key ideas in Rational Numbers, part 2."
+          },
+          "quizPool": [7013, 7014, 7015]
+        },
+        {
+          "subtopic": "Rational Numbers - Subtopic 3",
+          "subtopic_id": "grade_7_2_3",
+          "reading": {
+            "title": "Learn about Rational Numbers - Subtopic 3",
+            "content": "This section covers the key ideas in Rational Numbers, part 3."
+          },
+          "quizPool": [7016, 7017, 7018]
+        }
+      ]
+    },
+    {
+      "unit": "Expressions and Equations",
+      "unit_id": 3,
+      "subtopics": [
+        {
+          "subtopic": "Expressions and Equations - Subtopic 1",
+          "subtopic_id": "grade_7_3_1",
+          "reading": {
+            "title": "Learn about Expressions and Equations - Subtopic 1",
+            "content": "This section covers the key ideas in Expressions and Equations, part 1."
+          },
+          "quizPool": [7019, 7020, 7021]
+        },
+        {
+          "subtopic": "Expressions and Equations - Subtopic 2",
+          "subtopic_id": "grade_7_3_2",
+          "reading": {
+            "title": "Learn about Expressions and Equations - Subtopic 2",
+            "content": "This section covers the key ideas in Expressions and Equations, part 2."
+          },
+          "quizPool": [7022, 7023, 7024]
+        },
+        {
+          "subtopic": "Expressions and Equations - Subtopic 3",
+          "subtopic_id": "grade_7_3_3",
+          "reading": {
+            "title": "Learn about Expressions and Equations - Subtopic 3",
+            "content": "This section covers the key ideas in Expressions and Equations, part 3."
+          },
+          "quizPool": [7025, 7026, 7027]
+        }
+      ]
+    },
+    {
+      "unit": "Geometry",
+      "unit_id": 4,
+      "subtopics": [
+        {
+          "subtopic": "Geometry - Subtopic 1",
+          "subtopic_id": "grade_7_4_1",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 1",
+            "content": "This section covers the key ideas in Geometry, part 1."
+          },
+          "quizPool": [7028, 7029, 7030]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 2",
+          "subtopic_id": "grade_7_4_2",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 2",
+            "content": "This section covers the key ideas in Geometry, part 2."
+          },
+          "quizPool": [7031, 7032, 7033]
+        },
+        {
+          "subtopic": "Geometry - Subtopic 3",
+          "subtopic_id": "grade_7_4_3",
+          "reading": {
+            "title": "Learn about Geometry - Subtopic 3",
+            "content": "This section covers the key ideas in Geometry, part 3."
+          },
+          "quizPool": [7034, 7035, 7036]
+        }
+      ]
+    },
+    {
+      "unit": "Probability and Statistics",
+      "unit_id": 5,
+      "subtopics": [
+        {
+          "subtopic": "Probability and Statistics - Subtopic 1",
+          "subtopic_id": "grade_7_5_1",
+          "reading": {
+            "title": "Learn about Probability and Statistics - Subtopic 1",
+            "content": "This section covers the key ideas in Probability and Statistics, part 1."
+          },
+          "quizPool": [7037, 7038, 7039]
+        },
+        {
+          "subtopic": "Probability and Statistics - Subtopic 2",
+          "subtopic_id": "grade_7_5_2",
+          "reading": {
+            "title": "Learn about Probability and Statistics - Subtopic 2",
+            "content": "This section covers the key ideas in Probability and Statistics, part 2."
+          },
+          "quizPool": [7040, 7041, 7042]
+        },
+        {
+          "subtopic": "Probability and Statistics - Subtopic 3",
+          "subtopic_id": "grade_7_5_3",
+          "reading": {
+            "title": "Learn about Probability and Statistics - Subtopic 3",
+            "content": "This section covers the key ideas in Probability and Statistics, part 3."
+          },
+          "quizPool": [7043, 7044, 7045]
+        }
+      ]
+    }
+  ]
+}
+
+,
         {
           "grade": "Grade 8",
           "units": [
@@ -195,6 +1232,7 @@
     {
       "name": "Science",
       "grades": [
+        
         {
           "grade": "Grade 6",
           "units": [
@@ -216,7 +1254,414 @@
           ]
         }
       ]
+    },
+    {
+      "name": "History",
+      "grades": [
+        
+        {
+          "grade": "Grade 2",
+          "units": [
+            {
+              "unit_id": "g2_his_u1",
+              "unit_name": "Our Community and Traditions",
+              "subtopics": [
+                {
+                  "subtopic_id": "g2_his_u1_s1",
+                  "title": "What is a Community?",
+                  "reading": {
+                    "title": "Understanding Communities",
+                    "content": "A community is a group of people who live and work together in the same place. People in a community help each other."
+                  },
+                  "quiz_pool": [
+                    2001,
+                    2002,
+                    2003
+                  ]
+                },
+                {
+                  "subtopic_id": "g2_his_u1_s2",
+                  "title": "Traditions and Celebrations",
+                  "reading": {
+                    "title": "Family and National Traditions",
+                    "content": "Traditions are special ways of doing things that are passed down. People celebrate holidays with music, food, and fun."
+                  },
+                  "quiz_pool": [
+                    2004,
+                    2005,
+                    2006
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "grade": "Grade 3",
+          "units": [
+            {
+              "unit_id": "g3_his_u1",
+              "unit_name": "Local History and Heroes",
+              "subtopics": [
+                {
+                  "subtopic_id": "g3_his_u1_s1",
+                  "title": "Famous Local Figures",
+                  "reading": {
+                    "title": "Local Leaders",
+                    "content": "Some people become heroes by helping their communities. We remember them by telling their stories."
+                  },
+                  "quiz_pool": [
+                    2101,
+                    2102,
+                    2103
+                  ]
+                },
+                {
+                  "subtopic_id": "g3_his_u1_s2",
+                  "title": "Historical Landmarks",
+                  "reading": {
+                    "title": "Exploring Landmarks",
+                    "content": "Historical landmarks help us remember important events and people from the past."
+                  },
+                  "quiz_pool": [
+                    2104,
+                    2105,
+                    2106
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "grade": "Grade 4",
+          
+  "units": [
+    {
+      "unit_id": "g4_his_u1",
+      "unit_name": "Founding of the Nation",
+      "subtopics": [
+        {
+          "subtopic_id": "g4_his_u1_s1",
+          "title": "Colonial Life",
+          "reading": {
+            "title": "Life in the Colonies",
+            "content": "Colonial life was hard work. People grew their food, made clothes, and built homes."
+          },
+          "quiz_pool": [
+            2201,
+            2202,
+            2203
+          ]
+        },
+        {
+          "subtopic_id": "g4_his_u1_s2",
+          "title": "The American Revolution",
+          "reading": {
+            "title": "Fighting for Freedom",
+            "content": "The American Revolution was a war where people fought for independence from British rule."
+          },
+          "quiz_pool": [
+            2204,
+            2205,
+            2206
+          ]
+        }
+      ]
     }
+  ]
+        }
+      ]
+    },
+    {
+      "name": "Reading",
+      "grades": [
+        
+        {
+          "grade": "Grade 2",
+
+         "units": [
+    {
+      "unit_id": "2RU1",
+      "unit_title": "Reading Unit 1",
+      "subtopics": [
+        {
+          "subtopic_id": "2RU1S1",
+          "title": "Reading Topic 1.1",
+          "reading": {
+            "title": "Reading Reading 1.1",
+            "content": "This is a short explanation about Reading topic 1.1 for grade 2."
+          },
+          "quiz_pool": [
+            2001,
+            2002,
+            2003
+          ]
+        },
+        {
+          "subtopic_id": "2RU1S2",
+          "title": "Reading Topic 1.2",
+          "reading": {
+            "title": "Reading Reading 1.2",
+            "content": "This is a short explanation about Reading topic 1.2 for grade 2."
+          },
+          "quiz_pool": [
+            2011,
+            2012,
+            2013
+          ]
+        },
+        {
+          "subtopic_id": "2RU1S3",
+          "title": "Reading Topic 1.3",
+          "reading": {
+            "title": "Reading Reading 1.3",
+            "content": "This is a short explanation about Reading topic 1.3 for grade 2."
+          },
+          "quiz_pool": [
+            2021,
+            2022,
+            2023
+          ]
+        }
+      ]
+    },
+    {
+      "unit_id": "2RU2",
+      "unit_title": "Reading Unit 2",
+      "subtopics": [
+        {
+          "subtopic_id": "2RU2S1",
+          "title": "Reading Topic 2.1",
+          "reading": {
+            "title": "Reading Reading 2.1",
+            "content": "This is a short explanation about Reading topic 2.1 for grade 2."
+          },
+          "quiz_pool": [
+            2031,
+            2032,
+            2033
+          ]
+        },
+        {
+          "subtopic_id": "2RU2S2",
+          "title": "Reading Topic 2.2",
+          "reading": {
+            "title": "Reading Reading 2.2",
+            "content": "This is a short explanation about Reading topic 2.2 for grade 2."
+          },
+          "quiz_pool": [
+            2041,
+            2042,
+            2043
+          ]
+        },
+        {
+          "subtopic_id": "2RU2S3",
+          "title": "Reading Topic 2.3",
+          "reading": {
+            "title": "Reading Reading 2.3",
+            "content": "This is a short explanation about Reading topic 2.3 for grade 2."
+          },
+          "quiz_pool": [
+            2051,
+            2052,
+            2053
+          ]
+        }
+      ]
+    },
+    {
+      "unit_id": "2RU3",
+      "unit_title": "Reading Unit 3",
+      "subtopics": [
+        {
+          "subtopic_id": "2RU3S1",
+          "title": "Reading Topic 3.1",
+          "reading": {
+            "title": "Reading Reading 3.1",
+            "content": "This is a short explanation about Reading topic 3.1 for grade 2."
+          },
+          "quiz_pool": [
+            2061,
+            2062,
+            2063
+          ]
+        },
+        {
+          "subtopic_id": "2RU3S2",
+          "title": "Reading Topic 3.2",
+          "reading": {
+            "title": "Reading Reading 3.2",
+            "content": "This is a short explanation about Reading topic 3.2 for grade 2."
+          },
+          "quiz_pool": [
+            2071,
+            2072,
+            2073
+          ]
+        },
+        {
+          "subtopic_id": "2RU3S3",
+          "title": "Reading Topic 3.3",
+          "reading": {
+            "title": "Reading Reading 3.3",
+            "content": "This is a short explanation about Reading topic 3.3 for grade 2."
+          },
+          "quiz_pool": [
+            2081,
+            2082,
+            2083
+          ]
+        }
+      ]
+    }
+  ]
+        },
+        {
+          "grade": "Grade 3",
+
+          "units": [
+            {
+              "unit_id": "3RU1",
+              "unit_title": "Reading Unit 1",
+              "subtopics": [
+                {
+                  "subtopic_id": "3RU1S1",
+                  "title": "Reading Topic 1.1",
+                  "reading": {
+                    "title": "Reading Reading 1.1",
+                    "content": "This is a short explanation about Reading topic 1.1 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3001,
+                    3002,
+                    3003
+                  ]
+                },
+                {
+                  "subtopic_id": "3RU1S2",
+                  "title": "Reading Topic 1.2",
+                  "reading": {
+                    "title": "Reading Reading 1.2",
+                    "content": "This is a short explanation about Reading topic 1.2 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3011,
+                    3012,
+                    3013
+                  ]
+                },
+                {
+                  "subtopic_id": "3RU1S3",
+                  "title": "Reading Topic 1.3",
+                  "reading": {
+                    "title": "Reading Reading 1.3",
+                    "content": "This is a short explanation about Reading topic 1.3 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3021,
+                    3022,
+                    3023
+                  ]
+                }
+              ]
+            },
+            {
+              "unit_id": "3RU2",
+              "unit_title": "Reading Unit 2",
+              "subtopics": [
+                {
+                  "subtopic_id": "3RU2S1",
+                  "title": "Reading Topic 2.1",
+                  "reading": {
+                    "title": "Reading Reading 2.1",
+                    "content": "This is a short explanation about Reading topic 2.1 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3031,
+                    3032,
+                    3033
+                  ]
+                },
+                {
+                  "subtopic_id": "3RU2S2",
+                  "title": "Reading Topic 2.2",
+                  "reading": {
+                    "title": "Reading Reading 2.2",
+                    "content": "This is a short explanation about Reading topic 2.2 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3041,
+                    3042,
+                    3043
+                  ]
+                },
+                {
+                  "subtopic_id": "3RU2S3",
+                  "title": "Reading Topic 2.3",
+                  "reading": {
+                    "title": "Reading Reading 2.3",
+                    "content": "This is a short explanation about Reading topic 2.3 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3051,
+                    3052,
+                    3053
+                  ]
+                }
+              ]
+            },
+            {
+              "unit_id": "3RU3",
+              "unit_title": "Reading Unit 3",
+              "subtopics": [
+                {
+                  "subtopic_id": "3RU3S1",
+                  "title": "Reading Topic 3.1",
+                  "reading": {
+                    "title": "Reading Reading 3.1",
+                    "content": "This is a short explanation about Reading topic 3.1 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3061,
+                    3062,
+                    3063
+                  ]
+                },
+                {
+                  "subtopic_id": "3RU3S2",
+                  "title": "Reading Topic 3.2",
+                  "reading": {
+                    "title": "Reading Reading 3.2",
+                    "content": "This is a short explanation about Reading topic 3.2 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3071,
+                    3072,
+                    3073
+                  ]
+                },
+                {
+                  "subtopic_id": "3RU3S3",
+                  "title": "Reading Topic 3.3",
+                  "reading": {
+                    "title": "Reading Reading 3.3",
+                    "content": "This is a short explanation about Reading topic 3.3 for grade 3."
+                  },
+                  "quiz_pool": [
+                    3081,
+                    3082,
+                    3083
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+    
   ],
   "questions": [
     {
@@ -1178,6 +2623,995 @@
       "question": "Emma has $5 more than twice the amount that Jake has. If Emma has $25, how much does Jake have?",
       "answers": ["$10", "$15", "$20", "$25"],
       "correct_answer": "$10"
+    }, {
+      "id": 1001,
+      "question": "What is the value of the digit 5 in the number 52?",
+      "answers": [
+        "5",
+        "50",
+        "2",
+        "500"
+      ],
+      "correctAnswer": "50"
+    },
+    {
+      "id": 1002,
+      "question": "Which number has a 3 in the tens place?",
+      "answers": [
+        "35",
+        "13",
+        "53",
+        "30"
+      ],
+      "correctAnswer": "35"
+    },
+    {
+      "id": 1003,
+      "question": "What is 4 tens and 2 ones?",
+      "answers": [
+        "42",
+        "24",
+        "14",
+        "40"
+      ],
+      "correctAnswer": "42"
+    },
+    {
+      "id": 1004,
+      "question": "Which number is made of 6 tens and 1 one?",
+      "answers": [
+        "16",
+        "61",
+        "60",
+        "601"
+      ],
+      "correctAnswer": "61"
+    },
+    {
+      "id": 1005,
+      "question": "What is the value of the digit 7 in 74?",
+      "answers": [
+        "7",
+        "70",
+        "4",
+        "700"
+      ],
+      "correctAnswer": "70"
+    },
+    {
+      "id": 1006,
+      "question": "Which number shows 9 tens and 0 ones?",
+      "answers": [
+        "90",
+        "9",
+        "900",
+        "99"
+      ],
+      "correctAnswer": "90"
+    },
+    {
+      "id": 1007,
+      "question": "What is 5 tens and 3 ones?",
+      "answers": [
+        "35",
+        "53",
+        "50",
+        "30"
+      ],
+      "correctAnswer": "53"
+    },
+    {
+      "id": 1008,
+      "question": "In the number 86, what does the 8 stand for?",
+      "answers": [
+        "8",
+        "80",
+        "6",
+        "800"
+      ],
+      "correctAnswer": "80"
+    },
+    {
+      "id": 1009,
+      "question": "What number is 2 tens and 7 ones?",
+      "answers": [
+        "27",
+        "72",
+        "20",
+        "17"
+      ],
+      "correctAnswer": "27"
+    },
+    {
+      "id": 1010,
+      "question": "How many tens are there in 40?",
+      "answers": [
+        "4",
+        "40",
+        "0",
+        "10"
+      ],
+      "correctAnswer": "4"
+    },
+    {
+      "id": 1011,
+      "question": "Which is greater: 42 or 24?",
+      "answers": [
+        "42",
+        "24",
+        "They're equal",
+        "None"
+      ],
+      "correctAnswer": "42"
+    },
+    {
+      "id": 1012,
+      "question": "What number is smaller than 67?",
+      "answers": [
+        "68",
+        "70",
+        "66",
+        "69"
+      ],
+      "correctAnswer": "66"
+    },
+    {
+      "id": 1013,
+      "question": "Which number is the greatest?",
+      "answers": [
+        "34",
+        "43",
+        "33",
+        "44"
+      ],
+      "correctAnswer": "44"
+    },
+    {
+      "id": 1014,
+      "question": "What is the smallest number?",
+      "answers": [
+        "12",
+        "21",
+        "11",
+        "22"
+      ],
+      "correctAnswer": "11"
+    },
+    {
+      "id": 1015,
+      "question": "What number comes after 58?",
+      "answers": [
+        "57",
+        "59",
+        "56",
+        "60"
+      ],
+      "correctAnswer": "59"
+    },
+    {
+      "id": 1016,
+      "question": "What number comes before 91?",
+      "answers": [
+        "92",
+        "90",
+        "93",
+        "89"
+      ],
+      "correctAnswer": "90"
+    },
+    {
+      "id": 1017,
+      "question": "Which is less: 77 or 87?",
+      "answers": [
+        "87",
+        "77",
+        "Equal",
+        "None"
+      ],
+      "correctAnswer": "77"
+    },
+    {
+      "id": 1018,
+      "question": "Which number is between 40 and 50?",
+      "answers": [
+        "39",
+        "45",
+        "55",
+        "60"
+      ],
+      "correctAnswer": "45"
+    },
+    {
+      "id": 1019,
+      "question": "What number is greater than 79 and less than 82?",
+      "answers": [
+        "78",
+        "80",
+        "83",
+        "77"
+      ],
+      "correctAnswer": "80"
+    },
+    {
+      "id": 1020,
+      "question": "Which is the smallest?",
+      "answers": [
+        "98",
+        "89",
+        "90",
+        "99"
+      ],
+      "correctAnswer": "89"
+    },
+    {
+      "id": 1021,
+      "question": "What is 23 + 14?",
+      "answers": [
+        "37",
+        "36",
+        "38",
+        "35"
+      ],
+      "correctAnswer": "37"
+    },
+    {
+      "id": 1022,
+      "question": "Add: 41 + 12",
+      "answers": [
+        "53",
+        "52",
+        "51",
+        "54"
+      ],
+      "correctAnswer": "53"
+    },
+    {
+      "id": 1023,
+      "question": "Find the sum: 31 + 25",
+      "answers": [
+        "56",
+        "55",
+        "54",
+        "57"
+      ],
+      "correctAnswer": "56"
+    },
+    {
+      "id": 1024,
+      "question": "What is 10 + 20?",
+      "answers": [
+        "30",
+        "40",
+        "25",
+        "20"
+      ],
+      "correctAnswer": "30"
+    },
+    {
+      "id": 1025,
+      "question": "Solve: 6 + 13",
+      "answers": [
+        "18",
+        "19",
+        "20",
+        "17"
+      ],
+      "correctAnswer": "19"
+    },
+    {
+      "id": 1026,
+      "question": "What is 15 + 24?",
+      "answers": [
+        "39",
+        "40",
+        "38",
+        "41"
+      ],
+      "correctAnswer": "39"
+    },
+    {
+      "id": 1027,
+      "question": "Add: 33 + 11",
+      "answers": [
+        "44",
+        "45",
+        "43",
+        "42"
+      ],
+      "correctAnswer": "44"
+    },
+    {
+      "id": 1028,
+      "question": "Find the total: 8 + 9",
+      "answers": [
+        "17",
+        "18",
+        "16",
+        "19"
+      ],
+      "correctAnswer": "17"
+    },
+    {
+      "id": 1029,
+      "question": "What is 50 + 10?",
+      "answers": [
+        "60",
+        "70",
+        "40",
+        "65"
+      ],
+      "correctAnswer": "60"
+    },
+    {
+      "id": 1030,
+      "question": "Add: 12 + 25",
+      "answers": [
+        "37",
+        "36",
+        "38",
+        "35"
+      ],
+      "correctAnswer": "37"
+    },
+    {
+      "id": 1031,
+      "question": "What is 28 + 35?",
+      "answers": [
+        "63",
+        "64",
+        "62",
+        "65"
+      ],
+      "correctAnswer": "63"
+    },
+    {
+      "id": 1032,
+      "question": "Add: 46 + 37",
+      "answers": [
+        "83",
+        "84",
+        "85",
+        "82"
+      ],
+      "correctAnswer": "83"
+    },
+    {
+      "id": 1033,
+      "question": "Find the sum: 59 + 26",
+      "answers": [
+        "85",
+        "84",
+        "86",
+        "87"
+      ],
+      "correctAnswer": "85"
+    },
+    {
+      "id": 1034,
+      "question": "Solve: 48 + 19",
+      "answers": [
+        "67",
+        "66",
+        "68",
+        "65"
+      ],
+      "correctAnswer": "67"
+    },
+    {
+      "id": 1035,
+      "question": "What is 27 + 36?",
+      "answers": [
+        "63",
+        "62",
+        "61",
+        "64"
+      ],
+      "correctAnswer": "63"
+    },
+    {
+      "id": 1036,
+      "question": "Add: 75 + 18",
+      "answers": [
+        "93",
+        "92",
+        "91",
+        "90"
+      ],
+      "correctAnswer": "93"
+    },
+    {
+      "id": 1037,
+      "question": "What is 39 + 47?",
+      "answers": [
+        "86",
+        "85",
+        "87",
+        "84"
+      ],
+      "correctAnswer": "86"
+    },
+    {
+      "id": 1038,
+      "question": "Find the sum: 56 + 29",
+      "answers": [
+        "85",
+        "84",
+        "83",
+        "86"
+      ],
+      "correctAnswer": "85"
+    },
+    {
+      "id": 1039,
+      "question": "Add: 68 + 15",
+      "answers": [
+        "83",
+        "82",
+        "84",
+        "85"
+      ],
+      "correctAnswer": "83"
+    },
+    {
+      "id": 1040,
+      "question": "What is 34 + 58?",
+      "answers": [
+        "92",
+        "90",
+        "91",
+        "89"
+      ],
+      "correctAnswer": "92"
+    },
+    {
+      "id": 1041,
+      "question": "What is 54 - 23?",
+      "answers": [
+        "31",
+        "32",
+        "33",
+        "30"
+      ],
+      "correctAnswer": "31"
+    },
+    {
+      "id": 1042,
+      "question": "Subtract: 68 - 29",
+      "answers": [
+        "39",
+        "40",
+        "41",
+        "38"
+      ],
+      "correctAnswer": "39"
+    },
+    {
+      "id": 1043,
+      "question": "Find the difference: 45 - 17",
+      "answers": [
+        "28",
+        "29",
+        "27",
+        "30"
+      ],
+      "correctAnswer": "28"
+    },
+    {
+      "id": 1044,
+      "question": "What is 90 - 45?",
+      "answers": [
+        "45",
+        "44",
+        "46",
+        "43"
+      ],
+      "correctAnswer": "45"
+    },
+    {
+      "id": 1045,
+      "question": "Solve: 33 - 19",
+      "answers": [
+        "14",
+        "13",
+        "15",
+        "16"
+      ],
+      "correctAnswer": "14"
+    },
+    {
+      "id": 1046,
+      "question": "What is 72 - 36?",
+      "answers": [
+        "36",
+        "37",
+        "35",
+        "38"
+      ],
+      "correctAnswer": "36"
+    },
+    {
+      "id": 1047,
+      "question": "Subtract: 84 - 27",
+      "answers": [
+        "57",
+        "56",
+        "58",
+        "55"
+      ],
+      "correctAnswer": "57"
+    },
+    {
+      "id": 1048,
+      "question": "What is 61 - 28?",
+      "answers": [
+        "33",
+        "34",
+        "32",
+        "35"
+      ],
+      "correctAnswer": "33"
+    },
+    {
+      "id": 1049,
+      "question": "Find the result: 39 - 19",
+      "answers": [
+        "20",
+        "19",
+        "21",
+        "22"
+      ],
+      "correctAnswer": "20"
+    },
+    {
+      "id": 1050,
+      "question": "Solve: 29 - 13",
+      "answers": [
+        "16",
+        "15",
+        "17",
+        "14"
+      ],
+      "correctAnswer": "16"
+    },
+    {
+      "id": 1051,
+      "question": "What time is it when the short hand is on 3 and the long hand is on 12?",
+      "answers": [
+        "3:00",
+        "12:15",
+        "3:30",
+        "12:03"
+      ],
+      "correctAnswer": "3:00"
+    },
+    {
+      "id": 1052,
+      "question": "If the long hand is on 6 and the short hand is on 9, what time is it?",
+      "answers": [
+        "9:30",
+        "6:45",
+        "6:30",
+        "9:00"
+      ],
+      "correctAnswer": "9:30"
+    },
+    {
+      "id": 1053,
+      "question": "What is the time: short hand on 7, long hand on 12?",
+      "answers": [
+        "7:00",
+        "12:07",
+        "7:30",
+        "6:00"
+      ],
+      "correctAnswer": "7:00"
+    },
+    {
+      "id": 1054,
+      "question": "If it's half past 2, where is the long hand?",
+      "answers": [
+        "6",
+        "12",
+        "3",
+        "2"
+      ],
+      "correctAnswer": "6"
+    },
+    {
+      "id": 1055,
+      "question": "Quarter past 4 means the minute hand is on?",
+      "answers": [
+        "3",
+        "9",
+        "12",
+        "6"
+      ],
+      "correctAnswer": "3"
+    },
+    {
+      "id": 1056,
+      "question": "If the time is 6:00, where is the short hand?",
+      "answers": [
+        "6",
+        "12",
+        "3",
+        "0"
+      ],
+      "correctAnswer": "6"
+    },
+    {
+      "id": 1057,
+      "question": "What is the time: long hand on 9, short hand on 5?",
+      "answers": [
+        "5:45",
+        "9:05",
+        "4:45",
+        "6:45"
+      ],
+      "correctAnswer": "5:45"
+    },
+    {
+      "id": 1058,
+      "question": "What is quarter to 8?",
+      "answers": [
+        "7:45",
+        "8:15",
+        "8:45",
+        "7:15"
+      ],
+      "correctAnswer": "7:45"
+    },
+    {
+      "id": 1059,
+      "question": "What is the time: short hand on 10, long hand on 6?",
+      "answers": [
+        "10:30",
+        "6:10",
+        "5:10",
+        "9:30"
+      ],
+      "correctAnswer": "10:30"
+    },
+    {
+      "id": 1060,
+      "question": "If it\u2019s noon, what time is it?",
+      "answers": [
+        "12:00",
+        "6:00",
+        "3:00",
+        "1:00"
+      ],
+      "correctAnswer": "12:00"
+    },
+    {
+      "id": 1061,
+      "question": "Which coin is worth 1 cent?",
+      "answers": [
+        "Penny",
+        "Nickel",
+        "Dime",
+        "Quarter"
+      ],
+      "correctAnswer": "Penny"
+    },
+    {
+      "id": 1062,
+      "question": "Which coin is worth 10 cents?",
+      "answers": [
+        "Dime",
+        "Nickel",
+        "Quarter",
+        "Penny"
+      ],
+      "correctAnswer": "Dime"
+    },
+    {
+      "id": 1063,
+      "question": "How many nickels make 10 cents?",
+      "answers": [
+        "2",
+        "5",
+        "10",
+        "1"
+      ],
+      "correctAnswer": "2"
+    },
+    {
+      "id": 1064,
+      "question": "What coin is worth 25 cents?",
+      "answers": [
+        "Quarter",
+        "Dime",
+        "Nickel",
+        "Penny"
+      ],
+      "correctAnswer": "Quarter"
+    },
+    {
+      "id": 1065,
+      "question": "How many pennies make 1 dollar?",
+      "answers": [
+        "100",
+        "10",
+        "25",
+        "50"
+      ],
+      "correctAnswer": "100"
+    },
+    {
+      "id": 1066,
+      "question": "Which is the smallest coin in size?",
+      "answers": [
+        "Dime",
+        "Nickel",
+        "Penny",
+        "Quarter"
+      ],
+      "correctAnswer": "Dime"
+    },
+    {
+      "id": 1067,
+      "question": "Which coin is larger: nickel or dime?",
+      "answers": [
+        "Nickel",
+        "Dime",
+        "Same size",
+        "Quarter"
+      ],
+      "correctAnswer": "Nickel"
+    },
+    {
+      "id": 1068,
+      "question": "How much is 2 dimes?",
+      "answers": [
+        "20 cents",
+        "10 cents",
+        "25 cents",
+        "15 cents"
+      ],
+      "correctAnswer": "20 cents"
+    },
+    {
+      "id": 1069,
+      "question": "How much is a quarter and a nickel?",
+      "answers": [
+        "30 cents",
+        "35 cents",
+        "20 cents",
+        "25 cents"
+      ],
+      "correctAnswer": "30 cents"
+    },
+    {
+      "id": 1070,
+      "question": "How many quarters in a dollar?",
+      "answers": [
+        "4",
+        "2",
+        "3",
+        "5"
+      ],
+      "correctAnswer": "4"
+    },
+    {
+      "id": 1071,
+      "question": "Which is longer: a pencil or an eraser?",
+      "answers": [
+        "Pencil",
+        "Eraser",
+        "Same",
+        "None"
+      ],
+      "correctAnswer": "Pencil"
+    },
+    {
+      "id": 1072,
+      "question": "Which tool is best to measure a book\u2019s length?",
+      "answers": [
+        "Ruler",
+        "Clock",
+        "Scale",
+        "Thermometer"
+      ],
+      "correctAnswer": "Ruler"
+    },
+    {
+      "id": 1073,
+      "question": "How many inches in a foot?",
+      "answers": [
+        "12",
+        "10",
+        "6",
+        "8"
+      ],
+      "correctAnswer": "12"
+    },
+    {
+      "id": 1074,
+      "question": "What unit measures short objects?",
+      "answers": [
+        "Inches",
+        "Feet",
+        "Yards",
+        "Miles"
+      ],
+      "correctAnswer": "Inches"
+    },
+    {
+      "id": 1075,
+      "question": "How many feet are in 3 yards?",
+      "answers": [
+        "9",
+        "3",
+        "6",
+        "12"
+      ],
+      "correctAnswer": "9"
+    },
+    {
+      "id": 1076,
+      "question": "Which object is about 1 foot long?",
+      "answers": [
+        "Ruler",
+        "Pencil",
+        "Car",
+        "House"
+      ],
+      "correctAnswer": "Ruler"
+    },
+    {
+      "id": 1077,
+      "question": "What unit is best for measuring room length?",
+      "answers": [
+        "Feet",
+        "Inches",
+        "Centimeters",
+        "Ounces"
+      ],
+      "correctAnswer": "Feet"
+    },
+    {
+      "id": 1078,
+      "question": "How many centimeters in a meter?",
+      "answers": [
+        "100",
+        "10",
+        "50",
+        "60"
+      ],
+      "correctAnswer": "100"
+    },
+    {
+      "id": 1079,
+      "question": "What tool measures in centimeters?",
+      "answers": [
+        "Meter stick",
+        "Clock",
+        "Scale",
+        "Thermometer"
+      ],
+      "correctAnswer": "Meter stick"
+    },
+    {
+      "id": 1080,
+      "question": "What unit is used to measure a door?",
+      "answers": [
+        "Feet",
+        "Inches",
+        "Ounces",
+        "Cups"
+      ],
+      "correctAnswer": "Feet"
+    },
+    {
+      "id": 1081,
+      "question": "Which fruit is the most popular?",
+      "answers": [
+        "Apple",
+        "Banana",
+        "Grapes",
+        "Check the graph"
+      ],
+      "correctAnswer": "Check the graph"
+    },
+    {
+      "id": 1082,
+      "question": "What does the bar graph show?",
+      "answers": [
+        "Data",
+        "Words",
+        "Pictures",
+        "Stories"
+      ],
+      "correctAnswer": "Data"
+    },
+    {
+      "id": 1083,
+      "question": "What fruit has the least votes?",
+      "answers": [
+        "Check the graph",
+        "Banana",
+        "Apple",
+        "Orange"
+      ],
+      "correctAnswer": "Check the graph"
+    },
+    {
+      "id": 1084,
+      "question": "How many students chose orange?",
+      "answers": [
+        "Check the graph",
+        "5",
+        "10",
+        "15"
+      ],
+      "correctAnswer": "Check the graph"
+    },
+    {
+      "id": 1085,
+      "question": "Which two have the same value?",
+      "answers": [
+        "Check the graph",
+        "Apple & Banana",
+        "Grapes & Orange",
+        "None"
+      ],
+      "correctAnswer": "Check the graph"
+    },
+    {
+      "id": 1086,
+      "question": "What is the difference between highest and lowest?",
+      "answers": [
+        "Check the graph",
+        "5",
+        "10",
+        "15"
+      ],
+      "correctAnswer": "Check the graph"
+    },
+    {
+      "id": 1087,
+      "question": "What does each bar represent?",
+      "answers": [
+        "A fruit",
+        "A number",
+        "A letter",
+        "A person"
+      ],
+      "correctAnswer": "A fruit"
+    },
+    {
+      "id": 1088,
+      "question": "Which bar is the tallest?",
+      "answers": [
+        "Check the graph",
+        "Banana",
+        "Apple",
+        "Grapes"
+      ],
+      "correctAnswer": "Check the graph"
+    },
+    {
+      "id": 1089,
+      "question": "Which bar is the shortest?",
+      "answers": [
+        "Check the graph",
+        "Banana",
+        "Apple",
+        "Grapes"
+      ],
+      "correctAnswer": "Check the graph"
+    },
+    {
+      "id": 1090,
+      "question": "How many total students?",
+      "answers": [
+        "Check the graph",
+        "20",
+        "30",
+        "40"
+      ],
+      "correctAnswer": "Check the graph"
     }
 
   ]

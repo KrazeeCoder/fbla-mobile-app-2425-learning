@@ -1,22 +1,51 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../minigames/maze_game.dart';
 import '../minigames/puzzle_game.dart';
-
+import '../minigames/cypher_game.dart';
 import '../pages/chatbot_screen.dart';
+import '../services/updateprogress.dart';
 
 class SubtopicPage extends StatelessWidget {
   final String subtopic;
   final String subtopicId;
   final String readingTitle;
   final String readingContent;
+  final bool isCompleted;
+
+  // 🆕 Parameters needed for Firestore updates
+  final String subject;
+  final int grade;
+  final int unitId;
+  final String unitTitle;
 
   const SubtopicPage({
     required this.subtopic,
     required this.subtopicId,
     required this.readingTitle,
     required this.readingContent,
+    required this.isCompleted,
+    required this.subject,
+    required this.grade,
+    required this.unitId,
+    required this.unitTitle,
     Key? key,
   }) : super(key: key);
+
+  void launchRandomGame(BuildContext context) {
+    final games = [
+      CypherUI(subtopicId: subtopicId),
+      MazeGame(subtopicId: subtopicId),
+      PuzzleScreen(subtopicId: subtopicId),
+    ];
+    games.shuffle();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => games.first),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,92 +54,137 @@ class SubtopicPage extends StatelessWidget {
         title: Text(subtopic),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       ),
-      body: Stack(children: [
-        SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Title Styling
-              Text(
-                readingTitle,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              const SizedBox(height: 16),
-
-              // Splitting the content into formatted text widgets
-              ..._formatText(readingContent),
-
-              const SizedBox(height: 20),
-
-              // Button to Start Game
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            PuzzleScreen(subtopicId: subtopicId),
+      body: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 100),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    readingTitle,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ..._formatText(readingContent),
+                  const SizedBox(height: 24),
+                  Center(
+                    child: Text(
+                      isCompleted
+                          ? "🎉 You’ve already completed this subtopic!"
+                          : "✅ Great job! Now as the next step, click below to continue.",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight:
+                            isCompleted ? FontWeight.w500 : FontWeight.normal,
+                        fontStyle:
+                            isCompleted ? FontStyle.normal : FontStyle.italic,
+                        color: isCompleted
+                            ? Colors.green[700]
+                            : Colors.blueGrey[700],
                       ),
-                    );
-                  },
-                  child: const Text("Start Puzzle Game"),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (!isCompleted)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                top: false,
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ElevatedButton(
+                        onPressed: () async {
+                          final user = FirebaseAuth.instance.currentUser;
+
+                          if (user != null) {
+                            // 1️⃣ Mark subtopic completed in user_progress
+                            await markSubtopicAsCompleted(
+                              subtopicId: subtopicId,
+                              subtopicTitle: readingTitle,
+                              unitTitle: unitTitle,
+                              grade: grade,
+                              unitId: unitId,
+                              subject: subject,
+                            );
+
+                            // 2️⃣ Update resume point for game launch
+                            await updateResumePoint(
+                              userId: user.uid,
+                              subject: subject,
+                              grade: 'Grade $grade',
+                              unitId: unitId,
+                              unitName: unitTitle,
+                              subtopicId: subtopicId,
+                              subtopicName: subtopic,
+                              actionType: 'content',
+                              actionState: 'completed',
+                            );
+
+                            // 3️⃣ Launch next puzzle/game
+                            launchRandomGame(context);
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child:
+                            const Text("Next", style: TextStyle(fontSize: 16)),
+                      ),
+                      const SizedBox(height: 12),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ChatbotScreen(topicId: subtopicId),
+                              ),
+                            );
+                          },
+                          backgroundColor:
+                              Theme.of(context).colorScheme.primary,
+                          child: const Icon(Icons.chat_bubble_outline),
+                          tooltip: "Ask Chat-it",
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              // Button to Start Game
-              Center(
-                child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              MazeGame(subtopicId: subtopicId),
-                        ),
-                      );
-                    },
-                    child: const Text("Start maze Game")),
-              )
-            ],
-          ),
-        ),
-        Positioned(
-            right: 20,
-            bottom: 50,
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                shape: CircleBorder(), // Makes the button circular
-                padding:
-                    EdgeInsets.all(20), // Adjust padding to control the size
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ChatbotScreen(
-                            topicId: subtopicId.toString(),
-                          )),
-                );
-              },
-              child: Icon(Icons.live_help),
-            )),
-      ]),
+            ),
+        ],
+      ),
     );
   }
 
-  /// Function to format the structured content using headings, bold text, and bullet points
   List<Widget> _formatText(String content) {
-    List<Widget> formattedTextWidgets = [];
+    List<Widget> widgets = [];
     List<String> lines = content.split("\n");
 
     for (String line in lines) {
       if (line.startsWith("### ")) {
-        // Section Heading Formatting
-        formattedTextWidgets.add(
+        widgets.add(
           Padding(
             padding: const EdgeInsets.only(top: 12, bottom: 6),
             child: Text(
@@ -124,8 +198,7 @@ class SubtopicPage extends StatelessWidget {
           ),
         );
       } else if (line.startsWith("- ")) {
-        // Bullet Points Formatting with Bold Text Support
-        formattedTextWidgets.add(
+        widgets.add(
           Padding(
             padding: const EdgeInsets.only(left: 12),
             child: Row(
@@ -136,8 +209,7 @@ class SubtopicPage extends StatelessWidget {
                   child: RichText(
                     text: TextSpan(
                       style: const TextStyle(fontSize: 16, color: Colors.black),
-                      children: _formatBoldText(line.replaceFirst("- ",
-                          "")), // Apply bold formatting inside bullet points
+                      children: _formatBoldText(line.replaceFirst("- ", "")),
                     ),
                   ),
                 ),
@@ -146,8 +218,7 @@ class SubtopicPage extends StatelessWidget {
           ),
         );
       } else {
-        // Regular Paragraph Text with Bold Formatting
-        formattedTextWidgets.add(
+        widgets.add(
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 4),
             child: RichText(
@@ -161,27 +232,24 @@ class SubtopicPage extends StatelessWidget {
       }
     }
 
-    return formattedTextWidgets;
+    return widgets;
   }
 
-  /// Helper function to format **bold text** inside paragraphs and bullet points
   List<TextSpan> _formatBoldText(String text) {
     List<TextSpan> spans = [];
-    RegExp exp = RegExp(r'\*\*(.*?)\*\*'); // Match bold text
+    RegExp exp = RegExp(r'\*\*(.*?)\*\*');
     int lastMatchEnd = 0;
 
     for (var match in exp.allMatches(text)) {
-      spans.add(TextSpan(
-        text: text.substring(lastMatchEnd, match.start),
-      ));
+      spans.add(TextSpan(text: text.substring(lastMatchEnd, match.start)));
       spans.add(TextSpan(
         text: match.group(1),
         style: const TextStyle(fontWeight: FontWeight.bold),
       ));
       lastMatchEnd = match.end;
     }
-    spans.add(TextSpan(text: text.substring(lastMatchEnd)));
 
+    spans.add(TextSpan(text: text.substring(lastMatchEnd)));
     return spans;
   }
 }

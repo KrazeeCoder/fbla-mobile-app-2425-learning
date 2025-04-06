@@ -1,8 +1,11 @@
-import 'package:fbla_mobile_2425_learning_app/firebase_utility.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:core';
-
 import '../jsonUtility.dart';
+import '../minigames/cypher_game.dart';
+import '../minigames/maze_game.dart';
+import '../minigames/puzzle_game.dart';
+import '../widgets/subtopic_widget.dart';
 import '../widgets/subtopic_widget.dart';
 import '../minigames/puzzle_game.dart';
 
@@ -228,6 +231,71 @@ class _PathwayUIState extends State<PathwayUI> {
             ),
           ],
         ),
+      appBar: AppBar(title: Text('Learning Pathway')),
+      body: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.1),
+              border: Border(
+                  bottom: BorderSide(
+                      color: Colors.blue.withOpacity(0.2), width: 1)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.school, color: Colors.blue, size: 24),
+                SizedBox(width: 8),
+                Text(
+                  'Grade ${widget.grade} - ${widget.subject}',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: FutureBuilder<List<Map<String, dynamic>>>(
+              future: _pathwayData,
+              builder: (context, snapshot) {
+                int stepPos = 0;
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No pathway data available.'));
+                } else {
+                  final steps = snapshot.data!;
+                  return ListView.builder(
+                    itemCount: steps.length,
+                    itemBuilder: (context, index) {
+                      final step = steps[index];
+                      if (step["type"] == "unit_separator") {
+                        return _buildUnitSeparator(step["title"]);
+                      } else {
+                        stepPos++;
+                        return _buildPathwayStep(
+                          stepType: step["type"],
+                          isCompleted: step["isCompleted"],
+                          isNextToDo: step["isNextToDo"] ?? false,
+                          index: stepPos,
+                          subtopicTitle: step["title"],
+                          subtopicId: step["subId"],
+                          readingContent: step["reading"] ?? "",
+                          unitId: step["unitId"],
+                          unitTitle: step["unitTitle"],
+                        );
+                      }
+                    },
+                  );
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -317,6 +385,12 @@ class _PathwayUIState extends State<PathwayUI> {
                 ],
               ),
             ),
+          Expanded(child: Divider(color: Colors.grey[400], thickness: 1)),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: Text(title,
+                style: TextStyle(
+                    color: Colors.grey[600], fontWeight: FontWeight.w500)),
           ),
           Expanded(
             child: Container(
@@ -492,6 +566,7 @@ class _PathwayUIState extends State<PathwayUI> {
               ),
             ),
           ),
+          Expanded(child: Divider(color: Colors.grey[400], thickness: 1)),
         ],
       ),
     );
@@ -500,228 +575,68 @@ class _PathwayUIState extends State<PathwayUI> {
   Widget _buildPathwayStep({
     required String stepType,
     required bool isCompleted,
+    required bool isNextToDo,
     required int index,
-    String? subtopicId,
-    String? title,
-    String? content,
-    String? readingTitle,
+    required String subtopicTitle,
+    required String subtopicId,
+    required String readingContent,
+    required int unitId, // ✅ add this
+    required String unitTitle, // ✅ add this
   }) {
-    // Get the step color based on the step type
-    final Color stepColor = isCompleted
-        ? Color(0xFF4CAF50)
-        : (PathwayStep.stepTypeColors[stepType] ?? Colors.grey);
+    final double screenWidth = MediaQuery.of(context).size.width;
+    const List<double> offsets = [
+      0.65,
+      0.55,
+      0.45,
+      0.35,
+      0.25,
+      0.35,
+      0.45,
+      0.55
+    ];
+    double horizontalOffset = offsets[index % offsets.length] * screenWidth;
 
-    // Calculate constants for positioning
-    final double nodeSize = 50;
-    final double lineHeight = 25;
-
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Top connecting line
-        if (index > 1)
-          Container(
-            width: 4,
-            height: lineHeight,
-            color: isCompleted
-                ? Color(0xFF8BC34A).withOpacity(0.5)
-                : Color(0xFFDFE8EC),
-          ),
-
-        // Main node with label
-        Container(
-          width: MediaQuery.of(context).size.width * 0.85,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              // Left-aligned main node
-              Container(
-                width: 110,
-                child: Center(
-                  child: InkWell(
-                    onTap: () => _navigateToContent(context, stepType,
-                        subtopicId, title, content, readingTitle),
-                    customBorder: CircleBorder(),
-                    child: Container(
-                      width: nodeSize,
-                      height: nodeSize,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: isCompleted ? stepColor : Colors.white,
-                        border: Border.all(
-                          color: isCompleted
-                              ? Colors.transparent
-                              : Color(0xFFDFE8EC),
-                          width: 3,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
-                            blurRadius: 3,
-                            offset: Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Center(
-                        child: Icon(
-                          PathwayStep.stepTypeIcons[stepType] ??
-                              Icons.help_outline,
-                          color: isCompleted ? Colors.white : stepColor,
-                          size: 24,
-                        ),
+    return Padding(
+      padding: EdgeInsets.only(left: horizontalOffset, bottom: 20),
+      child: PathwayStep(
+        stepType: stepType,
+        isCompleted: isCompleted,
+        isNextToDo: isNextToDo,
+        onTap: (isCompleted || isNextToDo)
+            ? () {
+                if (stepType == 'subtopic') {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => SubtopicPage(
+                        subtopic: subtopicTitle,
+                        subtopicId: subtopicId,
+                        readingTitle: subtopicTitle,
+                        readingContent: readingContent,
+                        isCompleted: isCompleted,
+                        subject: widget.subject,
+                        grade: widget.grade,
+                        unitId: unitId, // ✅ pass properly
+                        unitTitle: unitTitle,
                       ),
                     ),
-                  ),
-                ),
-              ),
-
-              // Label to the right (for all nodes)
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
-                        blurRadius: 3,
-                        offset: Offset(0, 2),
-                      ),
-                    ],
-                    border: Border.all(
-                      color: isCompleted
-                          ? stepColor.withOpacity(0.3)
-                          : Color(0xFFEEEEEE),
-                      width: 1,
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: stepColor.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          stepType == "subtopic"
-                              ? Icons.menu_book_outlined
-                              : stepType == "game"
-                                  ? Icons.videogame_asset_outlined
-                                  : Icons.school_outlined,
-                          size: 14,
-                          color: stepColor,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          title ?? "Activity",
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      // Completion check
-                      if (isCompleted)
-                        Container(
-                          padding: EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color: stepColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.check,
-                            size: 12,
-                            color: Colors.white,
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-
-        // Bottom connecting line
-        Container(
-          width: 4,
-          height: lineHeight,
-          color: isCompleted
-              ? Color(0xFF8BC34A).withOpacity(0.5)
-              : Color(0xFFDFE8EC),
-        ),
-      ],
-    );
-  }
-
-  // Function to navigate based on content type
-  void _navigateToContent(
-      BuildContext context,
-      String stepType,
-      String? subtopicId,
-      String? title,
-      String? content,
-      String? readingTitle) async {
-    if (subtopicId == null || subtopicId.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Content not available')));
-      return;
-    }
-
-    // Get the content directly from the JSON data
-    Map<String, dynamic> jsonData = await loadJsonData();
-    String readingContent = "Content not available";
-    String actualReadingTitle = readingTitle ?? title ?? "Learning Content";
-
-    // Search for the content in the JSON data
-    for (var subject in jsonData["subjects"]) {
-      for (var grade in subject["grades"]) {
-        for (var unit in grade["units"]) {
-          for (var subtopic in unit["subtopics"]) {
-            if (subtopic["subtopic_id"] == subtopicId) {
-              // Found the matching subtopic
-              if (subtopic.containsKey("reading")) {
-                readingContent = subtopic["reading"]["content"];
-                if (subtopic["reading"].containsKey("title")) {
-                  actualReadingTitle = subtopic["reading"]["title"];
+                  );
+                } else if (stepType == 'game') {
+                  final games = [
+                    CypherUI(subtopicId: subtopicId),
+                    MazeGame(subtopicId: subtopicId),
+                    PuzzleScreen(subtopicId: subtopicId),
+                  ];
+                  games.shuffle();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => games.first),
+                  );
                 }
               }
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    if (stepType == "subtopic") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SubtopicPage(
-            subtopic: title ?? "Learning Content",
-            subtopicId: subtopicId,
-            readingTitle: actualReadingTitle,
-            readingContent: readingContent,
-          ),
-        ),
-      );
-    } else if (stepType == "game") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PuzzleScreen(
-            subtopicId: subtopicId,
-          ),
-        ),
-      );
-    }
+            : null,
+      ),
+    );
   }
 
   Future<List<Map<String, dynamic>>> parsePathwayData() async {
@@ -791,17 +706,36 @@ class _PathwayUIState extends State<PathwayUI> {
     }
 
     // Iterate through subjects
+    final data = await loadJsonData();
+    List<Map<String, dynamic>> rawSteps = [];
+
+    final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+    final docId =
+        '${userId.replaceAll(':', '_')}_${widget.subject.replaceAll(' ', '')}_Grade${widget.grade}';
+
+    final resumeSnapshot = await FirebaseFirestore.instance
+        .collection('resume_points')
+        .doc(docId)
+        .get();
+    final resumeData = resumeSnapshot.data();
+
+    final resumeSubId = resumeData?['subtopic_id']?.toString();
+    final resumeType = resumeData?['action_type'];
+    final resumeStatus = resumeData?['action_state'];
+
     for (Map<String, dynamic> subjectMap in data["subjects"]) {
       if (subjectMap["name"].toLowerCase() == widget.subject.toLowerCase()) {
-        // Iterate through grades
         for (Map<String, dynamic> gradeMap in subjectMap["grades"]) {
           if (gradeMap["grade"].toLowerCase() ==
               "grade ${widget.grade.toString()}") {
             // Safely cast gradeMap["units"] to List<Map<String, dynamic>>
             List<Map<String, dynamic>> units =
                 List<Map<String, dynamic>>.from(gradeMap["units"]);
+          if (gradeMap["grade"].toLowerCase() ==
+              "grade ${widget.grade.toString()}") {
+            List<Map<String, dynamic>> units =
+                List<Map<String, dynamic>>.from(gradeMap["units"]);
 
-            // Build pathwayList from units
             for (int i = 0; i < units.length; i++) {
               // Calculate completion for this unit
               List<Map<String, dynamic>> subtopics =
@@ -844,6 +778,7 @@ class _PathwayUIState extends State<PathwayUI> {
 
               // Add unit separator with completion info
               pathwayList.add({
+              rawSteps.add({
                 "type": "unit_separator",
                 "title": "Unit ${i + 1}: ${units[i]["unit"]}",
                 "completedActivities": completedActivities,
@@ -851,49 +786,42 @@ class _PathwayUIState extends State<PathwayUI> {
                 "progress": progress,
               });
 
-              // If there are no subtopics, add a placeholder
-              if (subtopics.isEmpty) {
-                pathwayList.add({
+              List<Map<String, dynamic>> subtopics =
+                  List<Map<String, dynamic>>.from(units[i]["subtopics"]);
+
+              for (int j = 0; j < subtopics.length; j++) {
+                final sub = subtopics[j];
+                final subId = sub["subtopic_id"].toString();
+
+                final isResumeContent =
+                    resumeType == 'content' && resumeSubId == subId;
+                final isResumeGame =
+                    resumeType == 'game' && resumeSubId == subId;
+
+                rawSteps.add({
                   "type": "subtopic",
-                  "title": "Coming Soon",
-                  "subtopicId": "",
-                  "content": "Content will be added soon.",
-                  "readingTitle": "Coming Soon",
+                  "title": sub["subtopic"],
+                  "subId": subId,
+                  "unit": i,
+                  "unitId": units[i]["unit_id"],
+                  "unitTitle": units[i]["unit"],
+                  "subIndex": j,
+                  "isResume": isResumeContent,
+                  "isCompleted": false,
+                  "reading": sub["reading"]?["content"] ?? "",
+                });
+
+                rawSteps.add({
+                  "type": "game",
+                  "title": sub["subtopic"],
+                  "subId": subId,
+                  "unit": i,
+                  "unitId": units[i]["unit_id"],
+                  "unitTitle": units[i]["unit"],
+                  "subIndex": j,
+                  "isResume": isResumeGame,
                   "isCompleted": false,
                 });
-              } else {
-                // Add subtopics
-                for (int j = 0; j < subtopics.length; j++) {
-                  String subtopicId = subtopics[j]["subtopic_id"] ?? "";
-                  pathwayList.add({
-                    "type": "subtopic",
-                    "title": subtopics[j]["subtopic"],
-                    "subtopicId": subtopicId,
-                    "content": subtopics[j].containsKey("reading")
-                        ? subtopics[j]["reading"]["content"]
-                        : "Content not available",
-                    "readingTitle": subtopics[j].containsKey("reading") &&
-                            subtopics[j]["reading"].containsKey("title")
-                        ? subtopics[j]["reading"]["title"]
-                        : subtopics[j]["subtopic"],
-                    "isCompleted": completed?.any((map) =>
-                            map.containsKey("id") &&
-                            map["id"] == subtopicId &&
-                            map["type"] == "subtopic") ??
-                        false,
-                  });
-
-                  pathwayList.add({
-                    "type": "game",
-                    "title": subtopics[j]["subtopic"],
-                    "subtopicId": subtopicId,
-                    "isCompleted": completed?.any((map) =>
-                            map.containsKey("id") &&
-                            map["id"] == subtopicId &&
-                            map["type"] == "game") ??
-                        false,
-                  });
-                }
               }
             }
           }
@@ -901,246 +829,99 @@ class _PathwayUIState extends State<PathwayUI> {
       }
     }
 
-    // Return the pathway list in reversed order for proper display
-    return pathwayList.reversed.toList();
+    int matchedIndex = rawSteps.indexWhere(
+      (step) => step["type"] != "unit_separator" && step["isResume"] == true,
+    );
+
+    if (matchedIndex != -1) {
+      // ✅ Mark all previous steps as completed
+      for (int i = 0; i < matchedIndex; i++) {
+        if (rawSteps[i]["type"] != "unit_separator") {
+          rawSteps[i]["isCompleted"] = true;
+        }
+      }
+
+      if (resumeStatus == 'in_progress') {
+        // ✅ Highlight current step
+        rawSteps[matchedIndex]["isNextToDo"] = true;
+      } else if (resumeStatus == 'completed') {
+        // ✅ Mark current as completed too
+        rawSteps[matchedIndex]["isCompleted"] = true;
+
+        // ✅ Move to next actionable step
+        for (int i = matchedIndex + 1; i < rawSteps.length; i++) {
+          if (rawSteps[i]["type"] != "unit_separator") {
+            rawSteps[i]["isNextToDo"] = true;
+            break;
+          }
+        }
+      }
+    } else {
+      // No match — fallback to first step
+      for (int i = 0; i < rawSteps.length; i++) {
+        if (rawSteps[i]["type"] != "unit_separator") {
+          rawSteps[i]["isNextToDo"] = true;
+          break;
+        }
+      }
+    }
+
+    return rawSteps;
   }
 }
 
 class PathwayStep extends StatelessWidget {
   final String stepType;
   final bool isCompleted;
-  final String? subtopicId;
-  final String? title;
-  final String? content;
-  final String? readingTitle;
+  final bool isNextToDo;
+  final VoidCallback? onTap;
 
-  // Map to associate stepType with icons
   static const Map<String, IconData> stepTypeIcons = {
     "game": Icons.videogame_asset,
     "subtopic": Icons.menu_book,
     "quiz": Icons.quiz,
   };
 
-  // Map for step type color schemes - using varied colors
-  static const Map<String, Color> stepTypeColors = {
-    "game": Color(0xFFFF8A3D), // Orange for games
-    "subtopic": Color(
-        0xFF7B1FA2), // Purple for learning content (completely different from green)
-    "quiz": Color(0xFF4A8FE7), // Blue for quizzes
-  };
-
   PathwayStep({
     required this.stepType,
     required this.isCompleted,
-    this.subtopicId,
-    this.title,
-    this.content,
-    this.readingTitle,
+    this.isNextToDo = false,
+    this.onTap,
   });
-
-  void _navigateToContent(BuildContext context) async {
-    if (subtopicId == null || subtopicId!.isEmpty) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Content not available')));
-      return;
-    }
-
-    // Get the content directly from the JSON data
-    Map<String, dynamic> jsonData = await loadJsonData();
-    String readingContent = "Content not available";
-    String actualReadingTitle = readingTitle ?? title ?? "Learning Content";
-
-    // Search for the content in the JSON data
-    for (var subject in jsonData["subjects"]) {
-      for (var grade in subject["grades"]) {
-        for (var unit in grade["units"]) {
-          for (var subtopic in unit["subtopics"]) {
-            if (subtopic["subtopic_id"] == subtopicId) {
-              // Found the matching subtopic
-              if (subtopic.containsKey("reading")) {
-                readingContent = subtopic["reading"]["content"];
-                if (subtopic["reading"].containsKey("title")) {
-                  actualReadingTitle = subtopic["reading"]["title"];
-                }
-              }
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    if (stepType == "subtopic") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SubtopicPage(
-            subtopic: title ?? "Learning Content",
-            subtopicId: subtopicId!,
-            readingTitle: actualReadingTitle,
-            readingContent: readingContent,
-          ),
-        ),
-      );
-    } else if (stepType == "game") {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => PuzzleScreen(
-            subtopicId: subtopicId!,
-          ),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    // Get the icon based on stepType, default to a generic icon if stepType is not found
     final IconData icon = stepTypeIcons[stepType] ?? Icons.help_outline;
-    final Color stepColor = isCompleted
-        ? Color(0xFF1E7836) // Darker green for completed items
-        : (stepTypeColors[stepType] ?? Colors.grey);
+    final Color borderColor = isCompleted
+        ? Colors.green
+        : isNextToDo
+            ? Colors.blue
+            : Colors.grey;
+    final Color bgColor = isCompleted
+        ? Colors.green[100]!
+        : isNextToDo
+            ? Colors.blue[100]!
+            : Colors.grey[200]!;
+    final Color iconColor = isCompleted
+        ? Colors.green
+        : isNextToDo
+            ? Colors.blue
+            : Colors.grey;
 
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 8),
-      child: Stack(
-        clipBehavior: Clip.none, // Allow children to overflow without clipping
-        children: [
-          // Button with shadow and gradient
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: stepColor.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                customBorder: CircleBorder(),
-                onTap: () => _navigateToContent(context),
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: isCompleted
-                          ? [
-                              Color(0xFF60C050),
-                              Color(0xFF1E7836)
-                            ] // Green gradient for completed items
-                          : [stepColor.withOpacity(0.7), stepColor],
-                    ),
-                    border: Border.all(
-                      color: isCompleted
-                          ? Colors.white
-                          : Colors.white.withOpacity(0.7),
-                      width: isCompleted ? 3 : 2,
-                    ),
-                  ),
-                  child: Icon(
-                    icon,
-                    color: Colors.white,
-                    size: 28,
-                  ),
-                ),
-              ),
-            ),
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        OutlinedButton(
+          onPressed: onTap,
+          style: OutlinedButton.styleFrom(
+            padding: EdgeInsets.all(30),
+            side: BorderSide(color: borderColor, width: 1),
+            shape: CircleBorder(),
+            backgroundColor: bgColor,
           ),
-          // Completion Check Badge
-          if (isCompleted)
-            Positioned(
-              top: -10,
-              right: -10,
-              child: Container(
-                padding: EdgeInsets.all(6),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
-                  border: Border.all(color: Color(0xFF1E7836), width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: Icon(
-                  Icons.check,
-                  size: 16,
-                  color: Color(0xFF1E7836),
-                ),
-              ),
-            ),
-          // Completion status on the opposite side
-          if (isCompleted)
-            Positioned(
-              top: -5,
-              left: -5,
-              child: Container(
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  color: Color(0xFFE8F5E9),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Color(0xFF1E7836), width: 1),
-                ),
-                child: Text(
-                  "DONE",
-                  style: TextStyle(
-                    fontSize: 8,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1E7836),
-                  ),
-                ),
-              ),
-            ),
-          // Type indicator
-          Positioned(
-            bottom: -10,
-            left: 0,
-            right: 0,
-            child: Center(
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(
-                  color: isCompleted ? Color(0xFFE8F5E9) : Color(0xFFDFFFD6),
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                  border: isCompleted
-                      ? Border.all(color: Color(0xFF1E7836), width: 1)
-                      : null,
-                ),
-                child: Text(
-                  stepType == "subtopic"
-                      ? "Learn"
-                      : stepType == "game"
-                          ? "Game"
-                          : stepType.capitalize(),
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: stepColor,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+          child: Icon(icon, color: iconColor),
+        ),
+      ],
     );
   }
 }
@@ -1150,4 +931,6 @@ extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${this.substring(1)}";
   }
+}
+
 }
