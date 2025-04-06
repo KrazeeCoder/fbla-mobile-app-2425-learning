@@ -14,12 +14,32 @@ import 'package:fbla_mobile_2425_learning_app/getkeys.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  await ApiService.initialize();
 
-  runApp(const MyApp());
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    // Try to initialize the API service, but continue even if it fails
+    try {
+      await ApiService.initialize();
+    } catch (e) {
+      print('Warning: Could not initialize ApiService: $e');
+      // Continue with the app even if ApiService initialization fails
+    }
+
+    runApp(const MyApp());
+  } catch (e) {
+    print('Fatal error during app initialization: $e');
+    // You might want to show an error screen here instead
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text('Error initializing app: $e'),
+        ),
+      ),
+    ));
+  }
 }
 
 Map<String, Map> allLessons = {

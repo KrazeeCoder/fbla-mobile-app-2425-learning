@@ -29,15 +29,27 @@ class ApiService {
 
   // Factory constructor to initialize the singleton with remote config
   static Future<ApiService> initialize({bool force = false}) async {
-    final configValues = await fetchRemoteConfig();
-    _instance.baseUrl =
-        "https://us-central1-voxigo.cloudfunctions.net/secureKeyServer";
-    _instance.hmacSecret = configValues['hmac_secret'] ?? 'default-hmac-secret';
-    _instance.authToken = configValues['auth_token'] ?? 'default-auth-token';
+    try {
+      final configValues = await fetchRemoteConfig();
+      _instance.baseUrl =
+          "https://us-central1-voxigo.cloudfunctions.net/secureKeyServer";
+      _instance.hmacSecret =
+          configValues['hmac_secret'] ?? 'default-hmac-secret';
+      _instance.authToken = configValues['auth_token'] ?? 'default-auth-token';
 
-    print("🔄 ApiService initialized with:");
-    print("🔑 hmacSecret: ${_instance.hmacSecret}");
-    print("🔐 authToken: ${_instance.authToken}");
+      print("🔄 ApiService initialized with:");
+      print("🔑 hmacSecret: ${_instance.hmacSecret}");
+      print("🔐 authToken: ${_instance.authToken}");
+    } catch (e) {
+      print("⚠️ Error initializing ApiService: $e");
+      print("⚠️ Using default values instead");
+
+      // Use defaults if we couldn't fetch config
+      _instance.baseUrl =
+          "https://us-central1-voxigo.cloudfunctions.net/secureKeyServer";
+      _instance.hmacSecret = 'default-hmac-secret';
+      _instance.authToken = 'default-auth-token';
+    }
 
     return _instance;
   }
@@ -163,22 +175,41 @@ Future<Map<String, String>> fetchRemoteConfig() async {
   final remoteConfig = FirebaseRemoteConfig.instance;
 
   try {
+    // Set default values
     await remoteConfig.setDefaults(<String, dynamic>{
       'hmac_secret': 'default-hmac-secret',
       'auth_token': 'default-auth-token',
     });
 
-    await remoteConfig.fetchAndActivate();
+    // Fetch and activate with a timeout
+    await remoteConfig.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: const Duration(seconds: 10),
+      minimumFetchInterval: const Duration(hours: 1),
+    ));
 
+    try {
+      await remoteConfig.fetchAndActivate();
+    } catch (e) {
+      print('Warning: Failed to fetch remote config: $e');
+      // Continue with defaults
+    }
+
+    // Safely get strings with fallbacks
     final hmacSecret = remoteConfig.getString('hmac_secret');
     final authToken = remoteConfig.getString('auth_token');
 
+    // Make sure we're returning valid strings
     return {
-      'hmac_secret': hmacSecret,
-      'auth_token': authToken,
+      'hmac_secret': hmacSecret.isNotEmpty ? hmacSecret : 'default-hmac-secret',
+      'auth_token': authToken.isNotEmpty ? authToken : 'default-auth-token',
     };
   } catch (e) {
-    throw Exception('Error fetching remote config: $e');
+    print('Error in fetchRemoteConfig: $e');
+    // Instead of throwing, return defaults
+    return {
+      'hmac_secret': 'default-hmac-secret',
+      'auth_token': 'default-auth-token',
+    };
   }
 }
 
