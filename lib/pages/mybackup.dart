@@ -25,38 +25,57 @@ class _PathwayUIState extends State<PathwayUI> {
   void initState() {
     super.initState();
     final user = FirebaseAuth.instance.currentUser;
-    widget.userId = user?.uid ?? '';
+    if (user != null) {
+      widget.userId = user.uid;
+    } else {
+      widget.userId = '';
+    }
+
     _pathwayData = parsePathwayData();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Learning Pathway'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
+      appBar: AppBar(title: Text('Learning Pathway')),
       body: Column(
         children: [
-          _buildHeader(context),
+          Container(
+            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            decoration: BoxDecoration(
+              color: Colors.blue.withOpacity(0.1),
+              border: Border(
+                  bottom: BorderSide(
+                      color: Colors.blue.withOpacity(0.2), width: 1)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.school, color: Colors.blue, size: 24),
+                SizedBox(width: 8),
+                Text(
+                  'Grade ${widget.grade} - ${widget.subject}',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue),
+                ),
+              ],
+            ),
+          ),
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: _pathwayData,
               builder: (context, snapshot) {
                 int stepPos = 0;
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return Center(child: CircularProgressIndicator());
                 } else if (snapshot.hasError) {
                   return Center(child: Text('Error: ${snapshot.error}'));
                 } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No pathway data available.'));
+                  return Center(child: Text('No pathway data available.'));
                 } else {
                   final steps = snapshot.data!;
                   return ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
                     itemCount: steps.length,
                     itemBuilder: (context, index) {
                       final step = steps[index];
@@ -80,64 +99,9 @@ class _PathwayUIState extends State<PathwayUI> {
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 24),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withOpacity(0.8)
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          )
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(Icons.school, color: Colors.white, size: 28),
-          ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Grade ${widget.grade}',
-                style: TextStyle(
-                  color: Colors.white.withOpacity(0.9),
-                  fontWeight: FontWeight.w500,
-                  fontSize: 18,
-                ),
-              ),
-              Text(
-                widget.subject,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-
   Widget _buildUnitSeparator(String title) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 24.0),
+      padding: EdgeInsets.symmetric(vertical: 24.0),
       child: Row(
         children: [
           Expanded(child: Divider(color: Colors.grey[400], thickness: 1)),
@@ -157,7 +121,7 @@ class _PathwayUIState extends State<PathwayUI> {
     required Map<String, dynamic> step,
     required int index,
   }) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    final double screenWidth = MediaQuery.of(context).size.width;
     const List<double> offsets = [
       0.65,
       0.55,
@@ -193,20 +157,11 @@ class _PathwayUIState extends State<PathwayUI> {
                         unitId: step["unitId"],
                         unitTitle: step["unitTitle"],
                         userId: widget.userId ?? '',
+                        key: null,
                       ),
                     ),
                   );
                 } else if (step["type"] == 'game') {
-                  final nextSubtopicData = {
-                    "title": step["nextSubtopicTitle"],
-                    "subId": step["nextSubtopicId"],
-                    "reading": step["nextReadingContent"],
-                    "subject": widget.subject,
-                    "grade": widget.grade,
-                    "unitId": step["unitId"],
-                    "unitTitle": step["unitTitle"],
-                    "userId": widget.userId ?? '',
-                  };
                   final games = [
                     CypherUI(
                       subject: widget.subject,
@@ -245,7 +200,9 @@ class _PathwayUIState extends State<PathwayUI> {
                       userId: widget.userId ?? '',
                     ),
                   ];
-                  games.shuffle(); // ✅ Randomize order
+                  games.shuffle();
+                  debugPrint(
+                      '[Game Launch] Next subtopic → ID: ${step["nextSubtopicId"]}, Title: ${step["nextSubtopicTitle"]}');
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => games.first),
@@ -300,6 +257,7 @@ class _PathwayUIState extends State<PathwayUI> {
                 final isResumeGame =
                     resumeType == 'game' && resumeSubId == subId;
 
+                // Subtopic node
                 rawSteps.add({
                   "type": "subtopic",
                   "title": sub["subtopic"],
@@ -313,6 +271,7 @@ class _PathwayUIState extends State<PathwayUI> {
                   "reading": sub["reading"]?["content"] ?? "",
                 });
 
+                // Determine next subtopic
                 Map<String, dynamic>? nextSub;
                 if (j + 1 < subtopics.length) {
                   nextSub = subtopics[j + 1];
@@ -324,6 +283,7 @@ class _PathwayUIState extends State<PathwayUI> {
                   }
                 }
 
+                // Game node
                 rawSteps.add({
                   "type": "game",
                   "title": sub["subtopic"],
@@ -345,6 +305,7 @@ class _PathwayUIState extends State<PathwayUI> {
       }
     }
 
+    // Resume state
     final matchedIndex = rawSteps.indexWhere(
         (step) => step["type"] != "unit_separator" && step["isResume"] == true);
 

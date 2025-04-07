@@ -116,6 +116,8 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
                           RegExp(r'[^0-9]'), '')), // ✅ parse "Grade 2" to 2
                       unitId: lesson['unitId'], // ✅ added
                       unitTitle: lesson['unit'], // ✅ added
+                      userId: FirebaseAuth.instance.currentUser?.uid ?? "",
+                      key: null, // ✅ added
                     ),
                   ),
                 );

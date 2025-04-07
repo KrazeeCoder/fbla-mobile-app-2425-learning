@@ -169,7 +169,16 @@ class _MainPageState extends State<MainPage> {
     ProgressPage(),
     SettingsPage(),
     CypherUI(
+      subject: "Math",
+      grade: 1,
+      unitId: 123,
+      unitTitle: "Introduction to Algebra",
       subtopicId: "f51f2584-8b3b-42f2-b10c-3c47f93fbd37",
+      subtopicTitle: "Basic Algebra",
+      nextSubtopicId: "f51f2584-8b3b-42f2-b10c-3c47f93fbd38",
+      nextSubtopicTitle: "Advanced Algebra",
+      nextReadingContent: "Learn about solving equations.",
+      userId: "user-456",
     )
   ];
 

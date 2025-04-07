@@ -13,6 +13,8 @@ import '../xp_manager.dart';
 import '../utils/app_logger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'earth_unlock_animation.dart';
+import 'package:audioplayers/audioplayers.dart'; // Add to pubspec.yaml
+import '../widgets/subtopic_widget.dart'; // Assuming this shows subtopics
 
 class SubtopicPage extends StatelessWidget {
   final String subtopic;
@@ -20,14 +22,14 @@ class SubtopicPage extends StatelessWidget {
   final String readingTitle;
   final String readingContent;
   final bool isCompleted;
-
-  // 🆕 Parameters needed for Firestore updates
   final String subject;
   final int grade;
   final int unitId;
   final String unitTitle;
+  final String userId;
 
   const SubtopicPage({
+    Key? key, // 👈 optional, not required
     required this.subtopic,
     required this.subtopicId,
     required this.readingTitle,
@@ -37,16 +39,56 @@ class SubtopicPage extends StatelessWidget {
     required this.grade,
     required this.unitId,
     required this.unitTitle,
-    Key? key,
+    required this.userId,
   }) : super(key: key);
 
   void launchRandomGame(BuildContext context) {
+    final nextSubtopicId = "dummy_last";
+    final nextSubtopicTitle = "Last subtopic";
+    final nextReadingContent = "";
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? "";
     final games = [
-      CypherUI(subtopicId: subtopicId),
-      MazeGame(subtopicId: subtopicId),
+      CypherUI(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicTitle: readingTitle,
+        subtopicId: subtopicId,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: currentUserId,
+      ),
+      MazeGame(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicTitle: readingTitle,
+        subtopicId: subtopicId,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: currentUserId,
+      ),
+      PuzzleScreen(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicTitle: readingTitle,
+        subtopicId: subtopicId,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: currentUserId,
+      ),
     ];
     games.shuffle();
 
+    debugPrint(
+        '[SubtopicPage → Game Launch] subtopic: $subtopicId | next: $nextSubtopicTitle ($nextSubtopicId)');
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => games.first),
@@ -340,7 +382,7 @@ class SubtopicPage extends StatelessWidget {
                             final user = FirebaseAuth.instance.currentUser;
 
                             if (user != null) {
-                              // 1️⃣ Mark subtopic completed in user_progress
+                              // 1️ Mark subtopic completed in user_progress
                               await markSubtopicAsCompleted(
                                 subtopicId: subtopicId,
                                 subtopicTitle: readingTitle,
