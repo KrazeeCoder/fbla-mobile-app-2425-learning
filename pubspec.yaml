@@ -18,7 +18,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   firebase_core: ^3.9.0
   google_generative_ai: ^0.4.6
-  flutter_markdown: ^0.7.6+1
+  flutter_markdown: ^0.7.7
   flutter_tex: ^4.0.13
   flutter_math_fork: ^0.7.0
   firebase_auth: ^5.5.1
@@ -29,6 +29,14 @@ dependencies:
   uuid: ^4.2.2
   flutter_svg: ^2.0.17
   firebase_storage: ^12.4.4
+  showcaseview: ^4.0.1
+  url_launcher: ^6.2.4
+  logger: ^2.0.2
+  appinio_social_share: ^0.3.2
+  share_plus: ^10.1.4
+  path_provider: ^2.1.5
+  cross_file: ^0.3.4+2
+  screenshot: ^3.0.0
 
 
 dev_dependencies:
@@ -63,3 +71,4 @@ flutter:
     - assets/branding/name.svg
     - assets/homepage_design/left.svg
     - assets/homepage_design/right.svg
+    - assets/branding/earthpal_logo.png

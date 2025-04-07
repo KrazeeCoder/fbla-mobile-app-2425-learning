@@ -3,6 +3,7 @@ import 'package:fbla_mobile_2425_learning_app/services/progress_service.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../utils/app_logger.dart';
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -25,6 +26,8 @@ class _ProgressPageState extends State<ProgressPage> {
   }
 
   Future<void> fetchProgressData() async {
+    setState(() => _isLoading = true);
+
     try {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid == null) return;
@@ -47,7 +50,7 @@ class _ProgressPageState extends State<ProgressPage> {
 
       setState(() => _isLoading = false);
     } catch (e) {
-      print("Error fetching progress: $e");
+      AppLogger.e("Error fetching progress data", error: e);
       setState(() => _isLoading = false);
     }
   }

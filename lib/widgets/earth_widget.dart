@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+import '../xp_manager.dart';
 // import 'package:flutter_3d_controller/flutter_3d_controller.dart';
 
 class EarthWidget extends StatefulWidget {
@@ -9,7 +11,8 @@ class EarthWidget extends StatefulWidget {
   _EarthWidgetState createState() => _EarthWidgetState();
 }
 
-class _EarthWidgetState extends State<EarthWidget> with SingleTickerProviderStateMixin {
+class _EarthWidgetState extends State<EarthWidget>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -27,11 +30,33 @@ class _EarthWidgetState extends State<EarthWidget> with SingleTickerProviderStat
     super.dispose();
   }
 
+  // Function to determine which Earth to display based on level
+  String _getEarthAssetPath(int level) {
+    // Direct mapping: Level 1 -> Earth 1, Level 2 -> Earth 2, etc.
+    // For levels beyond 5, show Earth 5 (the most developed Earth)
+    if (level <= 0) {
+      return 'assets/earths/1.svg'; // Default to first Earth for level 0 or negative
+    } else if (level >= 1 && level <= 5) {
+      return 'assets/earths/$level.svg'; // Direct mapping
+    } else {
+      return 'assets/earths/5.svg'; // Max at Earth 5 for higher levels
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Get the current level from XPManager
+    final xpManager = Provider.of<XPManager>(context);
+
+    if (xpManager.isLoading) {
+      return const CircularProgressIndicator();
+    }
+
     return RotationTransition(
       turns: _controller,
-      child: SvgPicture.asset('assets/earths/4.svg'), // Replace with your SVG
+      child: SvgPicture.asset(
+        _getEarthAssetPath(xpManager.currentLevel),
+      ),
     );
   }
 }

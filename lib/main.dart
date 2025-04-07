@@ -2,6 +2,7 @@ import 'package:fbla_mobile_2425_learning_app/minigames/cypher_game.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
 import 'minigames/puzzle_game.dart';
 import 'pages/home.dart';
 import 'pages/progress.dart';
@@ -11,6 +12,7 @@ import 'firebase_options.dart';
 import 'pages/signin_screen.dart';
 import '/security.dart';
 import 'package:fbla_mobile_2425_learning_app/getkeys.dart';
+import 'xp_manager.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -78,13 +80,18 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: false,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => XPManager()),
+      ],
+      child: MaterialApp(
+        title: 'FBLA Learning App',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: false,
+        ),
+        home: const AuthWrapper(), // ✅ Check if user is logged in
       ),
-      home: AuthWrapper(), // ✅ Check if user is logged in
     );
   }
 }

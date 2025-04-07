@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:dash_chat_2/dash_chat_2.dart' hide MessageOptions;
 import 'package:google_generative_ai/google_generative_ai.dart';
+import 'dart:math';
 
 import '../ai_utility.dart';
 import '../jsonUtility.dart';
@@ -249,12 +250,12 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   Widget _buildAvatar({required bool isUser}) {
     const double size = 36;
     return CircleAvatar(
-      radius: size / 2,
+      radius: size / 2 + 5,
       backgroundColor: isUser
           ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-          : Colors.green.shade50,
+          : Colors.white,
       backgroundImage: !isUser
-          ? AssetImage('assets/mushroom.png')
+          ? AssetImage('assets/branding/earthpal_logo.png')
           : (userImage != null
               ? NetworkImage(userImage!) as ImageProvider
               : null),
@@ -279,6 +280,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
         style: TextStyle(
           fontSize: 16,
           color: isAiMessage ? Colors.black87 : Colors.white,
+          height: 1.4,
         ),
         children: _processFormattedText(text),
       ),
@@ -427,10 +429,11 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: Colors.green.shade100,
-                  radius: 25,
-                  backgroundImage: AssetImage('assets/mushroom.png'),
+                const CircleAvatar(
+                  backgroundColor: Colors.white,
+                  radius: 30,
+                  backgroundImage:
+                      AssetImage('assets/branding/earthpal_logo.png'),
                 ),
                 SizedBox(width: 12),
                 Expanded(
@@ -468,11 +471,23 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
   }
 
   List<TextSpan> _processFormattedText(String text) {
+    print(
+        'Processing full text: "${text.substring(0, min(50, text.length))}..."');
     List<TextSpan> spans = [];
     List<String> lines = text.split("\n");
 
     for (int i = 0; i < lines.length; i++) {
       String line = lines[i];
+      if (line.trim().isEmpty) {
+        // Handle empty lines
+        if (i < lines.length - 1) {
+          spans.add(TextSpan(text: "\n"));
+        }
+        continue;
+      }
+
+      print(
+          'Processing line ${i + 1}/${lines.length}: "${line.substring(0, min(30, line.length))}"${line.length > 30 ? "..." : ""}');
 
       // Process headings
       if (line.startsWith("# ")) {
@@ -496,137 +511,200 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
       }
       // Process bullet points
       else if (line.startsWith("- ") || line.startsWith("* ")) {
-        spans.add(TextSpan(
-          text: "• ${line.substring(2)}${i < lines.length - 1 ? "\n" : ""}",
-        ));
-      }
-      // Process numbered lists
-      else if (RegExp(r'^\d+\.\s').hasMatch(line)) {
-        spans.add(TextSpan(
-          text: "$line${i < lines.length - 1 ? "\n" : ""}",
-        ));
-      }
-      // Regular line
-      else {
-        // Process inline formatting
-        List<TextSpan> inlineSpans = _processInlineFormatting(line);
+        print('Found bullet point');
+        // Apply formatting to bullet point content
+        List<TextSpan> bulletContent =
+            _processInlineFormatting(line.substring(2));
+
+        // Add bullet symbol
+        spans.add(TextSpan(text: "• "));
+
+        // Add formatted content
+        spans.addAll(bulletContent);
 
         // Add newline if not the last line
         if (i < lines.length - 1) {
-          inlineSpans.add(TextSpan(text: "\n"));
+          spans.add(TextSpan(text: "\n"));
         }
+      }
+      // Process numbered lists - more permissive pattern
+      else if (RegExp(r'^\d+\.').hasMatch(line)) {
+        print('Found numbered list item');
+        // Find where the content starts after the number
+        Match? match = RegExp(r'^\d+\.(\s*)').firstMatch(line);
+        if (match != null) {
+          int contentStart = match.end;
+          print('Numbered list content starts at: $contentStart');
 
+          // Add the number part unchanged
+          spans.add(TextSpan(text: line.substring(0, contentStart)));
+
+          // Make sure we have content to format
+          if (contentStart < line.length) {
+            // Format the content part
+            String contentPart = line.substring(contentStart);
+            print('Numbered list content: "$contentPart"');
+            List<TextSpan> numberContent =
+                _processInlineFormatting(contentPart);
+            spans.addAll(numberContent);
+          }
+
+          // Add newline if not the last line
+          if (i < lines.length - 1) {
+            spans.add(TextSpan(text: "\n"));
+          }
+        } else {
+          // Fallback if regex doesn't match (shouldn't happen)
+          spans.add(TextSpan(text: "$line${i < lines.length - 1 ? "\n" : ""}"));
+        }
+      }
+      // Regular line
+      else {
+        print('Found regular line');
+        // Process inline formatting
+        List<TextSpan> inlineSpans = _processInlineFormatting(line);
+
+        // Add formatted content
         spans.addAll(inlineSpans);
+
+        // Add newline if not the last line
+        if (i < lines.length - 1) {
+          spans.add(TextSpan(text: "\n"));
+        }
       }
     }
 
+    print('Total spans generated: ${spans.length}');
     return spans;
   }
 
   List<TextSpan> _processInlineFormatting(String text) {
-    List<TextSpan> spans = [];
-    int lastIndex = 0;
-
-    // Process bold text
-    final boldPattern = RegExp(r'\*\*(.*?)\*\*');
-    for (var match in boldPattern.allMatches(text)) {
-      // Add text before the bold section
-      if (match.start > lastIndex) {
-        spans.add(TextSpan(text: text.substring(lastIndex, match.start)));
-      }
-      // Add the bold text
-      spans.add(TextSpan(
-        text: match.group(1),
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ));
-
-      // Check if we need to add a space after the bold text
-      if (match.end < text.length) {
-        String nextChar = text[match.end];
-        if (nextChar != ' ' &&
-            nextChar != '.' &&
-            nextChar != ',' &&
-            nextChar != '!' &&
-            nextChar != '?' &&
-            nextChar != ';' &&
-            nextChar != ':') {
-          spans.add(TextSpan(text: ' '));
-        }
-      }
-
-      lastIndex = match.end;
+    // Edge case: Empty text
+    if (text.isEmpty) {
+      return [TextSpan(text: "")];
     }
 
-    // Process italic text
-    final italicPattern = RegExp(r'\*(.*?)\*');
-    for (var match in italicPattern.allMatches(text)) {
-      // Add text before the italic section
-      if (match.start > lastIndex) {
-        spans.add(TextSpan(text: text.substring(lastIndex, match.start)));
-      }
-      // Add the italic text
-      spans.add(TextSpan(
-        text: match.group(1),
-        style: TextStyle(fontStyle: FontStyle.italic),
-      ));
+    print(
+        'Processing inline text: "${text.length > 30 ? text.substring(0, 30) + "..." : text}"');
 
-      // Check if we need to add a space after the italic text
-      if (match.end < text.length) {
-        String nextChar = text[match.end];
-        if (nextChar != ' ' &&
-            nextChar != '.' &&
-            nextChar != ',' &&
-            nextChar != '!' &&
-            nextChar != '?' &&
-            nextChar != ';' &&
-            nextChar != ':') {
-          spans.add(TextSpan(text: ' '));
-        }
-      }
+    // Process each formatting type separately for more reliability
+    // Start with just plain text
+    List<TextSpan> spans = [TextSpan(text: text)];
 
-      lastIndex = match.end;
+    try {
+      // Process bold text - ensure we don't match empty content
+      spans = _processSpecificFormat(spans, RegExp(r'\*\*(.+?)\*\*'),
+          (match) => TextStyle(fontWeight: FontWeight.bold), 1, 'Bold');
+
+      // Process italic text
+      spans = _processSpecificFormat(spans, RegExp(r'\*(.+?)\*'),
+          (match) => TextStyle(fontStyle: FontStyle.italic), 1, 'Italic');
+
+      // Process code text
+      spans = _processSpecificFormat(
+          spans,
+          RegExp(r'`(.+?)`'),
+          (match) => TextStyle(
+                fontFamily: 'monospace',
+                backgroundColor: Colors.grey.shade200,
+                color: Colors.black87,
+              ),
+          1,
+          'Code');
+
+      // Process subscript
+      spans = _processSpecificFormat(
+          spans,
+          RegExp(r'<sub>(.+?)</sub>'),
+          (match) => TextStyle(
+                fontSize: 12,
+                textBaseline: TextBaseline.alphabetic,
+                height: 2.0,
+              ),
+          1,
+          'Subscript');
+
+      // Process superscript
+      spans = _processSpecificFormat(
+          spans,
+          RegExp(r'<sup>(.+?)</sup>'),
+          (match) => TextStyle(
+                fontSize: 12,
+                textBaseline: TextBaseline.alphabetic,
+                height: 0.7,
+              ),
+          1,
+          'Superscript');
+    } catch (e) {
+      print('Error processing formatted text: $e');
+      // Return original text if there was an error
+      return [TextSpan(text: text)];
     }
 
-    // Process code blocks
-    final codePattern = RegExp(r'`(.*?)`');
-    for (var match in codePattern.allMatches(text)) {
-      // Add text before the code section
-      if (match.start > lastIndex) {
-        spans.add(TextSpan(text: text.substring(lastIndex, match.start)));
-      }
-      // Add the code text
-      spans.add(TextSpan(
-        text: match.group(1),
-        style: TextStyle(
-          fontFamily: 'monospace',
-          backgroundColor: Colors.grey.shade200,
-          color: Colors.black87,
-        ),
-      ));
-
-      // Check if we need to add a space after the code text
-      if (match.end < text.length) {
-        String nextChar = text[match.end];
-        if (nextChar != ' ' &&
-            nextChar != '.' &&
-            nextChar != ',' &&
-            nextChar != '!' &&
-            nextChar != '?' &&
-            nextChar != ';' &&
-            nextChar != ':') {
-          spans.add(TextSpan(text: ' '));
-        }
-      }
-
-      lastIndex = match.end;
-    }
-
-    // Add any remaining text
-    if (lastIndex < text.length) {
-      spans.add(TextSpan(text: text.substring(lastIndex)));
-    }
-
+    print('Final spans count: ${spans.length}');
     return spans;
+  }
+
+  // Helper method to process a specific formatting pattern
+  List<TextSpan> _processSpecificFormat(
+      List<TextSpan> inputSpans,
+      RegExp pattern,
+      TextStyle Function(String) styleBuilder,
+      int groupIndex,
+      String formatName) {
+    List<TextSpan> result = [];
+
+    for (var span in inputSpans) {
+      // Only process text spans (not already styled spans)
+      if (span.style == null) {
+        String text = span.text ?? '';
+
+        // Skip empty text
+        if (text.isEmpty) {
+          result.add(span);
+          continue;
+        }
+
+        List<Match> matches = pattern.allMatches(text).toList();
+
+        if (matches.isEmpty) {
+          // No matches, keep original span
+          result.add(span);
+        } else {
+          int lastEnd = 0;
+          for (var match in matches) {
+            print(
+                '$formatName match found: "${match.group(0)}" -> "${match.group(groupIndex)}"');
+
+            // Add text before the match
+            if (match.start > lastEnd) {
+              result.add(TextSpan(text: text.substring(lastEnd, match.start)));
+            }
+
+            // Add the styled text
+            String? innerText = match.group(groupIndex);
+            if (innerText != null) {
+              result.add(TextSpan(
+                text: innerText,
+                style: styleBuilder(innerText),
+              ));
+            }
+
+            lastEnd = match.end;
+          }
+
+          // Add any remaining text after the last match
+          if (lastEnd < text.length) {
+            result.add(TextSpan(text: text.substring(lastEnd)));
+          }
+        }
+      } else {
+        // If the span already has styling, keep it as is
+        result.add(span);
+      }
+    }
+
+    return result;
   }
 
   String _formatTime(DateTime time) {
