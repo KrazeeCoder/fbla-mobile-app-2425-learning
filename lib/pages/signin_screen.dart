@@ -94,6 +94,8 @@ class _SignInScreenState extends State<SignInScreen> {
 
       final Uri uri = Uri.parse(result);
       final String? firebaseToken = uri.queryParameters["firebaseToken"];
+      final String? linkedinToken = uri.queryParameters["linkedinToken"];
+      print("🔵 LinkedIn Token: $linkedinToken");
 
       if (firebaseToken == null || firebaseToken.trim().isEmpty) {
         throw Exception("❌ Firebase token missing or empty.");

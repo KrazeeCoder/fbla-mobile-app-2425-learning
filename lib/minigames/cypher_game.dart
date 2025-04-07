@@ -1,9 +1,10 @@
+// 🎯 Cleaned & Merged Final Version of CypherUI
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import '../widgets/cypher_question.dart';
 import 'package:provider/provider.dart';
+import '../widgets/cypher_question.dart';
 import '../xp_manager.dart';
 import '../utils/app_logger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,7 +12,6 @@ import '../widgets/earth_unlock_animation.dart';
 import '../widgets/subtopic_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
-import '../widgets/subtopic_widget.dart';
 
 class CypherUI extends StatefulWidget {
   final String subtopicId;
@@ -74,18 +74,13 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   Future<void> _loadQuestions() async {
     final String jsonString =
         await rootBundle.loadString('assets/content.json');
-    final String jsonString =
-        await rootBundle.loadString('assets/content.json');
     final Map<String, dynamic> data = json.decode(jsonString);
 
-    List<Map<String, dynamic>> allQuestions =
-        List<Map<String, dynamic>>.from(data['questions']);
     List<Map<String, dynamic>> allQuestions =
         List<Map<String, dynamic>>.from(data['questions']);
     List<dynamic> subjects = data['subjects'];
     List<int> quizPool = [];
 
-    // ✅ Select quiz pool based on the subtopic ID
     for (var subject in subjects) {
       for (var grade in subject['grades']) {
         for (var unit in grade['units']) {
@@ -100,18 +95,13 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     }
 
     if (quizPool.isEmpty) {
-      print("No quiz pool found for subtopic ID: ${widget.subtopicId}");
+      debugPrint("⚠️ No quiz pool found for subtopic ID: ${widget.subtopicId}");
       return;
     }
 
     List<Map<String, dynamic>> questions =
         allQuestions.where((q) => quizPool.contains(q['id'] as int)).toList();
-    List<Map<String, dynamic>> questions =
-        allQuestions.where((q) => quizPool.contains(q['id'] as int)).toList();
 
-    if (questions.isEmpty) return;
-
-    // ✅ Improved randomization
     final wordList = [
       "SMART",
       "BRAVE",
@@ -121,26 +111,13 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
       "RAPID",
       "FLARE"
     ];
-    currentPhrase =
-        wordList[random.nextInt(wordList.length)]; // Randomly pick a word
-    final wordList = [
-      "SMART",
-      "BRAVE",
-      "LIGHT",
-      "STORM",
-      "CLOUD",
-      "RAPID",
-      "FLARE"
-    ];
-    currentPhrase =
-        wordList[random.nextInt(wordList.length)]; // Randomly pick a word
+    currentPhrase = wordList[random.nextInt(wordList.length)];
 
     questions.shuffle();
-    questions = questions.take(5).toList(); // Ensure 5 questions only
-    questions = questions.take(5).toList(); // Ensure 5 questions only
+    questions = questions.take(5).toList();
 
-    List<int> scrambledNumbers = List.generate(questions.length, (i) => i);
-    scrambledNumbers.shuffle();
+    List<int> scrambledNumbers = List.generate(questions.length, (i) => i)
+      ..shuffle();
 
     setState(() {
       quizQuestions = questions;
@@ -158,9 +135,9 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     setState(() {
       answeredQuestions[questionIndex] = selectedAnswer;
 
-      if (selectedAnswer == quizQuestions[questionIndex]["correctAnswer"]) {
+      if (selectedAnswer == quizQuestions[questionIndex]["correct_answer"]) {
         correctAnswers.add(questionIndex);
-        _revealController.forward(from: 0); // Trigger animation
+        _revealController.forward(from: 0);
 
         for (var item in gameState) {
           if (item["questionIndex"] == questionIndex) {
@@ -174,17 +151,13 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
 
   void nextQuestion() {
     if (currentQuestionIndex < quizQuestions.length - 1) {
-      setState(() {
-        currentQuestionIndex++;
-      });
+      setState(() => currentQuestionIndex++);
     }
   }
 
   void previousQuestion() {
     if (currentQuestionIndex > 0) {
-      setState(() {
-        currentQuestionIndex--;
-      });
+      setState(() => currentQuestionIndex--);
     }
   }
 
@@ -193,7 +166,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
 
     await markQuizAsCompleted(
       subtopicId: widget.subtopicId,
-      marksEarned: getDummyMarks(),
+      marksEarned: 10,
     );
 
     await updateResumePoint(
@@ -207,6 +180,8 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
       actionType: 'game',
       actionState: 'completed',
     );
+
+    _awardXPForCompletion(context);
 
     Navigator.pushReplacement(
       context,
@@ -227,12 +202,36 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     );
   }
 
-  getDummyMarks() {
-    // Dummy function to simulate marks calculation
-    return 10; // Replace with actual logic if needed
+  bool get isGameCompleted => correctAnswers.length == quizQuestions.length;
+
+  void _awardXPForCompletion(BuildContext context) {
+    try {
+      final xpManager = Provider.of<XPManager>(context, listen: false);
+      const int xpAmount = 10;
+
+      xpManager.addXP(xpAmount, onLevelUp: (level) {
+        _showEarthUnlockedAnimation(context, level);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('+ $xpAmount XP earned!'),
+          backgroundColor: Colors.green,
+          duration: const Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating,
+          margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+    } catch (e) {
+      AppLogger.e('Error awarding XP in Cypher Game', error: e);
+    }
   }
 
-  bool get isGameCompleted => correctAnswers.length == quizQuestions.length;
+  void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
+    EarthUnlockAnimation.show(context, newLevel);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -243,37 +242,30 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     final currentQuestion = quizQuestions[currentQuestionIndex];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Cipher Game'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('Cipher Game'), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // 🎯 Question Progress
             Text(
-              "Question ${currentQuestionIndex + 1} / ${quizQuestions.length}",
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
+                "Question ${currentQuestionIndex + 1} / ${quizQuestions.length}",
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
-
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IconButton(
                   onPressed: previousQuestion,
                   icon: const Icon(Icons.arrow_left),
-                  color: Colors.blueAccent,
                   iconSize: 36,
+                  color: Colors.blueAccent,
                 ),
                 Expanded(
                   child: MultipleChoiceQuestion(
                     key: ValueKey(currentQuestionIndex),
-                    question: currentQuestion["question"].toString(),
-                    options: List<String>.from(
-                        currentQuestion["answers"].map((e) => e.toString())),
-                    correctAnswer: currentQuestion["correctAnswer"].toString(),
+                    question: currentQuestion["question"],
+                    options: List<String>.from(currentQuestion["answers"]),
+                    correctAnswer: currentQuestion["correct_answer"],
                     selectedAnswer: answeredQuestions[currentQuestionIndex],
                     previouslyAnswered:
                         answeredQuestions.containsKey(currentQuestionIndex),
@@ -284,27 +276,21 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                         onAnswerSelected(currentQuestionIndex, answer);
                       }
                     },
-                    questionTextStyle: const TextStyle(
-                        fontSize: 16), // ✅ Smaller Question Text
-                    questionTextStyle: const TextStyle(
-                        fontSize: 16), // ✅ Smaller Question Text
+                    questionTextStyle: const TextStyle(fontSize: 16),
                   ),
                 ),
                 IconButton(
                   onPressed: nextQuestion,
                   icon: const Icon(Icons.arrow_right),
-                  color: Colors.blueAccent,
                   iconSize: 36,
+                  color: Colors.blueAccent,
                 ),
               ],
             ),
-
             const SizedBox(height: 30),
-
-            // 🎯 Phrase Reveal with Animation
             AnimatedBuilder(
               animation: _revealController,
-              builder: (context, child) {
+              builder: (context, _) {
                 return Wrap(
                   alignment: WrapAlignment.center,
                   spacing: 12,
@@ -319,16 +305,9 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                           color: item["revealed"]
                               ? Colors.green[400]
                               : Colors.grey[700],
-                          color: item["revealed"]
-                              ? Colors.green[400]
-                              : Colors.grey[700],
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
+                            BoxShadow(blurRadius: 8, offset: Offset(0, 4))
                           ],
                         ),
                         child: Column(
@@ -336,16 +315,13 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                             Text(
                               item["revealed"] ? item["letter"] : "_",
                               style: const TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               (item["questionIndex"] + 1).toString(),
-                              style: const TextStyle(
-                                  fontSize: 16, color: Colors.white),
                               style: const TextStyle(
                                   fontSize: 16, color: Colors.white),
                             ),
@@ -357,10 +333,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                 );
               },
             ),
-
             const SizedBox(height: 30),
-
-            // 🎯 Instructions or Completion Message
             if (isGameCompleted)
               Column(
                 children: [
@@ -378,11 +351,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () {
-                      // Award XP for completing the game
-                      _awardXPForCompletion(context);
-                      Navigator.pop(context);
-                    },
+                    onPressed: _saveProgressAndGoNext,
                     child: const Text("Next Lesson"),
                   ),
                 ],
@@ -397,42 +366,5 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
-
-  // Add XP for completing the game
-  void _awardXPForCompletion(BuildContext context) {
-    try {
-      // Access the XP manager
-      final xpManager = Provider.of<XPManager>(context, listen: false);
-
-      // Award XP for game completion (using a base value plus difficulty)
-      final int xpAmount = 10; // Base XP for game completion
-
-      // Add XP and handle level up
-      xpManager.addXP(xpAmount, onLevelUp: (newLevel) {
-        // Show custom level up animation
-        _showEarthUnlockedAnimation(context, newLevel);
-      });
-
-      // Show a brief XP notification
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('+ $xpAmount XP earned!'),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      );
-    } catch (e) {
-      AppLogger.e('Error awarding XP in Cypher Game', error: e);
-    }
-  }
-
-  // Show custom level up animation with earth unlocked
-  void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
-    EarthUnlockAnimation.show(context, newLevel);
   }
 }

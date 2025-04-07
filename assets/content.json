@@ -3792,241 +3792,241 @@
         "30",
         "40"
       ],
-      "correctAnswer": "Check the graph"
+      "correct_answer": "Check the graph"
     },
     {
       "id": 11001,
       "question": "What is the value of the discriminant b² - 4ac for the quadratic equation 2x² - 4x + 1 = 0?",
       "answers": ["0", "8", "16", "4"],
-      "correctAnswer": "8"
+      "correct_answer": "8"
     },
     {
       "id": 11002,
       "question": "How many real solutions does the quadratic equation x² + 4x + 5 = 0 have?",
       "answers": ["0", "1", "2", "Infinite"],
-      "correctAnswer": "0"
+      "correct_answer": "0"
     },
     {
       "id": 11003,
       "question": "What are the solutions to the quadratic equation x² - 5x + 6 = 0?",
       "answers": ["x = 2, x = 3", "x = -2, x = -3", "x = 2, x = -3", "x = -2, x = 3"],
-      "correctAnswer": "x = 2, x = 3"
+      "correct_answer": "x = 2, x = 3"
     },
     {
       "id": 11004,
       "question": "What is the degree of the polynomial function f(x) = 3x⁴ + 2x² - 7?",
       "answers": ["2", "3", "4", "7"],
-      "correctAnswer": "4"
+      "correct_answer": "4"
     },
     {
       "id": 11005,
       "question": "What is the leading coefficient of the polynomial f(x) = 2x³ - 5x² + x - 7?",
       "answers": ["2", "-5", "1", "-7"],
-      "correctAnswer": "2"
+      "correct_answer": "2"
     },
     {
       "id": 11006,
       "question": "For a polynomial of degree 3 with a positive leading coefficient, what is the end behavior as x approaches negative infinity?",
       "answers": ["f(x) approaches positive infinity", "f(x) approaches negative infinity", "f(x) approaches zero", "f(x) approaches a horizontal asymptote"],
-      "correctAnswer": "f(x) approaches negative infinity"
+      "correct_answer": "f(x) approaches negative infinity"
     },
     {
       "id": 11007,
       "question": "What is a vertical asymptote of the rational function f(x) = (x²-1)/(x-2)?",
       "answers": ["x = 0", "x = 1", "x = 2", "x = -1"],
-      "correctAnswer": "x = 2"
+      "correct_answer": "x = 2"
     },
     {
       "id": 11008,
       "question": "For the rational function f(x) = (x-3)/(x²-9), what type of discontinuity occurs at x = 3?",
       "answers": ["Removable discontinuity (hole)", "Vertical asymptote", "Jump discontinuity", "No discontinuity"],
-      "correctAnswer": "Removable discontinuity (hole)"
+      "correct_answer": "Removable discontinuity (hole)"
     },
     {
       "id": 11009,
       "question": "What is the horizontal asymptote of f(x) = (2x²+1)/(3x²-4)?",
       "answers": ["y = 0", "y = 2/3", "y = 3/2", "y = 1"],
-      "correctAnswer": "y = 2/3"
+      "correct_answer": "y = 2/3"
     },
     {
       "id": 11010,
       "question": "What is the period of the function f(x) = sin(3x)?",
       "answers": ["π", "2π", "π/3", "2π/3"],
-      "correctAnswer": "2π/3"
+      "correct_answer": "2π/3"
     },
     {
       "id": 11011,
       "question": "What is the value of sin(π/2)?",
       "answers": ["0", "1", "-1", "1/2"],
-      "correctAnswer": "1"
+      "correct_answer": "1"
     },
     {
       "id": 11012,
       "question": "Which of the following is not one of the six basic trigonometric functions?",
       "answers": ["sin", "cos", "tan", "arcsin"],
-      "correctAnswer": "arcsin"
+      "correct_answer": "arcsin"
     },
     {
       "id": 11013,
       "question": "Which trigonometric identity is correct?",
       "answers": ["sin²θ + cos²θ = 0", "sin²θ + cos²θ = 1", "tan²θ = sin²θ + cos²θ", "sin²θ - cos²θ = 1"],
-      "correctAnswer": "sin²θ + cos²θ = 1"
+      "correct_answer": "sin²θ + cos²θ = 1"
     },
     {
       "id": 11014,
       "question": "What is the value of cos(2π)?",
       "answers": ["0", "1", "-1", "2"],
-      "correctAnswer": "1"
+      "correct_answer": "1"
     },
     {
       "id": 11015,
       "question": "Which expression equals sin(2θ)?",
       "answers": ["2sinθ", "sin²θ", "2sinθcosθ", "2sin²θ"],
-      "correctAnswer": "2sinθcosθ"
+      "correct_answer": "2sinθcosθ"
     },
     {
       "id": 11016,
       "question": "For the function f(x) = 1/x, what is the limit as x approaches 0 from the right?",
       "answers": ["0", "1", "∞", "-∞"],
-      "correctAnswer": "∞"
+      "correct_answer": "∞"
     },
     {
       "id": 11017,
       "question": "What is lim(x→1) (x³-1)/(x-1)?",
       "answers": ["1", "3", "0", "Does not exist"],
-      "correctAnswer": "3"
+      "correct_answer": "3"
     },
     {
       "id": 11018,
       "question": "Which technique is used to evaluate the limit lim(x→0) sin(x)/x?",
       "answers": ["Direct substitution", "Factoring", "L'Hôpital's Rule", "Squeeze theorem"],
-      "correctAnswer": "L'Hôpital's Rule"
+      "correct_answer": "L'Hôpital's Rule"
     },
     {
       "id": 11019,
       "question": "What is the derivative of f(x) = x²?",
       "answers": ["f'(x) = x", "f'(x) = 2x", "f'(x) = 2", "f'(x) = x²"],
-      "correctAnswer": "f'(x) = 2x"
+      "correct_answer": "f'(x) = 2x"
     },
     {
       "id": 11020,
       "question": "Which rule is used to find the derivative of f(x) = sin(x²)?",
       "answers": ["Power Rule", "Product Rule", "Quotient Rule", "Chain Rule"],
-      "correctAnswer": "Chain Rule"
+      "correct_answer": "Chain Rule"
     },
     {
       "id": 11021,
       "question": "What is the derivative of f(x) = ln(x)?",
       "answers": ["f'(x) = 1", "f'(x) = x", "f'(x) = 1/x", "f'(x) = ln(x)"],
-      "correctAnswer": "f'(x) = 1/x"
+      "correct_answer": "f'(x) = 1/x"
     },
     {
       "id": 11022,
       "question": "What is ∫ x² dx?",
       "answers": ["x³/3 + C", "2x + C", "x³ + C", "x² + C"],
-      "correctAnswer": "x³/3 + C"
+      "correct_answer": "x³/3 + C"
     },
     {
       "id": 11023,
       "question": "What is the definite integral ∫₀¹ 2x dx?",
       "answers": ["0", "1", "2", "4"],
-      "correctAnswer": "1"
+      "correct_answer": "1"
     },
     {
       "id": 11024,
       "question": "What is ∫ eˣ dx?",
       "answers": ["eˣ + C", "xeˣ + C", "ln(x) + C", "1/eˣ + C"],
-      "correctAnswer": "eˣ + C"
+      "correct_answer": "eˣ + C"
     },
     {
       "id": 11025,
       "question": "For a 2×2 matrix A = [[3, 1], [2, 4]], what is det(A)?",
       "answers": ["5", "10", "12", "14"],
-      "correctAnswer": "10"
+      "correct_answer": "10"
     },
     {
       "id": 11026,
       "question": "What operation produces a matrix with rows and columns interchanged?",
       "answers": ["Inverse", "Transpose", "Determinant", "Trace"],
-      "correctAnswer": "Transpose"
+      "correct_answer": "Transpose"
     },
     {
       "id": 11027,
       "question": "What condition must be true for a matrix to be invertible?",
       "answers": ["It must be square", "Its determinant must be non-zero", "It must be symmetric", "Its diagonal entries must be non-zero"],
-      "correctAnswer": "Its determinant must be non-zero"
+      "correct_answer": "Its determinant must be non-zero"
     },
     {
       "id": 11028,
       "question": "Which property is NOT required for a set to be a vector space?",
       "answers": ["Closure under addition", "Commutative multiplication", "Existence of additive identity", "Distributive property"],
-      "correctAnswer": "Commutative multiplication"
+      "correct_answer": "Commutative multiplication"
     },
     {
       "id": 11029,
       "question": "What does the dimension of a vector space represent?",
       "answers": ["The number of vectors in the space", "The size of the largest vector", "The number of vectors in a basis", "The number of operations defined"],
-      "correctAnswer": "The number of vectors in a basis"
+      "correct_answer": "The number of vectors in a basis"
     },
     {
       "id": 11030,
       "question": "Which of the following is a basis for R²?",
       "answers": ["(1,0), (0,1)", "(1,1), (2,2)", "(1,2), (2,4)", "(0,0), (1,0)"],
-      "correctAnswer": "(1,0), (0,1)"
+      "correct_answer": "(1,0), (0,1)"
     },
     {
       "id": 11031,
       "question": "What is the probability of getting exactly 3 heads in 5 tosses of a fair coin?",
       "answers": ["1/32", "5/16", "10/32", "3/5"],
-      "correctAnswer": "10/32"
+      "correct_answer": "10/32"
     },
     {
       "id": 11032,
       "question": "Which probability distribution is characterized by the parameters n and p?",
       "answers": ["Normal distribution", "Binomial distribution", "Uniform distribution", "Poisson distribution"],
-      "correctAnswer": "Binomial distribution"
+      "correct_answer": "Binomial distribution"
     },
     {
       "id": 11033,
       "question": "What is the standard deviation of a normal distribution with mean 10 and variance 16?",
       "answers": ["2", "4", "8", "16"],
-      "correctAnswer": "4"
+      "correct_answer": "4"
     },
     {
       "id": 11034,
       "question": "What is the null hypothesis typically denoted as?",
       "answers": ["H₀", "H₁", "P₀", "α"],
-      "correctAnswer": "H₀"
+      "correct_answer": "H₀"
     },
     {
       "id": 11035,
       "question": "What does a 95% confidence interval mean?",
       "answers": ["95% of the population is within the interval", "95% of samples will contain the population parameter", "The probability of the parameter being in the interval is 95%", "95% of confidence intervals constructed this way contain the true parameter"],
-      "correctAnswer": "95% of confidence intervals constructed this way contain the true parameter"
+      "correct_answer": "95% of confidence intervals constructed this way contain the true parameter"
     },
     {
       "id": 11036,
       "question": "What statistical test would you use to compare means from two independent samples?",
       "answers": ["Chi-square test", "ANOVA", "t-test", "Regression analysis"],
-      "correctAnswer": "t-test"
+      "correct_answer": "t-test"
     },
     {
       "id": 11037,
       "question": "What does a correlation coefficient of -0.9 indicate?",
       "answers": ["Weak negative correlation", "Strong negative correlation", "Weak positive correlation", "Strong positive correlation"],
-      "correctAnswer": "Strong negative correlation"
+      "correct_answer": "Strong negative correlation"
     },
     {
       "id": 11038,
       "question": "In simple linear regression, what does β₁ represent in y = β₀ + β₁x + ε?",
       "answers": ["Y-intercept", "Slope", "Error term", "Coefficient of determination"],
-      "correctAnswer": "Slope"
+      "correct_answer": "Slope"
     },
     {
       "id": 11039,
       "question": "What is r² in regression analysis?",
       "answers": ["Correlation coefficient", "Coefficient of determination", "Standard error", "Regression coefficient"],
-      "correctAnswer": "Coefficient of determination"
+      "correct_answer": "Coefficient of determination"
     }
 
   ]
