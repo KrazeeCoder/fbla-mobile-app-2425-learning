@@ -4,8 +4,10 @@ import '/auth_utility.dart';
 import 'signin_screen.dart';
 
 class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key});
+
   @override
-  _SignUpScreenState createState() => _SignUpScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
@@ -15,6 +17,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController ageController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController = TextEditingController();
+
+  final FocusNode firstNameFocus = FocusNode();
+  final FocusNode lastNameFocus = FocusNode();
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode ageFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
+  final FocusNode confirmPasswordFocus = FocusNode(); // ✅ Added for confirm password
 
   bool isLoading = false;
   final AuthService _authService = AuthService();
@@ -36,172 +45,236 @@ class _SignUpScreenState extends State<SignUpScreen> {
   void initState() {
     super.initState();
 
-    // Real-time validation listeners
-    firstNameController.addListener(() {
-      setState(() {
-        firstNameError = nameRegex.hasMatch(firstNameController.text)
-            ? null
-            : "Only letters allowed!";
-      });
+    // Real-time validation listeners on focus loss
+    firstNameFocus.addListener(() {
+      if (!firstNameFocus.hasFocus) {
+        setState(() {
+          firstNameError = nameRegex.hasMatch(firstNameController.text)
+              ? null
+              : "Only letters allowed.";
+        });
+      }
     });
 
-    lastNameController.addListener(() {
-      setState(() {
-        lastNameError = nameRegex.hasMatch(lastNameController.text)
-            ? null
-            : "Only letters allowed!";
-      });
+    lastNameFocus.addListener(() {
+      if (!lastNameFocus.hasFocus) {
+        setState(() {
+          lastNameError = nameRegex.hasMatch(lastNameController.text)
+              ? null
+              : "Only letters allowed.";
+        });
+      }
     });
 
-    emailController.addListener(() {
-      setState(() {
-        emailError = emailRegex.hasMatch(emailController.text)
-            ? null
-            : "Enter a valid email!";
-      });
+    emailFocus.addListener(() {
+      if (!emailFocus.hasFocus) {
+        setState(() {
+          emailError = emailRegex.hasMatch(emailController.text)
+              ? null
+              : "Enter a valid email.";
+        });
+      }
     });
 
-    ageController.addListener(() {
-      setState(() {
-        ageError = ageRegex.hasMatch(ageController.text)
-            ? null
-            : "Only numbers allowed!";
-      });
+    ageFocus.addListener(() {
+      if (!ageFocus.hasFocus) {
+        setState(() {
+          ageError = ageRegex.hasMatch(ageController.text)
+              ? null
+              : "Only numbers allowed.";
+        });
+      }
     });
 
-    passwordController.addListener(() {
-      setState(() {
-        passwordError = passwordRegex.hasMatch(passwordController.text)
-            ? null
-            : "At least 6 chars, 1 special char, 1 number required!";
-      });
+    passwordFocus.addListener(() {
+      if (!passwordFocus.hasFocus) {
+        setState(() {
+          passwordError = passwordRegex.hasMatch(passwordController.text)
+              ? null
+              : "At least 6 characters, 1 special character, 1 number required.";
+        });
+      }
     });
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    ageController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+
+    // Dispose focus nodes
+    firstNameFocus.dispose();
+    lastNameFocus.dispose();
+    emailFocus.dispose();
+    ageFocus.dispose();
+    passwordFocus.dispose();
+    confirmPasswordFocus.dispose();
+
+    super.dispose();
   }
 
   Future<void> register() async {
-  if (passwordController.text != confirmPasswordController.text) {
-    _showSnackBar("Passwords do not match");
-    return;
-  }
+    if (passwordController.text != confirmPasswordController.text) {
+      _showSnackBar("Passwords do not match");
+      return;
+    }
 
-  if (firstNameError != null ||
-      lastNameError != null ||
-      emailError != null ||
-      ageError != null ||
-      passwordError != null) {
-    _showSnackBar("Fix the errors before proceeding!");
-    return;
-  }
+    if (firstNameError != null ||
+        lastNameError != null ||
+        emailError != null ||
+        ageError != null ||
+        passwordError != null) {
+      _showSnackBar("Fix the errors before proceeding.");
+      return;
+    }
 
-  setState(() => isLoading = true);
+    setState(() => isLoading = true);
 
-  // Convert age to an integer (ensure it's valid)
-  int? age = int.tryParse(ageController.text.trim());
-  if (age == null || age <= 0) {
-    _showSnackBar("Enter a valid age!");
+    int? age = int.tryParse(ageController.text.trim());
+    if (age == null || age <= 0) {
+      _showSnackBar("Enter a valid age.");
+      setState(() => isLoading = false);
+      return;
+    }
+
+    String? result = await _authService.registerUser(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+      firstName: firstNameController.text.trim(),
+      lastName: lastNameController.text.trim(),
+      age: age,
+    );
+
     setState(() => isLoading = false);
-    return;
+
+    if (result == "Success") {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => SignInScreen()),
+      );
+    } else {
+      _showSnackBar(result ?? "Registration failed");
+    }
   }
-
-  String? result = await _authService.registerUser(
-    email: emailController.text.trim(),
-    password: passwordController.text.trim(),
-    firstName: firstNameController.text.trim(),
-    lastName: lastNameController.text.trim(),
-    age: age, // ✅ Pass age here
-  );
-
-  setState(() => isLoading = false);
-
-  if (result == "Success") {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (_) => SignInScreen()));
-  } else {
-    _showSnackBar(result ?? "Registration failed");
-  }
-}
-
 
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
+  Widget _buildTextField({
+    required String label,
+    required TextEditingController controller,
+    required FocusNode focusNode,
+    String? errorText,
+    bool obscureText = false,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextField(
+        controller: controller,
+        focusNode: focusNode,
+        keyboardType: keyboardType,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          labelText: label,
+          errorText: errorText,
+          border: const OutlineInputBorder(),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(20),
+      appBar: AppBar(title: const Text("Create Account")),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text("Sign Up", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+            const Text(
+              "Sign Up",
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
 
-            // First Name Field
-            TextField(
+            _buildTextField(
+              label: "First Name",
               controller: firstNameController,
-              decoration: InputDecoration(
-                labelText: "First Name",
-                errorText: firstNameError,
-              ),
+              focusNode: firstNameFocus,
+              errorText: firstNameError,
             ),
 
-            // Last Name Field
-            TextField(
+            _buildTextField(
+              label: "Last Name",
               controller: lastNameController,
-              decoration: InputDecoration(
-                labelText: "Last Name",
-                errorText: lastNameError,
-              ),
+              focusNode: lastNameFocus,
+              errorText: lastNameError,
             ),
 
-            // Email Field
-            TextField(
+            _buildTextField(
+              label: "Email Address",
               controller: emailController,
-              decoration: InputDecoration(
-                labelText: "Email Address",
-                errorText: emailError,
-              ),
+              focusNode: emailFocus,
+              errorText: emailError,
+              keyboardType: TextInputType.emailAddress,
             ),
 
-            // Age Field
-            TextField(
+            _buildTextField(
+              label: "Age",
               controller: ageController,
+              focusNode: ageFocus,
+              errorText: ageError,
               keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Age",
-                errorText: ageError,
-              ),
             ),
 
-            // Password Field
-            TextField(
+            _buildTextField(
+              label: "Password",
               controller: passwordController,
-              decoration: InputDecoration(
-                labelText: "Password",
-                errorText: passwordError,
-              ),
+              focusNode: passwordFocus,
+              errorText: passwordError,
               obscureText: true,
             ),
 
-            // Confirm Password Field
-            TextField(
+            _buildTextField(
+              label: "Confirm Password",
               controller: confirmPasswordController,
-              decoration: InputDecoration(labelText: "Confirm Password"),
+              focusNode: confirmPasswordFocus,
               obscureText: true,
             ),
+
+            const SizedBox(height: 20),
 
             isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    onPressed: register,
-                    child: Text("Sign Up", style: TextStyle(color: Colors.white)),
-                  ),
+                ? const CircularProgressIndicator()
+                : SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: register,
+                child: const Text(
+                  "Sign Up",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
 
+            const SizedBox(height: 12),
             TextButton(
-              onPressed: () => Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => SignInScreen())),
-              child: Text("Already have an account? Sign In"),
+              onPressed: () => Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => SignInScreen()),
+              ),
+              child: const Text("Already have an account? Sign In"),
             ),
           ],
         ),

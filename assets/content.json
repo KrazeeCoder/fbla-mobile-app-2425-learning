@@ -1265,7 +1265,7 @@
               "subtopics": [
                 {
                   "subtopic": "Quadratic Equations",
-                  "subtopic_id": "f51f2584-8b3b-42f2-b10c-3c47f93fbd37",
+                  "subtopic_id": "f51f2584-8b3b-42f2-b10c-3c47f93fbd36",
                   "reading": {
                     "title": "Understanding Quadratic Equations",
                     "content": "### What Are Quadratic Equations?\nQuadratic equations are **second-degree polynomial equations** in a single variable, written in the form: **ax² + bx + c = 0**, where a, b, and c are constants and **a ≠ 0**.\n\n### Solving Methods:\n- **Factoring**: Find values that make (x - r)(x - s) = 0\n- **Quadratic Formula**: x = (-b ± √(b² - 4ac))/2a\n- **Completing the Square**: Rewrite as (x + d)² = e\n- **Graphical Method**: Find x-intercepts of y = ax² + bx + c\n\n### Key Concepts:\n- **Discriminant**: b² - 4ac determines number and type of solutions\n  - If > 0: Two real solutions\n  - If = 0: One real solution (repeated root)\n  - If < 0: Two complex solutions\n\n### Example:\nFor 2x² - 5x - 3 = 0\n- Using quadratic formula: a=2, b=-5, c=-3\n- x = (5 ± √(25 + 24))/4 = (5 ± √49)/4 = (5 ± 7)/4\n- x = 3 or x = -1/2\n\n### Applications:\n- **Physics**: Projectile motion\n- **Engineering**: Structural arches\n- **Economics**: Supply-demand equilibrium\n- **Computer Graphics**: Parabolic curves\n\nQuadratic equations are fundamental for **modeling situations where variables have a second-degree relationship**."
@@ -1274,7 +1274,7 @@
                 },
                 {
                   "subtopic": "Polynomial Functions",
-                  "subtopic_id": "0f93d9b3-aab6-4a48-90f6-3e5e9232e640",
+                  "subtopic_id": "0f93d9b3-aab6-4a48-90f6-3e5e9232e641",
                   "reading": {
                     "title": "Mastering Polynomial Functions",
                     "content": "### What Are Polynomial Functions?\nPolynomial functions are expressions with **variables raised to non-negative integer powers**. They take the form: **f(x) = aₙxⁿ + aₙ₋₁xⁿ⁻¹ + ... + a₁x + a₀**.\n\n### Key Properties:\n- **Degree**: Highest power of the variable (n)\n- **Leading Coefficient**: Coefficient of highest power term (aₙ)\n- **Domain**: All real numbers\n- **Range**: Depends on degree and coefficients\n\n### End Behavior:\n- **Even degree, positive leading coefficient**: Both ends point upward\n- **Even degree, negative leading coefficient**: Both ends point downward\n- **Odd degree, positive leading coefficient**: Left end down, right end up\n- **Odd degree, negative leading coefficient**: Left end up, right end down\n\n### Finding Zeros/Roots:\n- **Factor Theorem**: If f(a) = 0, then (x - a) is a factor\n- **Rational Root Theorem**: Helps find potential rational roots\n- **Synthetic Division**: Efficient method for polynomial division\n\n### Applications:\n- **Economics**: Cost and revenue functions\n- **Physics**: Motion models\n- **Engineering**: System modeling\n- **Statistics**: Regression models\n\nPolynomial functions form the **foundation for calculus** and are essential in approximating complex functions."
@@ -1283,7 +1283,7 @@
                 },
                 {
                   "subtopic": "Rational Functions",
-                  "subtopic_id": "7bb6c7a9-aa13-400b-999c-83f461a3105e",
+                  "subtopic_id": "7bb6c7a9-aa13-400b-999c-83f461a3105f",
                   "reading": {
                     "title": "Introduction to Rational Functions",
                     "content": "### What Are Rational Functions?\nRational functions are **ratios of polynomial functions**, written in the form: **f(x) = p(x)/q(x)**, where p(x) and q(x) are polynomials and **q(x) ≠ 0**.\n\n### Key Features:\n- **Domain**: All real numbers except where q(x) = 0\n- **Vertical Asymptotes**: Occur at values where q(x) = 0\n- **Horizontal Asymptotes**: Determined by the degrees of p(x) and q(x)\n- **Holes**: Occur when factors cancel between numerator and denominator\n\n### Finding Asymptotes:\n- **Vertical**: Solve q(x) = 0\n- **Horizontal**: Compare degrees of numerator and denominator\n  - If deg(p) < deg(q): y = 0\n  - If deg(p) = deg(q): y = leading coefficient ratio\n  - If deg(p) > deg(q): No horizontal asymptote (may have slant asymptote)\n\n### Example Analysis:\nFor f(x) = (x² - 4)/(x - 2)\n- Factor numerator: (x - 2)(x + 2)/(x - 2)\n- Simplify: f(x) = x + 2 for x ≠ 2\n- Domain: All real numbers except x = 2\n- Hole at x = 2 (removable discontinuity)\n\n### Applications:\n- **Engineering**: Electrical circuits\n- **Physics**: Mechanical systems\n- **Economics**: Average cost functions\n- **Medicine**: Drug concentration models\n\nRational functions are essential for **modeling real-world phenomena with asymptotic behavior**."
@@ -1298,7 +1298,7 @@
               "subtopics": [
                 {
                   "subtopic": "Trigonometric Functions",
-                  "subtopic_id": "89e53e17-ef04-46a5-bccf-9cb818f7a04a",
+                  "subtopic_id": "89e53e17-ef04-46a5-bccf-9cb818f7a04b",
                   "reading": {
                     "title": "Understanding Trigonometric Functions",
                     "content": "### What Are Trigonometric Functions?\nTrigonometric functions are **mathematical relationships between angles and sides of triangles**. These functions form the foundation of trigonometry and are essential for studying periodic phenomena.\n\n### The Six Basic Functions:\n- **Sine (sin θ)**: Opposite side ÷ Hypotenuse\n- **Cosine (cos θ)**: Adjacent side ÷ Hypotenuse\n- **Tangent (tan θ)**: Opposite side ÷ Adjacent side = sin θ ÷ cos θ\n- **Cosecant (csc θ)**: 1 ÷ sin θ\n- **Secant (sec θ)**: 1 ÷ cos θ\n- **Cotangent (cot θ)**: 1 ÷ tan θ\n\n### Key Properties:\n- **Domain and Range**:\n  - sin θ, cos θ: Domain = all reals; Range = [-1, 1]\n  - tan θ: Domain = all reals except θ = π/2 + nπ; Range = all reals\n- **Period**:\n  - sin θ, cos θ: 2π\n  - tan θ: π\n\n### The Unit Circle:\nOn the unit circle (radius = 1):\n- Point (x, y) = (cos θ, sin θ)\n- cos θ = x-coordinate\n- sin θ = y-coordinate\n\n### Applications:\n- **Physics**: Wave motion, oscillations\n- **Engineering**: Signal processing, electrical circuits\n- **Navigation**: GPS, aviation\n- **Computer Graphics**: Rotation, animation\n\nTrigonometric functions are fundamental to **analyzing and modeling periodic phenomena** in nature and technology."
@@ -1307,7 +1307,7 @@
                 },
                 {
                   "subtopic": "Trigonometric Identities",
-                  "subtopic_id": "7bb6c7a9-aa13-400b-999c-83f461a3105e",
+                  "subtopic_id": "7bb6c7a9-aa13-400b-999c-83f461a3105g",
                   "reading": {
                     "title": "Mastering Trigonometric Identities",
                     "content": "### What Are Trigonometric Identities?\nTrigonometric identities are **equations involving trigonometric functions that are true for all values** in their domains. They are essential tools for simplifying expressions and solving equations.\n\n### Fundamental Identities:\n- **Pythagorean Identities**:\n  - sin²θ + cos²θ = 1\n  - tan²θ + 1 = sec²θ\n  - 1 + cot²θ = csc²θ\n\n- **Reciprocal Identities**:\n  - sin θ = 1/csc θ\n  - cos θ = 1/sec θ\n  - tan θ = 1/cot θ\n\n- **Quotient Identities**:\n  - tan θ = sin θ/cos θ\n  - cot θ = cos θ/sin θ\n\n### Advanced Identities:\n- **Double Angle Formulas**:\n  - sin(2θ) = 2sin θ cos θ\n  - cos(2θ) = cos²θ - sin²θ = 2cos²θ - 1 = 1 - 2sin²θ\n  - tan(2θ) = 2tan θ/(1 - tan²θ)\n\n- **Sum and Difference Formulas**:\n  - sin(α ± β) = sin α cos β ± cos α sin β\n  - cos(α ± β) = cos α cos β ∓ sin α sin β\n\n### Applications:\n- **Calculus**: Integration and differentiation\n- **Physics**: Wave interference patterns\n- **Electrical Engineering**: Signal analysis\n- **Computer Graphics**: 3D transformations\n\nMastering trigonometric identities provides powerful **analytical tools for solving complex problems** in mathematics and science."
@@ -1322,7 +1322,7 @@
               "subtopics": [
                 {
                   "subtopic": "Limits",
-                  "subtopic_id": "f51f2584-8b3b-42f2-b10c-3c47f93fbd37",
+                  "subtopic_id": "f51f2584-8b3b-42f2-b10c-3c47f93fbd35",
                   "reading": {
                     "title": "Understanding Limits",
                     "content": "### What Are Limits?\nLimits describe the behavior of a function as the input **approaches a specific value**. Formally, lim(x→a) f(x) = L means f(x) gets arbitrarily close to L as x approaches a.\n\n### Key Concepts:\n- **One-Sided Limits**: Approach from left (x→a⁻) or right (x→a⁺)\n- **Two-Sided Limit**: Exists when both one-sided limits exist and are equal\n- **Infinite Limits**: When f(x) grows without bound as x→a\n- **Limits at Infinity**: Behavior of f(x) as x→±∞\n\n### Evaluation Techniques:\n- **Direct Substitution**: When f is continuous at a\n- **Factoring**: For removable discontinuities (0/0 form)\n- **Rationalization**: For certain radical expressions\n- **L'Hôpital's Rule**: For indeterminate forms (0/0, ∞/∞)\n\n### Example Calculations:\n1. lim(x→2) (x² - 4)/(x - 2)\n   - Factoring: (x - 2)(x + 2)/(x - 2) = x + 2 for x ≠ 2\n   - Answer: lim(x→2) (x + 2) = 4\n\n2. lim(x→∞) (3x² + 2x)/(5x² - 1)\n   - Divide by highest power (x²): (3 + 2/x)/(5 - 1/x²)\n   - As x→∞, terms with x in denominator → 0\n   - Answer: 3/5\n\n### Applications:\n- **Calculus**: Foundation for derivatives and integrals\n- **Physics**: Instantaneous rates of change\n- **Engineering**: System behavior near critical points\n- **Economics**: Marginal analysis\n\nLimits provide the mathematical foundation for **analyzing change and continuity**, essential concepts across all sciences."
@@ -1331,7 +1331,7 @@
                 },
                 {
                   "subtopic": "Derivatives",
-                  "subtopic_id": "0f93d9b3-aab6-4a48-90f6-3e5e9232e640",
+                  "subtopic_id": "0f93d9b3-aab6-4a48-90f6-3e5e9232e642",
                   "reading": {
                     "title": "Mastering Derivatives",
                     "content": "### What Are Derivatives?\nDerivatives measure the **rate of change of a function** at any point. They represent the instantaneous rate at which one quantity changes with respect to another.\n\n### Definition and Notation:\n- The derivative of f at point a is: f'(a) = lim(h→0) [f(a+h) - f(a)]/h\n- Common notations: f'(x), dy/dx, d/dx[f(x)], ẏ\n\n### Geometric Interpretation:\n- Slope of the tangent line to the curve at a point\n- If f'(x) > 0: Function is increasing\n- If f'(x) < 0: Function is decreasing\n- If f'(x) = 0: Potential local extremum or inflection point\n\n### Basic Differentiation Rules:\n- **Constant Rule**: d/dx[c] = 0\n- **Power Rule**: d/dx[x^n] = nx^(n-1)\n- **Sum/Difference Rule**: d/dx[f(x) ± g(x)] = f'(x) ± g'(x)\n- **Product Rule**: d/dx[f(x)·g(x)] = f'(x)·g(x) + f(x)·g'(x)\n- **Quotient Rule**: d/dx[f(x)/g(x)] = [f'(x)·g(x) - f(x)·g'(x)]/[g(x)]²\n- **Chain Rule**: d/dx[f(g(x))] = f'(g(x))·g'(x)\n\n### Common Derivatives:\n- d/dx[sin(x)] = cos(x)\n- d/dx[cos(x)] = -sin(x)\n- d/dx[e^x] = e^x\n- d/dx[ln(x)] = 1/x\n\n### Applications:\n- **Physics**: Velocity, acceleration\n- **Economics**: Marginal cost/revenue/profit\n- **Engineering**: Rate of heat transfer\n- **Medicine**: Growth rate of tumors\n\nDerivatives are essential for **optimization problems** and understanding how systems change."
@@ -1340,7 +1340,7 @@
                 },
                 {
                   "subtopic": "Integrals",
-                  "subtopic_id": "7bb6c7a9-aa13-400b-999c-83f461a3105e",
+                  "subtopic_id": "7bb6c7a9-aa13-400b-999c-83f461a3105h",
                   "reading": {
                     "title": "Introduction to Integrals",
                     "content": "### What Are Integrals?\nIntegrals are mathematical tools that measure **accumulated quantities** such as area, volume, distance, or mass. There are two main types: indefinite and definite integrals.\n\n### Indefinite Integrals (Antiderivatives):\n- Represented by ∫f(x)dx\n- Finds a function F(x) where F'(x) = f(x)\n- Always includes '+ C' (constant of integration)\n\n### Definite Integrals:\n- Represented by ∫ₐᵇf(x)dx\n- Calculates the signed area between f(x) and x-axis from x=a to x=b\n- Evaluated using the Fundamental Theorem of Calculus: ∫ₐᵇf(x)dx = F(b) - F(a)\n\n### Basic Integration Rules:\n- **Power Rule**: ∫xⁿdx = xⁿ⁺¹/(n+1) + C (n ≠ -1)\n- **Logarithmic Rule**: ∫(1/x)dx = ln|x| + C\n- **Exponential Rule**: ∫eˣdx = eˣ + C\n- **Trigonometric Rules**:\n  - ∫sin(x)dx = -cos(x) + C\n  - ∫cos(x)dx = sin(x) + C\n  - ∫tan(x)dx = -ln|cos(x)| + C\n\n### Integration Techniques:\n- **Substitution Method**: Use u-substitution to simplify integrals\n- **Integration by Parts**: Formula: ∫u(x)v'(x)dx = u(x)v(x) - ∫v(x)u'(x)dx\n- **Partial Fractions**: For rational functions\n\n### Applications:\n- **Physics**: Work, energy, center of mass\n- **Engineering**: Fluid flow, electrical circuits\n- **Economics**: Consumer/producer surplus\n- **Probability**: Expected values, cumulative distribution functions\n\nIntegration is the foundation for **solving differential equations**, which model countless physical phenomena."
