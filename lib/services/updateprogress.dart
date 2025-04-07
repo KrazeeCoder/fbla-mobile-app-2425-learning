@@ -60,25 +60,74 @@ Future<void> markSubtopicAsCompleted({
   final userDocRef =
       FirebaseFirestore.instance.collection('user_progress').doc(userId);
 
-  // Prepare progress map
-  final progressData = {
+  // Get current document (to check if entry exists)
+  final docSnapshot = await userDocRef.get();
+  final existingData = docSnapshot.data();
+  final existingSubtopic = existingData?[subtopicId];
+
+  final updatedProgress = {
     'subtopic_id': subtopicId,
     'subtopic': subtopicTitle,
     'unit': unitTitle,
     'unit_id': unitId,
     'grade': grade,
     'subject': subject,
-    'isCompleted': true,
     'contentCompleted': true,
     'contentCompletedAt': now,
-    'quizCompleted': false,
-    'quizCompletedAt': null,
-    'marksEarned': 0,
+    'quizCompleted': existingSubtopic?['quizCompleted'] ?? false,
+    'quizCompletedAt': existingSubtopic?['quizCompletedAt'],
+    'marksEarned': existingSubtopic?['marksEarned'] ?? 0,
+    'startedAt': existingSubtopic?['startedAt'] ?? now,
     'lastAccessed': now,
     'lastActivityType': 'reading',
-    'startedAt': now,
     'updatedAt': now,
+    'isCompleted': (existingSubtopic?['quizCompleted'] ?? false),
   };
 
-  await userDocRef.set({subtopicId: progressData}, SetOptions(merge: true));
+  //  Merge only the specific field for this subtopic ID
+  await userDocRef.set({subtopicId: updatedProgress}, SetOptions(merge: true));
+}
+
+Future<void> markQuizAsCompleted({
+  required String subtopicId,
+  required int marksEarned,
+}) async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  final userId = user.uid;
+  final now = Timestamp.now();
+
+  final userDocRef =
+      FirebaseFirestore.instance.collection('user_progress').doc(userId);
+
+  // Fetch existing progress map for this subtopic
+  final docSnapshot = await userDocRef.get();
+  final existingData = docSnapshot.data();
+  final existingSubtopic = existingData?[subtopicId];
+
+  if (existingSubtopic == null) {
+    print(
+        '[markQuizAsCompleted] ⚠️ Skipped: subtopicId $subtopicId not found in progress.');
+    return;
+  }
+
+  // Merge into existing subtopic map
+  final updatedSubtopic = Map<String, dynamic>.from(existingSubtopic);
+  updatedSubtopic.addAll({
+    'quizCompleted': true,
+    'quizCompletedAt': now,
+    'marksEarned': marksEarned,
+    'updatedAt': now,
+    'lastAccessed': now,
+    'lastActivityType': 'quiz',
+    'isCompleted': true,
+  });
+
+  await userDocRef.set(
+    {subtopicId: updatedSubtopic},
+    SetOptions(merge: true),
+  );
+
+  print('[markQuizAsCompleted] ✅ Updated quiz progress for $subtopicId');
 }

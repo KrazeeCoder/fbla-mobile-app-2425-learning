@@ -10,8 +10,9 @@ import '../widgets/subtopic_widget.dart';
 class PathwayUI extends StatefulWidget {
   final int grade;
   final String subject;
+  String? userId;
 
-  PathwayUI({required this.grade, required this.subject});
+  PathwayUI({required this.grade, required this.subject, this.userId});
 
   @override
   State<PathwayUI> createState() => _PathwayUIState();
@@ -23,6 +24,13 @@ class _PathwayUIState extends State<PathwayUI> {
   @override
   void initState() {
     super.initState();
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      widget.userId = user.uid;
+    } else {
+      widget.userId = '';
+    }
+
     _pathwayData = parsePathwayData();
   }
 
@@ -76,15 +84,8 @@ class _PathwayUIState extends State<PathwayUI> {
                       } else {
                         stepPos++;
                         return _buildPathwayStep(
-                          stepType: step["type"],
-                          isCompleted: step["isCompleted"],
-                          isNextToDo: step["isNextToDo"] ?? false,
+                          step: step,
                           index: stepPos,
-                          subtopicTitle: step["title"],
-                          subtopicId: step["subId"],
-                          readingContent: step["reading"] ?? "",
-                          unitId: step["unitId"],
-                          unitTitle: step["unitTitle"],
                         );
                       }
                     },
@@ -117,15 +118,8 @@ class _PathwayUIState extends State<PathwayUI> {
   }
 
   Widget _buildPathwayStep({
-    required String stepType,
-    required bool isCompleted,
-    required bool isNextToDo,
+    required Map<String, dynamic> step,
     required int index,
-    required String subtopicTitle,
-    required String subtopicId,
-    required String readingContent,
-    required int unitId, // ✅ add this
-    required String unitTitle, // ✅ add this
   }) {
     final double screenWidth = MediaQuery.of(context).size.width;
     const List<double> offsets = [
@@ -143,35 +137,72 @@ class _PathwayUIState extends State<PathwayUI> {
     return Padding(
       padding: EdgeInsets.only(left: horizontalOffset, bottom: 20),
       child: PathwayStep(
-        stepType: stepType,
-        isCompleted: isCompleted,
-        isNextToDo: isNextToDo,
-        onTap: (isCompleted || isNextToDo)
+        stepType: step["type"],
+        isCompleted: step["isCompleted"],
+        isNextToDo: step["isNextToDo"] ?? false,
+        onTap: (step["isCompleted"] || (step["isNextToDo"] ?? false))
             ? () {
-                if (stepType == 'subtopic') {
+                if (step["type"] == 'subtopic') {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => SubtopicPage(
-                        subtopic: subtopicTitle,
-                        subtopicId: subtopicId,
-                        readingTitle: subtopicTitle,
-                        readingContent: readingContent,
-                        isCompleted: isCompleted,
+                        subtopic: step["title"],
+                        subtopicId: step["subId"],
+                        readingTitle: step["title"],
+                        readingContent: step["reading"] ?? "",
+                        isCompleted: step["isCompleted"],
                         subject: widget.subject,
                         grade: widget.grade,
-                        unitId: unitId, // ✅ pass properly
-                        unitTitle: unitTitle,
+                        unitId: step["unitId"],
+                        unitTitle: step["unitTitle"],
+                        userId: widget.userId ?? '',
+                        key: null,
                       ),
                     ),
                   );
-                } else if (stepType == 'game') {
+                } else if (step["type"] == 'game') {
                   final games = [
-                    CypherUI(subtopicId: subtopicId),
-                    MazeGame(subtopicId: subtopicId),
-                    PuzzleScreen(subtopicId: subtopicId),
+                    CypherUI(
+                      subject: widget.subject,
+                      grade: widget.grade,
+                      unitId: step["unitId"],
+                      unitTitle: step["unitTitle"],
+                      subtopicId: step["subId"],
+                      subtopicTitle: step["title"],
+                      nextSubtopicId: step["nextSubtopicId"],
+                      nextSubtopicTitle: step["nextSubtopicTitle"],
+                      nextReadingContent: step["nextReadingContent"],
+                      userId: widget.userId ?? '',
+                    ),
+                    MazeGame(
+                      subject: widget.subject,
+                      grade: widget.grade,
+                      unitId: step["unitId"],
+                      unitTitle: step["unitTitle"],
+                      subtopicId: step["subId"],
+                      subtopicTitle: step["title"],
+                      nextSubtopicId: step["nextSubtopicId"],
+                      nextSubtopicTitle: step["nextSubtopicTitle"],
+                      nextReadingContent: step["nextReadingContent"],
+                      userId: widget.userId ?? '',
+                    ),
+                    PuzzleScreen(
+                      subject: widget.subject,
+                      grade: widget.grade,
+                      unitId: step["unitId"],
+                      unitTitle: step["unitTitle"],
+                      subtopicId: step["subId"],
+                      subtopicTitle: step["title"],
+                      nextSubtopicId: step["nextSubtopicId"],
+                      nextSubtopicTitle: step["nextSubtopicTitle"],
+                      nextReadingContent: step["nextReadingContent"],
+                      userId: widget.userId ?? '',
+                    ),
                   ];
                   games.shuffle();
+                  debugPrint(
+                      '[Game Launch] Next subtopic → ID: ${step["nextSubtopicId"]}, Title: ${step["nextSubtopicTitle"]}');
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => games.first),
@@ -201,21 +232,20 @@ class _PathwayUIState extends State<PathwayUI> {
     final resumeType = resumeData?['action_type'];
     final resumeStatus = resumeData?['action_state'];
 
-    for (Map<String, dynamic> subjectMap in data["subjects"]) {
+    for (var subjectMap in data["subjects"]) {
       if (subjectMap["name"].toLowerCase() == widget.subject.toLowerCase()) {
-        for (Map<String, dynamic> gradeMap in subjectMap["grades"]) {
+        for (var gradeMap in subjectMap["grades"]) {
           if (gradeMap["grade"].toLowerCase() ==
               "grade ${widget.grade.toString()}") {
-            List<Map<String, dynamic>> units =
-                List<Map<String, dynamic>>.from(gradeMap["units"]);
+            final units = List<Map<String, dynamic>>.from(gradeMap["units"]);
 
             for (int i = 0; i < units.length; i++) {
               rawSteps.add({
                 "type": "unit_separator",
-                "title": "Unit ${i + 1}: ${units[i]["unit"]}"
+                "title": "Unit ${i + 1}: ${units[i]["unit"]}",
               });
 
-              List<Map<String, dynamic>> subtopics =
+              final subtopics =
                   List<Map<String, dynamic>>.from(units[i]["subtopics"]);
 
               for (int j = 0; j < subtopics.length; j++) {
@@ -227,6 +257,7 @@ class _PathwayUIState extends State<PathwayUI> {
                 final isResumeGame =
                     resumeType == 'game' && resumeSubId == subId;
 
+                // Subtopic node
                 rawSteps.add({
                   "type": "subtopic",
                   "title": sub["subtopic"],
@@ -240,6 +271,19 @@ class _PathwayUIState extends State<PathwayUI> {
                   "reading": sub["reading"]?["content"] ?? "",
                 });
 
+                // Determine next subtopic
+                Map<String, dynamic>? nextSub;
+                if (j + 1 < subtopics.length) {
+                  nextSub = subtopics[j + 1];
+                } else if (i + 1 < units.length) {
+                  final nextUnitSubs = List<Map<String, dynamic>>.from(
+                      units[i + 1]["subtopics"]);
+                  if (nextUnitSubs.isNotEmpty) {
+                    nextSub = nextUnitSubs.first;
+                  }
+                }
+
+                // Game node
                 rawSteps.add({
                   "type": "game",
                   "title": sub["subtopic"],
@@ -250,6 +294,9 @@ class _PathwayUIState extends State<PathwayUI> {
                   "subIndex": j,
                   "isResume": isResumeGame,
                   "isCompleted": false,
+                  "nextSubtopicId": nextSub?["subtopic_id"] ?? "dummy_last",
+                  "nextSubtopicTitle": nextSub?["subtopic"] ?? "Last subtopic",
+                  "nextReadingContent": nextSub?["reading"]?["content"] ?? "",
                 });
               }
             }
@@ -258,12 +305,11 @@ class _PathwayUIState extends State<PathwayUI> {
       }
     }
 
-    int matchedIndex = rawSteps.indexWhere(
-      (step) => step["type"] != "unit_separator" && step["isResume"] == true,
-    );
+    // Resume state
+    final matchedIndex = rawSteps.indexWhere(
+        (step) => step["type"] != "unit_separator" && step["isResume"] == true);
 
     if (matchedIndex != -1) {
-      // ✅ Mark all previous steps as completed
       for (int i = 0; i < matchedIndex; i++) {
         if (rawSteps[i]["type"] != "unit_separator") {
           rawSteps[i]["isCompleted"] = true;
@@ -271,13 +317,9 @@ class _PathwayUIState extends State<PathwayUI> {
       }
 
       if (resumeStatus == 'in_progress') {
-        // ✅ Highlight current step
         rawSteps[matchedIndex]["isNextToDo"] = true;
       } else if (resumeStatus == 'completed') {
-        // ✅ Mark current as completed too
         rawSteps[matchedIndex]["isCompleted"] = true;
-
-        // ✅ Move to next actionable step
         for (int i = matchedIndex + 1; i < rawSteps.length; i++) {
           if (rawSteps[i]["type"] != "unit_separator") {
             rawSteps[i]["isNextToDo"] = true;
@@ -286,7 +328,6 @@ class _PathwayUIState extends State<PathwayUI> {
         }
       }
     } else {
-      // No match — fallback to first step
       for (int i = 0; i < rawSteps.length; i++) {
         if (rawSteps[i]["type"] != "unit_separator") {
           rawSteps[i]["isNextToDo"] = true;
@@ -311,10 +352,10 @@ class PathwayStep extends StatelessWidget {
     "quiz": Icons.quiz,
   };
 
-  PathwayStep({
+  const PathwayStep({
     required this.stepType,
     required this.isCompleted,
-    this.isNextToDo = false,
+    required this.isNextToDo,
     this.onTap,
   });
 

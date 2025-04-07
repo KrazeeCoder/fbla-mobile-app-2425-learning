@@ -3,10 +3,36 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../widgets/cypher_question.dart';
+import '../widgets/subtopic_widget.dart';
+import 'package:audioplayers/audioplayers.dart';
+import '../services/updateprogress.dart';
+import '../widgets/subtopic_widget.dart';
 
 class CypherUI extends StatefulWidget {
   final String subtopicId;
-  const CypherUI({super.key, required this.subtopicId});
+  final String subject;
+  final int grade;
+  final int unitId;
+  final String unitTitle;
+  final String subtopicTitle;
+  final String nextSubtopicId;
+  final String nextSubtopicTitle;
+  final String nextReadingContent;
+  final String userId;
+
+  const CypherUI({
+    super.key,
+    required this.subtopicId,
+    required this.subject,
+    required this.grade,
+    required this.unitId,
+    required this.unitTitle,
+    required this.subtopicTitle,
+    required this.nextSubtopicId,
+    required this.nextSubtopicTitle,
+    required this.nextReadingContent,
+    required this.userId,
+  });
 
   @override
   State<CypherUI> createState() => _CypherUIState();
@@ -21,6 +47,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   Map<int, String> answeredQuestions = {};
   Set<int> correctAnswers = {};
   late AnimationController _revealController;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
@@ -40,10 +67,12 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   }
 
   Future<void> _loadQuestions() async {
-    final String jsonString = await rootBundle.loadString('assets/content.json');
+    final String jsonString =
+        await rootBundle.loadString('assets/content.json');
     final Map<String, dynamic> data = json.decode(jsonString);
 
-    List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data['questions']);
+    List<Map<String, dynamic>> allQuestions =
+        List<Map<String, dynamic>>.from(data['questions']);
     List<dynamic> subjects = data['subjects'];
     List<int> quizPool = [];
 
@@ -66,18 +95,26 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
       return;
     }
 
-    List<Map<String, dynamic>> questions = allQuestions
-        .where((q) => quizPool.contains(q['id'] as int))
-        .toList();
+    List<Map<String, dynamic>> questions =
+        allQuestions.where((q) => quizPool.contains(q['id'] as int)).toList();
 
     if (questions.isEmpty) return;
 
     // ✅ Improved randomization
-    final wordList = ["SMART", "BRAVE", "LIGHT", "STORM", "CLOUD", "RAPID", "FLARE"];
-    currentPhrase = wordList[random.nextInt(wordList.length)];  // Randomly pick a word
+    final wordList = [
+      "SMART",
+      "BRAVE",
+      "LIGHT",
+      "STORM",
+      "CLOUD",
+      "RAPID",
+      "FLARE"
+    ];
+    currentPhrase =
+        wordList[random.nextInt(wordList.length)]; // Randomly pick a word
 
     questions.shuffle();
-    questions = questions.take(5).toList();  // Ensure 5 questions only
+    questions = questions.take(5).toList(); // Ensure 5 questions only
 
     List<int> scrambledNumbers = List.generate(questions.length, (i) => i);
     scrambledNumbers.shuffle();
@@ -100,7 +137,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
 
       if (selectedAnswer == quizQuestions[questionIndex]["correct_answer"]) {
         correctAnswers.add(questionIndex);
-        _revealController.forward(from: 0);  // Trigger animation
+        _revealController.forward(from: 0); // Trigger animation
 
         for (var item in gameState) {
           if (item["questionIndex"] == questionIndex) {
@@ -126,6 +163,50 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
         currentQuestionIndex--;
       });
     }
+  }
+
+  Future<void> _saveProgressAndGoNext() async {
+    await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
+
+    await markQuizAsCompleted(
+      subtopicId: widget.subtopicId,
+      marksEarned: getDummyMarks(),
+    );
+
+    await updateResumePoint(
+      userId: widget.userId,
+      subject: widget.subject,
+      grade: 'Grade ${widget.grade}',
+      unitId: widget.unitId,
+      unitName: widget.unitTitle,
+      subtopicId: widget.subtopicId,
+      subtopicName: widget.subtopicTitle,
+      actionType: 'game',
+      actionState: 'completed',
+    );
+
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SubtopicPage(
+          subtopic: widget.nextSubtopicTitle,
+          subtopicId: widget.nextSubtopicId,
+          readingTitle: widget.nextSubtopicTitle,
+          readingContent: widget.nextReadingContent,
+          isCompleted: false,
+          subject: widget.subject,
+          grade: widget.grade,
+          unitId: widget.unitId,
+          unitTitle: widget.unitTitle,
+          userId: widget.userId,
+        ),
+      ),
+    );
+  }
+
+  getDummyMarks() {
+    // Dummy function to simulate marks calculation
+    return 10; // Replace with actual logic if needed
   }
 
   bool get isGameCompleted => correctAnswers.length == quizQuestions.length;
@@ -167,17 +248,21 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                   child: MultipleChoiceQuestion(
                     key: ValueKey(currentQuestionIndex),
                     question: currentQuestion["question"].toString(),
-                    options: List<String>.from(currentQuestion["answers"].map((e) => e.toString())),
+                    options: List<String>.from(
+                        currentQuestion["answers"].map((e) => e.toString())),
                     correctAnswer: currentQuestion["correct_answer"].toString(),
                     selectedAnswer: answeredQuestions[currentQuestionIndex],
-                    previouslyAnswered: answeredQuestions.containsKey(currentQuestionIndex),
-                    isCorrectlyAnswered: correctAnswers.contains(currentQuestionIndex),
+                    previouslyAnswered:
+                        answeredQuestions.containsKey(currentQuestionIndex),
+                    isCorrectlyAnswered:
+                        correctAnswers.contains(currentQuestionIndex),
                     onAnswerSelected: (answer) {
                       if (!correctAnswers.contains(currentQuestionIndex)) {
                         onAnswerSelected(currentQuestionIndex, answer);
                       }
                     },
-                    questionTextStyle: const TextStyle(fontSize: 16),  // ✅ Smaller Question Text
+                    questionTextStyle: const TextStyle(
+                        fontSize: 16), // ✅ Smaller Question Text
                   ),
                 ),
                 IconButton(
@@ -206,7 +291,9 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                       child: Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: item["revealed"] ? Colors.green[400] : Colors.grey[700],
+                          color: item["revealed"]
+                              ? Colors.green[400]
+                              : Colors.grey[700],
                           borderRadius: BorderRadius.circular(10),
                           boxShadow: [
                             BoxShadow(
@@ -229,7 +316,8 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                             const SizedBox(height: 4),
                             Text(
                               (item["questionIndex"] + 1).toString(),
-                              style: const TextStyle(fontSize: 16, color: Colors.white),
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.white),
                             ),
                           ],
                         ),
@@ -260,7 +348,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => _saveProgressAndGoNext(),
                     child: const Text("Next Lesson"),
                   ),
                 ],

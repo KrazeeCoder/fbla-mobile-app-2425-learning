@@ -2,31 +2,71 @@ import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'dart:convert';
+import 'dart:math';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import '../widgets/subtopic_widget.dart';
+import '../services/updateprogress.dart';
 
 class PuzzleScreen extends StatefulWidget {
   final String subtopicId;
-  const PuzzleScreen({super.key, required this.subtopicId});
+  final String nextSubtopicId;
+  final String nextSubtopicTitle;
+  final String nextReadingContent;
+  final String subject;
+  final int grade;
+  final int unitId;
+  final String unitTitle;
+  final String subtopicTitle;
+  final String userId;
+
+  const PuzzleScreen({
+    super.key,
+    required this.subtopicId,
+    required this.nextSubtopicId,
+    required this.nextSubtopicTitle,
+    required this.nextReadingContent,
+    required this.subject,
+    required this.grade,
+    required this.unitId,
+    required this.unitTitle,
+    required this.subtopicTitle,
+    required this.userId,
+  });
 
   @override
-  _PuzzleScreenState createState() => _PuzzleScreenState();
+  State<PuzzleScreen> createState() => _PuzzleScreenState();
 }
 
-class _PuzzleScreenState extends State<PuzzleScreen> with SingleTickerProviderStateMixin {
+class _PuzzleScreenState extends State<PuzzleScreen>
+    with SingleTickerProviderStateMixin {
   List<Map<String, dynamic>> quizQuestions = [];
   String selectedImage = '';
   List<bool> answered = [];
-  List<bool> placed = [];
+  Map<int, int> placedMap = {};
+  List<int> _shuffledIndices = [];
   late AnimationController _glowController;
+  bool puzzleCompleted = false;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
     _loadQuestions();
     _randomizeImage();
-    _glowController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 1),
-    )..repeat(reverse: true);
+    _glowController =
+        AnimationController(vsync: this, duration: const Duration(seconds: 1))
+          ..repeat(reverse: true);
+    _shuffledIndices = [0, 1, 2, 3]..shuffle();
+  }
+
+  @override
+  void dispose() {
+    _glowController.dispose();
+    _audioPlayer.dispose();
+    super.dispose();
   }
 
   void _randomizeImage() {
@@ -35,12 +75,13 @@ class _PuzzleScreenState extends State<PuzzleScreen> with SingleTickerProviderSt
   }
 
   Future<void> _loadQuestions() async {
-    final String jsonString = await rootBundle.loadString('assets/content.json');
+    final String jsonString =
+        await rootBundle.loadString('assets/content.json');
     final Map<String, dynamic> data = json.decode(jsonString);
-
-    List<Map<String, dynamic>> allQuestions = List<Map<String, dynamic>>.from(data['questions']);
-
+    List<Map<String, dynamic>> allQuestions =
+        List<Map<String, dynamic>>.from(data['questions']);
     List<int> quizPool = [];
+
     for (var subject in data['subjects']) {
       for (var grade in subject['grades']) {
         for (var unit in grade['units']) {
@@ -55,22 +96,25 @@ class _PuzzleScreenState extends State<PuzzleScreen> with SingleTickerProviderSt
     }
 
     List<Map<String, dynamic>> selectedQuestions =
-    allQuestions.where((q) => quizPool.contains(q['id'] as int)).toList();
+        allQuestions.where((q) => quizPool.contains(q['id'] as int)).toList();
     selectedQuestions.shuffle();
     selectedQuestions = selectedQuestions.take(4).toList();
 
     setState(() {
       quizQuestions = selectedQuestions;
       answered = List.filled(4, false);
-      placed = List.filled(4, false);
     });
+  }
+
+  int getDummyMarks() {
+    return 10; // return a dummy score
   }
 
   void _showQuestionDialog(int index) {
     final question = quizQuestions[index]['question'];
-    final List<String> answers = List<String>.from(quizQuestions[index]['answers']);
+    final List<String> answers =
+        List<String>.from(quizQuestions[index]['answers']);
     final String correctAnswer = quizQuestions[index]['correct_answer'];
-
     String? selectedAnswer;
 
     showDialog(
@@ -78,19 +122,19 @@ class _PuzzleScreenState extends State<PuzzleScreen> with SingleTickerProviderSt
       builder: (context) => StatefulBuilder(
         builder: (context, setState) {
           return AlertDialog(
-            title: Text(question, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            title: Text(question,
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
-              children: answers
-                  .map((answer) => RadioListTile<String>(
-                title: Text(answer),
-                value: answer,
-                groupValue: selectedAnswer,
-                onChanged: (value) {
-                  setState(() => selectedAnswer = value);
-                },
-              ))
-                  .toList(),
+              children: answers.map((answer) {
+                return RadioListTile<String>(
+                  title: Text(answer),
+                  value: answer,
+                  groupValue: selectedAnswer,
+                  onChanged: (value) => setState(() => selectedAnswer = value),
+                );
+              }).toList(),
             ),
             actions: [
               TextButton(
@@ -103,9 +147,11 @@ class _PuzzleScreenState extends State<PuzzleScreen> with SingleTickerProviderSt
                     setState(() => answered[index] = true);
                     Navigator.pop(context);
                     this.setState(() {});
+                    _checkPuzzleCompletion();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Incorrect answer, try again!')),
+                      const SnackBar(
+                          content: Text('Incorrect answer, try again!')),
                     );
                   }
                 },
@@ -116,6 +162,40 @@ class _PuzzleScreenState extends State<PuzzleScreen> with SingleTickerProviderSt
         },
       ),
     );
+  }
+
+  void _checkPuzzleCompletion() async {
+    if (answered.every((a) => a) && placedMap.length == 4) {
+      setState(() {
+        puzzleCompleted = true;
+      });
+
+      await _audioPlayer.play(AssetSource('congrats.mp3'));
+      _saveProgress();
+    }
+  }
+
+  Future<void> _saveProgress() async {
+    final marks = getDummyMarks();
+
+    await markQuizAsCompleted(
+      subtopicId: widget.subtopicId,
+      marksEarned: marks,
+    );
+
+    await updateResumePoint(
+      userId: widget.userId,
+      subject: widget.subject,
+      grade: 'Grade ${widget.grade}',
+      unitId: widget.unitId,
+      unitName: widget.unitTitle,
+      subtopicId: widget.subtopicId,
+      subtopicName: widget.subtopicTitle,
+      actionType: 'game',
+      actionState: 'completed',
+    );
+
+    debugPrint('[Puzzle] : Saved quiz progress for ${widget.subtopicId}');
   }
 
   @override
@@ -133,86 +213,145 @@ class _PuzzleScreenState extends State<PuzzleScreen> with SingleTickerProviderSt
       body: quizQuestions.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : Column(
-        children: [
-          const SizedBox(height: 20),
-          const Text('Complete the Puzzle!', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 20),
+              children: [
+                const SizedBox(height: 20),
+                Text(
+                  puzzleCompleted
+                      ? '🎉 Puzzle Completed!'
+                      : 'Complete the Puzzle!',
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
 
-          // Puzzle Board (Fixed Position)
-          SizedBox(
-            width: pieceSize * 2,
-            height: pieceSize * 2,
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-              ),
-              itemCount: 4,
-              itemBuilder: (context, index) => DragTarget<int>(
-                onAccept: (data) => setState(() => placed[data] = true),
-                onWillAccept: (data) => data == index,
-                builder: (context, _, __) => ClipRect(  /// 🔥 FIX: Clip the placed puzzle pieces
-                  child: placed[index]
-                      ? PuzzlePiece(
-                    imagePath: selectedImage,
-                    index: index,
-                    isPlaced: true,
-                    size: pieceSize,
-                  )
-                      : Container(
-                    width: pieceSize,
-                    height: pieceSize,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey.shade300),
-                    ),
+                // Puzzle Grid
+                SizedBox(
+                  width: pieceSize * 2,
+                  height: pieceSize * 2,
+                  child: GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2),
+                    itemCount: 4,
+                    itemBuilder: (context, index) {
+                      final placedIndex = placedMap[index];
+                      return DragTarget<int>(
+                        onAccept: (pieceIndex) {
+                          setState(() {
+                            placedMap[index] = pieceIndex;
+                          });
+                          _checkPuzzleCompletion();
+                        },
+                        onWillAccept: (pieceIndex) => pieceIndex == index,
+                        builder: (context, _, __) {
+                          return SizedBox(
+                            width: pieceSize,
+                            height: pieceSize,
+                            child: placedIndex != null
+                                ? PuzzlePiece(
+                                    imagePath: selectedImage,
+                                    index: placedIndex,
+                                    size: pieceSize)
+                                : Container(
+                                    decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey.shade300))),
+                          );
+                        },
+                      );
+                    },
                   ),
                 ),
-              ),
+
+                const SizedBox(height: 30),
+
+                if (puzzleCompleted)
+                  Column(
+                    children: [
+                      const Text(
+                        "You’ve successfully completed the puzzle!",
+                        style: TextStyle(fontSize: 18, color: Colors.green),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SubtopicPage(
+                                subtopic: widget.nextSubtopicTitle,
+                                subtopicId: widget.nextSubtopicId,
+                                readingTitle: widget.nextSubtopicTitle,
+                                readingContent: widget.nextReadingContent,
+                                isCompleted: false,
+                                subject: widget.subject,
+                                grade: widget.grade,
+                                unitId: widget.unitId,
+                                unitTitle: widget.unitTitle,
+                                userId: widget.userId,
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text("Go to Next Subtopic"),
+                      )
+                    ],
+                  ),
+
+                if (!puzzleCompleted)
+                  Wrap(
+                    spacing: 20,
+                    runSpacing: 20,
+                    children: _shuffledIndices.map((index) {
+                      if (placedMap.containsValue(index))
+                        return const SizedBox.shrink();
+
+                      return answered[index]
+                          ? Draggable<int>(
+                              data: index,
+                              feedback: Material(
+                                color: Colors.transparent,
+                                child: PuzzlePiece(
+                                    imagePath: selectedImage,
+                                    index: index,
+                                    size: pieceSize),
+                              ),
+                              childWhenDragging: PuzzlePiece(
+                                imagePath: selectedImage,
+                                index: index,
+                                opacity: 0.5,
+                                size: pieceSize,
+                              ),
+                              child: GlowingPuzzlePiece(
+                                imagePath: selectedImage,
+                                index: index,
+                                controller: _glowController,
+                                size: pieceSize,
+                              ),
+                            )
+                          : GestureDetector(
+                              onTap: () => _showQuestionDialog(index),
+                              child: PuzzlePiece(
+                                imagePath: selectedImage,
+                                index: index,
+                                opacity: 0.5,
+                                size: pieceSize,
+                              ),
+                            );
+                    }).toList(),
+                  ),
+              ],
             ),
-          ),
-
-          const SizedBox(height: 30),
-
-          // Puzzle Pieces
-          Wrap(
-            spacing: 20,
-            runSpacing: 20,
-            children: List.generate(4, (index) {
-              if (placed[index]) return const SizedBox.shrink();
-              return answered[index]
-                  ? Draggable<int>(
-                data: index,
-                feedback: PuzzlePiece(imagePath: selectedImage, index: index, size: pieceSize),
-                childWhenDragging: PuzzlePiece(imagePath: selectedImage, index: index, opacity: 0.5, size: pieceSize),
-                child: GlowingPuzzlePiece(
-                  imagePath: selectedImage,
-                  index: index,
-                  controller: _glowController,
-                  size: pieceSize,
-                ),
-              )
-                  : GestureDetector(
-                onTap: () => _showQuestionDialog(index),
-                child: PuzzlePiece(imagePath: selectedImage, index: index, opacity: 0.5, size: pieceSize),
-              );
-            }),
-          ),
-        ],
-      ),
     );
-  }
-
-  @override
-  void dispose() {
-    _glowController.dispose();
-    super.dispose();
   }
 }
 
+// Puzzle Piece Widget
 class PuzzlePiece extends StatelessWidget {
   final String imagePath;
   final int index;
-  final bool isPlaced;
   final double opacity;
   final double size;
 
@@ -220,7 +359,6 @@ class PuzzlePiece extends StatelessWidget {
     super.key,
     required this.imagePath,
     required this.index,
-    this.isPlaced = false,
     this.opacity = 1.0,
     required this.size,
   });
@@ -229,16 +367,19 @@ class PuzzlePiece extends StatelessWidget {
   Widget build(BuildContext context) {
     return Opacity(
       opacity: opacity,
-      child: ClipRect(
-        child: Align(
-          alignment: _getAlignment(index),
-          widthFactor: 0.5,
-          heightFactor: 0.5,
-          child: Image.asset(
-            imagePath,
-            fit: BoxFit.cover,
-            width: size * 2,
-            height: size * 2,
+      child: SizedBox(
+        width: size,
+        height: size,
+        child: ClipRect(
+          child: OverflowBox(
+            maxWidth: size * 2,
+            maxHeight: size * 2,
+            child: Align(
+              alignment: _getAlignment(index),
+              widthFactor: 0.5,
+              heightFactor: 0.5,
+              child: Image.asset(imagePath, fit: BoxFit.cover),
+            ),
           ),
         ),
       ),
@@ -247,15 +388,21 @@ class PuzzlePiece extends StatelessWidget {
 
   Alignment _getAlignment(int index) {
     switch (index) {
-      case 0: return Alignment.topLeft;
-      case 1: return Alignment.topRight;
-      case 2: return Alignment.bottomLeft;
-      case 3: return Alignment.bottomRight;
-      default: return Alignment.center;
+      case 0:
+        return Alignment.topLeft;
+      case 1:
+        return Alignment.topRight;
+      case 2:
+        return Alignment.bottomLeft;
+      case 3:
+        return Alignment.bottomRight;
+      default:
+        return Alignment.center;
     }
   }
 }
 
+// Glowing Puzzle Piece
 class GlowingPuzzlePiece extends StatelessWidget {
   final String imagePath;
   final int index;
