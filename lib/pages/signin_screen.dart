@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -71,6 +72,21 @@ class _SignInScreenState extends State<SignInScreen> {
 
     try {
       print("🔵 Opening LinkedIn OAuth WebView...");
+
+      // Check if running on Windows
+      if (defaultTargetPlatform == TargetPlatform.windows) {
+        // Show a dialog to tell the user this feature isn't available on Windows
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(
+                  "LinkedIn login is not supported on Windows platform. Please use email login instead.")));
+        }
+        return;
+
+        // Alternative: If you want to implement a Windows solution later
+        // Use launchUrl from url_launcher package instead or implement a custom flow
+      }
+
       final String result = await FlutterWebAuth.authenticate(
           url: authUrl, callbackUrlScheme: "fbla-learning-app");
 
