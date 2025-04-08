@@ -4,6 +4,7 @@ import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_progress.da
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/app_logger.dart';
+import '../widgets/custom_app_bar.dart'; // <-- make sure this import is here
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -32,21 +33,18 @@ class _ProgressPageState extends State<ProgressPage> {
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid == null) return;
 
-      // 🔹 Get user progress from Firestore
       final snapshot = await FirebaseFirestore.instance
           .collection('user_progress')
           .doc(uid)
           .get();
       userProgress = snapshot.data() ?? {};
 
-      // 🔹 Calculate subtopics completed
       subtopicsCompleted = await getTotalSubtopicsCompleted(uid);
-      // 🔹 Calculate level and total points using new method
+
       final levelData = await calculateLevelAndPoints(uid);
       level = levelData['currentLevel'];
 
-      // 🔹 Optionally: update streak if you have logic for it
-      streak = 4; // Replace with real streak logic if needed
+      streak = 4; // Replace with real streak logic
 
       setState(() => _isLoading = false);
     } catch (e) {
@@ -76,57 +74,58 @@ class _ProgressPageState extends State<ProgressPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const CustomAppBar(), // ✅ added here
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.orange[100],
+                foregroundColor: Colors.deepOrange,
+                elevation: 8,
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 16, vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {},
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orange[100],
-                      foregroundColor: Colors.deepOrange,
-                      elevation: 8,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.local_fire_department_sharp,
-                            color: Colors.deepOrange, size: 30),
-                        const SizedBox(width: 8),
-                        Text(
-                          "$streak day streak!",
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _StatCard(label: "levels achieved", value: "$level"),
-                      _StatCard(
-                          label: "subtopics completed",
-                          value: "$subtopicsCompleted"),
-                    ],
-                  ),
-                  Expanded(
-                    child: RecentLessonsTabWidget(
-                      userProgress: userProgress,
+                  const Icon(Icons.local_fire_department_sharp,
+                      color: Colors.deepOrange, size: 30),
+                  const SizedBox(width: 8),
+                  Text(
+                    "$streak day streak!",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
                     ),
                   ),
                 ],
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _StatCard(label: "levels achieved", value: "$level"),
+                _StatCard(
+                    label: "subtopics completed",
+                    value: "$subtopicsCompleted"),
+              ],
+            ),
+            Expanded(
+              child: RecentLessonsTabWidget(
+                userProgress: userProgress,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -157,11 +156,11 @@ class _StatCard extends StatelessWidget {
           children: [
             Text(value,
                 style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 50)),
+                const TextStyle(fontWeight: FontWeight.bold, fontSize: 50)),
             Text(label,
                 textAlign: TextAlign.center,
                 style:
-                    const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
+                const TextStyle(fontWeight: FontWeight.bold, fontSize: 20)),
           ],
         ),
       ),
