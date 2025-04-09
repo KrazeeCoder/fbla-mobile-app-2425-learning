@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -97,6 +98,7 @@ class _SignInScreenState extends State<SignInScreen> {
       final String? linkedinToken = uri.queryParameters["linkedinToken"];
       print("🔵 LinkedIn Token: $linkedinToken");
 
+      await storeLinkedInToken(linkedinToken!);
       if (firebaseToken == null || firebaseToken.trim().isEmpty) {
         throw Exception("❌ Firebase token missing or empty.");
       }
@@ -192,6 +194,11 @@ class _SignInScreenState extends State<SignInScreen> {
   /// **Validates email format**
   bool _isValidEmail(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
+  }
+
+  Future<void> storeLinkedInToken(String token) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('linkedin_token', token);
   }
 
   @override

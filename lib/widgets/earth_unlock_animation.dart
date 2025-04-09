@@ -7,6 +7,8 @@ import '../main.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:cross_file/cross_file.dart';
 import '../utils/share/achievement_image_generator.dart';
+import '../linkedin_post.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// A reusable widget that displays the Earth level-up animation
 class EarthUnlockAnimation extends StatefulWidget {
@@ -255,6 +257,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
   Future<void> _showSharePreview(BuildContext context, String message) async {
     return showDialog(
       context: context,
+      barrierDismissible: true, // Allow ESC and tap outside to dismiss
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -262,7 +265,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Preview card
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -278,7 +280,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Preview header
+                    // Header
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -303,7 +305,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                       ),
                     ),
 
-                    // Preview image - this is what will be shared
+                    // Share preview image
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: Container(
@@ -328,9 +330,9 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                       ),
                     ),
 
-                    // Preview message
+                    // Share message
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                       child: Text(
                         message,
                         textAlign: TextAlign.center,
@@ -341,93 +343,41 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                       ),
                     ),
 
-                    // Share buttons
+                    // Social icons
+                    // Social icons
                     Padding(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.only(bottom: 20),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Cancel button
-                          OutlinedButton(
-                            onPressed: () => Navigator.pop(context),
-                            style: OutlinedButton.styleFrom(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
-                            ),
-                            child: const Text('Cancel'),
-                          ),
-
-                          // Share button
-                          ElevatedButton(
-                            onPressed: () async {
-                              Navigator.pop(
-                                  context); // Close the preview dialog
-
-                              // Show loading indicator
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content:
-                                        Text('Generating achievement image...'),
-                                    duration: Duration(seconds: 2),
-                                  ),
-                                );
-                              }
-
-                              try {
-                                print("asdf1");
-                                // Generate the image and share it immediately
-                                final String imagePath =
-                                    await AchievementImageGenerator
-                                        .captureAchievementImage(
-                                  level: widget.newLevel,
-                                  message: message,
-                                );
-                                print(imagePath);
-
-                                // Check if file exists
-                                final file = File(imagePath);
-                                if (!await file.exists()) {
-                                  throw Exception(
-                                      'Generated image file not found');
-                                }
-
-                                print("asdf2");
-                                final result = await Share.shareXFiles(
-                                  [XFile(imagePath)],
-                                  text: message,
-                                  subject: 'FBLA Learning App Achievement',
-                                );
-
-                                AppLogger.i(
-                                    "Shared achievement with result: ${result.status}");
-                              } catch (e) {
-                                AppLogger.e("Error in sharing image", error: e);
-                                if (context.mounted) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                          'Error sharing: ${e.toString()}'),
-                                      duration: const Duration(seconds: 3),
-                                    ),
-                                  );
-                                }
-                              }
+                          _buildSocialIcon(
+                            assetPath: 'assets/Instagram_icon.png',
+                            label: 'Instagram',
+                            onTap: () async {
+                              Navigator.pop(context);
+                              await _handleImageShare(
+                                  context, message, 'Instagram');
                             },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 12),
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.share, size: 16),
-                                SizedBox(width: 8),
-                                Text('Share'),
-                              ],
-                            ),
+                          ),
+                          const SizedBox(width: 30),
+                          _buildSocialIcon(
+                            assetPath: 'assets/linkedin-icon.png',
+                            label: 'LinkedIn',
+                            onTap: () async {
+                              Navigator.pop(context);
+                              await _handleLinkedInShare(context, message);
+                            },
+                          ),
+                          const SizedBox(width: 30),
+                          _buildSocialIcon(
+                            assetPath:
+                                'assets/share-icon.png', // <- Your general share PNG
+                            label: 'Share',
+                            onTap: () async {
+                              Navigator.pop(context);
+                              await _handleImageShare(
+                                  context, message, 'System'); // Now consistent
+                            },
                           ),
                         ],
                       ),
@@ -439,6 +389,132 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
           ),
         );
       },
+    );
+  }
+
+  Future<String?> getLinkedInToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('linkedin_token');
+  }
+
+  Future<void> _handleLinkedInShare(
+      BuildContext context, String message) async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Preparing LinkedIn share...'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+      final String? token = await getLinkedInToken();
+      if (token == null) {
+        throw Exception('LinkedIn token not found');
+      }
+
+      print("LinkedIn Token: $token");
+      print("Message: $message");
+
+      final String imagePath =
+          await AchievementImageGenerator.captureAchievementImage(
+        level: widget.newLevel,
+        message: message,
+      );
+
+      final file = File(imagePath);
+      if (!await file.exists()) throw Exception('Image not found');
+
+      await postToLinkedIn(
+        accessToken: token,
+        message: message,
+      );
+    } catch (e) {
+      AppLogger.e("Error sharing to LinkedIn", error: e);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to share on LinkedIn'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
+  Future<void> _handleImageShare(
+      BuildContext context, String message, String platform) async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Preparing $platform share...'),
+          duration: const Duration(seconds: 2),
+        ),
+      );
+
+      final String imagePath =
+          await AchievementImageGenerator.captureAchievementImage(
+        level: widget.newLevel,
+        message: message,
+      );
+
+      final file = File(imagePath);
+      if (!await file.exists()) throw Exception('Image not found');
+
+      await Share.shareXFiles(
+        [XFile(imagePath)],
+        text: message,
+        subject: 'FBLA Learning App Achievement',
+      );
+    } catch (e) {
+      AppLogger.e("Error sharing to $platform", error: e);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to share on $platform'),
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
+  Widget _buildSocialIcon({
+    required String assetPath,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return Column(
+      children: [
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: 60, // Fixed outer size
+            height: 60,
+            padding: const EdgeInsets.all(10), // Padding around image
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 6,
+                  offset: const Offset(0, 3),
+                ),
+              ],
+            ),
+            child: ClipOval(
+              child: Image.asset(
+                assetPath,
+                fit: BoxFit.contain, // Scales the image to fit nicely
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, color: Colors.black54),
+        ),
+      ],
     );
   }
 

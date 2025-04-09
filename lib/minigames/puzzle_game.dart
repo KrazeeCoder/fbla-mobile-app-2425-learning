@@ -120,7 +120,7 @@ class _PuzzleScreenState extends State<PuzzleScreen>
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
-        builder: (context, setState) {
+        builder: (context, setDialogState) {
           return AlertDialog(
             title: Text(question,
                 style:
@@ -132,7 +132,11 @@ class _PuzzleScreenState extends State<PuzzleScreen>
                   title: Text(answer),
                   value: answer,
                   groupValue: selectedAnswer,
-                  onChanged: (value) => setState(() => selectedAnswer = value),
+                  onChanged: (value) {
+                    setDialogState(() {
+                      selectedAnswer = value;
+                    });
+                  },
                 );
               }).toList(),
             ),
@@ -144,14 +148,16 @@ class _PuzzleScreenState extends State<PuzzleScreen>
               TextButton(
                 onPressed: () {
                   if (selectedAnswer == correctAnswer) {
-                    setState(() => answered[index] = true);
                     Navigator.pop(context);
-                    this.setState(() {});
+                    setState(() {
+                      answered[index] = true;
+                    });
                     _checkPuzzleCompletion();
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                          content: Text('Incorrect answer, try again!')),
+                        content: Text('Incorrect answer, try again!'),
+                      ),
                     );
                   }
                 },
