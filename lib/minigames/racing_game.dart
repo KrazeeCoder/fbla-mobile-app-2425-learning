@@ -272,7 +272,16 @@ class _RacingGameState extends State<RacingGame> {
 
   /// Show custom level up animation with earth unlocked
   void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
-    EarthUnlockAnimation.show(context, newLevel);
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final totalXP = xpManager.currentXP;
+
+    EarthUnlockAnimation.show(
+      context,
+      newLevel,
+      widget.subject,
+      widget.subtopicTitle,
+      totalXP,
+    );
   }
 
   /// Navigates to the next lesson with proper transitions
@@ -280,7 +289,7 @@ class _RacingGameState extends State<RacingGame> {
     // Award XP for completing the game
     _awardXPForCompletion(context);
 
-    await _audioPlayer.play(AssetSource('congrats.mp3'));
+    await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
 
     final marks = 10;
 

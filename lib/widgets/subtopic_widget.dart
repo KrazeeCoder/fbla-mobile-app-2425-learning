@@ -464,7 +464,17 @@ class SubtopicPage extends StatelessWidget {
   }
 
   // Show custom level up animation with earth unlocked
+// Show custom level up animation with earth unlocked
   void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
-    EarthUnlockAnimation.show(context, newLevel);
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final totalXP = xpManager.currentXP;
+
+    EarthUnlockAnimation.show(
+      context,
+      newLevel,
+      subject,
+      subtopic,
+      totalXP,
+    );
   }
 }

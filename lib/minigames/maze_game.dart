@@ -43,6 +43,8 @@ class MazeGame extends StatefulWidget {
 }
 
 class _MazeGameState extends State<MazeGame> {
+  bool showSuccess = false;
+
   static const int mazeSize = 11;
   late List<List<int>> maze;
   int playerX = 0, playerY = 5;
@@ -60,6 +62,36 @@ class _MazeGameState extends State<MazeGame> {
     super.initState();
     _generateSolvableMaze();
     _loadQuestions();
+  }
+
+  bool _completionHandled = false;
+
+  Future<void> _handleMazeCompletion() async {
+    if (_completionHandled) return;
+    _completionHandled = true;
+
+    await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
+
+    _awardXPForCompletion(context);
+
+    await markQuizAsCompleted(
+      subtopicId: widget.subtopicId,
+      marksEarned: 10,
+    );
+
+    await updateResumePoint(
+      userId: widget.userId,
+      subject: widget.subject,
+      grade: 'Grade ${widget.grade}',
+      unitId: widget.unitId,
+      unitName: widget.unitTitle,
+      subtopicId: widget.subtopicId,
+      subtopicName: widget.subtopicTitle,
+      actionType: 'game',
+      actionState: 'completed',
+    );
+
+    debugPrint('[MazeGame] 🎯 XP + Progress updated after completion');
   }
 
   /// Loads quiz questions from JSON
@@ -188,7 +220,9 @@ class _MazeGameState extends State<MazeGame> {
 
       // 2) Check if we've reached the goal
       if (playerX == goalX && playerY == goalY) {
-        _goToNextLesson();
+        setState(() {
+          showSuccess = true;
+        });
         return;
       }
 
@@ -216,7 +250,7 @@ class _MazeGameState extends State<MazeGame> {
 
   /// Handles answer selection (with UI update)
   void _answerQuestion(String selected, int checkpointX, int checkpointY) {
-    if (selected == currentQuestion!["correctAnswer"]) {
+    if (selected == currentQuestion!["correct_answer"]) {
       // Correct: Mark as answered, hide question
       setState(() {
         answeredCheckpoints.add("$checkpointX-$checkpointY");
@@ -375,37 +409,20 @@ class _MazeGameState extends State<MazeGame> {
 
   /// Show custom level up animation with earth unlocked
   void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
-    EarthUnlockAnimation.show(context, newLevel);
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final totalXP = xpManager.currentXP;
+
+    EarthUnlockAnimation.show(
+      context,
+      newLevel,
+      widget.subject,
+      widget.subtopicTitle,
+      totalXP,
+    );
   }
 
   /// Navigates to the next lesson with proper transitions
   Future<void> _goToNextLesson() async {
-    // Award XP for completing the maze game
-    _awardXPForCompletion(context);
-
-    await _audioPlayer.play(AssetSource('congrats.mp3'));
-
-    final marks = 10;
-
-    await markQuizAsCompleted(
-      subtopicId: widget.subtopicId,
-      marksEarned: marks,
-    );
-
-    await updateResumePoint(
-      userId: widget.userId,
-      subject: widget.subject,
-      grade: 'Grade ${widget.grade}',
-      unitId: widget.unitId,
-      unitName: widget.unitTitle,
-      subtopicId: widget.subtopicId,
-      subtopicName: widget.subtopicTitle,
-      actionType: 'game',
-      actionState: 'completed',
-    );
-
-    debugPrint('[MazeGame] Progress saved for ${widget.subtopicId}');
-
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -427,6 +444,12 @@ class _MazeGameState extends State<MazeGame> {
 
   @override
   Widget build(BuildContext context) {
+    if (showSuccess && !_completionHandled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _handleMazeCompletion();
+      });
+    }
+
     return Scaffold(
       appBar: AppBar(title: const Text("Maze Quiz Game")),
       body: Column(
@@ -496,11 +519,48 @@ class _MazeGameState extends State<MazeGame> {
           // Show Question Box instead of Arrows when active
           if (showQuestion)
             _buildQuestionBox()
-          else
-            // Show Arrow Controls when no question is active
+          else if (showSuccess)
             Padding(
-              padding: const EdgeInsets.only(
-                  bottom: 16), // Adjusted padding for better alignment
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: const Text(
+                      "🎉 Maze Complete! You've reached the goal! 🎉",
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _goToNextLesson,
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 12),
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    child: const Text(
+                      "Next Lesson",
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            )
+          else
+            // Show Arrow Controls when no question is active or game not completed
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16),
               child: Container(
                 width: MediaQuery.of(context).size.width *
                     0.7, // Smaller outer box

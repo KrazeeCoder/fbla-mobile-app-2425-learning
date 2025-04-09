@@ -14,19 +14,31 @@ import 'package:shared_preferences/shared_preferences.dart';
 class EarthUnlockAnimation extends StatefulWidget {
   /// The new level that was achieved
   final int newLevel;
+  final String subject;
+  final String subtopic;
+  final int totalXP;
 
   /// Constructor
-  const EarthUnlockAnimation({required this.newLevel, Key? key})
+  const EarthUnlockAnimation(
+      {required this.newLevel,
+      required this.subject,
+      required this.subtopic,
+      required this.totalXP,
+      Key? key})
       : super(key: key);
 
   /// Shows the Earth unlock animation dialog
-  static void show(BuildContext context, int newLevel) {
+  static void show(BuildContext context, int newLevel, String subject,
+      String subtopic, int totalXP) {
     showDialog(
       context: context,
       barrierDismissible: false,
       barrierColor: Colors.black54,
-      builder: (BuildContext context) =>
-          EarthUnlockAnimation(newLevel: newLevel),
+      builder: (BuildContext context) => EarthUnlockAnimation(
+          newLevel: newLevel,
+          subject: subject,
+          subtopic: subtopic,
+          totalXP: totalXP),
     );
   }
 
@@ -411,9 +423,15 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
         throw Exception('LinkedIn token not found');
       }
 
-      print("LinkedIn Token: $token");
-      print("Message: $message");
+// 🔥 Create one consistent message
+      final String message = generateProfessionalLinkedInPost(
+        level: widget.newLevel,
+        totalXP: widget.totalXP,
+        subject: widget.subject,
+        subtopic: widget.subtopic,
+      );
 
+// 🔄 Use same message for both image + post
       final String imagePath =
           await AchievementImageGenerator.captureAchievementImage(
         level: widget.newLevel,
