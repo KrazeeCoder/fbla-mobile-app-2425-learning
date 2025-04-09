@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import '../minigames/maze_game.dart';
 import '../minigames/puzzle_game.dart';
 import '../minigames/cypher_game.dart';
-import '../pages/chatbot_screen.dart';
+import '../pages/lesson_chatbot.dart';
 import '../services/updateprogress.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;

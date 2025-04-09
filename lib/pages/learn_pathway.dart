@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fbla_mobile_2425_learning_app/minigames/racing_game.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../jsonUtility.dart';
@@ -208,6 +209,18 @@ class _PathwayUIState extends State<PathwayUI> {
                     "userId": widget.userId ?? '',
                   };
                   final games = [
+                    RacingGame(
+                      subject: widget.subject,
+                      grade: widget.grade,
+                      unitId: step["unitId"],
+                      unitTitle: step["unitTitle"],
+                      subtopicId: step["subId"],
+                      subtopicTitle: step["title"],
+                      nextSubtopicId: step["nextSubtopicId"],
+                      nextSubtopicTitle: step["nextSubtopicTitle"],
+                      nextReadingContent: step["nextReadingContent"],
+                      userId: widget.userId ?? '',
+                    ),
                     CypherUI(
                       subject: widget.subject,
                       grade: widget.grade,

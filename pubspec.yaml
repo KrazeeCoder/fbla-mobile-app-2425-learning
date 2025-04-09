@@ -54,11 +54,7 @@ flutter:
 
   assets:
     - assets/tinker.obj
-    - assets/test_sphere.obj
-    - assets/test_sphere.mtl
     - assets/earth_basic_test.glb
-    - assets/lvl_test/tinker.obj
-    - assets/lvl_test/tinker.mtl
     - assets/streak_homepage_design.png
     - assets/cypher_phrases.txt
     - assets/content.json
