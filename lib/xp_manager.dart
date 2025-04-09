@@ -68,8 +68,6 @@ class XPManager extends ChangeNotifier {
           'created': FieldValue.serverTimestamp(),
           'lastUpdated': FieldValue.serverTimestamp(),
         }, SetOptions(merge: true));
-
-        AppLogger.i('Created new user XP document for user: $userId');
       }
     } catch (e) {
       AppLogger.e('Error ensuring user document exists', error: e);

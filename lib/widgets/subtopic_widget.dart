@@ -13,8 +13,7 @@ import '../xp_manager.dart';
 import '../utils/app_logger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'earth_unlock_animation.dart';
-import 'package:audioplayers/audioplayers.dart'; // Add to pubspec.yaml
-import '../widgets/subtopic_widget.dart'; // Assuming this shows subtopics
+import 'package:audioplayers/audioplayers.dart';
 
 class SubtopicPage extends StatelessWidget {
   final String subtopic;

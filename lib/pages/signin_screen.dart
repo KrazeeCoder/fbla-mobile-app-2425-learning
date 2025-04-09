@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:flutter/foundation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'signup_screen.dart';
 import 'home.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
 import '/auth_utility.dart';
 import '/security.dart';
+import '../coach_marks/showcase_provider.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -44,6 +45,13 @@ class _SignInScreenState extends State<SignInScreen> {
 
       if (user != null) {
         await setLoginUserKeys(user);
+
+        // Check if this is a first login for this user and trigger tutorial if needed
+        final isNewUser = await _authService.isFirstLogin(user.uid);
+        if (isNewUser) {
+          Provider.of<ShowcaseProvider>(context, listen: false)
+              .markTutorialNeeded();
+        }
 
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => MainPage()));

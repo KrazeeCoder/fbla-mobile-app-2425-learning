@@ -3,7 +3,9 @@ import '/auth_utility.dart';
 import 'signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import '/security.dart';
+import '../coach_marks/showcase_provider.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/custom_app_bar.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -290,6 +292,28 @@ class _SettingsPageState extends State<SettingsPage> {
                     ],
                   ),
                   const SizedBox(height: 20),
+
+                  // Add a section for tutorials
+                  ListTile(
+                    title: const Text('App Tutorial'),
+                    subtitle: const Text('Reset the app tutorial'),
+                    trailing: ElevatedButton(
+                      onPressed: () async {
+                        await Provider.of<ShowcaseProvider>(context,
+                                listen: false)
+                            .resetShowcase();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                  'Tutorial reset! It will appear next time you open the app.'),
+                            ),
+                          );
+                        }
+                      },
+                      child: const Text('Reset'),
+                    ),
+                  ),
 
                   // Save Button
                   SizedBox(
