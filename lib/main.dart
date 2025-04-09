@@ -1,4 +1,5 @@
 import 'package:fbla_mobile_2425_learning_app/minigames/cypher_game.dart';
+import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,9 +14,18 @@ import 'pages/signin_screen.dart';
 import '/security.dart';
 import 'package:fbla_mobile_2425_learning_app/getkeys.dart';
 import 'xp_manager.dart';
+import 'package:flutter/services.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'streak_manager.dart';
+import 'coach_marks/showcase_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
 
   try {
     await Firebase.initializeApp(
@@ -29,6 +39,15 @@ void main() async {
       print('Warning: Could not initialize ApiService: $e');
       // Continue with the app even if ApiService initialization fails
     }
+
+    // Initialize Remote Config
+    final remoteConfig = FirebaseRemoteConfig.instance;
+    await remoteConfig.setConfigSettings(RemoteConfigSettings(
+      fetchTimeout: const Duration(minutes: 1),
+      minimumFetchInterval: const Duration(hours: 1),
+    ));
+
+    await remoteConfig.fetchAndActivate();
 
     runApp(const MyApp());
   } catch (e) {
@@ -75,22 +94,49 @@ Map<String, Map> allLessons = {
   }
 };
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final showcaseProvider = ShowcaseProvider();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize the showcase provider
+    showcaseProvider.initialize();
+  }
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => XPManager()),
+        ChangeNotifierProvider(create: (_) => StreakManager()),
+        ChangeNotifierProvider.value(value: showcaseProvider),
       ],
       child: MaterialApp(
         title: 'FBLA Learning App',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-          useMaterial3: false,
+          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF7FB069)),
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+          fontFamily: 'Roboto',
+          useMaterial3: true,
         ),
-        home: const AuthWrapper(), // ✅ Check if user is logged in
+        debugShowCheckedModeBanner: false,
+        home: const AuthWrapper(),
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', ''),
+        ],
       ),
     );
   }
@@ -189,37 +235,44 @@ class _MainPageState extends State<MainPage> {
   }
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final bottomNavBar = BottomNavigationBar(
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Home',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.menu_book),
+          label: 'Learn',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.bar_chart),
+          label: 'Progress',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings),
+          label: 'Settings',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.developer_board),
+          label: 'Test Page',
+        ),
+      ],
+      currentIndex: _selectedIndex,
+      selectedItemColor: Colors.deepPurple,
+      unselectedItemColor: Colors.grey,
+      onTap: _onItemTapped,
+    );
+
     return Scaffold(
       body: _pages[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.menu_book),
-            label: 'Learn',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
-            label: 'Progress',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.developer_board),
-            label: 'Test Page',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
-        onTap: _onItemTapped,
-      ),
+      bottomNavigationBar: bottomNavBar,
     );
   }
 }

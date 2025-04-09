@@ -228,4 +228,35 @@ class AuthService {
       }
     }, SetOptions(merge: true)); // ✅ Prevents overwriting unrelated fields
   }
+
+  /// Check if a user is logging in for the first time
+  Future<bool> isFirstLogin(String userId) async {
+    try {
+      final userDoc = await _firestore.collection('users').doc(userId).get();
+
+      if (!userDoc.exists) {
+        return true; // New user if document doesn't exist
+      }
+
+      // Check if lastLogin field exists
+      final userData = userDoc.data();
+      if (userData == null || !userData.containsKey('lastLogin')) {
+        // Mark this login as first by updating the lastLogin field
+        await _firestore.collection('users').doc(userId).update({
+          'lastLogin': FieldValue.serverTimestamp(),
+        });
+        return true;
+      }
+
+      // Not first login, but update the lastLogin timestamp
+      await _firestore.collection('users').doc(userId).update({
+        'lastLogin': FieldValue.serverTimestamp(),
+      });
+
+      return false;
+    } catch (e) {
+      print("Error checking if first login: $e");
+      return false; // Default to false if there's an error
+    }
+  }
 }
