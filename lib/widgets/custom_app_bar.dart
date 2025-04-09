@@ -9,27 +9,26 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       automaticallyImplyLeading: false,
       backgroundColor: Theme.of(context).canvasColor,
+      elevation: 0,
       title: Row(
         children: [
-          SvgPicture.asset(
-            'assets/branding/logo.svg',
-            height: 60,
-          ),
-          const SizedBox(width: 8),
-          SvgPicture.asset(
-            'assets/branding/name.svg',
-            height: 115
+          Transform.translate(
+            offset: const Offset(0, -1), // Subtle lift
+            child: SvgPicture.asset(
+                'assets/branding/logo_and_name.svg',
+                height:  55
+            ),
           ),
           const Spacer(),
           IconButton(
             icon: const Icon(Icons.person),
-            onPressed: ()=>{},
-            color: Color(0xFF8D9A8D)
+            onPressed: () => {},
+            color: const Color(0xFF8D9A8D),
           ),
           IconButton(
-            icon: Icon(Icons.help),
-            onPressed: () =>{},
-            color: Color(0xFF8D9A8D)
+            icon: const Icon(Icons.help),
+            onPressed: () => {},
+            color: const Color(0xFF8D9A8D),
           ),
         ],
       ),

@@ -4,6 +4,7 @@ import 'signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '/security.dart';
+import 'package:fbla_mobile_2425_learning_app/widgets/custom_app_bar.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -21,7 +22,7 @@ class _SettingsPageState extends State<SettingsPage> {
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _profilePicUrlController =
-      TextEditingController();
+  TextEditingController();
 
   bool isLoading = false;
   bool stayOnTrack = false;
@@ -57,7 +58,6 @@ class _SettingsPageState extends State<SettingsPage> {
         _firstNameController.text = decrypted['firstname'] ?? '';
         _lastNameController.text = decrypted['lastname'] ?? '';
         profilePicUrl = decrypted['profilePic'] ?? '';
-        print("Profile Pic URL: $profilePicUrl");
         _profilePicUrlController.text = profilePicUrl;
       });
     }
@@ -163,11 +163,28 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Settings"), centerTitle: true),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const CustomAppBar(), // ✅ Add your custom app bar
+
+            const Padding(
+              padding:
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
+              child: Text(
+                "Settings",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(
                 children: [
                   // Profile Picture
@@ -178,11 +195,13 @@ class _SettingsPageState extends State<SettingsPage> {
                         radius: 50,
                         backgroundImage: profilePicUrl.isNotEmpty
                             ? NetworkImage(profilePicUrl)
-                            : const AssetImage('assets/default_avatar.png')
-                                as ImageProvider,
+                            : const AssetImage(
+                            'assets/default_avatar.png')
+                        as ImageProvider,
                       ),
                       IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.deepPurple),
+                        icon: const Icon(Icons.edit,
+                            color: Colors.deepPurple),
                         onPressed: _editProfilePicture,
                       )
                     ],
@@ -230,12 +249,13 @@ class _SettingsPageState extends State<SettingsPage> {
                     children: [
                       Chip(
                         label: Text("Level: $currentLevel"),
-                        avatar: const Icon(Icons.star, color: Colors.amber),
+                        avatar: const Icon(Icons.star,
+                            color: Colors.amber),
                       ),
                       Chip(
                         label: Text("XP: $currentXP"),
-                        avatar:
-                            const Icon(Icons.flash_on, color: Colors.orange),
+                        avatar: const Icon(Icons.flash_on,
+                            color: Colors.orange),
                       ),
                     ],
                   ),
@@ -245,7 +265,8 @@ class _SettingsPageState extends State<SettingsPage> {
                   SwitchListTile(
                     title: const Text("Stay On Track"),
                     value: stayOnTrack,
-                    onChanged: (val) => setState(() => stayOnTrack = val),
+                    onChanged: (val) =>
+                        setState(() => stayOnTrack = val),
                     activeColor: Colors.deepPurple,
                   ),
                   const SizedBox(height: 10),
@@ -262,7 +283,8 @@ class _SettingsPageState extends State<SettingsPage> {
                         divisions: 7,
                         label: fontSize.toStringAsFixed(0),
                         value: fontSize,
-                        onChanged: (val) => setState(() => fontSize = val),
+                        onChanged: (val) =>
+                            setState(() => fontSize = val),
                         activeColor: Colors.deepPurple,
                       ),
                     ],
@@ -277,7 +299,8 @@ class _SettingsPageState extends State<SettingsPage> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.deepPurple,
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        padding:
+                        const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: const Text("Save Changes",
                           style: TextStyle(fontSize: 16)),
@@ -294,13 +317,18 @@ class _SettingsPageState extends State<SettingsPage> {
                       label: const Text("Logout"),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.redAccent,
-                        side: const BorderSide(color: Colors.redAccent),
+                        side:
+                        const BorderSide(color: Colors.redAccent),
                       ),
                     ),
-                  )
+                  ),
+                  const SizedBox(height: 30),
                 ],
               ),
-            ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
