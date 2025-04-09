@@ -118,6 +118,9 @@ class _RecentLessonsPageState extends State<RecentLessonsPage> {
                       unitTitle: lesson['unit'], // ✅ added
                       userId: FirebaseAuth.instance.currentUser?.uid ?? "",
                       key: null, // ✅ added
+                      lastSubtopicofUnit: false,
+                      lastSubtopicofGrade: false,
+                      lastSubtopicofSubject: false,
                     ),
                   ),
                 );

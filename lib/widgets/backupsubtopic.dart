@@ -15,7 +15,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-class SubtopicPage extends StatefulWidget {
+class SubtopicPage extends StatelessWidget {
   final String subtopic;
   final String subtopicId;
   final String readingTitle;
@@ -29,9 +29,8 @@ class SubtopicPage extends StatefulWidget {
   final bool lastSubtopicofUnit;
   final bool lastSubtopicofGrade;
   final bool lastSubtopicofSubject;
-
   const SubtopicPage({
-    Key? key,
+    Key? key, // 👈 optional, not required
     required this.subtopic,
     required this.subtopicId,
     required this.readingTitle,
@@ -47,35 +46,6 @@ class SubtopicPage extends StatefulWidget {
     required this.lastSubtopicofSubject,
   }) : super(key: key);
 
-  @override
-  State<SubtopicPage> createState() => _SubtopicPageState();
-}
-
-class _SubtopicPageState extends State<SubtopicPage> {
-  late bool _isCompleted;
-
-  @override
-  void initState() {
-    super.initState();
-    _isCompleted = widget.isCompleted;
-    _checkSubtopicCompletion();
-  }
-
-  Future<void> _checkSubtopicCompletion() async {
-    bool completed = await isSubtopicCompleted(
-      userId: widget.userId,
-      subject: widget.subject,
-      grade: 'Grade ${widget.grade}',
-      subtopicId: widget.subtopicId,
-    );
-
-    if (mounted) {
-      setState(() {
-        _isCompleted = completed;
-      });
-    }
-  }
-
   void launchRandomGame(BuildContext context) {
     final nextSubtopicId = "dummy_last";
     final nextSubtopicTitle = "Last subtopic";
@@ -83,39 +53,39 @@ class _SubtopicPageState extends State<SubtopicPage> {
     final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? "";
     final games = [
       CypherUI(
-        subject: widget.subject,
-        grade: widget.grade,
-        unitId: widget.unitId,
-        unitTitle: widget.unitTitle,
-        subtopicTitle: widget.readingTitle,
-        subtopicId: widget.subtopicId,
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicTitle: readingTitle,
+        subtopicId: subtopicId,
         nextSubtopicId: nextSubtopicId,
         nextSubtopicTitle: nextSubtopicTitle,
         nextReadingContent: nextReadingContent,
         userId: currentUserId,
-        lastSubtopicofUnit: widget.lastSubtopicofUnit,
-        lastSubtopicofGrade: widget.lastSubtopicofGrade,
-        lastSubtopicofSubject: widget.lastSubtopicofSubject,
+        lastSubtopicofUnit: lastSubtopicofUnit,
+        lastSubtopicofGrade: lastSubtopicofGrade,
+        lastSubtopicofSubject: lastSubtopicofSubject,
       ),
       MazeGame(
-        subject: widget.subject,
-        grade: widget.grade,
-        unitId: widget.unitId,
-        unitTitle: widget.unitTitle,
-        subtopicTitle: widget.readingTitle,
-        subtopicId: widget.subtopicId,
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicTitle: readingTitle,
+        subtopicId: subtopicId,
         nextSubtopicId: nextSubtopicId,
         nextSubtopicTitle: nextSubtopicTitle,
         nextReadingContent: nextReadingContent,
         userId: currentUserId,
       ),
       PuzzleScreen(
-        subject: widget.subject,
-        grade: widget.grade,
-        unitId: widget.unitId,
-        unitTitle: widget.unitTitle,
-        subtopicTitle: widget.readingTitle,
-        subtopicId: widget.subtopicId,
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicTitle: readingTitle,
+        subtopicId: subtopicId,
         nextSubtopicId: nextSubtopicId,
         nextSubtopicTitle: nextSubtopicTitle,
         nextReadingContent: nextReadingContent,
@@ -125,11 +95,11 @@ class _SubtopicPageState extends State<SubtopicPage> {
     games.shuffle();
 
     debugPrint(
-        '[SubtopicPage → Game Launch] subtopic: ${widget.subtopicId} | next: $nextSubtopicTitle ($nextSubtopicId)');
+        '[SubtopicPage → Game Launch] subtopic: $subtopicId | next: $nextSubtopicTitle ($nextSubtopicId)');
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => games.first),
-    ).then((_) => _checkSubtopicCompletion());
+    );
   }
 
   @override
@@ -137,6 +107,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
     final ThemeData theme = Theme.of(context);
     final ColorScheme colorScheme = theme.colorScheme;
 
+    // Define green color scheme
     final Color primaryGreen = Colors.green.shade600;
     final Color lightGreen = Colors.green.shade100;
     final Color mediumGreen = Colors.green.shade300;
@@ -144,7 +115,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.subtopic),
+        title: Text(subtopic),
         backgroundColor: primaryGreen,
         foregroundColor: Colors.white,
         elevation: 0,
@@ -152,18 +123,23 @@ class _SubtopicPageState extends State<SubtopicPage> {
       body: Stack(
         children: [
           Padding(
+            // Increase bottom padding to prevent content from being cut off
             padding: const EdgeInsets.only(bottom: 120),
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Title Card with decoration
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [mediumGreen, lightGreen],
+                        colors: [
+                          mediumGreen,
+                          lightGreen,
+                        ],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -180,7 +156,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.readingTitle,
+                          readingTitle,
                           style: const TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
@@ -190,13 +166,19 @@ class _SubtopicPageState extends State<SubtopicPage> {
                         const SizedBox(height: 8),
                         Row(
                           children: [
-                            Icon(Icons.book, size: 16, color: darkGreen),
+                            Icon(
+                              Icons.book,
+                              size: 16,
+                              color: darkGreen,
+                            ),
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                "Grade ${widget.grade} · ${widget.subject} · ${widget.unitTitle}",
-                                style:
-                                    TextStyle(fontSize: 14, color: darkGreen),
+                                "Grade $grade · $subject · $unitTitle",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: darkGreen,
+                                ),
                               ),
                             ),
                           ],
@@ -204,7 +186,10 @@ class _SubtopicPageState extends State<SubtopicPage> {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 24),
+
+                  // Content with Markdown
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -219,7 +204,72 @@ class _SubtopicPageState extends State<SubtopicPage> {
                     ),
                     padding: const EdgeInsets.all(16),
                     child: MarkdownBody(
-                      data: widget.readingContent,
+                      data: readingContent,
+                      styleSheet: MarkdownStyleSheet(
+                        h1: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: darkGreen,
+                          height: 1.4,
+                        ),
+                        h2: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.w600,
+                          color: primaryGreen,
+                          height: 1.4,
+                        ),
+                        h3: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
+                          color: primaryGreen.withOpacity(0.85),
+                          height: 1.4,
+                        ),
+                        p: const TextStyle(
+                          fontSize: 16,
+                          height: 1.5,
+                          color: Colors.black87,
+                        ),
+                        strong: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
+                        em: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey.shade800,
+                        ),
+                        listBullet: TextStyle(
+                          color: primaryGreen,
+                        ),
+                        blockquote: TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Colors.grey.shade700,
+                          fontSize: 16,
+                          decoration: TextDecoration.none,
+                        ),
+                        blockquoteDecoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(4),
+                          border: Border(
+                            left: BorderSide(
+                              color: primaryGreen.withOpacity(0.5),
+                              width: 4,
+                            ),
+                          ),
+                        ),
+                        tableHead: const TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
+                        tableBody: const TextStyle(
+                          fontSize: 16,
+                        ),
+                        tableColumnWidth: const FixedColumnWidth(150),
+                        tableBorder: TableBorder.all(
+                          color: Colors.grey.shade300,
+                          width: 1,
+                        ),
+                      ),
+                      selectable: true,
+                      softLineBreak: true,
                       onTapLink: (text, href, title) {
                         if (href != null) {
                           url_launcher.launchUrl(Uri.parse(href));
@@ -227,15 +277,18 @@ class _SubtopicPageState extends State<SubtopicPage> {
                       },
                     ),
                   ),
+
                   const SizedBox(height: 24),
+
+                  // Completion message card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          _isCompleted ? Colors.green.shade100 : lightGreen,
-                          _isCompleted
+                          isCompleted ? Colors.green.shade100 : lightGreen,
+                          isCompleted
                               ? Colors.green.shade50
                               : Colors.green.shade50,
                         ],
@@ -244,7 +297,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
                       ),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: _isCompleted
+                        color: isCompleted
                             ? Colors.green.withOpacity(0.3)
                             : primaryGreen.withOpacity(0.3),
                         width: 1,
@@ -253,26 +306,26 @@ class _SubtopicPageState extends State<SubtopicPage> {
                     child: Row(
                       children: [
                         Icon(
-                          _isCompleted ? Icons.celebration : Icons.task_alt,
+                          isCompleted ? Icons.celebration : Icons.task_alt,
                           color:
-                              _isCompleted ? Colors.green.shade700 : darkGreen,
+                              isCompleted ? Colors.green.shade700 : darkGreen,
                           size: 24,
                         ),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Text(
-                            _isCompleted
+                            isCompleted
                                 ? "🎉 You've already completed this subtopic!"
                                 : "✅ Great job! Now as the next step, click below to continue.",
                             style: TextStyle(
                               fontSize: 16,
-                              fontWeight: _isCompleted
+                              fontWeight: isCompleted
                                   ? FontWeight.w500
                                   : FontWeight.normal,
-                              fontStyle: _isCompleted
+                              fontStyle: isCompleted
                                   ? FontStyle.normal
                                   : FontStyle.italic,
-                              color: _isCompleted
+                              color: isCompleted
                                   ? Colors.green.shade700
                                   : darkGreen,
                             ),
@@ -281,12 +334,16 @@ class _SubtopicPageState extends State<SubtopicPage> {
                       ],
                     ),
                   ),
+
+                  // Add extra space at the bottom
                   const SizedBox(height: 40),
                 ],
               ),
             ),
           ),
-          if (!_isCompleted)
+
+          // Bottom action buttons
+          if (!isCompleted)
             Positioned(
               bottom: 0,
               left: 0,
@@ -308,13 +365,14 @@ class _SubtopicPageState extends State<SubtopicPage> {
                   ),
                   child: Row(
                     children: [
+                      // Chat button moved to the left side
                       FloatingActionButton(
                         onPressed: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) =>
-                                  ChatbotScreen(topicId: widget.subtopicId),
+                                  ChatbotScreen(topicId: subtopicId),
                             ),
                           );
                         },
@@ -324,34 +382,40 @@ class _SubtopicPageState extends State<SubtopicPage> {
                         tooltip: "Ask Chat-it",
                       ),
                       const SizedBox(width: 16),
+                      // Expanded button takes remaining space
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
                             final user = FirebaseAuth.instance.currentUser;
 
                             if (user != null) {
+                              // 1️ Mark subtopic completed in user_progress
                               await markSubtopicAsCompleted(
-                                subtopicId: widget.subtopicId,
-                                subtopicTitle: widget.readingTitle,
-                                unitTitle: widget.unitTitle,
-                                grade: widget.grade,
-                                unitId: widget.unitId,
-                                subject: widget.subject,
+                                subtopicId: subtopicId,
+                                subtopicTitle: readingTitle,
+                                unitTitle: unitTitle,
+                                grade: grade,
+                                unitId: unitId,
+                                subject: subject,
                               );
 
+                              // 2️⃣ Update resume point for game launch
                               await updateResumePoint(
                                 userId: user.uid,
-                                subject: widget.subject,
-                                grade: 'Grade ${widget.grade}',
-                                unitId: widget.unitId,
-                                unitName: widget.unitTitle,
-                                subtopicId: widget.subtopicId,
-                                subtopicName: widget.subtopic,
+                                subject: subject,
+                                grade: 'Grade $grade',
+                                unitId: unitId,
+                                unitName: unitTitle,
+                                subtopicId: subtopicId,
+                                subtopicName: subtopic,
                                 actionType: 'content',
                                 actionState: 'completed',
                               );
 
+                              // 3️⃣ Launch next puzzle/game
                               launchRandomGame(context);
+
+                              // Add XP for completing the subtopic
                               _awardXPForCompletion(context);
                             }
                           },
@@ -378,14 +442,19 @@ class _SubtopicPageState extends State<SubtopicPage> {
     );
   }
 
+  // Add XP for completing the subtopic
   void _awardXPForCompletion(BuildContext context) {
     try {
+      // Access the XP manager
       final xpManager = Provider.of<XPManager>(context, listen: false);
+
+      // Add XP and handle level up
       xpManager.addXP(5, onLevelUp: (newLevel) {
-        showEarthUnlockedAnimation(
-            context, newLevel, widget.subject, widget.subtopic);
+        // Show the custom earth unlock animation instead of the default
+        showEarthUnlockedAnimation(context, newLevel, subject, subtopic);
       });
 
+      // Show a brief XP notification
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('+ 5 XP earned!'),

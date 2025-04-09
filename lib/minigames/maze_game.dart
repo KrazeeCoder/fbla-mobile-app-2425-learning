@@ -10,6 +10,7 @@ import '../widgets/earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
 import '../widgets/subtopic_widget.dart';
+import '../utils/subTopicNavigation.dart';
 
 class MazeGame extends StatefulWidget {
   final String subtopicId;
@@ -44,6 +45,7 @@ class MazeGame extends StatefulWidget {
 
 class _MazeGameState extends State<MazeGame> {
   bool showSuccess = false;
+  Map<String, dynamic>? subtopicNav;
 
   static const int mazeSize = 11;
   late List<List<int>> maze;
@@ -62,37 +64,18 @@ class _MazeGameState extends State<MazeGame> {
     super.initState();
     _generateSolvableMaze();
     _loadQuestions();
+    getSubtopicNavigationInfo(
+      subject: widget.subject,
+      grade: widget.grade,
+      subtopicId: widget.subtopicId,
+    ).then((value) {
+      setState(() {
+        subtopicNav = value;
+      });
+    });
   }
 
   bool _completionHandled = false;
-
-  Future<void> _handleMazeCompletion() async {
-    if (_completionHandled) return;
-    _completionHandled = true;
-
-    await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
-
-    _awardXPForCompletion(context);
-
-    await markQuizAsCompleted(
-      subtopicId: widget.subtopicId,
-      marksEarned: 10,
-    );
-
-    await updateResumePoint(
-      userId: widget.userId,
-      subject: widget.subject,
-      grade: 'Grade ${widget.grade}',
-      unitId: widget.unitId,
-      unitName: widget.unitTitle,
-      subtopicId: widget.subtopicId,
-      subtopicName: widget.subtopicTitle,
-      actionType: 'game',
-      actionState: 'completed',
-    );
-
-    debugPrint('[MazeGame] 🎯 XP + Progress updated after completion');
-  }
 
   /// Loads quiz questions from JSON
   Future<void> _loadQuestions() async {
@@ -421,22 +404,54 @@ class _MazeGameState extends State<MazeGame> {
     );
   }
 
+  Future<void> _handleMazeCompletion() async {
+    if (_completionHandled) return;
+    _completionHandled = true;
+
+    await handleGameCompletion(
+      context: context,
+      audioPlayer: _audioPlayer,
+      showSuccess: showSuccess,
+      markSuccessState: () => setState(() => showSuccess = true),
+      subtopicId: widget.subtopicId,
+      userId: widget.userId,
+      subject: widget.subject,
+      grade: widget.grade,
+      unitId: widget.unitId,
+      unitTitle: widget.unitTitle,
+      subtopicTitle: widget.subtopicTitle,
+      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
+    );
+  }
+
   /// Navigates to the next lesson with proper transitions
   Future<void> _goToNextLesson() async {
+    if (subtopicNav == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Unable to load next lesson. Please try again.")),
+      );
+      return;
+    }
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) => SubtopicPage(
-          subtopic: widget.nextSubtopicTitle,
-          subtopicId: widget.nextSubtopicId,
-          readingTitle: widget.nextSubtopicTitle,
-          readingContent: widget.nextReadingContent,
+          subtopic: subtopicNav?['nextSubtopicTitle'],
+          subtopicId: subtopicNav?['nextSubtopicId'],
+          readingTitle: subtopicNav?['nextReadingTitle'],
+          readingContent: subtopicNav?['nextReadingContent'],
           isCompleted: false,
           subject: widget.subject,
-          grade: widget.grade,
-          unitId: widget.unitId,
-          unitTitle: widget.unitTitle,
+          grade: subtopicNav?['nextGrade'],
+          unitId: subtopicNav?['nextUnitId'],
+          unitTitle: subtopicNav?['nextUnitTitle'],
           userId: widget.userId,
+          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
         ),
       ),
     );

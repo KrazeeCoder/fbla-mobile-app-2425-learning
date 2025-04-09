@@ -225,6 +225,9 @@ class _MainPageState extends State<MainPage> {
       nextSubtopicTitle: "Advanced Algebra",
       nextReadingContent: "Learn about solving equations.",
       userId: "user-456",
+      lastSubtopicofGrade: false,
+      lastSubtopicofUnit: false,
+      lastSubtopicofSubject: false,
     )
   ];
 

@@ -1,4 +1,6 @@
 // 🎯 Cleaned & Merged Final Version of CypherUI
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:convert';
@@ -12,6 +14,7 @@ import '../widgets/earth_unlock_animation.dart';
 import '../widgets/subtopic_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
+import '../utils/subTopicNavigation.dart';
 
 class CypherUI extends StatefulWidget {
   final String subtopicId;
@@ -24,6 +27,9 @@ class CypherUI extends StatefulWidget {
   final String nextSubtopicTitle;
   final String nextReadingContent;
   final String userId;
+  final bool lastSubtopicofUnit;
+  final bool lastSubtopicofGrade;
+  final bool lastSubtopicofSubject;
 
   const CypherUI({
     super.key,
@@ -37,6 +43,9 @@ class CypherUI extends StatefulWidget {
     required this.nextSubtopicTitle,
     required this.nextReadingContent,
     required this.userId,
+    required this.lastSubtopicofUnit,
+    required this.lastSubtopicofGrade,
+    required this.lastSubtopicofSubject,
   });
 
   @override
@@ -54,11 +63,22 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   Set<int> correctAnswers = {};
   late AnimationController _revealController;
   final AudioPlayer _audioPlayer = AudioPlayer();
+  Map<String, dynamic>? subtopicNav;
 
   @override
   void initState() {
     super.initState();
     _loadQuestions();
+
+    getSubtopicNavigationInfo(
+      subject: widget.subject,
+      grade: widget.grade,
+      subtopicId: widget.subtopicId,
+    ).then((value) {
+      setState(() {
+        subtopicNav = value;
+      });
+    });
 
     _revealController = AnimationController(
       duration: const Duration(milliseconds: 500),
@@ -163,58 +183,70 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   }
 
   Future<void> _goNextChapter() async {
+    if (subtopicNav == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Unable to load next lesson. Please try again.")),
+      );
+      return;
+    }
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) => SubtopicPage(
-          subtopic: widget.nextSubtopicTitle,
-          subtopicId: widget.nextSubtopicId,
-          readingTitle: widget.nextSubtopicTitle,
-          readingContent: widget.nextReadingContent,
+          subtopic: subtopicNav?['nextSubtopicTitle'],
+          subtopicId: subtopicNav?['nextSubtopicId'],
+          readingTitle: subtopicNav?['nextReadingTitle'],
+          readingContent: subtopicNav?['nextReadingContent'],
           isCompleted: false,
           subject: widget.subject,
-          grade: widget.grade,
-          unitId: widget.unitId,
-          unitTitle: widget.unitTitle,
+          grade: subtopicNav?['nextGrade'],
+          unitId: subtopicNav?['nextUnitId'],
+          unitTitle: subtopicNav?['nextUnitTitle'],
           userId: widget.userId,
+          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
         ),
       ),
     );
   }
 
   Future<void> _handleGameCompletion() async {
-    if (!showSuccess) {
-      setState(() => showSuccess = true); // trigger success state
-
-      await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
-
-      _awardXPForCompletion(context); // handles XP and animation
-
-      await markQuizAsCompleted(
-        subtopicId: widget.subtopicId,
-        marksEarned: 10,
-      );
-
-      await updateResumePoint(
-        userId: widget.userId,
-        subject: widget.subject,
-        grade: 'Grade ${widget.grade}',
-        unitId: widget.unitId,
-        unitName: widget.unitTitle,
-        subtopicId: widget.subtopicId,
-        subtopicName: widget.subtopicTitle,
-        actionType: 'game',
-        actionState: 'completed',
-      );
-    }
+    await handleGameCompletion(
+      context: context,
+      audioPlayer: _audioPlayer,
+      showSuccess: showSuccess,
+      markSuccessState: () => setState(() => showSuccess = true),
+      subtopicId: widget.subtopicId,
+      userId: widget.userId,
+      subject: widget.subject,
+      grade: widget.grade,
+      unitId: widget.unitId,
+      unitTitle: widget.unitTitle,
+      subtopicTitle: widget.subtopicTitle,
+      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
+    );
   }
 
   bool get isGameCompleted => correctAnswers.length == quizQuestions.length;
-
-  void _awardXPForCompletion(BuildContext context) {
+/*
+  void _awardXPForCompletion(
+      BuildContext context, bool unitCompleted, bool gradeCompleted) {
     try {
       final xpManager = Provider.of<XPManager>(context, listen: false);
       const int xpAmount = 10;
+
+      if (unitCompleted) {
+        // Award XP for completing the unit
+        xpAmount += 10;
+      }
+      if (gradeCompleted) {
+        // Award XP for completing the grade
+        xpAmount += 10;
+      }
 
       xpManager.addXP(xpAmount, onLevelUp: (level) {
         _showEarthUnlockedAnimation(context, level);
@@ -247,7 +279,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
       widget.subtopicTitle,
       totalXP,
     );
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {

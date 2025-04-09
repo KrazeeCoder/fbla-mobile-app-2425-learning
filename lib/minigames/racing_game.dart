@@ -10,6 +10,7 @@ import '../widgets/earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
 import '../widgets/subtopic_widget.dart';
+import '../utils/subTopicNavigation.dart';
 
 class RacingGame extends StatefulWidget {
   final String subtopicId;
@@ -43,6 +44,9 @@ class RacingGame extends StatefulWidget {
 }
 
 class _RacingGameState extends State<RacingGame> {
+  Map<String, dynamic>? subtopicNav;
+  bool puzzleCompleted = false;
+
   List<Map<String, dynamic>> quizQuestions = [];
   Map<String, dynamic>? currentQuestion;
   String? selectedOption;
@@ -72,6 +76,15 @@ class _RacingGameState extends State<RacingGame> {
   void initState() {
     super.initState();
     _loadQuestions();
+    getSubtopicNavigationInfo(
+      subject: widget.subject,
+      grade: widget.grade,
+      subtopicId: widget.subtopicId,
+    ).then((value) {
+      setState(() {
+        subtopicNav = value;
+      });
+    });
     _startGameTimer();
   }
 
@@ -112,6 +125,7 @@ class _RacingGameState extends State<RacingGame> {
         } else if (_aiPositions.any((pos) => pos >= 100)) {
           _gameOver = true;
           _playerWon = false;
+          puzzleCompleted = true;
           _showLoseDialog();
         }
 
@@ -286,46 +300,50 @@ class _RacingGameState extends State<RacingGame> {
 
   /// Navigates to the next lesson with proper transitions
   Future<void> _goToNextLesson() async {
-    // Award XP for completing the game
-    _awardXPForCompletion(context);
-
-    await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
-
-    final marks = 10;
-
-    await markQuizAsCompleted(
+    await handleGameCompletion(
+      context: context,
+      audioPlayer: _audioPlayer,
+      showSuccess:
+          puzzleCompleted, // ✅ game completed when player reaches position 100
+      markSuccessState: () => setState(() => _playerWon = true),
       subtopicId: widget.subtopicId,
-      marksEarned: marks,
-    );
-
-    await updateResumePoint(
       userId: widget.userId,
       subject: widget.subject,
-      grade: 'Grade ${widget.grade}',
+      grade: widget.grade,
       unitId: widget.unitId,
-      unitName: widget.unitTitle,
-      subtopicId: widget.subtopicId,
-      subtopicName: widget.subtopicTitle,
-      actionType: 'game',
-      actionState: 'completed',
+      unitTitle: widget.unitTitle,
+      subtopicTitle: widget.subtopicTitle,
+      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
     );
 
     debugPrint('[RacingGame] Progress saved for ${widget.subtopicId}');
 
+    if (subtopicNav == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Unable to load next lesson. Please try again.")),
+      );
+      return;
+    }
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
         builder: (_) => SubtopicPage(
-          subtopic: widget.nextSubtopicTitle,
-          subtopicId: widget.nextSubtopicId,
-          readingTitle: widget.nextSubtopicTitle,
-          readingContent: widget.nextReadingContent,
+          subtopic: subtopicNav?['nextSubtopic'],
+          subtopicId: subtopicNav?['nextSubtopicId'],
+          readingTitle: subtopicNav?['readingTitle'],
+          readingContent: subtopicNav?['readingContent'],
           isCompleted: false,
           subject: widget.subject,
-          grade: widget.grade,
-          unitId: widget.unitId,
-          unitTitle: widget.unitTitle,
+          grade: subtopicNav?['nextGrade'],
+          unitId: subtopicNav?['unitId'],
+          unitTitle: subtopicNav?['unitTitle'],
           userId: widget.userId,
+          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
         ),
       ),
     );

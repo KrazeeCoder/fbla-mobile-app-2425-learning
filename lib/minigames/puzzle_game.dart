@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../widgets/subtopic_widget.dart';
 import '../services/updateprogress.dart';
+import '../utils/subTopicNavigation.dart';
 
 class PuzzleScreen extends StatefulWidget {
   final String subtopicId;
@@ -43,6 +44,8 @@ class PuzzleScreen extends StatefulWidget {
 class _PuzzleScreenState extends State<PuzzleScreen>
     with SingleTickerProviderStateMixin {
   List<Map<String, dynamic>> quizQuestions = [];
+  Map<String, dynamic>? subtopicNav;
+
   String selectedImage = '';
   List<bool> answered = [];
   Map<int, int> placedMap = {};
@@ -56,6 +59,15 @@ class _PuzzleScreenState extends State<PuzzleScreen>
   void initState() {
     super.initState();
     _loadQuestions();
+    getSubtopicNavigationInfo(
+      subject: widget.subject,
+      grade: widget.grade,
+      subtopicId: widget.subtopicId,
+    ).then((value) {
+      setState(() {
+        subtopicNav = value;
+      });
+    });
     _randomizeImage();
     _glowController =
         AnimationController(vsync: this, duration: const Duration(seconds: 1))
@@ -181,26 +193,52 @@ class _PuzzleScreenState extends State<PuzzleScreen>
     }
   }
 
-  Future<void> _saveProgress() async {
-    await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
-
-    final marks = getDummyMarks();
-
-    await markQuizAsCompleted(
-      subtopicId: widget.subtopicId,
-      marksEarned: marks,
+  Future<void> _goToNextLesson() async {
+    if (subtopicNav == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text("Unable to load next lesson. Please try again.")),
+      );
+      return;
+    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => SubtopicPage(
+          subtopic: subtopicNav?['nextSubtopicTitle'],
+          subtopicId: subtopicNav?['nextSubtopicId'],
+          readingTitle: subtopicNav?['nextReadingTitle'],
+          readingContent: subtopicNav?['nextReadingContent'],
+          isCompleted: false,
+          subject: widget.subject,
+          grade: subtopicNav?['nextGrade'],
+          unitId: subtopicNav?['nextUnitId'],
+          unitTitle: subtopicNav?['nextUnitTitle'],
+          userId: widget.userId,
+          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
+        ),
+      ),
     );
+  }
 
-    await updateResumePoint(
+  Future<void> _saveProgress() async {
+    await handleGameCompletion(
+      context: context,
+      audioPlayer: _audioPlayer,
+      showSuccess: puzzleCompleted,
+      markSuccessState: () => setState(() => puzzleCompleted = true),
+      subtopicId: widget.subtopicId,
       userId: widget.userId,
       subject: widget.subject,
-      grade: 'Grade ${widget.grade}',
+      grade: widget.grade,
       unitId: widget.unitId,
-      unitName: widget.unitTitle,
-      subtopicId: widget.subtopicId,
-      subtopicName: widget.subtopicTitle,
-      actionType: 'game',
-      actionState: 'completed',
+      unitTitle: widget.unitTitle,
+      subtopicTitle: widget.subtopicTitle,
+      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
     );
 
     debugPrint('[Puzzle] : Saved quiz progress for ${widget.subtopicId}');
@@ -291,23 +329,7 @@ class _PuzzleScreenState extends State<PuzzleScreen>
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => SubtopicPage(
-                                subtopic: widget.nextSubtopicTitle,
-                                subtopicId: widget.nextSubtopicId,
-                                readingTitle: widget.nextSubtopicTitle,
-                                readingContent: widget.nextReadingContent,
-                                isCompleted: false,
-                                subject: widget.subject,
-                                grade: widget.grade,
-                                unitId: widget.unitId,
-                                unitTitle: widget.unitTitle,
-                                userId: widget.userId,
-                              ),
-                            ),
-                          );
+                          _goToNextLesson();
                         },
                         child: const Text("Go to Next Subtopic"),
                       )

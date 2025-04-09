@@ -7,6 +7,7 @@ import '../minigames/cypher_game.dart';
 import '../minigames/maze_game.dart';
 import '../minigames/puzzle_game.dart';
 import '../widgets/subtopic_widget.dart';
+import '../utils/subTopicNavigation.dart';
 
 class PathwayUI extends StatefulWidget {
   final int grade;
@@ -68,6 +69,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         return _buildPathwayStep(
                           step: step,
                           index: stepPos,
+                          allSteps: steps, // <-- pass all steps here
                         );
                       }
                     },
@@ -157,6 +159,7 @@ class _PathwayUIState extends State<PathwayUI> {
   Widget _buildPathwayStep({
     required Map<String, dynamic> step,
     required int index,
+    required List<Map<String, dynamic>> allSteps,
   }) {
     final screenWidth = MediaQuery.of(context).size.width;
     const List<double> offsets = [
@@ -180,6 +183,30 @@ class _PathwayUIState extends State<PathwayUI> {
         onTap: (step["isCompleted"] || (step["isNextToDo"] ?? false))
             ? () {
                 if (step["type"] == 'subtopic') {
+                  final lastSubtopicOfUnit = step["subIndex"] ==
+                      (allSteps
+                              .where((s) =>
+                                  s["type"] == "subtopic" &&
+                                  s["unitId"] == step["unitId"])
+                              .length -
+                          1);
+
+                  final lastSubtopicOfGrade = step["subIndex"] ==
+                      (allSteps
+                              .where((s) =>
+                                  s["type"] == "subtopic" &&
+                                  s["grade"] == widget.grade)
+                              .length -
+                          1);
+
+                  final lastSubtopicOfSubject = step["subIndex"] ==
+                      (allSteps
+                              .where((s) =>
+                                  s["type"] == "subtopic" &&
+                                  s["subject"] == widget.subject)
+                              .length -
+                          1);
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -194,9 +221,17 @@ class _PathwayUIState extends State<PathwayUI> {
                         unitId: step["unitId"],
                         unitTitle: step["unitTitle"],
                         userId: widget.userId ?? '',
+                        lastSubtopicofUnit: lastSubtopicOfUnit,
+                        lastSubtopicofGrade: lastSubtopicOfGrade,
+                        lastSubtopicofSubject: lastSubtopicOfSubject,
                       ),
                     ),
-                  );
+                  ).then((_) {
+                    // 🟢 Trigger refresh on return
+                    setState(() {
+                      _pathwayData = parsePathwayData();
+                    });
+                  });
                 } else if (step["type"] == 'game') {
                   final nextSubtopicData = {
                     "title": step["nextSubtopicTitle"],
@@ -208,6 +243,31 @@ class _PathwayUIState extends State<PathwayUI> {
                     "unitTitle": step["unitTitle"],
                     "userId": widget.userId ?? '',
                   };
+
+                  final lastSubtopicOfUnit = step["subIndex"] ==
+                      (allSteps
+                              .where((s) =>
+                                  s["type"] == "game" &&
+                                  s["unitId"] == step["unitId"])
+                              .length -
+                          1);
+
+                  final lastSubtopicOfGrade = step["subIndex"] ==
+                      (allSteps
+                              .where((s) =>
+                                  s["type"] == "game" &&
+                                  s["grade"] == widget.grade)
+                              .length -
+                          1);
+
+                  final lastSubtopicOfSubject = step["subIndex"] ==
+                      (allSteps
+                              .where((s) =>
+                                  s["type"] == "game" &&
+                                  s["subject"] == widget.subject)
+                              .length -
+                          1);
+
                   final games = [
                     RacingGame(
                       subject: widget.subject,
@@ -232,6 +292,9 @@ class _PathwayUIState extends State<PathwayUI> {
                       nextSubtopicTitle: step["nextSubtopicTitle"],
                       nextReadingContent: step["nextReadingContent"],
                       userId: widget.userId ?? '',
+                      lastSubtopicofUnit: lastSubtopicOfUnit,
+                      lastSubtopicofGrade: lastSubtopicOfGrade,
+                      lastSubtopicofSubject: lastSubtopicOfSubject,
                     ),
                     MazeGame(
                       subject: widget.subject,
@@ -262,7 +325,11 @@ class _PathwayUIState extends State<PathwayUI> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => games.first),
-                  );
+                  ).then((_) {
+                    setState(() {
+                      _pathwayData = parsePathwayData();
+                    });
+                  });
                 }
               }
             : null,

@@ -1,5 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:audioplayers/audioplayers.dart';
+import '../xp_manager.dart';
+import '../widgets/earth_unlock_animation.dart';
+import '../utils/app_logger.dart';
 
 Future<void> updateResumePoint({
   required String userId,
@@ -40,6 +46,38 @@ Future<void> updateResumePoint({
     print('✅ Resume point updated: $docId [$actionType | $actionState]');
   } catch (e) {
     print('❌ Failed to update resume point: $e');
+  }
+}
+
+Future<bool> isSubtopicCompleted({
+  required String userId,
+  required String subject,
+  required String grade,
+  required String subtopicId,
+}) async {
+  try {
+    // Normalize for document ID
+    final cleanedUserId = userId.replaceAll(':', '_');
+    final cleanedGrade = grade.replaceAll(' ', '');
+    final cleanedSubject = subject.replaceAll(' ', '');
+
+    final docId = '${cleanedUserId}_${cleanedSubject}_$cleanedGrade';
+
+    final docRef =
+        FirebaseFirestore.instance.collection('resume_points').doc(docId);
+
+    final snapshot = await docRef.get();
+
+    if (!snapshot.exists) return false;
+
+    final data = snapshot.data();
+    if (data == null) return false;
+
+    return data['subtopic_id'] == subtopicId &&
+        data['action_state'] == 'completed';
+  } catch (e) {
+    print('❌ Error checking subtopic status: $e');
+    return false;
   }
 }
 
@@ -130,4 +168,125 @@ Future<void> markQuizAsCompleted({
   );
 
   print('[markQuizAsCompleted] ✅ Updated quiz progress for $subtopicId');
+}
+
+void awardXPForCompletion({
+  required BuildContext context,
+  required bool unitCompleted,
+  required bool gradeCompleted,
+  required String subject,
+  required String subtopicTitle,
+}) {
+  try {
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+
+    int xpAmount = 10;
+    if (unitCompleted) xpAmount += 10;
+    if (gradeCompleted) xpAmount += 10;
+
+    xpManager.addXP(xpAmount, onLevelUp: (newLevel) {
+      showEarthUnlockedAnimation(
+        context,
+        newLevel,
+        subject,
+        subtopicTitle,
+      );
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('+ $xpAmount XP earned!'),
+        backgroundColor: Colors.green,
+        duration: const Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  } catch (e) {
+    AppLogger.e('Error awarding XP', error: e);
+  }
+}
+
+// Show custom level up animation with earth unlocked
+void showEarthUnlockedAnimation(
+    BuildContext context, int newLevel, String subject, String subtopic) {
+  try {
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final totalXP = xpManager.currentXP;
+
+    EarthUnlockAnimation.show(
+      context,
+      newLevel,
+      subject,
+      subtopic,
+      totalXP,
+    );
+  } catch (e) {
+    AppLogger.e('Error awarding XP in Cypher Game', error: e);
+  }
+}
+
+Future<void> handleGameCompletion({
+  required BuildContext context,
+  required AudioPlayer audioPlayer,
+  required bool showSuccess,
+  required VoidCallback markSuccessState,
+  required String subtopicId,
+  required String userId,
+  required String subject,
+  required int grade,
+  required int unitId,
+  required String unitTitle,
+  required String subtopicTitle,
+  required bool lastSubtopicofUnit,
+  required bool lastSubtopicofGrade,
+  required bool lastSubtopicofSubject,
+}) async {
+  if (!showSuccess) {
+    // ✅ Show success state in the caller widget
+    markSuccessState();
+
+    // ✅ Play completion sound
+    try {
+      await audioPlayer.play(AssetSource('audio/congrats.mp3'));
+    } catch (e) {
+      AppLogger.w('Audio playback failed: $e');
+    }
+
+    // ✅ Determine what’s completed
+    final bool unitCompleted = lastSubtopicofUnit;
+    final bool gradeCompleted = lastSubtopicofGrade;
+    final bool subjectCompleted = lastSubtopicofSubject;
+
+    AppLogger.w(
+        'Game completed: unitCompleted: $unitCompleted, gradeCompleted: $gradeCompleted, subjectCompleted: $subjectCompleted');
+
+    // ✅ Award XP based on progress
+    awardXPForCompletion(
+      context: context,
+      unitCompleted: unitCompleted,
+      gradeCompleted: gradeCompleted,
+      subject: subject,
+      subtopicTitle: subtopicTitle,
+    );
+
+    // ✅ Mark progress
+    await markQuizAsCompleted(
+      subtopicId: subtopicId,
+      marksEarned: 10,
+    );
+
+    await updateResumePoint(
+      userId: userId,
+      subject: subject,
+      grade: 'Grade $grade',
+      unitId: unitId,
+      unitName: unitTitle,
+      subtopicId: subtopicId,
+      subtopicName: subtopicTitle,
+      actionType: 'game',
+      actionState: 'completed',
+    );
+  }
 }
