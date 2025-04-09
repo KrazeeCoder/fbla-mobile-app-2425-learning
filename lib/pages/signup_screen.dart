@@ -15,7 +15,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController ageController = TextEditingController();
+  final TextEditingController birthdateController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
@@ -27,16 +27,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? firstNameError;
   String? lastNameError;
   String? emailError;
-  String? ageError;
+  String? birthdateError;
   String? passwordError;
 
   // Regex Patterns
   final RegExp nameRegex = RegExp(r"^[a-zA-Z]+$");
   final RegExp emailRegex =
       RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
-  final RegExp ageRegex = RegExp(r"^[0-9]+$");
   final RegExp passwordRegex =
       RegExp(r"^(?=.*[0-9])(?=.*[!@#\$%^&*])(?=.{6,})");
+
+  Future<void> _selectBirthdate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now()
+          .subtract(const Duration(days: 365 * 18)), // Default to 18 years ago
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.green.shade800,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        birthdateController.text =
+            "${picked.month}/${picked.day}/${picked.year}";
+        // Calculate age
+        final age = DateTime.now().difference(picked).inDays ~/ 365;
+        if (age < 13) {
+          birthdateError = "You must be at least 13 years old";
+        } else {
+          birthdateError = null;
+        }
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -67,14 +102,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       });
     });
 
-    ageController.addListener(() {
-      setState(() {
-        ageError = ageRegex.hasMatch(ageController.text)
-            ? null
-            : "Only numbers allowed!";
-      });
-    });
-
     passwordController.addListener(() {
       setState(() {
         passwordError = passwordRegex.hasMatch(passwordController.text)
@@ -93,7 +120,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (firstNameError != null ||
         lastNameError != null ||
         emailError != null ||
-        ageError != null ||
+        birthdateError != null ||
         passwordError != null) {
       _showSnackBar("Fix the errors before proceeding!");
       return;
@@ -101,13 +128,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     setState(() => isLoading = true);
 
-    // Convert age to an integer (ensure it's valid)
-    int? age = int.tryParse(ageController.text.trim());
-    if (age == null || age <= 0) {
-      _showSnackBar("Enter a valid age!");
+    // Calculate age from birthdate
+    final birthdateParts = birthdateController.text.split('/');
+    if (birthdateParts.length != 3) {
+      _showSnackBar("Invalid birthdate format");
       setState(() => isLoading = false);
       return;
     }
+
+    final birthdate = DateTime(
+      int.parse(birthdateParts[2]),
+      int.parse(birthdateParts[0]),
+      int.parse(birthdateParts[1]),
+    );
+    final age = DateTime.now().difference(birthdate).inDays ~/ 365;
 
     String? result = await _authService.registerUser(
       email: emailController.text.trim(),
@@ -146,84 +180,218 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Sign Up",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-
-            // First Name Field
-            TextField(
-              controller: firstNameController,
-              decoration: InputDecoration(
-                labelText: "First Name",
-                errorText: firstNameError,
-              ),
-            ),
-
-            // Last Name Field
-            TextField(
-              controller: lastNameController,
-              decoration: InputDecoration(
-                labelText: "Last Name",
-                errorText: lastNameError,
-              ),
-            ),
-
-            // Email Field
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(
-                labelText: "Email Address",
-                errorText: emailError,
-              ),
-            ),
-
-            // Age Field
-            TextField(
-              controller: ageController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: "Age",
-                errorText: ageError,
-              ),
-            ),
-
-            // Password Field
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                labelText: "Password",
-                errorText: passwordError,
-              ),
-              obscureText: true,
-            ),
-
-            // Confirm Password Field
-            TextField(
-              controller: confirmPasswordController,
-              decoration: InputDecoration(labelText: "Confirm Password"),
-              obscureText: true,
-            ),
-
-            isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    onPressed: register,
-                    child:
-                        Text("Sign Up", style: TextStyle(color: Colors.white)),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Header
+                Text(
+                  "Create Account",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green.shade800,
                   ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  "Join us to start your learning journey",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey.shade600,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
 
-            TextButton(
-              onPressed: () => Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => SignInScreen())),
-              child: Text("Already have an account? Sign In"),
+                // Name Fields in Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: firstNameController,
+                        decoration: InputDecoration(
+                          labelText: "First Name",
+                          errorText: firstNameError,
+                          prefixIcon: Icon(Icons.person_outline,
+                              color: Colors.green.shade800),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                                color: Colors.green.shade800, width: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: TextField(
+                        controller: lastNameController,
+                        decoration: InputDecoration(
+                          labelText: "Last Name",
+                          errorText: lastNameError,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                                color: Colors.green.shade800, width: 2),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Email Field
+                TextField(
+                  controller: emailController,
+                  decoration: InputDecoration(
+                    labelText: "Email Address",
+                    errorText: emailError,
+                    prefixIcon: Icon(Icons.email_outlined,
+                        color: Colors.green.shade800),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          BorderSide(color: Colors.green.shade800, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Birthdate Field
+                TextField(
+                  controller: birthdateController,
+                  readOnly: true,
+                  onTap: _selectBirthdate,
+                  decoration: InputDecoration(
+                    labelText: "Birthdate",
+                    errorText: birthdateError,
+                    prefixIcon: Icon(Icons.calendar_today,
+                        color: Colors.green.shade800),
+                    suffixIcon: IconButton(
+                      icon: Icon(Icons.calendar_month,
+                          color: Colors.green.shade800),
+                      onPressed: _selectBirthdate,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          BorderSide(color: Colors.green.shade800, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Password Field
+                TextField(
+                  controller: passwordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Password",
+                    errorText: passwordError,
+                    prefixIcon:
+                        Icon(Icons.lock_outline, color: Colors.green.shade800),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          BorderSide(color: Colors.green.shade800, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Confirm Password Field
+                TextField(
+                  controller: confirmPasswordController,
+                  obscureText: true,
+                  decoration: InputDecoration(
+                    labelText: "Confirm Password",
+                    prefixIcon:
+                        Icon(Icons.lock_outline, color: Colors.green.shade800),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          BorderSide(color: Colors.green.shade800, width: 2),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Sign Up Button
+                isLoading
+                    ? Center(
+                        child: CircularProgressIndicator(
+                            color: Colors.green.shade800))
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade800,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        onPressed: register,
+                        child: const Text(
+                          "Sign Up",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                const SizedBox(height: 16),
+
+                // Sign In Link
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Already have an account? ",
+                      style: TextStyle(color: Colors.grey.shade600),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => SignInScreen()),
+                      ),
+                      child: Text(
+                        "Sign In",
+                        style: TextStyle(
+                          color: Colors.green.shade800,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

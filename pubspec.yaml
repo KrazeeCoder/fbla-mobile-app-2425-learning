@@ -75,3 +75,6 @@ flutter:
     - assets/linkedin-icon.png
     - assets/Instagram_icon.png
     - assets/share-icon.png
+    - assets/login_options/google_logo.svg
+    - assets/login_options/apple_logo.svg
+    - assets/login_options/linkedin_logo.svg

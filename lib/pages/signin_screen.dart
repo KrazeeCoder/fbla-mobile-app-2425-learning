@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'signup_screen.dart';
 import 'home.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
@@ -212,68 +213,272 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Welcome Back!",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Text("Please sign in to continue",
-                style: TextStyle(fontSize: 16, color: Colors.grey)),
-            SizedBox(height: 20),
-            TextField(
-              controller: emailController,
-              decoration: InputDecoration(labelText: "Email Address"),
-            ),
-            TextField(
-              controller: passwordController,
-              obscureText: obscureText,
-              decoration: InputDecoration(
-                labelText: "Password",
-                suffixIcon: IconButton(
-                  icon: Icon(
-                      obscureText ? Icons.visibility_off : Icons.visibility),
-                  onPressed: () {
-                    setState(() {
-                      obscureText = !obscureText;
-                    });
-                  },
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Logo and Name (Stacked vertically)
+              Column(
+                children: [
+                  SvgPicture.asset(
+                    'assets/branding/logo.svg',
+                    height: MediaQuery.of(context).size.height * 0.25,
+                  ),
+                  SvgPicture.asset(
+                    'assets/branding/name.svg',
+                    height: MediaQuery.of(context).size.height * 0.08,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 25),
+
+              // Welcome Text
+              Text(
+                "Welcome Back!",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green.shade800,
                 ),
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Checkbox(
-                    value: rememberMe,
-                    onChanged: (val) => setState(() => rememberMe = val!)),
-                Text("Remember me"),
-                TextButton(onPressed: () {}, child: Text("Forgot Password?")),
-              ],
-            ),
-            SizedBox(height: 10),
-            isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                    onPressed: signInWithEmail,
-                    child:
-                        Text("Sign In", style: TextStyle(color: Colors.white)),
+              const SizedBox(height: 8),
+              Text(
+                "Please sign in to continue your learning journey",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Email Field
+              TextField(
+                controller: emailController,
+                decoration: InputDecoration(
+                  labelText: "Email Address",
+                  prefixIcon:
+                      Icon(Icons.email_outlined, color: Colors.green.shade800),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
-            TextButton(
-              onPressed: () => Navigator.push(
-                  context, MaterialPageRoute(builder: (_) => SignUpScreen())),
-              child: Text("Don't have an account? Sign Up"),
-            ),
-            Divider(),
-            ElevatedButton.icon(
-              onPressed: signInWithLinkedIn,
-              icon: Icon(Icons.work_outline),
-              label: Text("Continue with LinkedIn"),
-            ),
-          ],
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                        BorderSide(color: Colors.green.shade800, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // Password Field
+              TextField(
+                controller: passwordController,
+                obscureText: obscureText,
+                decoration: InputDecoration(
+                  labelText: "Password",
+                  prefixIcon:
+                      Icon(Icons.lock_outline, color: Colors.green.shade800),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscureText ? Icons.visibility_off : Icons.visibility,
+                      color: Colors.green.shade800,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        obscureText = !obscureText;
+                      });
+                    },
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide:
+                        BorderSide(color: Colors.green.shade800, width: 2),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Remember Me and Forgot Password
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: rememberMe,
+                        activeColor: Colors.green.shade800,
+                        onChanged: (val) => setState(() => rememberMe = val!),
+                      ),
+                      Text(
+                        "Remember me",
+                        style: TextStyle(color: Colors.grey.shade600),
+                      ),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () {},
+                    child: Text(
+                      "Forgot Password?",
+                      style: TextStyle(color: Colors.green.shade800),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              // Sign In Button
+              isLoading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                          color: Colors.green.shade800))
+                  : ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green.shade800,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      onPressed: signInWithEmail,
+                      child: const Text(
+                        "Sign In",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+              const SizedBox(height: 12),
+
+              // Sign Up Link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Don't have an account? ",
+                    style: TextStyle(color: Colors.grey.shade600),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => SignUpScreen()),
+                    ),
+                    child: Text(
+                      "Sign Up",
+                      style: TextStyle(
+                        color: Colors.green.shade800,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Divider with "or" text
+              Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: Colors.grey.shade300,
+                      thickness: 1,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      "or",
+                      style: TextStyle(
+                        color: Colors.grey.shade600,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: Colors.grey.shade300,
+                      thickness: 1,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Social Login Options
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Google Button
+                  InkWell(
+                    onTap: () {
+                      // TODO: Implement Google Sign In
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/login_options/google_logo.svg',
+                        height: 24,
+                        width: 24,
+                      ),
+                    ),
+                  ),
+
+                  // LinkedIn Button
+                  InkWell(
+                    onTap: signInWithLinkedIn,
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/login_options/linkedin_logo.svg',
+                        height: 24,
+                        width: 24,
+                      ),
+                    ),
+                  ),
+
+                  // Apple Button
+                  InkWell(
+                    onTap: () {
+                      // TODO: Implement Apple Sign In
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(color: Colors.grey.shade300),
+                      ),
+                      child: SvgPicture.asset(
+                        'assets/login_options/apple_logo.svg',
+                        height: 24,
+                        width: 24,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
