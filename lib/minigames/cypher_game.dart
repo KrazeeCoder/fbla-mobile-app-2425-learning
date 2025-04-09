@@ -44,6 +44,7 @@ class CypherUI extends StatefulWidget {
 }
 
 class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
+  bool showSuccess = false;
   final random = Random();
   List<Map<String, dynamic>> quizQuestions = [];
   List<Map<String, dynamic>> gameState = [];
@@ -161,28 +162,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     }
   }
 
-  Future<void> _saveProgressAndGoNext() async {
-    await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
-
-    await markQuizAsCompleted(
-      subtopicId: widget.subtopicId,
-      marksEarned: 10,
-    );
-
-    await updateResumePoint(
-      userId: widget.userId,
-      subject: widget.subject,
-      grade: 'Grade ${widget.grade}',
-      unitId: widget.unitId,
-      unitName: widget.unitTitle,
-      subtopicId: widget.subtopicId,
-      subtopicName: widget.subtopicTitle,
-      actionType: 'game',
-      actionState: 'completed',
-    );
-
-    _awardXPForCompletion(context);
-
+  Future<void> _goNextChapter() async {
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -200,6 +180,33 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Future<void> _handleGameCompletion() async {
+    if (!showSuccess) {
+      setState(() => showSuccess = true); // trigger success state
+
+      await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
+
+      _awardXPForCompletion(context); // handles XP and animation
+
+      await markQuizAsCompleted(
+        subtopicId: widget.subtopicId,
+        marksEarned: 10,
+      );
+
+      await updateResumePoint(
+        userId: widget.userId,
+        subject: widget.subject,
+        grade: 'Grade ${widget.grade}',
+        unitId: widget.unitId,
+        unitName: widget.unitTitle,
+        subtopicId: widget.subtopicId,
+        subtopicName: widget.subtopicTitle,
+        actionType: 'game',
+        actionState: 'completed',
+      );
+    }
   }
 
   bool get isGameCompleted => correctAnswers.length == quizQuestions.length;
@@ -230,7 +237,16 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   }
 
   void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
-    EarthUnlockAnimation.show(context, newLevel);
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final totalXP = xpManager.currentXP;
+
+    EarthUnlockAnimation.show(
+      context,
+      newLevel,
+      widget.subject,
+      widget.subtopicTitle,
+      totalXP,
+    );
   }
 
   @override
@@ -334,34 +350,49 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
               },
             ),
             const SizedBox(height: 30),
-            if (isGameCompleted)
-              Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      "🎉 Well Done! You've solved the cipher! 🎉",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _saveProgressAndGoNext,
-                    child: const Text("Next Lesson"),
-                  ),
-                ],
-              )
-            else
-              const Text(
-                "🔑 Instructions: Answer the questions correctly to reveal the letters and solve the cipher.",
-                style: TextStyle(fontSize: 16, color: Colors.black54),
-                textAlign: TextAlign.center,
+            if (isGameCompleted) ...[
+              // Ensure game completion is triggered only once
+              FutureBuilder(
+                future: _handleGameCompletion(),
+                builder: (_, __) => const SizedBox.shrink(),
               ),
+
+              if (showSuccess)
+                Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text(
+                        "🎉 Well Done! You've solved the cipher! 🎉",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _goNextChapter,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: const Text(
+                        "Next Lesson",
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
           ],
         ),
       ),

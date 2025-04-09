@@ -50,6 +50,7 @@ class _PuzzleScreenState extends State<PuzzleScreen>
   late AnimationController _glowController;
   bool puzzleCompleted = false;
   final AudioPlayer _audioPlayer = AudioPlayer();
+  bool _completionHandled = false;
 
   @override
   void initState() {
@@ -176,12 +177,13 @@ class _PuzzleScreenState extends State<PuzzleScreen>
         puzzleCompleted = true;
       });
 
-      await _audioPlayer.play(AssetSource('congrats.mp3'));
       _saveProgress();
     }
   }
 
   Future<void> _saveProgress() async {
+    await _audioPlayer.play(AssetSource('audio/congrats.mp3'));
+
     final marks = getDummyMarks();
 
     await markQuizAsCompleted(
@@ -206,6 +208,12 @@ class _PuzzleScreenState extends State<PuzzleScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (puzzleCompleted && !_completionHandled) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _saveProgress();
+        _completionHandled = true;
+      });
+    }
     double pieceSize = 150;
 
     return Scaffold(
