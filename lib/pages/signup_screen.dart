@@ -15,10 +15,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController birthdateController = TextEditingController();
+  final TextEditingController ageController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+
+  // Add FocusNodes
+  final FocusNode firstNameFocus = FocusNode();
+  final FocusNode lastNameFocus = FocusNode();
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode ageFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
+  final FocusNode confirmPasswordFocus = FocusNode();
 
   bool isLoading = false;
   final AuthService _authService = AuthService();
@@ -27,88 +35,109 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String? firstNameError;
   String? lastNameError;
   String? emailError;
-  String? birthdateError;
+  String? ageError;
   String? passwordError;
 
   // Regex Patterns
   final RegExp nameRegex = RegExp(r"^[a-zA-Z]+$");
   final RegExp emailRegex =
       RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
+  final RegExp ageRegex = RegExp(r"^[0-9]+$");
   final RegExp passwordRegex =
       RegExp(r"^(?=.*[0-9])(?=.*[!@#\$%^&*])(?=.{6,})");
-
-  Future<void> _selectBirthdate() async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now()
-          .subtract(const Duration(days: 365 * 18)), // Default to 18 years ago
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: ColorScheme.light(
-              primary: Colors.green.shade800,
-              onPrimary: Colors.white,
-              onSurface: Colors.black,
-            ),
-          ),
-          child: child!,
-        );
-      },
-    );
-
-    if (picked != null) {
-      setState(() {
-        birthdateController.text =
-            "${picked.month}/${picked.day}/${picked.year}";
-        // Calculate age
-        final age = DateTime.now().difference(picked).inDays ~/ 365;
-        if (age < 13) {
-          birthdateError = "You must be at least 13 years old";
-        } else {
-          birthdateError = null;
-        }
-      });
-    }
-  }
 
   @override
   void initState() {
     super.initState();
 
-    // Real-time validation listeners
-    firstNameController.addListener(() {
-      setState(() {
-        firstNameError = nameRegex.hasMatch(firstNameController.text)
-            ? null
-            : "Only letters allowed!";
-      });
+    // Real-time validation listeners on focus loss
+    firstNameFocus.addListener(() {
+      if (!firstNameFocus.hasFocus) {
+        setState(() {
+          if (firstNameController.text.isEmpty) {
+            firstNameError = "First name cannot be blank!";
+          } else {
+            firstNameError = nameRegex.hasMatch(firstNameController.text)
+                ? null
+                : "Only letters allowed!";
+          }
+        });
+      }
     });
 
-    lastNameController.addListener(() {
-      setState(() {
-        lastNameError = nameRegex.hasMatch(lastNameController.text)
-            ? null
-            : "Only letters allowed!";
-      });
+    lastNameFocus.addListener(() {
+      if (!lastNameFocus.hasFocus) {
+        setState(() {
+          if (lastNameController.text.isEmpty) {
+            lastNameError = "Last name cannot be blank!";
+          } else {
+            lastNameError = nameRegex.hasMatch(lastNameController.text)
+                ? null
+                : "Only letters allowed!";
+          }
+        });
+      }
     });
 
-    emailController.addListener(() {
-      setState(() {
-        emailError = emailRegex.hasMatch(emailController.text)
-            ? null
-            : "Enter a valid email!";
-      });
+    emailFocus.addListener(() {
+      if (!emailFocus.hasFocus) {
+        setState(() {
+          emailError = emailRegex.hasMatch(emailController.text)
+              ? null
+              : "Enter a valid email!";
+        });
+      }
     });
 
-    passwordController.addListener(() {
-      setState(() {
-        passwordError = passwordRegex.hasMatch(passwordController.text)
-            ? null
-            : "At least 6 chars, 1 special char, 1 number required!";
-      });
+    ageFocus.addListener(() {
+      if (!ageFocus.hasFocus) {
+        setState(() {
+          if (ageController.text.isEmpty) {
+            ageError = "Age cannot be blank!";
+          } else if (!ageRegex.hasMatch(ageController.text)) {
+            ageError = "Only numbers allowed!";
+          } else {
+            int age = int.parse(ageController.text);
+            if (age > 160) {
+              ageError = "Please enter a valid age!";
+            } else {
+              ageError = null;
+            }
+          }
+        });
+      }
     });
+
+    passwordFocus.addListener(() {
+      if (!passwordFocus.hasFocus) {
+        setState(() {
+          passwordError = passwordRegex.hasMatch(passwordController.text)
+              ? null
+              : "At least 6 chars, 1 special char, 1 number required!";
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    ageController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+
+    // Dispose focus nodes
+    firstNameFocus.dispose();
+    lastNameFocus.dispose();
+    emailFocus.dispose();
+    ageFocus.dispose();
+    passwordFocus.dispose();
+    confirmPasswordFocus.dispose();
+
+    super.dispose();
   }
 
   Future<void> register() async {
@@ -120,7 +149,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     if (firstNameError != null ||
         lastNameError != null ||
         emailError != null ||
-        birthdateError != null ||
+        ageError != null ||
         passwordError != null) {
       _showSnackBar("Fix the errors before proceeding!");
       return;
@@ -128,20 +157,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     setState(() => isLoading = true);
 
-    // Calculate age from birthdate
-    final birthdateParts = birthdateController.text.split('/');
-    if (birthdateParts.length != 3) {
-      _showSnackBar("Invalid birthdate format");
+    int? age = int.tryParse(ageController.text.trim());
+    if (age == null || age < 13 || age > 120) {
+      _showSnackBar("Please enter a valid age between 13 and 120");
       setState(() => isLoading = false);
       return;
     }
-
-    final birthdate = DateTime(
-      int.parse(birthdateParts[2]),
-      int.parse(birthdateParts[0]),
-      int.parse(birthdateParts[1]),
-    );
-    final age = DateTime.now().difference(birthdate).inDays ~/ 365;
 
     String? result = await _authService.registerUser(
       email: emailController.text.trim(),
@@ -215,6 +236,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Expanded(
                       child: TextField(
                         controller: firstNameController,
+                        focusNode: firstNameFocus,
                         decoration: InputDecoration(
                           labelText: "First Name",
                           errorText: firstNameError,
@@ -235,6 +257,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Expanded(
                       child: TextField(
                         controller: lastNameController,
+                        focusNode: lastNameFocus,
                         decoration: InputDecoration(
                           labelText: "Last Name",
                           errorText: lastNameError,
@@ -256,6 +279,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Email Field
                 TextField(
                   controller: emailController,
+                  focusNode: emailFocus,
                   decoration: InputDecoration(
                     labelText: "Email Address",
                     errorText: emailError,
@@ -273,21 +297,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 const SizedBox(height: 16),
 
-                // Birthdate Field
+                // Age Field
                 TextField(
-                  controller: birthdateController,
-                  readOnly: true,
-                  onTap: _selectBirthdate,
+                  controller: ageController,
+                  focusNode: ageFocus,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: "Birthdate",
-                    errorText: birthdateError,
-                    prefixIcon: Icon(Icons.calendar_today,
-                        color: Colors.green.shade800),
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.calendar_month,
-                          color: Colors.green.shade800),
-                      onPressed: _selectBirthdate,
-                    ),
+                    labelText: "Age",
+                    errorText: ageError,
+                    prefixIcon:
+                        Icon(Icons.numbers, color: Colors.green.shade800),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -303,6 +322,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Password Field
                 TextField(
                   controller: passwordController,
+                  focusNode: passwordFocus,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: "Password",
@@ -324,6 +344,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 // Confirm Password Field
                 TextField(
                   controller: confirmPasswordController,
+                  focusNode: confirmPasswordFocus,
                   obscureText: true,
                   decoration: InputDecoration(
                     labelText: "Confirm Password",
