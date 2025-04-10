@@ -11,6 +11,7 @@ import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/subTopicNavigation.dart';
+import '../widgets/gamesucesswidget.dart';
 
 class MazeGame extends StatefulWidget {
   final String subtopicId;
@@ -405,14 +406,12 @@ class _MazeGameState extends State<MazeGame> {
   }
 
   Future<void> _handleMazeCompletion() async {
-    if (_completionHandled) return;
+    if (_completionHandled || !showSuccess) return;
     _completionHandled = true;
 
     await handleGameCompletion(
       context: context,
       audioPlayer: _audioPlayer,
-      showSuccess: showSuccess,
-      markSuccessState: () => setState(() => showSuccess = true),
       subtopicId: widget.subtopicId,
       userId: widget.userId,
       subject: widget.subject,
@@ -537,40 +536,7 @@ class _MazeGameState extends State<MazeGame> {
           else if (showSuccess)
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.green,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Text(
-                      "🎉 Maze Complete! You've reached the goal! 🎉",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _goToNextLesson,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 24, vertical: 12),
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    child: const Text(
-                      "Next Lesson",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
+              child: GameSuccessMessage(onNext: _goToNextLesson),
             )
           else
             // Show Arrow Controls when no question is active or game not completed

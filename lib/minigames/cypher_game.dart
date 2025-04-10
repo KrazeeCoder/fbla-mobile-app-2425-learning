@@ -5,16 +5,12 @@ import 'package:flutter/material.dart';
 import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/services.dart';
-import 'package:provider/provider.dart';
 import '../widgets/cypher_question.dart';
-import '../xp_manager.dart';
-import '../utils/app_logger.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import '../widgets/earth_unlock_animation.dart';
 import '../widgets/subtopic_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
 import '../utils/subTopicNavigation.dart';
+import '../widgets/gamesucesswidget.dart';
 
 class CypherUI extends StatefulWidget {
   final String subtopicId;
@@ -213,11 +209,14 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   }
 
   Future<void> _handleGameCompletion() async {
+    if (showSuccess ||
+        quizQuestions.isEmpty ||
+        correctAnswers.length < quizQuestions.length) {
+      return;
+    }
     await handleGameCompletion(
       context: context,
       audioPlayer: _audioPlayer,
-      showSuccess: showSuccess,
-      markSuccessState: () => setState(() => showSuccess = true),
       subtopicId: widget.subtopicId,
       userId: widget.userId,
       subject: widget.subject,
@@ -225,10 +224,14 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
       unitId: widget.unitId,
       unitTitle: widget.unitTitle,
       subtopicTitle: widget.subtopicTitle,
-      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
-      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
-      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
+      lastSubtopicofUnit: widget.lastSubtopicofUnit,
+      lastSubtopicofGrade: widget.lastSubtopicofGrade,
+      lastSubtopicofSubject: widget.lastSubtopicofSubject,
     );
+
+    setState(() {
+      showSuccess = true;
+    });
   }
 
   bool get isGameCompleted => correctAnswers.length == quizQuestions.length;
@@ -288,6 +291,11 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     }
 
     final currentQuestion = quizQuestions[currentQuestionIndex];
+    if (isGameCompleted && !showSuccess) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _handleGameCompletion();
+      });
+    }
 
     return Scaffold(
       appBar: AppBar(title: const Text('Cipher Game'), centerTitle: true),
@@ -382,49 +390,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
               },
             ),
             const SizedBox(height: 30),
-            if (isGameCompleted) ...[
-              // Ensure game completion is triggered only once
-              FutureBuilder(
-                future: _handleGameCompletion(),
-                builder: (_, __) => const SizedBox.shrink(),
-              ),
-
-              if (showSuccess)
-                Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: const Text(
-                        "🎉 Well Done! You've solved the cipher! 🎉",
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: _goNextChapter,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 24, vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: const Text(
-                        "Next Lesson",
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-            ],
+            if (showSuccess) GameSuccessMessage(onNext: _goNextChapter),
           ],
         ),
       ),

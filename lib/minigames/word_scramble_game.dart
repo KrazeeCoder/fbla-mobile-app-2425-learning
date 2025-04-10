@@ -10,6 +10,7 @@ import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/subTopicNavigation.dart';
+import '../widgets/gamesucesswidget.dart';
 
 class WordScrambleGame extends StatefulWidget {
   final String subtopicId;
@@ -50,6 +51,7 @@ class WordScrambleGame extends StatefulWidget {
 }
 
 class _WordScrambleGameState extends State<WordScrambleGame> {
+  bool showSuccess = false;
   Map<String, dynamic>? subtopicNav;
   bool puzzleCompleted = false;
   List<Map<String, dynamic>> quizQuestions = [];
@@ -146,8 +148,8 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
         showQuestion = false;
       });
 
-      if (correctAnswers >= requiredCorrectAnswers) {
-        _goToNextLesson();
+      if (correctAnswers >= requiredCorrectAnswers && !showSuccess) {
+        _handleGameCompletion(); // call completion first
       } else {
         Future.delayed(const Duration(seconds: 1), () {
           currentQuestionIndex++;
@@ -161,12 +163,12 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
     }
   }
 
-  void _goToNextLesson() async {
+  Future<void> _handleGameCompletion() async {
+    if (showSuccess) return;
+
     await handleGameCompletion(
       context: context,
       audioPlayer: _audioPlayer,
-      showSuccess: true,
-      markSuccessState: () => setState(() => puzzleCompleted = true),
       subtopicId: widget.subtopicId,
       userId: widget.userId,
       subject: widget.subject,
@@ -179,6 +181,12 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
       lastSubtopicofSubject: widget.lastSubtopicofSubject,
     );
 
+    setState(() {
+      showSuccess = true;
+    });
+  }
+
+  void _goToNextLesson() async {
     if (subtopicNav == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -564,6 +572,11 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
                     ),
                   ),
                 ),
+                if (showSuccess)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: GameSuccessMessage(onNext: _goToNextLesson),
+                  ),
               ],
             ),
           ),

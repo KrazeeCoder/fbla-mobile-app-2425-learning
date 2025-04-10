@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import '../widgets/subtopic_widget.dart';
 import '../services/updateprogress.dart';
 import '../utils/subTopicNavigation.dart';
+import '../widgets/gamesucesswidget.dart';
 
 class PuzzleScreen extends StatefulWidget {
   final String subtopicId;
@@ -183,13 +184,9 @@ class _PuzzleScreenState extends State<PuzzleScreen>
     );
   }
 
-  void _checkPuzzleCompletion() async {
+  void _checkPuzzleCompletion() {
     if (answered.every((a) => a) && placedMap.length == 4) {
-      setState(() {
-        puzzleCompleted = true;
-      });
-
-      _saveProgress();
+      _onPuzzleCompleted();
     }
   }
 
@@ -227,8 +224,6 @@ class _PuzzleScreenState extends State<PuzzleScreen>
     await handleGameCompletion(
       context: context,
       audioPlayer: _audioPlayer,
-      showSuccess: puzzleCompleted,
-      markSuccessState: () => setState(() => puzzleCompleted = true),
       subtopicId: widget.subtopicId,
       userId: widget.userId,
       subject: widget.subject,
@@ -244,14 +239,34 @@ class _PuzzleScreenState extends State<PuzzleScreen>
     debugPrint('[Puzzle] : Saved quiz progress for ${widget.subtopicId}');
   }
 
+  Future<void> _onPuzzleCompleted() async {
+    if (_completionHandled) return;
+
+    setState(() {
+      puzzleCompleted = true;
+      _completionHandled = true;
+    });
+
+    await handleGameCompletion(
+      context: context,
+      audioPlayer: _audioPlayer,
+      subtopicId: widget.subtopicId,
+      userId: widget.userId,
+      subject: widget.subject,
+      grade: widget.grade,
+      unitId: widget.unitId,
+      unitTitle: widget.unitTitle,
+      subtopicTitle: widget.subtopicTitle,
+      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'] ?? false,
+      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'] ?? false,
+      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'] ?? false,
+    );
+
+    debugPrint('[Puzzle] : Quiz progress saved for ${widget.subtopicId}');
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (puzzleCompleted && !_completionHandled) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _saveProgress();
-        _completionHandled = true;
-      });
-    }
     double pieceSize = 150;
 
     return Scaffold(
@@ -319,21 +334,9 @@ class _PuzzleScreenState extends State<PuzzleScreen>
                 const SizedBox(height: 30),
 
                 if (puzzleCompleted)
-                  Column(
-                    children: [
-                      const Text(
-                        "You’ve successfully completed the puzzle!",
-                        style: TextStyle(fontSize: 18, color: Colors.green),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton(
-                        onPressed: () {
-                          _goToNextLesson();
-                        },
-                        child: const Text("Go to Next Subtopic"),
-                      )
-                    ],
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: GameSuccessMessage(onNext: _goToNextLesson),
                   ),
 
                 if (!puzzleCompleted)

@@ -1439,39 +1439,30 @@
     {
       "name": "History",
       "grades": [
-        
         {
           "grade": "Grade 2",
           "units": [
             {
-              "unit_id": "g2_his_u1",
-              "unit_name": "Our Community and Traditions",
+              "unit": "Our Community and Traditions",
+              "unit_id": 1,
               "subtopics": [
                 {
+                  "subtopic": "What is a Community?",
                   "subtopic_id": "g2_his_u1_s1",
-                  "title": "What is a Community?",
                   "reading": {
                     "title": "Understanding Communities",
                     "content": "A community is a group of people who live and work together in the same place. People in a community help each other."
                   },
-                  "quiz_pool": [
-                    2001,
-                    2002,
-                    2003
-                  ]
+                  "quizPool": [2001, 2002, 2003]
                 },
                 {
+                  "subtopic": "Traditions and Celebrations",
                   "subtopic_id": "g2_his_u1_s2",
-                  "title": "Traditions and Celebrations",
                   "reading": {
                     "title": "Family and National Traditions",
                     "content": "Traditions are special ways of doing things that are passed down. People celebrate holidays with music, food, and fun."
                   },
-                  "quiz_pool": [
-                    2004,
-                    2005,
-                    2006
-                  ]
+                  "quizPool": [2004, 2005, 2006]
                 }
               ]
             }
@@ -1481,34 +1472,26 @@
           "grade": "Grade 3",
           "units": [
             {
-              "unit_id": "g3_his_u1",
-              "unit_name": "Local History and Heroes",
+              "unit": "Local History and Heroes",
+              "unit_id": 2,
               "subtopics": [
                 {
+                  "subtopic": "Famous Local Figures",
                   "subtopic_id": "g3_his_u1_s1",
-                  "title": "Famous Local Figures",
                   "reading": {
                     "title": "Local Leaders",
                     "content": "Some people become heroes by helping their communities. We remember them by telling their stories."
                   },
-                  "quiz_pool": [
-                    2101,
-                    2102,
-                    2103
-                  ]
+                  "quizPool": [2101, 2102, 2103]
                 },
                 {
+                  "subtopic": "Historical Landmarks",
                   "subtopic_id": "g3_his_u1_s2",
-                  "title": "Historical Landmarks",
                   "reading": {
                     "title": "Exploring Landmarks",
                     "content": "Historical landmarks help us remember important events and people from the past."
                   },
-                  "quiz_pool": [
-                    2104,
-                    2105,
-                    2106
-                  ]
+                  "quizPool": [2104, 2105, 2106]
                 }
               ]
             }
@@ -1516,44 +1499,37 @@
         },
         {
           "grade": "Grade 4",
-          
-  "units": [
-    {
-      "unit_id": "g4_his_u1",
-      "unit_name": "Founding of the Nation",
-      "subtopics": [
-        {
-          "subtopic_id": "g4_his_u1_s1",
-          "title": "Colonial Life",
-          "reading": {
-            "title": "Life in the Colonies",
-            "content": "Colonial life was hard work. People grew their food, made clothes, and built homes."
-          },
-          "quiz_pool": [
-            2201,
-            2202,
-            2203
-          ]
-        },
-        {
-          "subtopic_id": "g4_his_u1_s2",
-          "title": "The American Revolution",
-          "reading": {
-            "title": "Fighting for Freedom",
-            "content": "The American Revolution was a war where people fought for independence from British rule."
-          },
-          "quiz_pool": [
-            2204,
-            2205,
-            2206
+          "units": [
+            {
+              "unit": "Founding of the Nation",
+              "unit_id": 3,
+              "subtopics": [
+                {
+                  "subtopic": "Colonial Life",
+                  "subtopic_id": "g4_his_u1_s1",
+                  "reading": {
+                    "title": "Life in the Colonies",
+                    "content": "Colonial life was hard work. People grew their food, made clothes, and built homes."
+                  },
+                  "quizPool": [2201, 2202, 2203]
+                },
+                {
+                  "subtopic": "The American Revolution",
+                  "subtopic_id": "g4_his_u1_s2",
+                  "reading": {
+                    "title": "Fighting for Freedom",
+                    "content": "The American Revolution was a war where people fought for independence from British rule."
+                  },
+                  "quizPool": [2204, 2205, 2206]
+                }
+              ]
+            }
           ]
         }
       ]
     }
-  ]
-        }
-      ]
-    },
+    
+    ,
     {
       "name": "Reading",
       "grades": [
@@ -4027,6 +4003,77 @@
       "question": "What is r² in regression analysis?",
       "answers": ["Correlation coefficient", "Coefficient of determination", "Standard error", "Regression coefficient"],
       "correct_answer": "Coefficient of determination"
+    },
+    {
+      "id": 2001,
+      "question": "A group of people living and working together is called a _______.",
+      "answers": ["Community", "School", "Club", "Family"],
+      "correct_answer": "Community"
+    },
+    {
+      "id": 2002,
+      "question": "People in a community often _______ each other.",
+      "answers": ["help", "ignore", "hide", "compete"],
+      "correct_answer": "help"
+    },
+    {
+      "id": 2003,
+      "question": "Celebrating Diwali or Christmas is a _______.",
+      "answers": ["tradition", "routine", "law", "story"],
+      "correct_answer": "tradition"
+    },{
+      "id": 2101,
+      "question": "A person who helps their community and is remembered is a _______.",
+      "answers": ["hero", "mayor", "tourist", "judge"],
+      "correct_answer": "hero"
+    },
+    {
+      "id": 2102,
+      "question": "Stories about great people from our area are called _______ history.",
+      "answers": ["local", "global", "science", "art"],
+      "correct_answer": "local"
+    },
+    {
+      "id": 2103,
+      "question": "We call special old buildings and places _______.",
+      "answers": ["landmarks", "playgrounds", "homes", "tools"],
+      "correct_answer": "landmarks"
+    },
+    {
+      "id": 2201,
+      "question": "People in the colonies grew their own food. This time was called _______ life.",
+      "answers": ["colonial", "modern", "royal", "urban"],
+      "correct_answer": "colonial"
+    },
+    {
+      "id": 2202,
+      "question": "In colonial times, people built their own _______.",
+      "answers": ["homes", "cars", "airplanes", "schools"],
+      "correct_answer": "homes"
+    },
+    {
+      "id": 2203,
+      "question": "Colonial people often made their own _______.",
+      "answers": ["clothes", "books", "phones", "toys"],
+      "correct_answer": "clothes"
+    },
+    {
+      "id": 2204,
+      "question": "The war to gain freedom from Britain was the American _______.",
+      "answers": ["Revolution", "Migration", "Festival", "Reunion"],
+      "correct_answer": "Revolution"
+    },
+    {
+      "id": 2205,
+      "question": "The American Revolution was a fight for _______.",
+      "answers": ["freedom", "fame", "food", "gold"],
+      "correct_answer": "freedom"
+    },
+    {
+      "id": 2206,
+      "question": "During the Revolution, people wanted to be _______ from British rule.",
+      "answers": ["independent", "silent", "wealthy", "friends"],
+      "correct_answer": "independent"
     }
 
   ]
