@@ -11,6 +11,7 @@ import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/subTopicNavigation.dart';
+import '../widgets/gamesucesswidget.dart';
 
 class RacingGame extends StatefulWidget {
   final String subtopicId;
@@ -121,7 +122,8 @@ class _RacingGameState extends State<RacingGame> {
         if (_playerPosition >= 100) {
           _gameOver = true;
           _playerWon = true;
-          _goToNextLesson();
+          puzzleCompleted = true;
+          _handleRacingGameCompletion();
         } else if (_aiPositions.any((pos) => pos >= 100)) {
           _gameOver = true;
           _playerWon = false;
@@ -298,14 +300,11 @@ class _RacingGameState extends State<RacingGame> {
     );
   }
 
-  /// Navigates to the next lesson with proper transitions
-  Future<void> _goToNextLesson() async {
+  Future<void> _handleRacingGameCompletion() async {
+    // Save progress and navigate to the next lesson
     await handleGameCompletion(
       context: context,
       audioPlayer: _audioPlayer,
-      showSuccess:
-          puzzleCompleted, // ✅ game completed when player reaches position 100
-      markSuccessState: () => setState(() => _playerWon = true),
       subtopicId: widget.subtopicId,
       userId: widget.userId,
       subject: widget.subject,
@@ -317,9 +316,11 @@ class _RacingGameState extends State<RacingGame> {
       lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
       lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
     );
-
     debugPrint('[RacingGame] Progress saved for ${widget.subtopicId}');
+  }
 
+  /// Navigates to the next lesson with proper transitions
+  Future<void> _goToNextLesson() async {
     if (subtopicNav == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -423,7 +424,21 @@ class _RacingGameState extends State<RacingGame> {
             flex: 6,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
-              child: _buildQuestionArea(),
+              child: Column(
+                children: [
+                  Expanded(child: _buildQuestionArea()),
+                  if (_playerWon && _gameOver)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: GameSuccessMessage(
+                        onNext: () {
+                          _awardXPForCompletion(context);
+                          _goToNextLesson();
+                        },
+                      ),
+                    ),
+                ],
+              ),
             ),
           ),
         ],

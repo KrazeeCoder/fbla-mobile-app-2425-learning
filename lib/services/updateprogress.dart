@@ -230,8 +230,6 @@ void showEarthUnlockedAnimation(
 Future<void> handleGameCompletion({
   required BuildContext context,
   required AudioPlayer audioPlayer,
-  required bool showSuccess,
-  required VoidCallback markSuccessState,
   required String subtopicId,
   required String userId,
   required String subject,
@@ -243,50 +241,46 @@ Future<void> handleGameCompletion({
   required bool lastSubtopicofGrade,
   required bool lastSubtopicofSubject,
 }) async {
-  if (!showSuccess) {
-    // ✅ Show success state in the caller widget
-    markSuccessState();
-
-    // ✅ Play completion sound
-    try {
-      await audioPlayer.play(AssetSource('audio/congrats.mp3'));
-    } catch (e) {
-      AppLogger.w('Audio playback failed: $e');
-    }
-
-    // ✅ Determine what’s completed
-    final bool unitCompleted = lastSubtopicofUnit;
-    final bool gradeCompleted = lastSubtopicofGrade;
-    final bool subjectCompleted = lastSubtopicofSubject;
-
-    AppLogger.w(
-        'Game completed: unitCompleted: $unitCompleted, gradeCompleted: $gradeCompleted, subjectCompleted: $subjectCompleted');
-
-    // ✅ Award XP based on progress
-    awardXPForCompletion(
-      context: context,
-      unitCompleted: unitCompleted,
-      gradeCompleted: gradeCompleted,
-      subject: subject,
-      subtopicTitle: subtopicTitle,
-    );
-
-    // ✅ Mark progress
-    await markQuizAsCompleted(
-      subtopicId: subtopicId,
-      marksEarned: 10,
-    );
-
-    await updateResumePoint(
-      userId: userId,
-      subject: subject,
-      grade: 'Grade $grade',
-      unitId: unitId,
-      unitName: unitTitle,
-      subtopicId: subtopicId,
-      subtopicName: subtopicTitle,
-      actionType: 'game',
-      actionState: 'completed',
-    );
+  // ✅ Play completion sound
+  try {
+    await audioPlayer.play(AssetSource('audio/congrats.mp3'));
+  } catch (e) {
+    AppLogger.w('Audio playback failed: $e');
   }
+
+  // ✅ Determine what’s completed
+  final bool unitCompleted = lastSubtopicofUnit;
+  final bool gradeCompleted = lastSubtopicofGrade;
+  final bool subjectCompleted = lastSubtopicofSubject;
+
+  AppLogger.w(
+    'Game completed: unitCompleted: $unitCompleted, gradeCompleted: $gradeCompleted, subjectCompleted: $subjectCompleted',
+  );
+
+  // ✅ Award XP based on progress
+  awardXPForCompletion(
+    context: context,
+    unitCompleted: unitCompleted,
+    gradeCompleted: gradeCompleted,
+    subject: subject,
+    subtopicTitle: subtopicTitle,
+  );
+
+  // ✅ Mark progress
+  await markQuizAsCompleted(
+    subtopicId: subtopicId,
+    marksEarned: 10,
+  );
+
+  await updateResumePoint(
+    userId: userId,
+    subject: subject,
+    grade: 'Grade $grade',
+    unitId: unitId,
+    unitName: unitTitle,
+    subtopicId: subtopicId,
+    subtopicName: subtopicTitle,
+    actionType: 'game',
+    actionState: 'completed',
+  );
 }
