@@ -4003,6 +4003,77 @@
       "question": "What is r² in regression analysis?",
       "answers": ["Correlation coefficient", "Coefficient of determination", "Standard error", "Regression coefficient"],
       "correct_answer": "Coefficient of determination"
+    },
+    {
+      "id": 2001,
+      "question": "A group of people living and working together is called a _______.",
+      "answers": ["Community", "School", "Club", "Family"],
+      "correct_answer": "Community"
+    },
+    {
+      "id": 2002,
+      "question": "People in a community often _______ each other.",
+      "answers": ["help", "ignore", "hide", "compete"],
+      "correct_answer": "help"
+    },
+    {
+      "id": 2003,
+      "question": "Celebrating Diwali or Christmas is a _______.",
+      "answers": ["tradition", "routine", "law", "story"],
+      "correct_answer": "tradition"
+    },{
+      "id": 2101,
+      "question": "A person who helps their community and is remembered is a _______.",
+      "answers": ["hero", "mayor", "tourist", "judge"],
+      "correct_answer": "hero"
+    },
+    {
+      "id": 2102,
+      "question": "Stories about great people from our area are called _______ history.",
+      "answers": ["local", "global", "science", "art"],
+      "correct_answer": "local"
+    },
+    {
+      "id": 2103,
+      "question": "We call special old buildings and places _______.",
+      "answers": ["landmarks", "playgrounds", "homes", "tools"],
+      "correct_answer": "landmarks"
+    },
+    {
+      "id": 2201,
+      "question": "People in the colonies grew their own food. This time was called _______ life.",
+      "answers": ["colonial", "modern", "royal", "urban"],
+      "correct_answer": "colonial"
+    },
+    {
+      "id": 2202,
+      "question": "In colonial times, people built their own _______.",
+      "answers": ["homes", "cars", "airplanes", "schools"],
+      "correct_answer": "homes"
+    },
+    {
+      "id": 2203,
+      "question": "Colonial people often made their own _______.",
+      "answers": ["clothes", "books", "phones", "toys"],
+      "correct_answer": "clothes"
+    },
+    {
+      "id": 2204,
+      "question": "The war to gain freedom from Britain was the American _______.",
+      "answers": ["Revolution", "Migration", "Festival", "Reunion"],
+      "correct_answer": "Revolution"
+    },
+    {
+      "id": 2205,
+      "question": "The American Revolution was a fight for _______.",
+      "answers": ["freedom", "fame", "food", "gold"],
+      "correct_answer": "freedom"
+    },
+    {
+      "id": 2206,
+      "question": "During the Revolution, people wanted to be _______ from British rule.",
+      "answers": ["independent", "silent", "wealthy", "friends"],
+      "correct_answer": "independent"
     }
 
   ]
