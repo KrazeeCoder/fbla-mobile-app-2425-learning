@@ -5,6 +5,9 @@ import 'package:provider/provider.dart';
 import '../minigames/maze_game.dart';
 import '../minigames/puzzle_game.dart';
 import '../minigames/cypher_game.dart';
+import '../minigames/racing_game.dart';
+import '../minigames/quiz_challenge_game.dart';
+import '../minigames/word_scramble_game.dart';
 import '../pages/lesson_chatbot.dart';
 import '../services/updateprogress.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -81,6 +84,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
     final nextSubtopicTitle = "Last subtopic";
     final nextReadingContent = "";
     final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? "";
+
     final games = [
       CypherUI(
         subject: widget.subject,
@@ -121,11 +125,63 @@ class _SubtopicPageState extends State<SubtopicPage> {
         nextReadingContent: nextReadingContent,
         userId: currentUserId,
       ),
+      RacingGame(
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        unitTitle: widget.unitTitle,
+        subtopicTitle: widget.readingTitle,
+        subtopicId: widget.subtopicId,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: currentUserId,
+      ),
+      QuizChallengeGame(
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        unitTitle: widget.unitTitle,
+        subtopicTitle: widget.readingTitle,
+        subtopicId: widget.subtopicId,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: currentUserId,
+        lastSubtopicofUnit: widget.lastSubtopicofUnit,
+        lastSubtopicofGrade: widget.lastSubtopicofGrade,
+        lastSubtopicofSubject: widget.lastSubtopicofSubject,
+      ),
     ];
+
+    // Add WordScrambleGame only for specific subjects
+    if (widget.subject.toLowerCase() == "english" ||
+        widget.subject.toLowerCase() == "history") {
+      games.add(
+        WordScrambleGame(
+          subject: widget.subject,
+          grade: widget.grade,
+          unitId: widget.unitId,
+          unitTitle: widget.unitTitle,
+          subtopicTitle: widget.readingTitle,
+          subtopicId: widget.subtopicId,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: currentUserId,
+          lastSubtopicofUnit: widget.lastSubtopicofUnit,
+          lastSubtopicofGrade: widget.lastSubtopicofGrade,
+          lastSubtopicofSubject: widget.lastSubtopicofSubject,
+        ),
+      );
+    }
+
     games.shuffle();
 
     debugPrint(
-        '[SubtopicPage → Game Launch] subtopic: ${widget.subtopicId} | next: $nextSubtopicTitle ($nextSubtopicId)');
+      '[SubtopicPage → Game Launch] subtopic: ${widget.subtopicId} | launching: ${games.first.runtimeType}',
+    );
+
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => games.first),
