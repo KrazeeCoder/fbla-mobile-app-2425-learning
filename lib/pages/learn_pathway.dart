@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fbla_mobile_2425_learning_app/minigames/racing_game.dart';
+import 'package:fbla_mobile_2425_learning_app/minigames/word_scramble_game.dart';
+import 'package:fbla_mobile_2425_learning_app/minigames/quiz_challenge_game.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../jsonUtility.dart';
@@ -320,8 +322,60 @@ class _PathwayUIState extends State<PathwayUI> {
                       nextReadingContent: step["nextReadingContent"],
                       userId: widget.userId ?? '',
                     ),
+                    QuizChallengeGame(
+                      subject: widget.subject,
+                      grade: widget.grade,
+                      unitId: step["unitId"],
+                      unitTitle: step["unitTitle"],
+                      subtopicId: step["subId"],
+                      subtopicTitle: step["title"],
+                      nextSubtopicId: step["nextSubtopicId"],
+                      nextSubtopicTitle: step["nextSubtopicTitle"],
+                      nextReadingContent: step["nextReadingContent"],
+                      userId: widget.userId ?? '',
+                      lastSubtopicofUnit: lastSubtopicOfUnit,
+                      lastSubtopicofGrade: lastSubtopicOfGrade,
+                      lastSubtopicofSubject: lastSubtopicOfSubject,
+                    ),
                   ];
+
+                  // Add WordScrambleGame only for History or English subjects
+                  if (widget.subject.toLowerCase() == "history" ||
+                      widget.subject.toLowerCase() == "english") {
+                    games.add(
+                      WordScrambleGame(
+                        subject: widget.subject,
+                        grade: widget.grade,
+                        unitId: step["unitId"],
+                        unitTitle: step["unitTitle"],
+                        subtopicId: step["subId"],
+                        subtopicTitle: step["title"],
+                        nextSubtopicId: step["nextSubtopicId"],
+                        nextSubtopicTitle: step["nextSubtopicTitle"],
+                        nextReadingContent: step["nextReadingContent"],
+                        userId: widget.userId ?? '',
+                        lastSubtopicofUnit: lastSubtopicOfUnit,
+                        lastSubtopicofGrade: lastSubtopicOfGrade,
+                        lastSubtopicofSubject: lastSubtopicOfSubject,
+                      ),
+                    );
+                  }
                   games.shuffle(); // ✅ Randomize order
+                  print(games.first);
+                  print(widget.subject);
+                  print(widget.grade);
+                  print(step["unitId"]);
+                  print(step["unitTitle"]);
+                  print(step["subId"]);
+                  print(step["title"]);
+                  print(step["nextSubtopicId"]);
+                  print(step["nextSubtopicTitle"]);
+                  print(step["nextReadingContent"]);
+                  print(widget.userId);
+                  print(lastSubtopicOfUnit);
+                  print(lastSubtopicOfGrade);
+                  print(lastSubtopicOfSubject);
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => games.first),
