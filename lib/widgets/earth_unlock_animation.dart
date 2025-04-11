@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:appinio_social_share/appinio_social_share_method_channel.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/home.dart';
 import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:cross_file/cross_file.dart';
 import '../utils/share/achievement_image_generator.dart';
 import '../linkedin_post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:appinio_social_share/appinio_social_share.dart';
+import 'package:social_share/social_share.dart';
 
 /// A reusable widget that displays the Earth level-up animation
 class EarthUnlockAnimation extends StatefulWidget {
@@ -47,6 +50,10 @@ class EarthUnlockAnimation extends StatefulWidget {
 }
 
 class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
+  final MethodChannelAppinioSocialShare _appinioSocialShare =
+      MethodChannelAppinioSocialShare();
+  final SocialShare _socialShare = SocialShare();
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -356,22 +363,22 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                     ),
 
                     // Social icons
-                    // Social icons
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          const SizedBox(width: 20),
                           _buildSocialIcon(
                             assetPath: 'assets/Instagram_icon.png',
-                            label: 'Instagram',
+                            label: 'Insta Story',
                             onTap: () async {
                               Navigator.pop(context);
-                              await _handleImageShare(
-                                  context, message, 'Instagram');
+                              await _handleInstagramStoryShare(
+                                  context, message);
                             },
                           ),
-                          const SizedBox(width: 30),
+                          const SizedBox(width: 20),
                           _buildSocialIcon(
                             assetPath: 'assets/linkedin-icon.png',
                             label: 'LinkedIn',
@@ -380,7 +387,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                               await _handleLinkedInShare(context, message);
                             },
                           ),
-                          const SizedBox(width: 30),
+                          const SizedBox(width: 20),
                           _buildSocialIcon(
                             assetPath:
                                 'assets/share-icon.png', // <- Your general share PNG
@@ -489,6 +496,42 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
           SnackBar(
             content: Text('Failed to share on $platform'),
             duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    }
+  }
+
+  // Method to share to Instagram Stories
+  Future<void> _handleInstagramStoryShare(
+      BuildContext context, String message) async {
+    try {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Preparing Instagram Story...'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      final String imagePath =
+          await AchievementImageGenerator.captureAchievementImage(
+        level: widget.newLevel,
+        message: message,
+      );
+
+      final file = File(imagePath);
+      if (!await file.exists()) throw Exception('Image not found');
+
+      //implement sharing to instagram story
+
+      AppLogger.e("Instagram Story share initiated through system share");
+    } catch (e) {
+      AppLogger.e("Error sharing to Instagram Story", error: e);
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to share on Instagram Story'),
+            duration: Duration(seconds: 3),
           ),
         );
       }
