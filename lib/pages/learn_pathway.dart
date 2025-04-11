@@ -1,16 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fbla_mobile_2425_learning_app/minigames/racing_game.dart';
-import 'package:fbla_mobile_2425_learning_app/minigames/word_scramble_game.dart';
-import 'package:fbla_mobile_2425_learning_app/minigames/quiz_challenge_game.dart';
-import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../jsonUtility.dart';
-import '../minigames/cypher_game.dart';
-import '../minigames/maze_game.dart';
-import '../minigames/puzzle_game.dart';
 import '../widgets/subtopic_widget.dart';
-import '../utils/subTopicNavigation.dart';
 import '../utils/game_launcher.dart';
 
 class PathwayUI extends StatefulWidget {
@@ -541,13 +533,6 @@ class _PathwayUIState extends State<PathwayUI> {
         "unitTitle": step["unitTitle"],
         "userId": widget.userId ?? '',
       };
-
-      final lastSubtopicOfUnit = step["subIndex"] ==
-          (allSteps
-                  .where((s) =>
-                      s["type"] == "game" && s["unitId"] == step["unitId"])
-                  .length -
-              1);
 
       final lastSubtopicOfGrade = step["subIndex"] ==
           (allSteps

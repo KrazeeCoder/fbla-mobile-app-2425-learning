@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/recent_lessons_homepage_UI.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/chooseyourownlesson_UI.dart';
-import 'package:provider/provider.dart';
-import '../coach_marks/showcase_provider.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/custom_app_bar.dart';
 
 class LearnPage extends StatefulWidget {

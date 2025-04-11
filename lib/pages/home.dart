@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import '../widgets/custom_app_bar.dart';
-import '../widgets/earth_widget.dart';
-import '../widgets/lessons.dart';
 import '../widgets/level_bar_homepage.dart';
 import '../widgets/recent_lessons_homepage.dart';
 import '../widgets/streak_homepage.dart';

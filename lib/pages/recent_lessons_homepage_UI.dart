@@ -3,12 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_progress_model.dart';
 import '../services/progress_service.dart';
 import '../utils/subTopicNavigation.dart';
-import '../minigames/maze_game.dart';
-import '../minigames/puzzle_game.dart';
-import '../minigames/cypher_game.dart';
-import '../minigames/racing_game.dart';
-import '../minigames/quiz_challenge_game.dart';
-import '../minigames/word_scramble_game.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/game_launcher.dart';
 

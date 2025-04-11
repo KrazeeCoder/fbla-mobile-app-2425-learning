@@ -1,10 +1,8 @@
 import 'package:fbla_mobile_2425_learning_app/minigames/cypher_game.dart';
-import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'minigames/puzzle_game.dart';
 import 'pages/home.dart';
 import 'pages/progress.dart';
 import 'pages/learn.dart';

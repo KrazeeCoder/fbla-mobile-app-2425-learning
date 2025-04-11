@@ -3,12 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'signup_screen.dart';
-import 'home.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
 import '/auth_utility.dart';
 import '/security.dart';
@@ -97,7 +94,7 @@ class _SignInScreenState extends State<SignInScreen> {
       }
 
       UserCredential userCredential =
-      await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+          await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
 
       User? user = userCredential.user;
       if (user == null) {
@@ -143,7 +140,7 @@ class _SignInScreenState extends State<SignInScreen> {
           email: email ?? '',
           firstName: displayName?.split(" ").first ?? "Unknown",
           lastName: displayName?.split(" ").skip(1).join(" ") ?? "Unknown",
-          profilePic: user?.photoURL,
+          profilePic: user.photoURL,
         );
       }
 
@@ -283,14 +280,13 @@ class _SignInScreenState extends State<SignInScreen> {
                               ),
                               Text("Remember me",
                                   style:
-                                  TextStyle(color: Colors.grey.shade600)),
+                                      TextStyle(color: Colors.grey.shade600)),
                             ],
                           ),
                           TextButton(
                             onPressed: () {},
                             child: Text("Forgot Password?",
-                                style:
-                                TextStyle(color: Colors.green.shade800)),
+                                style: TextStyle(color: Colors.green.shade800)),
                           ),
                         ],
                       ),
@@ -299,26 +295,26 @@ class _SignInScreenState extends State<SignInScreen> {
                       // Sign In Button
                       isLoading
                           ? CircularProgressIndicator(
-                          color: Colors.green.shade800)
+                              color: Colors.green.shade800)
                           : ElevatedButton(
-                        onPressed: signInWithEmail,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green.shade800,
-                          padding:
-                          const EdgeInsets.symmetric(vertical: 14),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                          "Sign In",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
+                              onPressed: signInWithEmail,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green.shade800,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 14),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                              child: const Text(
+                                "Sign In",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
                       const SizedBox(height: 12),
 
                       // Sign Up Link
@@ -326,13 +322,11 @@ class _SignInScreenState extends State<SignInScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text("Don't have an account?",
-                              style:
-                              TextStyle(color: Colors.grey.shade600)),
+                              style: TextStyle(color: Colors.grey.shade600)),
                           TextButton(
                             onPressed: () => Navigator.push(
                               context,
-                              MaterialPageRoute(
-                                  builder: (_) => SignUpScreen()),
+                              MaterialPageRoute(builder: (_) => SignUpScreen()),
                             ),
                             child: Text(
                               "Sign Up",
@@ -353,8 +347,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             child: Divider(color: Colors.grey.shade300),
                           ),
                           Padding(
-                            padding:
-                            const EdgeInsets.symmetric(horizontal: 16),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Text("or",
                                 style: TextStyle(
                                     color: Colors.grey.shade600,

@@ -20,6 +20,7 @@ Future<void> launchRandomGame({
   required String userId,
 }) async {
   final games = [
+    /*
     RacingGame(
       subject: subject,
       grade: grade,
@@ -55,19 +56,7 @@ Future<void> launchRandomGame({
       nextSubtopicTitle: nextSubtopicTitle,
       nextReadingContent: nextReadingContent,
       userId: userId,
-    ),
-    PuzzleScreen(
-      subject: subject,
-      grade: grade,
-      unitId: unitId,
-      unitTitle: unitTitle,
-      subtopicId: subtopicId,
-      subtopicTitle: subtopicTitle,
-      nextSubtopicId: nextSubtopicId,
-      nextSubtopicTitle: nextSubtopicTitle,
-      nextReadingContent: nextReadingContent,
-      userId: userId,
-    ),
+    ), 
     QuizChallengeGame(
       subject: subject,
       grade: grade,
@@ -79,9 +68,21 @@ Future<void> launchRandomGame({
       nextSubtopicTitle: nextSubtopicTitle,
       nextReadingContent: nextReadingContent,
       userId: userId,
-    ),
+    ), */
+    PuzzleScreen(
+      subject: subject,
+      grade: grade,
+      unitId: unitId,
+      unitTitle: unitTitle,
+      subtopicId: subtopicId,
+      subtopicTitle: subtopicTitle,
+      nextSubtopicId: nextSubtopicId,
+      nextSubtopicTitle: nextSubtopicTitle,
+      nextReadingContent: nextReadingContent,
+      userId: userId,
+    )
   ];
-
+  /*
   if (subject.toLowerCase() == "history" ||
       subject.toLowerCase() == "english") {
     games.add(
@@ -99,6 +100,7 @@ Future<void> launchRandomGame({
       ),
     );
   }
+  */
 
   games.shuffle();
   await Navigator.push(
