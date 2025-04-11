@@ -119,12 +119,12 @@ class _RacingGameState extends State<RacingGame> {
         }
 
         // Check if any car reached finish line
-        if (_playerPosition >= 100) {
+        if (_playerPosition >= 60) {
           _gameOver = true;
           _playerWon = true;
           puzzleCompleted = true;
           _handleRacingGameCompletion();
-        } else if (_aiPositions.any((pos) => pos >= 100)) {
+        } else if (_aiPositions.any((pos) => pos >= 60)) {
           _gameOver = true;
           _playerWon = false;
           puzzleCompleted = true;
@@ -177,12 +177,15 @@ class _RacingGameState extends State<RacingGame> {
     }
 
     // Randomly shuffle the questions
+    // Randomly shuffle the questions and limit to 7
     questions.shuffle();
+    questions = questions.take(min(7, questions.length)).toList();
 
     setState(() {
       quizQuestions = questions;
       _showNextQuestion();
     });
+
   }
 
   /// Shows a formatted question matching the screenshot design
@@ -412,7 +415,7 @@ class _RacingGameState extends State<RacingGame> {
 
           // Race Track (takes about 40% of screen)
           Expanded(
-            flex: 4,
+            flex:3,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: _buildRaceTrack(),
@@ -421,12 +424,22 @@ class _RacingGameState extends State<RacingGame> {
 
           // Question Area (takes about 60% of screen)
           Expanded(
-            flex: 6,
+            flex: 7,
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(
                 children: [
-                  Expanded(child: _buildQuestionArea()),
+                  Flexible(
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return ConstrainedBox(
+                          constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                          child: _buildQuestionArea(),
+                        );
+                      },
+                    ),
+                  ),
+
                   if (_playerWon && _gameOver)
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),

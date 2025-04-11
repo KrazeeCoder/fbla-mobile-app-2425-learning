@@ -22,13 +22,11 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final AuthService _authService =
-      AuthService(); // Avoid redundant instantiation
+  final AuthService _authService = AuthService();
   bool isLoading = false;
   bool rememberMe = false;
-  bool obscureText = true; // Password visibility toggle
+  bool obscureText = true;
 
-  /// **Sign in with Email**
   Future<void> signInWithEmail() async {
     if (!_isValidEmail(emailController.text)) {
       ScaffoldMessenger.of(context)
@@ -46,8 +44,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
       if (user != null) {
         await setLoginUserKeys(user);
-
-        // Check if this is a first login for this user and trigger tutorial if needed
         final isNewUser = await _authService.isFirstLogin(user.uid);
         if (isNewUser) {
           Provider.of<ShowcaseProvider>(context, listen: false)
@@ -78,72 +74,48 @@ class _SignInScreenState extends State<SignInScreen> {
         "https://www.linkedin.com/oauth/v2/authorization?response_type=code"
         "&client_id=$clientId&redirect_uri=${Uri.encodeComponent(redirectUri)}&scope=$scope";
 
-    print("🔵 LinkedIn OAuth URL: $authUrl");
-
     try {
-      print("🔵 Opening LinkedIn OAuth WebView...");
-
-      // Check if running on Windows
       if (defaultTargetPlatform == TargetPlatform.windows) {
-        // Show a dialog to tell the user this feature isn't available on Windows
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(
                   "LinkedIn login is not supported on Windows platform. Please use email login instead.")));
         }
         return;
-
-        // Alternative: If you want to implement a Windows solution later
-        // Use launchUrl from url_launcher package instead or implement a custom flow
       }
 
       final String result = await FlutterWebAuth.authenticate(
           url: authUrl, callbackUrlScheme: "fbla-learning-app");
 
-      print("✅ LinkedIn OAuth Callback Result: $result");
-
       final Uri uri = Uri.parse(result);
       final String? firebaseToken = uri.queryParameters["firebaseToken"];
       final String? linkedinToken = uri.queryParameters["linkedinToken"];
-      print("🔵 LinkedIn Token: $linkedinToken");
 
       await storeLinkedInToken(linkedinToken!);
       if (firebaseToken == null || firebaseToken.trim().isEmpty) {
         throw Exception("❌ Firebase token missing or empty.");
       }
 
-      print("🔵 Signing in with Firebase Custom Token...");
       UserCredential userCredential =
-          await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+      await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
 
       User? user = userCredential.user;
       if (user == null) {
         throw Exception("❌ Firebase user is null after sign-in.");
       }
 
-      print("✅ Firebase User Signed In: ${user.uid}");
-
-      // 🚀 Retrieve Custom Claims from ID Token
       IdTokenResult idTokenResult = await user.getIdTokenResult();
       Map<String, dynamic> claims = idTokenResult.claims ?? {};
 
-      print("🔍 Extracted Custom Claims: $claims");
-
-      // 🔍 Extract LinkedIn metadata from custom claims
       String? email = claims["email"];
       String? displayName = claims["displayName"];
       String? photoUrl = claims["photoURL"];
 
-      print("🟢 Extracted Email from Claims: ${email ?? 'NULL'}");
-      print("🟢 Extracted Display Name from Claims: ${displayName ?? 'NULL'}");
-      print("🟢 Extracted Photo URL from Claims: ${photoUrl ?? 'NULL'}");
-
       if (email != null && (user.email == null || user.email!.isEmpty)) {
         try {
-          print("🔵 Updating Firebase Email...");
-          await user.updateEmail(email); // ✅ FIXED: Direct update
+          await user.updateEmail(email);
         } catch (e) {
-          print("⚠️ Email Update Failed: $e (May already be set)");
+          print("⚠️ Email Update Failed: $e");
         }
       }
 
@@ -158,12 +130,6 @@ class _SignInScreenState extends State<SignInScreen> {
       await user.reload();
       user = FirebaseAuth.instance.currentUser;
 
-      print("✅ Updated Firebase User:");
-      print("🟢 UID: ${user?.uid}");
-      print("🟢 Email: ${user?.email}");
-      print("🟢 Display Name: ${user?.displayName}");
-      print("🟢 Photo URL: ${user?.photoURL}");
-
       if (user == null || user.email == null || user.email!.isEmpty) {
         throw Exception("❌ Email is still missing after Firebase sign-in!");
       }
@@ -171,9 +137,7 @@ class _SignInScreenState extends State<SignInScreen> {
       bool exists = await _authService.useridExists(user.uid);
 
       if (!exists) {
-        print("🟢 New LinkedIn user detected, saving to Firestore...");
         await setLoginUserKeys(user);
-
         await _authService.registerUserFromLinkedIn(
           userId: user.uid,
           email: email ?? '',
@@ -181,18 +145,13 @@ class _SignInScreenState extends State<SignInScreen> {
           lastName: displayName?.split(" ").skip(1).join(" ") ?? "Unknown",
           profilePic: user?.photoURL,
         );
-      } else {
-        print("🔵 Existing LinkedIn user detected, skipping Firestore update.");
       }
-
-      print("🚀 Redirecting to MainPage...");
 
       if (mounted) {
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => MainPage()));
       }
     } catch (e) {
-      print("❌ LinkedIn Sign-In Error: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text("LinkedIn Sign-In Failed: ${e.toString()}")));
@@ -200,7 +159,6 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  /// **Validates email format**
   bool _isValidEmail(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
@@ -214,272 +172,235 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Logo and Name (Stacked vertically)
-              Column(
-                children: [
-                  SvgPicture.asset(
-                    'assets/branding/logo.svg',
-                    height: MediaQuery.of(context).size.height * 0.25,
-                  ),
-                  SvgPicture.asset(
-                    'assets/branding/name.svg',
-                    height: MediaQuery.of(context).size.height * 0.08,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 25),
-
-              // Welcome Text
-              Text(
-                "Welcome Back!",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green.shade800,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                "Please sign in to continue your learning journey",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Email Field
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: "Email Address",
-                  prefixIcon:
-                      Icon(Icons.email_outlined, color: Colors.green.shade800),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: Colors.green.shade800, width: 2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-
-              // Password Field
-              TextField(
-                controller: passwordController,
-                obscureText: obscureText,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  prefixIcon:
-                      Icon(Icons.lock_outline, color: Colors.green.shade800),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      obscureText ? Icons.visibility_off : Icons.visibility,
-                      color: Colors.green.shade800,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        obscureText = !obscureText;
-                      });
-                    },
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
-                    borderSide:
-                        BorderSide(color: Colors.green.shade800, width: 2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-
-              // Remember Me and Forgot Password
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight),
+                child: IntrinsicHeight(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Checkbox(
-                        value: rememberMe,
-                        activeColor: Colors.green.shade800,
-                        onChanged: (val) => setState(() => rememberMe = val!),
-                      ),
+                      // Logo and App Name
+                      SvgPicture.asset('assets/branding/logo.svg', height: 130),
+                      const SizedBox(height: 12),
+                      SvgPicture.asset('assets/branding/name.svg', height: 45),
+                      const SizedBox(height: 24),
+
+                      // Welcome Text
                       Text(
-                        "Remember me",
-                        style: TextStyle(color: Colors.grey.shade600),
+                        "Welcome Back!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.green.shade800,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "Please sign in to continue your learning journey",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Email
+                      TextField(
+                        controller: emailController,
+                        decoration: InputDecoration(
+                          labelText: "Email Address",
+                          prefixIcon: Icon(Icons.email_outlined,
+                              color: Colors.green.shade800),
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                                color: Colors.green.shade800, width: 2),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Password
+                      TextField(
+                        controller: passwordController,
+                        obscureText: obscureText,
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          prefixIcon: Icon(Icons.lock_outline,
+                              color: Colors.green.shade800),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              obscureText
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color: Colors.green.shade800,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                obscureText = !obscureText;
+                              });
+                            },
+                          ),
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 16),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(
+                                color: Colors.green.shade800, width: 2),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Remember Me
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            children: [
+                              Checkbox(
+                                value: rememberMe,
+                                activeColor: Colors.green.shade800,
+                                onChanged: (val) =>
+                                    setState(() => rememberMe = val!),
+                              ),
+                              Text("Remember me",
+                                  style:
+                                  TextStyle(color: Colors.grey.shade600)),
+                            ],
+                          ),
+                          TextButton(
+                            onPressed: () {},
+                            child: Text("Forgot Password?",
+                                style:
+                                TextStyle(color: Colors.green.shade800)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+
+                      // Sign In Button
+                      isLoading
+                          ? CircularProgressIndicator(
+                          color: Colors.green.shade800)
+                          : ElevatedButton(
+                        onPressed: signInWithEmail,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade800,
+                          padding:
+                          const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: const Text(
+                          "Sign In",
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Sign Up Link
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text("Don't have an account?",
+                              style:
+                              TextStyle(color: Colors.grey.shade600)),
+                          TextButton(
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) => SignUpScreen()),
+                            ),
+                            child: Text(
+                              "Sign Up",
+                              style: TextStyle(
+                                color: Colors.green.shade800,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Divider
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Divider(color: Colors.grey.shade300),
+                          ),
+                          Padding(
+                            padding:
+                            const EdgeInsets.symmetric(horizontal: 16),
+                            child: Text("or",
+                                style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontWeight: FontWeight.bold)),
+                          ),
+                          Expanded(
+                            child: Divider(color: Colors.grey.shade300),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Social Login Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _socialIcon('assets/login_options/google_logo.svg',
+                              onTap: () {}),
+                          _socialIcon('assets/login_options/linkedin_logo.svg',
+                              onTap: signInWithLinkedIn),
+                          _socialIcon('assets/login_options/apple_logo.svg',
+                              onTap: () {}),
+                        ],
                       ),
                     ],
                   ),
-                  TextButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Forgot Password?",
-                      style: TextStyle(color: Colors.green.shade800),
-                    ),
-                  ),
-                ],
+                ),
               ),
-              const SizedBox(height: 16),
-
-              // Sign In Button
-              isLoading
-                  ? Center(
-                      child: CircularProgressIndicator(
-                          color: Colors.green.shade800))
-                  : ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green.shade800,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: signInWithEmail,
-                      child: const Text(
-                        "Sign In",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-              const SizedBox(height: 12),
-
-              // Sign Up Link
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Don't have an account? ",
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => SignUpScreen()),
-                    ),
-                    child: Text(
-                      "Sign Up",
-                      style: TextStyle(
-                        color: Colors.green.shade800,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Divider with "or" text
-              Row(
-                children: [
-                  Expanded(
-                    child: Divider(
-                      color: Colors.grey.shade300,
-                      thickness: 1,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      "or",
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Divider(
-                      color: Colors.grey.shade300,
-                      thickness: 1,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-
-              // Social Login Options
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Google Button
-                  InkWell(
-                    onTap: () {
-                      // TODO: Implement Google Sign In
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/login_options/google_logo.svg',
-                        height: 24,
-                        width: 24,
-                      ),
-                    ),
-                  ),
-
-                  // LinkedIn Button
-                  InkWell(
-                    onTap: signInWithLinkedIn,
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/login_options/linkedin_logo.svg',
-                        height: 24,
-                        width: 24,
-                      ),
-                    ),
-                  ),
-
-                  // Apple Button
-                  InkWell(
-                    onTap: () {
-                      // TODO: Implement Apple Sign In
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(color: Colors.grey.shade300),
-                      ),
-                      child: SvgPicture.asset(
-                        'assets/login_options/apple_logo.svg',
-                        height: 24,
-                        width: 24,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+            );
+          },
         ),
+      ),
+    );
+  }
+
+  Widget _socialIcon(String assetPath, {required VoidCallback onTap}) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: SvgPicture.asset(assetPath, height: 24, width: 24),
       ),
     );
   }
