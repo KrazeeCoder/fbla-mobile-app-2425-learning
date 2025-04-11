@@ -189,17 +189,37 @@ class _HomePageState extends State<HomePage> {
                               return false;
                             },
                             child: SizedBox(
-                              height: screenHeight * 0.38,
+                              height: screenHeight * 0.42,
                               width: screenWidth,
                               child: PageView.builder(
                                 controller: _pageController,
                                 itemCount: earthImages.length,
                                 itemBuilder: (context, index) {
-                                  return Center(
-                                    child: SvgPicture.asset(
-                                      earthImages[index],
-                                      height: screenHeight * 0.38,
-                                    ),
+                                  return AnimatedBuilder(
+                                    animation: _pageController,
+                                    builder: (context, child) {
+                                      double value = 1.0;
+                                      if (_pageController
+                                          .position.haveDimensions) {
+                                        value = (_pageController.page! - index)
+                                            .abs();
+                                        value = (1.2 - (value * 0.5)).clamp(
+                                            0.6, 1.2); // <-- max scale now 1.2
+                                      }
+                                      return Center(
+                                        child: Transform.scale(
+                                          scale: value,
+                                          child: SvgPicture.asset(
+                                            earthImages[index],
+                                            height: screenHeight *
+                                                0.4, // Center image will grow ~32% of screen height
+                                            width: screenHeight *
+                                                0.4, // Keep square proportion
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   );
                                 },
                               ),
