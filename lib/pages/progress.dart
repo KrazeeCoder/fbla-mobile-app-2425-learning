@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/app_logger.dart';
 import '../widgets/custom_app_bar.dart';
+import '../services/streak_manager.dart';
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -60,7 +61,7 @@ class _ProgressPageState extends State<ProgressPage>
       final subtopicsCompletedFuture =
           ProgressService.getTotalSubtopicsCompleted(uid);
       final levelDataFuture = ProgressService.calculateLevelAndPoints(uid);
-      final streakFuture = ProgressService.getUserStreak(uid);
+      final streakFuture = StreakManager.getCurrentStreak(uid);
 
       // Wait for all futures to complete
       final results = await Future.wait([

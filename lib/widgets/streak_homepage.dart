@@ -28,13 +28,13 @@ class _StreakHomepageState extends State<StreakHomepage>
     _loadStreak();
     _flameController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 2000),
     )..repeat(reverse: true);
 
     _flameAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _flameController,
-        curve: Curves.easeInOut,
+        curve: Curves.easeInOutCubic,
       ),
     );
   }
@@ -142,12 +142,15 @@ class _StreakHomepageState extends State<StreakHomepage>
                       child: Center(
                         child: Transform.translate(
                           offset: Offset(0, -2 * _flameAnimation.value),
-                          child: Icon(
-                            Icons.local_fire_department,
-                            color: _currentStreak > 0
-                                ? const Color.fromARGB(255, 255, 94, 0)
-                                : Colors.grey,
-                            size: 32,
+                          child: Transform.scale(
+                            scale: 1.0 + (_flameAnimation.value * 0.05),
+                            child: Icon(
+                              Icons.local_fire_department,
+                              color: _currentStreak > 0
+                                  ? const Color.fromARGB(255, 255, 94, 0)
+                                  : Colors.grey,
+                              size: 32,
+                            ),
                           ),
                         ),
                       ),

@@ -17,16 +17,6 @@ class StreakManager {
     }
   }
 
-  // Update the streak for a user
-  static Future<void> updateStreak(String userId) async {
-    try {
-      // Streak is now calculated directly from progress, no need to update
-      AppLogger.i('Streak updated through progress tracking');
-    } catch (e) {
-      AppLogger.e('Error updating streak', error: e);
-    }
-  }
-
   // Check if a user has maintained their streak today
   static Future<bool> hasMaintainedStreakToday(String userId) async {
     try {
