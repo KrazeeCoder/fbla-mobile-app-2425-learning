@@ -11,6 +11,7 @@ import '../xp_manager.dart';
 import '../coach_marks/showcase_keys.dart';
 import '../coach_marks/showcase_provider.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,6 +22,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _showcaseTriggered = false;
+  final user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -226,9 +228,11 @@ class _HomePageState extends State<HomePage> {
                         }),
 
                   const SizedBox(height: 16),
-                  const Padding(
+                  Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: const StreakHomepage(),
+                    child: StreakHomepage(
+                      userId: user?.uid ?? '',
+                    ),
                   ),
                   const SizedBox(height: 24),
                   // Enhanced Recent Lessons Title

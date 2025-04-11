@@ -15,7 +15,6 @@ import 'xp_manager.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'streak_manager.dart';
 import 'coach_marks/showcase_provider.dart';
 
 void main() async {
@@ -114,7 +113,6 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => XPManager()),
-        ChangeNotifierProvider(create: (_) => StreakManager()),
         ChangeNotifierProvider.value(value: showcaseProvider),
       ],
       child: MaterialApp(
