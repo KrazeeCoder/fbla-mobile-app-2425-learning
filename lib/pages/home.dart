@@ -54,6 +54,12 @@ class _HomePageState extends State<HomePage> {
     // Access ShowcaseProvider
     final showcaseProvider =
         Provider.of<ShowcaseProvider>(context, listen: false);
+    // Build the list of earths from level 1 to currentLevel
+    final currentLevel = xpManager.currentLevel;
+    final List<String> earthImages = List.generate(
+      currentLevel,
+      (index) => _getEarthAssetPath(index + 1),
+    );
 
     return Scaffold(
       appBar: CustomAppBar(),
@@ -135,31 +141,92 @@ class _HomePageState extends State<HomePage> {
                   ),
                   const SizedBox(height: 16),
                   // Earth Widget with Green Curved Shapes - Now dynamically selected based on level
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SvgPicture.asset(
-                        'assets/homepage_design/left.svg',
-                        height: screenHeight * 0.25,
-                      ),
-                      // Use the correct Earth SVG based on user level
-                      xpManager.isLoading
-                          ? Container(
-                              height: screenHeight * 0.38,
-                              width: screenHeight * 0.38,
-                              alignment: Alignment.center,
-                              child: const CircularProgressIndicator(),
-                            )
-                          : SvgPicture.asset(
-                              _getEarthAssetPath(xpManager.currentLevel),
-                              height: screenHeight * 0.38,
+                  xpManager.isLoading
+                      ? Center(
+                          child: Container(
+                            height: screenHeight * 0.38,
+                            width: screenHeight * 0.38,
+                            alignment: Alignment.center,
+                            child: const CircularProgressIndicator(),
+                          ),
+                        )
+                      : Builder(builder: (context) {
+                          final currentLevel = xpManager.currentLevel;
+                          final maxVisualLevel =
+                              currentLevel < 5 ? currentLevel + 1 : 5;
+
+                          final List<String> earthImages = List.generate(
+                            maxVisualLevel,
+                            (index) => _getEarthAssetPath(index + 1),
+                          );
+
+                          final PageController _pageController = PageController(
+                            initialPage: currentLevel - 1,
+                            viewportFraction: 0.6,
+                          );
+
+                          bool isResettingPage = false;
+
+                          return NotificationListener<ScrollNotification>(
+                            onNotification: (scrollNotification) {
+                              if (scrollNotification
+                                      is ScrollUpdateNotification &&
+                                  !isResettingPage &&
+                                  _pageController.hasClients &&
+                                  _pageController.page != null &&
+                                  _pageController.page! > currentLevel - 1) {
+                                isResettingPage = true;
+                                _pageController
+                                    .animateToPage(
+                                      currentLevel - 1,
+                                      duration:
+                                          const Duration(milliseconds: 200),
+                                      curve: Curves.easeOut,
+                                    )
+                                    .then((_) => isResettingPage = false);
+                                return true;
+                              }
+                              return false;
+                            },
+                            child: SizedBox(
+                              height: screenHeight * 0.42,
+                              width: screenWidth,
+                              child: PageView.builder(
+                                controller: _pageController,
+                                itemCount: earthImages.length,
+                                itemBuilder: (context, index) {
+                                  return AnimatedBuilder(
+                                    animation: _pageController,
+                                    builder: (context, child) {
+                                      double value = 1.0;
+                                      if (_pageController
+                                          .position.haveDimensions) {
+                                        value = (_pageController.page! - index)
+                                            .abs();
+                                        value = (1.2 - (value * 0.5)).clamp(
+                                            0.6, 1.2); // <-- max scale now 1.2
+                                      }
+                                      return Center(
+                                        child: Transform.scale(
+                                          scale: value,
+                                          child: SvgPicture.asset(
+                                            earthImages[index],
+                                            height: screenHeight *
+                                                0.4, // Center image will grow ~32% of screen height
+                                            width: screenHeight *
+                                                0.4, // Keep square proportion
+                                            fit: BoxFit.contain,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                             ),
-                      SvgPicture.asset(
-                        'assets/homepage_design/right.svg',
-                        height: screenHeight * 0.25,
-                      ),
-                    ],
-                  ),
+                          );
+                        }),
+
                   const SizedBox(height: 16),
                   const Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
