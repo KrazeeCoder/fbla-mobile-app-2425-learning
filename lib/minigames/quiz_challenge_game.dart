@@ -26,10 +26,6 @@ class QuizChallengeGame extends StatefulWidget {
   final String nextSubtopicTitle;
   final String nextReadingContent;
 
-  final bool lastSubtopicofUnit;
-  final bool lastSubtopicofGrade;
-  final bool lastSubtopicofSubject;
-
   const QuizChallengeGame({
     super.key,
     required this.subtopicId,
@@ -42,9 +38,6 @@ class QuizChallengeGame extends StatefulWidget {
     required this.nextSubtopicId,
     required this.nextSubtopicTitle,
     required this.nextReadingContent,
-    this.lastSubtopicofUnit = false,
-    this.lastSubtopicofGrade = false,
-    this.lastSubtopicofSubject = false,
   });
 
   @override
@@ -324,9 +317,9 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
       unitId: widget.unitId,
       unitTitle: widget.unitTitle,
       subtopicTitle: widget.subtopicTitle,
-      lastSubtopicofUnit: widget.lastSubtopicofUnit,
-      lastSubtopicofGrade: widget.lastSubtopicofGrade,
-      lastSubtopicofSubject: widget.lastSubtopicofSubject,
+      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
     );
 
     setState(() {
@@ -357,9 +350,9 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
           unitId: subtopicNav?['unitId'],
           unitTitle: subtopicNav?['unitTitle'],
           userId: widget.userId,
-          lastSubtopicofUnit: widget.lastSubtopicofUnit,
-          lastSubtopicofGrade: widget.lastSubtopicofGrade,
-          lastSubtopicofSubject: widget.lastSubtopicofSubject,
+          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
         ),
       ),
     );

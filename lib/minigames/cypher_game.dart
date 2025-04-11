@@ -23,26 +23,19 @@ class CypherUI extends StatefulWidget {
   final String nextSubtopicTitle;
   final String nextReadingContent;
   final String userId;
-  final bool lastSubtopicofUnit;
-  final bool lastSubtopicofGrade;
-  final bool lastSubtopicofSubject;
 
-  const CypherUI({
-    super.key,
-    required this.subtopicId,
-    required this.subject,
-    required this.grade,
-    required this.unitId,
-    required this.unitTitle,
-    required this.subtopicTitle,
-    required this.nextSubtopicId,
-    required this.nextSubtopicTitle,
-    required this.nextReadingContent,
-    required this.userId,
-    required this.lastSubtopicofUnit,
-    required this.lastSubtopicofGrade,
-    required this.lastSubtopicofSubject,
-  });
+  const CypherUI(
+      {super.key,
+      required this.subtopicId,
+      required this.subject,
+      required this.grade,
+      required this.unitId,
+      required this.unitTitle,
+      required this.subtopicTitle,
+      required this.nextSubtopicId,
+      required this.nextSubtopicTitle,
+      required this.nextReadingContent,
+      required this.userId});
 
   @override
   State<CypherUI> createState() => _CypherUIState();
@@ -224,9 +217,9 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
       unitId: widget.unitId,
       unitTitle: widget.unitTitle,
       subtopicTitle: widget.subtopicTitle,
-      lastSubtopicofUnit: widget.lastSubtopicofUnit,
-      lastSubtopicofGrade: widget.lastSubtopicofGrade,
-      lastSubtopicofSubject: widget.lastSubtopicofSubject,
+      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
+      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
+      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
     );
 
     setState(() {

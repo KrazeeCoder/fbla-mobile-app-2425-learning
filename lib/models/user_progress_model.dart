@@ -13,6 +13,11 @@ class UserProgress {
   final bool isCompleted;
   final int marksEarned;
   final DateTime? lastAccessed;
+  final DateTime? contentCompletedAt;
+  final DateTime? quizCompletedAt;
+  final DateTime? startedAt;
+  final String? lastActivityType;
+  final DateTime? updatedAt;
 
   UserProgress({
     required this.subject,
@@ -26,10 +31,15 @@ class UserProgress {
     required this.isCompleted,
     required this.marksEarned,
     required this.lastAccessed,
+    required this.contentCompletedAt,
+    required this.quizCompletedAt,
+    required this.startedAt,
+    required this.lastActivityType,
+    required this.updatedAt,
   });
 
   factory UserProgress.fromMap(Map<String, dynamic> data) {
-    DateTime? parseLastAccessed(dynamic value) {
+    DateTime? parseDate(dynamic value) {
       if (value == null) return null;
       if (value is Timestamp) return value.toDate();
       if (value is String) return DateTime.tryParse(value);
@@ -49,7 +59,12 @@ class UserProgress {
       quizCompleted: data['quizCompleted'] ?? false,
       isCompleted: data['isCompleted'] ?? false,
       marksEarned: data['marksEarned'] ?? 0,
-      lastAccessed: parseLastAccessed(data['lastAccessed']),
+      lastAccessed: parseDate(data['lastAccessed']),
+      contentCompletedAt: parseDate(data['contentCompletedAt']),
+      quizCompletedAt: parseDate(data['quizCompletedAt']),
+      startedAt: parseDate(data['startedAt']),
+      lastActivityType: data['lastActivityType'],
+      updatedAt: parseDate(data['updatedAt']),
     );
   }
 
@@ -65,6 +80,11 @@ class UserProgress {
     bool? isCompleted,
     int? marksEarned,
     DateTime? lastAccessed,
+    DateTime? contentCompletedAt,
+    DateTime? quizCompletedAt,
+    DateTime? startedAt,
+    String? lastActivityType,
+    DateTime? updatedAt,
   }) {
     return UserProgress(
       subject: subject ?? this.subject,
@@ -78,12 +98,26 @@ class UserProgress {
       isCompleted: isCompleted ?? this.isCompleted,
       marksEarned: marksEarned ?? this.marksEarned,
       lastAccessed: lastAccessed ?? this.lastAccessed,
+      contentCompletedAt: contentCompletedAt ?? this.contentCompletedAt,
+      quizCompletedAt: quizCompletedAt ?? this.quizCompletedAt,
+      startedAt: startedAt ?? this.startedAt,
+      lastActivityType: lastActivityType ?? this.lastActivityType,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 
-  /// Optional: For display in the UI
   String get formattedLastAccessed {
     if (lastAccessed == null) return 'N/A';
     return DateFormat('MMM d, y').format(lastAccessed!);
+  }
+
+  String get formattedQuizDate {
+    if (quizCompletedAt == null) return '';
+    return DateFormat('MMM d, y').format(quizCompletedAt!);
+  }
+
+  String get formattedStartedDate {
+    if (startedAt == null) return '';
+    return DateFormat('MMM d, y').format(startedAt!);
   }
 }

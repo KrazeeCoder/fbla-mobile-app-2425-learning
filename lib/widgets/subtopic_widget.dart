@@ -17,6 +17,8 @@ import '../utils/app_logger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../utils/subTopicNavigation.dart';
+import '../utils/game_launcher.dart';
 
 class SubtopicPage extends StatefulWidget {
   final String subtopic;
@@ -56,12 +58,35 @@ class SubtopicPage extends StatefulWidget {
 
 class _SubtopicPageState extends State<SubtopicPage> {
   late bool _isCompleted;
+  Map<String, dynamic>? subtopicNav;
 
   @override
   void initState() {
     super.initState();
     _isCompleted = widget.isCompleted;
     _checkSubtopicCompletion();
+
+    getSubtopicNavigationInfo(
+      subject: widget.subject,
+      grade: widget.grade,
+      subtopicId: widget.subtopicId,
+    ).then((value) {
+      setState(() {
+        subtopicNav = value;
+      });
+    });
+
+    // Ensure progress and resume point are created only after widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      HandleSubTopicStart(
+        subtopicId: widget.subtopicId,
+        subtopicTitle: widget.readingTitle,
+        unitTitle: widget.unitTitle,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        subject: widget.subject,
+      );
+    });
   }
 
   Future<void> _checkSubtopicCompletion() async {
@@ -79,10 +104,11 @@ class _SubtopicPageState extends State<SubtopicPage> {
     }
   }
 
+/*
   void launchRandomGame(BuildContext context) {
-    final nextSubtopicId = "dummy_last";
-    final nextSubtopicTitle = "Last subtopic";
-    final nextReadingContent = "";
+    final nextSubtopicId = subtopicNav?['nextSubtopicId'] ?? "";
+    final nextSubtopicTitle = subtopicNav?['nextReadingTitle'] ?? "";
+    final nextReadingContent = subtopicNav?['nextReadingContent'] ?? "";
     final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? "";
 
     final games = [
@@ -97,9 +123,6 @@ class _SubtopicPageState extends State<SubtopicPage> {
         nextSubtopicTitle: nextSubtopicTitle,
         nextReadingContent: nextReadingContent,
         userId: currentUserId,
-        lastSubtopicofUnit: widget.lastSubtopicofUnit,
-        lastSubtopicofGrade: widget.lastSubtopicofGrade,
-        lastSubtopicofSubject: widget.lastSubtopicofSubject,
       ),
       MazeGame(
         subject: widget.subject,
@@ -148,9 +171,6 @@ class _SubtopicPageState extends State<SubtopicPage> {
         nextSubtopicTitle: nextSubtopicTitle,
         nextReadingContent: nextReadingContent,
         userId: currentUserId,
-        lastSubtopicofUnit: widget.lastSubtopicofUnit,
-        lastSubtopicofGrade: widget.lastSubtopicofGrade,
-        lastSubtopicofSubject: widget.lastSubtopicofSubject,
       ),
     ];
 
@@ -169,9 +189,6 @@ class _SubtopicPageState extends State<SubtopicPage> {
           nextSubtopicTitle: nextSubtopicTitle,
           nextReadingContent: nextReadingContent,
           userId: currentUserId,
-          lastSubtopicofUnit: widget.lastSubtopicofUnit,
-          lastSubtopicofGrade: widget.lastSubtopicofGrade,
-          lastSubtopicofSubject: widget.lastSubtopicofSubject,
         ),
       );
     }
@@ -187,7 +204,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
       MaterialPageRoute(builder: (context) => games.first),
     ).then((_) => _checkSubtopicCompletion());
   }
-
+*/
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -386,29 +403,26 @@ class _SubtopicPageState extends State<SubtopicPage> {
                             final user = FirebaseAuth.instance.currentUser;
 
                             if (user != null) {
-                              await markSubtopicAsCompleted(
-                                subtopicId: widget.subtopicId,
-                                subtopicTitle: widget.readingTitle,
-                                unitTitle: widget.unitTitle,
+                              _handleSubTopicCompletion(context);
+
+                              await launchRandomGame(
+                                context: context,
+                                subject: widget.subject,
                                 grade: widget.grade,
                                 unitId: widget.unitId,
-                                subject: widget.subject,
-                              );
-
-                              await updateResumePoint(
-                                userId: user.uid,
-                                subject: widget.subject,
-                                grade: 'Grade ${widget.grade}',
-                                unitId: widget.unitId,
-                                unitName: widget.unitTitle,
+                                unitTitle: widget.unitTitle,
                                 subtopicId: widget.subtopicId,
-                                subtopicName: widget.subtopic,
-                                actionType: 'content',
-                                actionState: 'completed',
+                                subtopicTitle: widget.readingTitle,
+                                nextSubtopicId:
+                                    subtopicNav?['nextSubtopicId'] ?? "",
+                                nextSubtopicTitle:
+                                    subtopicNav?['nextReadingTitle'] ?? "",
+                                nextReadingContent:
+                                    subtopicNav?['nextReadingContent'] ?? "",
+                                userId: widget.userId,
                               );
 
-                              launchRandomGame(context);
-                              _awardXPForCompletion(context);
+                              _checkSubtopicCompletion(); // ✅ Refresh state after game
                             }
                           },
                           style: ElevatedButton.styleFrom(
@@ -432,6 +446,37 @@ class _SubtopicPageState extends State<SubtopicPage> {
         ],
       ),
     );
+  }
+
+  Future _handleSubTopicCompletion(BuildContext context) async {
+    setState(() {
+      _isCompleted = true;
+    });
+
+    await markSubtopicAsCompleted(
+      subtopicId: widget.subtopicId,
+      subtopicTitle: widget.readingTitle,
+      unitTitle: widget.unitTitle,
+      grade: widget.grade,
+      unitId: widget.unitId,
+      subject: widget.subject,
+    );
+
+    await updateResumePoint(
+      userId: FirebaseAuth.instance.currentUser?.uid ?? '',
+      subject: widget.subject,
+      grade: 'Grade ${widget.grade}',
+      unitId: widget.unitId,
+      unitName: widget.unitTitle,
+      subtopicId: widget.subtopicId,
+      subtopicName: widget.subtopic,
+      actionType: 'content',
+      actionState: 'completed',
+    );
+
+    _awardXPForCompletion(context);
+
+    return; // Ensure the method always returns a Future
   }
 
   void _awardXPForCompletion(BuildContext context) {
