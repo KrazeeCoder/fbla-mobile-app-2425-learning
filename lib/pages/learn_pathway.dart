@@ -11,6 +11,7 @@ import '../minigames/maze_game.dart';
 import '../minigames/puzzle_game.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/subTopicNavigation.dart';
+import '../utils/game_launcher.dart';
 
 class PathwayUI extends StatefulWidget {
   final int grade;
@@ -562,115 +563,18 @@ class _PathwayUIState extends State<PathwayUI> {
                   .length -
               1);
 
-      final games = [
-        RacingGame(
-          subject: widget.subject,
-          grade: widget.grade,
-          unitId: step["unitId"],
-          unitTitle: step["unitTitle"],
-          subtopicId: step["subId"],
-          subtopicTitle: step["title"],
-          nextSubtopicId: step["nextSubtopicId"],
-          nextSubtopicTitle: step["nextSubtopicTitle"],
-          nextReadingContent: step["nextReadingContent"],
-          userId: widget.userId ?? '',
-        ),
-        CypherUI(
-          subject: widget.subject,
-          grade: widget.grade,
-          unitId: step["unitId"],
-          unitTitle: step["unitTitle"],
-          subtopicId: step["subId"],
-          subtopicTitle: step["title"],
-          nextSubtopicId: step["nextSubtopicId"],
-          nextSubtopicTitle: step["nextSubtopicTitle"],
-          nextReadingContent: step["nextReadingContent"],
-          userId: widget.userId ?? '',
-          lastSubtopicofUnit: lastSubtopicOfUnit,
-          lastSubtopicofGrade: lastSubtopicOfGrade,
-          lastSubtopicofSubject: lastSubtopicOfSubject,
-        ),
-        MazeGame(
-          subject: widget.subject,
-          grade: widget.grade,
-          unitId: step["unitId"],
-          unitTitle: step["unitTitle"],
-          subtopicId: step["subId"],
-          subtopicTitle: step["title"],
-          nextSubtopicId: step["nextSubtopicId"],
-          nextSubtopicTitle: step["nextSubtopicTitle"],
-          nextReadingContent: step["nextReadingContent"],
-          userId: widget.userId ?? '',
-        ),
-        PuzzleScreen(
-          subject: widget.subject,
-          grade: widget.grade,
-          unitId: step["unitId"],
-          unitTitle: step["unitTitle"],
-          subtopicId: step["subId"],
-          subtopicTitle: step["title"],
-          nextSubtopicId: step["nextSubtopicId"],
-          nextSubtopicTitle: step["nextSubtopicTitle"],
-          nextReadingContent: step["nextReadingContent"],
-          userId: widget.userId ?? '',
-        ),
-        QuizChallengeGame(
-          subject: widget.subject,
-          grade: widget.grade,
-          unitId: step["unitId"],
-          unitTitle: step["unitTitle"],
-          subtopicId: step["subId"],
-          subtopicTitle: step["title"],
-          nextSubtopicId: step["nextSubtopicId"],
-          nextSubtopicTitle: step["nextSubtopicTitle"],
-          nextReadingContent: step["nextReadingContent"],
-          userId: widget.userId ?? '',
-          lastSubtopicofUnit: lastSubtopicOfUnit,
-          lastSubtopicofGrade: lastSubtopicOfGrade,
-          lastSubtopicofSubject: lastSubtopicOfSubject,
-        ),
-      ];
-
-      // Add WordScrambleGame only for History or English subjects
-      if (widget.subject.toLowerCase() == "history" ||
-          widget.subject.toLowerCase() == "english") {
-        games.add(
-          WordScrambleGame(
-            subject: widget.subject,
-            grade: widget.grade,
-            unitId: step["unitId"],
-            unitTitle: step["unitTitle"],
-            subtopicId: step["subId"],
-            subtopicTitle: step["title"],
-            nextSubtopicId: step["nextSubtopicId"],
-            nextSubtopicTitle: step["nextSubtopicTitle"],
-            nextReadingContent: step["nextReadingContent"],
-            userId: widget.userId ?? '',
-            lastSubtopicofUnit: lastSubtopicOfUnit,
-            lastSubtopicofGrade: lastSubtopicOfGrade,
-            lastSubtopicofSubject: lastSubtopicOfSubject,
-          ),
-        );
-      }
-      games.shuffle(); // ✅ Randomize order
-      print(games.first);
-      print(widget.subject);
-      print(widget.grade);
-      print(step["unitId"]);
-      print(step["unitTitle"]);
-      print(step["subId"]);
-      print(step["title"]);
-      print(step["nextSubtopicId"]);
-      print(step["nextSubtopicTitle"]);
-      print(step["nextReadingContent"]);
-      print(widget.userId);
-      print(lastSubtopicOfUnit);
-      print(lastSubtopicOfGrade);
-      print(lastSubtopicOfSubject);
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => games.first),
+      launchRandomGame(
+        context: context,
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: step["unitId"],
+        unitTitle: step["unitTitle"],
+        subtopicId: step["subId"],
+        subtopicTitle: step["title"],
+        nextSubtopicId: step["nextSubtopicId"],
+        nextSubtopicTitle: step["nextSubtopicTitle"],
+        nextReadingContent: step["nextReadingContent"],
+        userId: widget.userId ?? '',
       ).then((_) {
         setState(() {
           _pathwayData = parsePathwayData();

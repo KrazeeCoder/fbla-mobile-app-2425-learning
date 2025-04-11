@@ -7,6 +7,103 @@ import '../xp_manager.dart';
 import '../widgets/earth_unlock_animation.dart';
 import '../utils/app_logger.dart';
 
+Future<void> markSubtopicEntryIfFirstTime({
+  required String subtopicId,
+  required String subtopicTitle,
+  required String unitTitle,
+  required int grade,
+  required int unitId,
+  required String subject,
+}) async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return;
+
+  final userId = user.uid;
+  final now = Timestamp.now();
+
+  final userDocRef =
+      FirebaseFirestore.instance.collection('user_progress').doc(userId);
+
+  final docSnapshot = await userDocRef.get();
+  final existingData = docSnapshot.data();
+  final existingSubtopic = existingData?[subtopicId] as Map<String, dynamic>?;
+
+  if (existingSubtopic == null) {
+    // First-time entry — create fresh
+    final newProgress = {
+      'subtopic_id': subtopicId,
+      'subtopic': subtopicTitle,
+      'unit': unitTitle,
+      'unit_id': unitId,
+      'grade': grade,
+      'subject': subject,
+      'contentCompleted': false,
+      'quizCompleted': false,
+      'marksEarned': 0,
+      'startedAt': now,
+      'lastAccessed': now,
+      'lastActivityType': 'reading',
+      'updatedAt': now,
+      'isCompleted': false,
+    };
+
+    await userDocRef.set({subtopicId: newProgress}, SetOptions(merge: true));
+  } else {
+    // Update only specific fields while preserving others
+    final updatedProgress = Map<String, dynamic>.from(existingSubtopic);
+    updatedProgress['lastAccessed'] = now;
+    updatedProgress['lastActivityType'] = 'reading';
+    updatedProgress['updatedAt'] = now;
+
+    await userDocRef
+        .set({subtopicId: updatedProgress}, SetOptions(merge: true));
+  }
+}
+
+Future<void> addResumePointIfFirstTime({
+  required String userId,
+  required String subject,
+  required String grade,
+  required int unitId,
+  required String unitName,
+  required String subtopicId,
+  required String subtopicName,
+  required String actionType, // 'content' or 'game'
+}) async {
+  try {
+    final cleanedUserId = userId.replaceAll(':', '_');
+    final cleanedGrade = grade.replaceAll(' ', '');
+    final cleanedSubject = subject.replaceAll(' ', '');
+    final docId = '${cleanedUserId}_${cleanedSubject}_$cleanedGrade';
+
+    final docRef =
+        FirebaseFirestore.instance.collection('resume_points').doc(docId);
+
+    final docSnapshot = await docRef.get();
+
+    if (!docSnapshot.exists) {
+      final data = {
+        'subject': subject,
+        'grade': grade,
+        'unit_id': unitId,
+        'unit_name': unitName,
+        'subtopic_id': subtopicId,
+        'subtopic_name': subtopicName,
+        'action_type': actionType,
+        'action_state': 'in_progress',
+        'last_accessed': FieldValue.serverTimestamp(),
+      };
+
+      await docRef.set(data);
+      print('✅ Resume point added: $docId [in_progress]');
+    } else {
+      print('ℹ️ Resume point already exists for: $docId. Skipping.');
+    }
+  } catch (e) {
+    print('❌ Failed to add resume point: $e');
+  }
+}
+
 Future<void> updateResumePoint({
   required String userId,
   required String subject,
@@ -282,5 +379,34 @@ Future<void> handleGameCompletion({
     subtopicName: subtopicTitle,
     actionType: 'game',
     actionState: 'completed',
+  );
+}
+
+Future<void> HandleSubTopicStart({
+  required String subtopicId,
+  required String subtopicTitle,
+  required String unitTitle,
+  required int grade,
+  required int unitId,
+  required String subject,
+}) async {
+  await markSubtopicEntryIfFirstTime(
+    subtopicId: subtopicId,
+    subtopicTitle: subtopicTitle,
+    unitTitle: unitTitle,
+    grade: grade,
+    unitId: unitId,
+    subject: subject,
+  );
+
+  await addResumePointIfFirstTime(
+    userId: FirebaseAuth.instance.currentUser!.uid,
+    subject: subject,
+    grade: 'Grade $grade',
+    unitId: unitId,
+    unitName: unitTitle,
+    subtopicId: subtopicId,
+    subtopicName: subtopicTitle,
+    actionType: 'content',
   );
 }
