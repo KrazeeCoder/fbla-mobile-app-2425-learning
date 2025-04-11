@@ -1,27 +1,21 @@
 import 'dart:io';
-import 'package:appinio_social_share/appinio_social_share_method_channel.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/home.dart';
 import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../main.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:cross_file/cross_file.dart';
 import '../utils/share/achievement_image_generator.dart';
 import '../linkedin_post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:appinio_social_share/appinio_social_share.dart';
-import 'package:social_share/social_share.dart';
+import 'package:share_to_social/social/instgram.dart';
 
-/// A reusable widget that displays the Earth level-up animation
 class EarthUnlockAnimation extends StatefulWidget {
-  /// The new level that was achieved
   final int newLevel;
   final String subject;
   final String subtopic;
   final int totalXP;
 
-  /// Constructor
   const EarthUnlockAnimation(
       {required this.newLevel,
       required this.subject,
@@ -30,7 +24,6 @@ class EarthUnlockAnimation extends StatefulWidget {
       Key? key})
       : super(key: key);
 
-  /// Shows the Earth unlock animation dialog
   static void show(BuildContext context, int newLevel, String subject,
       String subtopic, int totalXP) {
     showDialog(
@@ -50,10 +43,6 @@ class EarthUnlockAnimation extends StatefulWidget {
 }
 
 class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
-  final MethodChannelAppinioSocialShare _appinioSocialShare =
-      MethodChannelAppinioSocialShare();
-  final SocialShare _socialShare = SocialShare();
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -75,12 +64,10 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // Header with Earth icon
             Stack(
               clipBehavior: Clip.none,
               alignment: Alignment.topCenter,
               children: [
-                // Gradient background
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(20, 60, 20, 20),
@@ -97,7 +84,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                   ),
                   child: Column(
                     children: [
-                      // Level text
                       Text(
                         "LEVEL ${widget.newLevel}",
                         style: const TextStyle(
@@ -108,7 +94,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      // Unlock text
                       const Text(
                         "UNLOCKED",
                         style: TextStyle(
@@ -121,7 +106,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                     ],
                   ),
                 ),
-                // Earth icon floating at the top
                 Positioned(
                   top: -40,
                   child: Container(
@@ -150,7 +134,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                           ),
                   ),
                 ),
-                // Stars decoration
                 Positioned(
                   right: 20,
                   top: 20,
@@ -190,7 +173,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
 
             const SizedBox(height: 25),
 
-            // Action buttons
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
@@ -204,22 +186,19 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                     color: Colors.blue.shade600,
                     onPressed: () => _shareToSystem(context),
                   ),
-                  // Home button
                   _buildActionButton(
                     context,
                     icon: Icons.home_outlined,
                     label: "Home",
                     color: Colors.amber.shade600,
                     onPressed: () {
-                      // Close the dialog first
                       Navigator.of(context).pop();
 
-                      // Navigate to the MainPage (home) and clear all previous routes
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
                           builder: (context) => const HomePage(),
                         ),
-                        (route) => false, // This removes all previous routes
+                        (route) => false,
                       );
                     },
                   ),
@@ -229,7 +208,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
 
             const SizedBox(height: 15),
 
-            // Continue button
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text(
@@ -250,14 +228,12 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
     );
   }
 
-  // Method to share achievement to system
   Future<void> _shareToSystem(BuildContext context) async {
     print("asdf");
     try {
       final String message =
           'I just reached Level ${widget.newLevel} in the FBLA Learning App! 🎉';
 
-      // Show sharing preview dialog
       await _showSharePreview(context, message);
     } catch (e) {
       AppLogger.e("Error sharing achievement", error: e);
@@ -272,11 +248,10 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
     }
   }
 
-  // Show a preview dialog before sharing
   Future<void> _showSharePreview(BuildContext context, String message) async {
     return showDialog(
       context: context,
-      barrierDismissible: true, // Allow ESC and tap outside to dismiss
+      barrierDismissible: true,
       builder: (BuildContext context) {
         return Dialog(
           backgroundColor: Colors.transparent,
@@ -299,7 +274,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    // Header
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -323,8 +297,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                         ],
                       ),
                     ),
-
-                    // Share preview image
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: Container(
@@ -348,8 +320,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                         ),
                       ),
                     ),
-
-                    // Share message
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                       child: Text(
@@ -361,8 +331,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                         ),
                       ),
                     ),
-
-                    // Social icons
                     Padding(
                       padding: const EdgeInsets.only(bottom: 20),
                       child: Row(
@@ -389,13 +357,12 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                           ),
                           const SizedBox(width: 20),
                           _buildSocialIcon(
-                            assetPath:
-                                'assets/share-icon.png', // <- Your general share PNG
+                            assetPath: 'assets/share-icon.png',
                             label: 'Share',
                             onTap: () async {
                               Navigator.pop(context);
                               await _handleImageShare(
-                                  context, message, 'System'); // Now consistent
+                                  context, message, 'System');
                             },
                           ),
                         ],
@@ -420,9 +387,9 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
       BuildContext context, String message) async {
     try {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Preparing LinkedIn share...'),
-          duration: const Duration(seconds: 2),
+          duration: Duration(seconds: 2),
         ),
       );
       final String? token = await getLinkedInToken();
@@ -430,7 +397,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
         throw Exception('LinkedIn token not found');
       }
 
-// 🔥 Create one consistent message
       final String message = generateProfessionalLinkedInPost(
         level: widget.newLevel,
         totalXP: widget.totalXP,
@@ -438,7 +404,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
         subtopic: widget.subtopic,
       );
 
-// 🔄 Use same message for both image + post
       final String imagePath =
           await AchievementImageGenerator.captureAchievementImage(
         level: widget.newLevel,
@@ -456,9 +421,9 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
       AppLogger.e("Error sharing to LinkedIn", error: e);
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Failed to share on LinkedIn'),
-            duration: const Duration(seconds: 3),
+            duration: Duration(seconds: 3),
           ),
         );
       }
@@ -502,7 +467,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
     }
   }
 
-  // Method to share to Instagram Stories
   Future<void> _handleInstagramStoryShare(
       BuildContext context, String message) async {
     try {
@@ -522,9 +486,10 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
       final file = File(imagePath);
       if (!await file.exists()) throw Exception('Image not found');
 
-      //implement sharing to instagram story
+      // Share to Instagram using share_to_social package
+      await Instagram.share([imagePath]);
 
-      AppLogger.e("Instagram Story share initiated through system share");
+      AppLogger.i("Instagram Story share initiated");
     } catch (e) {
       AppLogger.e("Error sharing to Instagram Story", error: e);
       if (context.mounted) {
