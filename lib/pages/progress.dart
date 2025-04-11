@@ -1,3 +1,6 @@
+// TODO: Add a graph of the user's progress over time possibly
+// TODO: Add a leaderboard feature with friends and possibly daily leaderboard too
+
 import 'package:fbla_mobile_2425_learning_app/services/progress_service.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_progress.dart';
 import 'package:flutter/material.dart';
