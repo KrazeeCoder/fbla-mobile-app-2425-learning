@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
- platform :ios, '16.0'
+platform :ios, '16.0'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -32,13 +32,60 @@ target 'Runner' do
   use_modular_headers!
 
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+
   target 'RunnerTests' do
     inherit! :search_paths
   end
 end
-
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+
+    if target.name == 'TikTokOpenSDKCore'
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '5.0'
+      end
+    end
   end
+
+  # ✅ Patch TikTokURLOpener.swift
+  opener_patch = File.expand_path('patches/TikTokURLOpener.swift', __dir__)
+  opener_dest = File.expand_path('Pods/TikTokOpenSDKCore/Sources/TikTokOpenSDKCore/Internal/TikTokURLOpener.swift', __dir__)
+
+  if File.exist?(opener_patch)
+    puts "✅ Injecting patched TikTokURLOpener.swift..."
+    FileUtils.chmod("+w", opener_dest)
+    FileUtils.cp(opener_patch, opener_dest)
+  end
+
+  # ✅ Patch TikTokUtils.swift
+  utils_patch = File.expand_path('patches/TikTokUtils.swift', __dir__)
+  utils_dest = File.expand_path('Pods/TikTokOpenSDKCore/Sources/TikTokOpenSDKCore/Utils/TikTokUtils.swift', __dir__)
+
+  if File.exist?(utils_patch)
+    puts "✅ Injecting patched TikTokUtils.swift..."
+    FileUtils.chmod("+w", utils_dest)
+    FileUtils.cp(utils_patch, utils_dest)
+  end
+
+    # ✅ Patch TikTokShareService.swift
+    share_patch = File.expand_path('patches/TikTokShareService.swift', __dir__)
+    share_dest = File.expand_path('Pods/TikTokOpenShareSDK/Sources/TikTokOpenShareSDK/Service/TikTokShareService.swift', __dir__)
+  
+    if File.exist?(share_patch)
+      puts "✅ Injecting patched TikTokShareService.swift..."
+      FileUtils.chmod("+w", share_dest)
+      FileUtils.cp(share_patch, share_dest)
+    end
+  
+      # ✅ Patch TikTokAuthService.swift
+  auth_patch = File.expand_path('patches/TikTokAuthService.swift', __dir__)
+  auth_dest = File.expand_path('Pods/TikTokOpenAuthSDK/Sources/TikTokOpenAuthSDK/Service/TikTokAuthService.swift', __dir__)
+
+  if File.exist?(auth_patch)
+    puts "✅ Injecting patched TikTokAuthService.swift..."
+    FileUtils.chmod("+w", auth_dest)
+    FileUtils.cp(auth_patch, auth_dest)
+  end
+
 end
