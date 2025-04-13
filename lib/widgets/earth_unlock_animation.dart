@@ -9,6 +9,7 @@ import '../utils/share/achievement_image_generator.dart';
 import '../linkedin_post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_to_social/social/instgram.dart';
+import 'package:fbla_mobile_2425_learning_app/main.dart';
 
 class EarthUnlockAnimation extends StatefulWidget {
   final int newLevel;
@@ -196,10 +197,11 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
 
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                          builder: (context) => const HomePage(),
+                          builder: (context) => const MainPage(initialTab: 0),
                         ),
                         (route) => false,
                       );
+                      ;
                     },
                   ),
                 ],

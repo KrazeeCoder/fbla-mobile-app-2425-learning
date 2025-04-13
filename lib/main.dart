@@ -196,14 +196,15 @@ class AuthWrapper extends StatelessWidget {
 
 // ✅ Main Page (Home Page with Bottom Navigation)
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final int initialTab;
+  const MainPage({super.key, this.initialTab = 0});
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  late int _selectedIndex = 0;
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
@@ -233,6 +234,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
+    _selectedIndex = widget.initialTab;
   }
 
   @override
