@@ -5,6 +5,7 @@ import '../services/progress_service.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/game_launcher.dart';
+import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart';
 
 class RecentLessonsUIPage extends StatefulWidget {
   const RecentLessonsUIPage({super.key});
@@ -59,120 +60,19 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
-                onTap: () async {
-                  final navData = await getSubtopicNavigationInfo(
-                    subject: item.subject,
-                    grade: item.grade,
-                    subtopicId: item.subtopicId,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => PathwayUI(
+                        subject: item.subject,
+                        grade: item.grade,
+                        userId: FirebaseAuth.instance.currentUser?.uid ?? '',
+                        highlightSubtopicId: item.subtopicId,
+                      ),
+                    ),
                   );
-
-                  final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-
-                  if (item.contentCompleted && !item.quizCompleted) {
-                    await launchRandomGame(
-                      context: context,
-                      subject: item.subject,
-                      grade: item.grade,
-                      unitId: item.unitId,
-                      unitTitle: item.unit,
-                      subtopicId: item.subtopicId,
-                      subtopicTitle: item.subtopic,
-                      nextSubtopicId: navData['nextSubtopicId'],
-                      nextSubtopicTitle: navData['nextSubtopicTitle'],
-                      nextReadingContent: navData['nextReadingContent'],
-                      userId: userId,
-                    );
-                    setState(_loadLessons);
-                  } else if (!item.contentCompleted) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => SubtopicPage(
-                          subtopic: item.subtopic,
-                          subtopicId: item.subtopicId,
-                          readingTitle: item.subtopic,
-                          readingContent: navData['readingContent'] ?? '',
-                          isCompleted: false,
-                          subject: item.subject,
-                          grade: item.grade,
-                          unitId: item.unitId,
-                          unitTitle: item.unit,
-                          userId: userId,
-                          lastSubtopicofUnit: navData['isLastOfUnit'],
-                          lastSubtopicofGrade: navData['isLastOfGrade'],
-                          lastSubtopicofSubject: navData['isLastOfSubject'],
-                        ),
-                      ),
-                    ).then((_) => setState(_loadLessons));
-                  } else {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: const Text("🎉 You've completed this topic!"),
-                        content: const Text("What would you like to do next?"),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => SubtopicPage(
-                                    subtopic: item.subtopic,
-                                    subtopicId: item.subtopicId,
-                                    readingTitle: item.subtopic,
-                                    readingContent:
-                                        navData['readingContent'] ?? '',
-                                    isCompleted: true,
-                                    subject: item.subject,
-                                    grade: item.grade,
-                                    unitId: item.unitId,
-                                    unitTitle: item.unit,
-                                    userId: userId,
-                                    lastSubtopicofUnit: navData['isLastOfUnit'],
-                                    lastSubtopicofGrade:
-                                        navData['isLastOfGrade'],
-                                    lastSubtopicofSubject:
-                                        navData['isLastOfSubject'],
-                                  ),
-                                ),
-                              ).then((_) => setState(_loadLessons));
-                            },
-                            child: const Text("📘 Review it again"),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) => SubtopicPage(
-                                    subtopic: navData['nextSubtopicTitle'],
-                                    subtopicId: navData['nextSubtopicId'],
-                                    readingTitle: navData['nextReadingTitle'],
-                                    readingContent:
-                                        navData['nextReadingContent'],
-                                    isCompleted: false,
-                                    subject: item.subject,
-                                    grade: item.grade,
-                                    unitId: navData['nextUnitId'],
-                                    unitTitle: navData['nextUnitTitle'],
-                                    userId: userId,
-                                    lastSubtopicofUnit: navData['isLastOfUnit'],
-                                    lastSubtopicofGrade:
-                                        navData['isLastOfGrade'],
-                                    lastSubtopicofSubject:
-                                        navData['isLastOfSubject'],
-                                  ),
-                                ),
-                              ).then((_) => setState(_loadLessons));
-                            },
-                            child: const Text("➡️ Go to next subtopic"),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
+                  ;
                 },
                 child: Container(
                   decoration: BoxDecoration(

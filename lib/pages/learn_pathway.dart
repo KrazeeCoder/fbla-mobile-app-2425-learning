@@ -9,8 +9,13 @@ class PathwayUI extends StatefulWidget {
   final int grade;
   final String subject;
   String? userId;
+  final String? highlightSubtopicId;
 
-  PathwayUI({required this.grade, required this.subject, this.userId});
+  PathwayUI(
+      {required this.grade,
+      required this.subject,
+      this.userId,
+      this.highlightSubtopicId});
 
   @override
   State<PathwayUI> createState() => _PathwayUIState();
@@ -18,6 +23,8 @@ class PathwayUI extends StatefulWidget {
 
 class _PathwayUIState extends State<PathwayUI> {
   Future<List<Map<String, dynamic>>>? _pathwayData;
+  final ScrollController _scrollController = ScrollController();
+  final Map<String, GlobalKey> _subtopicKeys = {};
 
   @override
   void initState() {
@@ -53,6 +60,41 @@ class _PathwayUIState extends State<PathwayUI> {
                       child: Text('No pathway data available.'));
                 } else {
                   final steps = snapshot.data!;
+
+                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                    // Case 1: Scroll to explicitly passed subtopic
+                    if (widget.highlightSubtopicId != null &&
+                        _subtopicKeys.containsKey(widget.highlightSubtopicId)) {
+                      final context = _subtopicKeys[widget.highlightSubtopicId]!
+                          .currentContext;
+                      if (context != null) {
+                        Scrollable.ensureVisible(
+                          context,
+                          duration: const Duration(seconds: 1),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    }
+                    // Case 2: Scroll to first blue step (next to do)
+                    else {
+                      final nextToDoEntry = _subtopicKeys.entries.firstWhere(
+                        (e) => steps.any((s) =>
+                            s['subId'] == e.key &&
+                            s['type'] != 'unit_separator' &&
+                            s['isNextToDo'] == true),
+                        orElse: () => MapEntry('', GlobalKey()),
+                      );
+
+                      if (nextToDoEntry.value?.currentContext != null) {
+                        Scrollable.ensureVisible(
+                          nextToDoEntry.value!.currentContext!,
+                          duration: const Duration(seconds: 1),
+                          curve: Curves.easeInOut,
+                        );
+                      }
+                    }
+                  });
+
                   return ListView.builder(
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     itemCount: steps.length,
@@ -276,29 +318,38 @@ class _PathwayUIState extends State<PathwayUI> {
     // Check if this is the last step in the unit
     final bool isLastInUnit = _isLastInUnit(step, allSteps);
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 12.0,
-        right: 12.0,
-        top: 0.0,
-        bottom: isLastInUnit ? 2.0 : 0.0,
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildTimelineSection(index, isCompleted, isNextToDo, isSubtopic),
-          const SizedBox(width: 10),
-          Expanded(
-            child: GestureDetector(
-              onTap: isInteractive
-                  ? () => _handleStepTap(
-                      context, step, allSteps, title, isCompleted)
-                  : null,
-              child: _buildStepCard(
-                  step, isCompleted, isNextToDo, title, isSubtopic),
+    final String subId = step["subId"] ?? '';
+    final key = GlobalKey();
+    if (!_subtopicKeys.containsKey(subId)) {
+      _subtopicKeys[subId] = key;
+    }
+
+    return KeyedSubtree(
+      key: key,
+      child: Padding(
+        padding: EdgeInsets.only(
+          left: 12.0,
+          right: 12.0,
+          top: 0.0,
+          bottom: isLastInUnit ? 2.0 : 0.0,
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildTimelineSection(index, isCompleted, isNextToDo, isSubtopic),
+            const SizedBox(width: 10),
+            Expanded(
+              child: GestureDetector(
+                onTap: isInteractive
+                    ? () => _handleStepTap(
+                        context, step, allSteps, title, isCompleted)
+                    : null,
+                child: _buildStepCard(
+                    step, isCompleted, isNextToDo, title, isSubtopic),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -377,56 +428,78 @@ class _PathwayUIState extends State<PathwayUI> {
 
   Widget _buildStepCard(Map<String, dynamic> step, bool isCompleted,
       bool isNextToDo, String title, bool isSubtopic) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-          color: isCompleted
-              ? Colors.green[300]!
-              : isNextToDo
-                  ? Colors.blue[300]!
-                  : Colors.grey[200]!,
-          width: 1,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.03),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              _buildTypeBadge(isSubtopic),
-              const SizedBox(width: 6),
-              if (isCompleted)
-                _buildStatusBadge(
-                    "Completed", Icons.check_circle, Colors.green),
-              if (isNextToDo)
-                _buildStatusBadge("Next", Icons.arrow_forward, Colors.blue),
+    return Stack(
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isCompleted
+                  ? Colors.green[300]!
+                  : isNextToDo
+                      ? Colors.blue[300]!
+                      : Colors.grey[200]!,
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.03),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
+              ),
             ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: isCompleted
-                  ? Colors.green[800]
-                  : isNextToDo
-                      ? Colors.blue[800]
-                      : Colors.grey[800],
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  _buildTypeBadge(isSubtopic),
+                  const SizedBox(width: 6),
+                  if (isCompleted)
+                    _buildStatusBadge(
+                        "Completed", Icons.check_circle, Colors.green),
+                  if (isNextToDo)
+                    _buildStatusBadge("Next", Icons.arrow_forward, Colors.blue),
+                  if (step["fromRecent"] == true)
+                    _buildStatusBadge(
+                        "You clicked", Icons.touch_app, Colors.purple),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Text(
+                title,
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: isCompleted
+                      ? Colors.green[800]
+                      : isNextToDo
+                          ? Colors.blue[800]
+                          : Colors.grey[800],
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        // 🔵 Subtle pointer for Next To Do
+        if (isNextToDo)
+          Positioned(
+            left: 0,
+            top: 12,
+            bottom: 12,
+            child: Container(
+              width: 6,
+              decoration: BoxDecoration(
+                color: Colors.blueAccent,
+                borderRadius: BorderRadius.circular(4),
+              ),
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 
@@ -610,6 +683,7 @@ class _PathwayUIState extends State<PathwayUI> {
                     resumeType == 'content' && resumeSubId == subId;
                 final isResumeGame =
                     resumeType == 'game' && resumeSubId == subId;
+                final isFromRecent = subId == widget.highlightSubtopicId;
 
                 rawSteps.add({
                   "type": "subtopic",
@@ -621,6 +695,7 @@ class _PathwayUIState extends State<PathwayUI> {
                   "subIndex": j,
                   "isResume": isResumeContent,
                   "isCompleted": false,
+                  "fromRecent": isFromRecent,
                   "reading": sub["reading"]?["content"] ?? "",
                 });
 
@@ -645,6 +720,7 @@ class _PathwayUIState extends State<PathwayUI> {
                   "subIndex": j,
                   "isResume": isResumeGame,
                   "isCompleted": false,
+                  "fromRecent": isFromRecent,
                   "nextSubtopicId": nextSub?["subtopic_id"] ?? "dummy_last",
                   "nextSubtopicTitle": nextSub?["subtopic"] ?? "Last subtopic",
                   "nextReadingContent": nextSub?["reading"]?["content"] ?? "",
