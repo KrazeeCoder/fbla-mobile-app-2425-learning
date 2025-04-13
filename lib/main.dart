@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'coach_marks/showcase_keys.dart';
 import 'pages/home.dart';
 import 'pages/progress.dart';
 import 'pages/learn.dart';
@@ -16,6 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'coach_marks/showcase_provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -100,6 +103,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final showcaseProvider = ShowcaseProvider();
+  bool _showcaseTriggered = false;
 
   @override
   void initState() {
@@ -116,7 +120,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider.value(value: showcaseProvider),
       ],
       child: MaterialApp(
-        title: 'FBLA Learning App',
+        title: 'WorldWise',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF7FB069)),
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -125,7 +129,7 @@ class _MyAppState extends State<MyApp> {
         ),
         debugShowCheckedModeBanner: false,
         home: const AuthWrapper(),
-        localizationsDelegates: [
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
@@ -139,8 +143,15 @@ class _MyAppState extends State<MyApp> {
 }
 
 // ✅ Decides whether to show Login Screen or Home Page
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  bool _showcaseTriggered = false;
 
   Future<bool> checkUserStillExists(User user) async {
     try {
@@ -180,7 +191,46 @@ class AuthWrapper extends StatelessWidget {
 
               if (existenceSnapshot.hasData && existenceSnapshot.data == true) {
                 setLoginUserKeys(snapshot.data!);
-                return const MainPage(); // ✅ User exists → Proceed
+                return ShowCaseWidget(
+                  onStart: (index, key) {
+                    AppLogger.i("Showcase started with index: $index");
+                  },
+                  onComplete: (index, key) {
+                    if (index == null) {
+                      AppLogger.i("Showcase completed");
+                      Provider.of<ShowcaseProvider>(context, listen: false)
+                          .markShowcaseComplete();
+                    }
+                  },
+                  builder: (context) => Builder(
+                    builder: (builderContext) {
+                      // Use a Builder to get the correct context that has access to ShowCaseWidget
+                      if (!_showcaseTriggered) {
+                        _showcaseTriggered = true;
+                        // Delay to ensure all widgets are properly laid out
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          AppLogger.i("Attempting to start showcase");
+                          try {
+                            // This context is now within the ShowCaseWidget's builder
+                            final ShowCaseWidgetState? showCaseState =
+                                ShowCaseWidget.of(builderContext);
+                            if (showCaseState != null) {
+                              // showCaseState.startShowCase(
+                              // ShowcaseKeys.getInitialShowcaseKeys());
+                              AppLogger.i("Showcase started successfully");
+                            } else {
+                              AppLogger.e("ShowCaseWidget state is null");
+                            }
+                          } catch (e) {
+                            AppLogger.e("Error starting showcase: $e");
+                          }
+                        });
+                      }
+
+                      return const MainPage();
+                    },
+                  ),
+                );
               } else {
                 return SignInScreen(); // ❌ User deleted → Go to sign-in
               }
@@ -238,24 +288,36 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final bottomNavBar = BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
+      items: <BottomNavigationBarItem>[
+        const BottomNavigationBarItem(
           icon: Icon(Icons.home),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.menu_book),
+          icon: Showcase(
+            key: ShowcaseKeys.learnNavKey,
+            title: 'Learn',
+            description:
+                'In the learn page, you can access new and recent lessons',
+            child: const Icon(Icons.menu_book),
+          ),
           label: 'Learn',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.bar_chart),
+          icon: Showcase(
+            key: ShowcaseKeys.progressNavKey,
+            title: 'Progress',
+            description:
+                'In the progress page, you can view your streaks and current progress',
+            child: const Icon(Icons.bar_chart),
+          ),
           label: 'Progress',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.settings),
           label: 'Settings',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.developer_board),
           label: 'Test Page',
         ),
