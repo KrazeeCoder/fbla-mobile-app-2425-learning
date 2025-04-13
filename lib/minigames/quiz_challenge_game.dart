@@ -460,18 +460,33 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
         child: SafeArea(
           child: currentQuestion == null
               ? const Center(child: CircularProgressIndicator())
-              : Column(
-                  children: [
-                    _buildStatusBar(),
-                    _buildPowerUpBar(),
-                    _buildQuestionCard(),
-                    _buildAnswerOptions(),
-                    if (showSuccess)
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 20),
-                        child: GameSuccessMessage(onNext: _goToNextLesson),
+              : LayoutBuilder(
+                  builder: (context, constraints) {
+                    return SingleChildScrollView(
+                      child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraints.maxHeight),
+                        child: IntrinsicHeight(
+                          child: Column(
+                            children: [
+                              _buildStatusBar(),
+                              _buildPowerUpBar(),
+                              _buildQuestionCard(),
+                              Expanded(
+                                  child:
+                                      _buildAnswerOptions()), // <- dynamic height
+                              if (showSuccess)
+                                Padding(
+                                  padding: const EdgeInsets.only(bottom: 20),
+                                  child: GameSuccessMessage(
+                                      onNext: _goToNextLesson),
+                                ),
+                            ],
+                          ),
+                        ),
                       ),
-                  ],
+                    );
+                  },
                 ),
         ),
       ),
