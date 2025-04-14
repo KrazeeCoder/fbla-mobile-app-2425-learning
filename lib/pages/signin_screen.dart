@@ -72,7 +72,10 @@ class _SignInScreenState extends State<SignInScreen> {
         "&client_id=$clientId&redirect_uri=${Uri.encodeComponent(redirectUri)}&scope=$scope";
 
     try {
+      print("🔁 Starting LinkedIn sign-in flow...");
+
       if (defaultTargetPlatform == TargetPlatform.windows) {
+        print("🪟 Windows platform detected. Aborting LinkedIn login.");
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text(
@@ -81,25 +84,43 @@ class _SignInScreenState extends State<SignInScreen> {
         return;
       }
 
+      print("🌐 Launching LinkedIn auth URL: $authUrl");
+
       final String result = await FlutterWebAuth.authenticate(
           url: authUrl, callbackUrlScheme: "fbla-learning-app");
+
+      print("✅ Auth callback received: $result");
 
       final Uri uri = Uri.parse(result);
       final String? firebaseToken = uri.queryParameters["firebaseToken"];
       final String? linkedinToken = uri.queryParameters["linkedinToken"];
 
-      await storeLinkedInToken(linkedinToken!);
+      print(
+          "📦 Extracted firebaseToken: ${firebaseToken?.substring(0, 10)}...");
+      print(
+          "📦 Extracted linkedinToken: ${linkedinToken?.substring(0, 10)}...");
+
+      if (linkedinToken == null) {
+        throw Exception("❌ LinkedIn token missing from callback URL.");
+      }
+
+      await storeLinkedInToken(linkedinToken);
+      print("🔐 LinkedIn token stored successfully.");
+
       if (firebaseToken == null || firebaseToken.trim().isEmpty) {
         throw Exception("❌ Firebase token missing or empty.");
       }
 
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+      print("🔓 Firebase sign-in successful.");
 
       User? user = userCredential.user;
       if (user == null) {
         throw Exception("❌ Firebase user is null after sign-in.");
       }
+
+      print("👤 Signed-in user UID: ${user.uid}");
 
       IdTokenResult idTokenResult = await user.getIdTokenResult();
       Map<String, dynamic> claims = idTokenResult.claims ?? {};
@@ -108,9 +129,13 @@ class _SignInScreenState extends State<SignInScreen> {
       String? displayName = claims["displayName"];
       String? photoUrl = claims["photoURL"];
 
+      print(
+          "📧 Email: $email | 🧑‍🦰 Display Name: $displayName | 🖼️ Photo URL: $photoUrl");
+
       if (email != null && (user.email == null || user.email!.isEmpty)) {
         try {
           await user.updateEmail(email);
+          print("✅ User email updated.");
         } catch (e) {
           print("⚠️ Email Update Failed: $e");
         }
@@ -118,22 +143,28 @@ class _SignInScreenState extends State<SignInScreen> {
 
       if (displayName != null && user.displayName == null) {
         await user.updateDisplayName(displayName);
+        print("✅ Display name updated.");
       }
 
       if (photoUrl != null && user.photoURL == null) {
         await user.updatePhotoURL(photoUrl);
+        print("✅ Photo URL updated.");
       }
 
       await user.reload();
       user = FirebaseAuth.instance.currentUser;
+      print("🔄 User reloaded.");
 
       if (user == null || user.email == null || user.email!.isEmpty) {
         throw Exception("❌ Email is still missing after Firebase sign-in!");
       }
 
+      print("🔎 Checking if user ID exists in DB...");
       bool exists = await _authService.useridExists(user.uid);
+      print("👤 User exists: $exists");
 
       if (!exists) {
+        print("🆕 Registering new user in DB...");
         await setLoginUserKeys(user);
         await _authService.registerUserFromLinkedIn(
           userId: user.uid,
@@ -142,13 +173,16 @@ class _SignInScreenState extends State<SignInScreen> {
           lastName: displayName?.split(" ").skip(1).join(" ") ?? "Unknown",
           profilePic: user.photoURL,
         );
+        print("✅ User registered.");
       }
 
       if (mounted) {
+        print("➡️ Navigating to MainPage...");
         Navigator.pushReplacement(
             context, MaterialPageRoute(builder: (_) => MainPage()));
       }
     } catch (e) {
+      print("🚨 Exception during LinkedIn sign-in: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text("LinkedIn Sign-In Failed: ${e.toString()}")));
