@@ -8,7 +8,9 @@ import '../utils/game_launcher.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart';
 
 class RecentLessonsUIPage extends StatefulWidget {
-  const RecentLessonsUIPage({super.key});
+  final bool latestOnly;
+
+  const RecentLessonsUIPage({super.key, this.latestOnly = false});
 
   @override
   State<RecentLessonsUIPage> createState() => _RecentLessonsUIPageState();
@@ -34,7 +36,8 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
 
   void _loadLessons() {
     final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
-    _lessonsFuture = ProgressService.fetchRecentLessons(userId);
+    _lessonsFuture =
+        ProgressService.fetchRecentLessons(userId, latest: widget.latestOnly);
   }
 
   @override
@@ -51,11 +54,12 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
         }
 
         final lessons = snapshot.data!;
+        final displayLessons = widget.latestOnly ? [lessons.first] : lessons;
 
         return ListView.builder(
-          itemCount: lessons.length,
+          itemCount: displayLessons.length,
           itemBuilder: (context, index) {
-            final item = lessons[index];
+            final item = displayLessons[index];
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: InkWell(

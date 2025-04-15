@@ -12,6 +12,7 @@ import '../coach_marks/showcase_keys.dart';
 import '../coach_marks/showcase_provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fbla_mobile_2425_learning_app/pages/recent_lessons_homepage_UI.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -226,9 +227,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: RecentLessonsPage(),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: SizedBox(
+                      height: 130, // or slightly less if needed
+                      child: RecentLessonsUIPage(latestOnly: true),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
