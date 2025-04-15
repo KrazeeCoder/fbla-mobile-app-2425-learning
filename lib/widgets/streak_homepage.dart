@@ -175,9 +175,9 @@ class _StreakHomepageState extends State<StreakHomepage>
                         ),
                       ),
                       const SizedBox(height: 4),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.baseline,
-                        textBaseline: TextBaseline.alphabetic,
+                      Wrap(
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        spacing: 8,
                         children: [
                           Text(
                             _currentStreak == 0
@@ -191,7 +191,7 @@ class _StreakHomepageState extends State<StreakHomepage>
                                     ? const LinearGradient(
                                         colors: [
                                           Color(0xFFFF6B00),
-                                          Color(0xFFFF8A00)
+                                          Color(0xFFFF8A00),
                                         ],
                                       ).createShader(
                                         const Rect.fromLTWH(
@@ -208,8 +208,7 @@ class _StreakHomepageState extends State<StreakHomepage>
                                       ),
                             ),
                           ),
-                          if (_currentStreak > 0) ...[
-                            const SizedBox(width: 8),
+                          if (_currentStreak > 0)
                             Text(
                               "• ${_currentStreak ~/ 7} ${_currentStreak ~/ 7 == 1 ? 'week' : 'weeks'}",
                               style: TextStyle(
@@ -217,7 +216,6 @@ class _StreakHomepageState extends State<StreakHomepage>
                                 color: Colors.grey.shade600,
                               ),
                             ),
-                          ],
                         ],
                       ),
                     ],
