@@ -417,7 +417,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
 
       await postToLinkedIn(
         accessToken: token,
-        message: message,
+        message: message, context: context,
       );
     } catch (e) {
       AppLogger.e("Error sharing to LinkedIn", error: e);
