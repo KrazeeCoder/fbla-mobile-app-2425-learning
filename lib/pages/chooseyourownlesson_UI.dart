@@ -3,12 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:fbla_mobile_2425_learning_app/pages/learn.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
+import '../coach_marks/showcase_provider.dart';
+import 'package:provider/provider.dart';
+import '../utils/app_logger.dart';
 
 class ChooseLessonUIPage extends StatefulWidget {
-  const ChooseLessonUIPage({super.key});
+  final PathwayRequestedCallback onPathwayRequested;
+
+  const ChooseLessonUIPage({super.key, required this.onPathwayRequested});
 
   @override
   State<ChooseLessonUIPage> createState() => _ChooseLessonUIPageState();
@@ -152,7 +158,7 @@ class _ChooseLessonUIPageState extends State<ChooseLessonUIPage> {
                   ? (completed / totalSubtopics * 100).round()
                   : 0;
 
-              return Card(
+              Widget gradeCard = Card(
                 margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -223,21 +229,35 @@ class _ChooseLessonUIPageState extends State<ChooseLessonUIPage> {
                           int parsedGrade = int.tryParse(gradeLabel.replaceAll(
                                   RegExp(r'[^0-9]'), '')) ??
                               1;
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => PathwayUI(
-                                subject: selectedSubject,
-                                grade: parsedGrade,
-                              ),
-                            ),
-                          );
+                          widget.onPathwayRequested(
+                              selectedSubject, parsedGrade);
                         },
                       ),
                     ],
                   ),
                 ),
               );
+
+              // Wrap only the first item with a Showcase widget
+              if (index == 0) {
+                AppLogger.i("Showing showcase");
+                return Showcase(
+                  key: ShowcaseKeys.selectGradeKey,
+                  title: 'Select a Grade',
+                  description:
+                      'Tap on any grade to start learning that curriculum.',
+                  child: gradeCard,
+                  disposeOnTap: true,
+                  onTargetClick: () {
+                    int parsedGrade = int.tryParse(
+                            gradeLabel.replaceAll(RegExp(r'[^0-9]'), '')) ??
+                        1;
+                    widget.onPathwayRequested(selectedSubject, parsedGrade);
+                  },
+                );
+              }
+
+              return gradeCard;
             },
           ),
         ),

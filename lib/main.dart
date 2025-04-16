@@ -276,6 +276,7 @@ class _MainPageState extends State<MainPage> {
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
+      AppLogger.i("Selected index: $_selectedIndex");
     });
   }
 
@@ -304,6 +305,8 @@ class _MainPageState extends State<MainPage> {
             title: 'Learn',
             description: 'Access new lessons and review recent topics here.',
             child: const Icon(Icons.menu_book),
+            targetPadding:
+                EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
             onTargetClick: () {
               _onItemTapped(1);
               final showcaseService =
@@ -323,9 +326,6 @@ class _MainPageState extends State<MainPage> {
             onTargetClick: () {
               _onItemTapped(2);
               // When clicked, start the progress showcase
-              final showcaseService =
-                  Provider.of<ShowcaseService>(context, listen: false);
-              showcaseService.startProgressScreenShowcase(context);
             },
             disposeOnTap: true,
           ),
@@ -340,9 +340,6 @@ class _MainPageState extends State<MainPage> {
             onTargetClick: () {
               _onItemTapped(3);
               // When clicked, start the settings showcase
-              final showcaseService =
-                  Provider.of<ShowcaseService>(context, listen: false);
-              showcaseService.startSettingsScreenShowcase(context);
             },
             disposeOnTap: true,
           ),

@@ -201,7 +201,6 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                         ),
                         (route) => false,
                       );
-                      ;
                     },
                   ),
                 ],

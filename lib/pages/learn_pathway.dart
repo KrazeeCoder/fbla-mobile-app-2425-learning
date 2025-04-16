@@ -1,21 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_keys.dart';
 import '../jsonUtility.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/game_launcher.dart';
+import '../coach_marks/showcase_provider.dart';
 
 class PathwayUI extends StatefulWidget {
   final int grade;
   final String subject;
   String? userId;
   final String? highlightSubtopicId;
+  final VoidCallback onBackRequested;
 
-  PathwayUI(
-      {required this.grade,
-      required this.subject,
-      this.userId,
-      this.highlightSubtopicId});
+  PathwayUI({
+    required this.grade,
+    required this.subject,
+    this.userId,
+    this.highlightSubtopicId,
+    required this.onBackRequested,
+  });
 
   @override
   State<PathwayUI> createState() => _PathwayUIState();
@@ -36,87 +43,115 @@ class _PathwayUIState extends State<PathwayUI> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Learning Pathway'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
-      ),
-      body: Column(
-        children: [
-          _buildHeader(context),
-          Expanded(
-            child: FutureBuilder<List<Map<String, dynamic>>>(
-              future: _pathwayData,
-              builder: (context, snapshot) {
-                int stepPos = 0;
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(
-                      child: Text('No pathway data available.'));
-                } else {
-                  final steps = snapshot.data!;
-
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    // Case 1: Scroll to explicitly passed subtopic
-                    if (widget.highlightSubtopicId != null &&
-                        _subtopicKeys.containsKey(widget.highlightSubtopicId)) {
-                      final context = _subtopicKeys[widget.highlightSubtopicId]!
-                          .currentContext;
-                      if (context != null) {
-                        Scrollable.ensureVisible(
-                          context,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    }
-                    // Case 2: Scroll to first blue step (next to do)
-                    else {
-                      final nextToDoEntry = _subtopicKeys.entries.firstWhere(
-                        (e) => steps.any((s) =>
-                            s['subId'] == e.key &&
-                            s['type'] != 'unit_separator' &&
-                            s['isNextToDo'] == true),
-                        orElse: () => MapEntry('', GlobalKey()),
-                      );
-
-                      if (nextToDoEntry.value?.currentContext != null) {
-                        Scrollable.ensureVisible(
-                          nextToDoEntry.value!.currentContext!,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.easeInOut,
-                        );
-                      }
-                    }
-                  });
-
-                  return ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 24),
-                    itemCount: steps.length,
-                    itemBuilder: (context, index) {
-                      final step = steps[index];
-                      if (step["type"] == "unit_separator") {
-                        return _buildUnitSeparator(step["title"]);
-                      } else {
-                        stepPos++;
-                        return _buildPathwayStep(
-                          step: step,
-                          index: stepPos,
-                          allSteps: steps, // <-- pass all steps here
-                        );
-                      }
-                    },
-                  );
-                }
-              },
-            ),
+    return ShowCaseWidget(
+      builder: (context) => Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_ios_new),
+            onPressed: widget.onBackRequested,
+            tooltip: MaterialLocalizations.of(context).backButtonTooltip,
           ),
-        ],
+          title: Text('Learning Pathway'),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          foregroundColor: Colors.white,
+          elevation: 0,
+        ),
+        body: Column(
+          children: [
+            _buildHeader(context),
+            Expanded(
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _pathwayData,
+                builder: (context, snapshot) {
+                  int stepPos = 0;
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                        child: Text('No pathway data available.'));
+                  } else {
+                    final steps = snapshot.data!;
+
+                    WidgetsBinding.instance.addPostFrameCallback((_) async {
+                      BuildContext? targetContext;
+                      // Case 1: Scroll to explicitly passed subtopic
+                      if (widget.highlightSubtopicId != null &&
+                          _subtopicKeys
+                              .containsKey(widget.highlightSubtopicId)) {
+                        targetContext =
+                            _subtopicKeys[widget.highlightSubtopicId]!
+                                .currentContext;
+                        if (targetContext != null) {
+                          await Scrollable.ensureVisible(
+                            targetContext,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      }
+                      // Case 2: Scroll to first blue step (next to do)
+                      else {
+                        final nextToDoEntry = _subtopicKeys.entries.firstWhere(
+                          (e) => steps.any((s) =>
+                              s['subId'] == e.key &&
+                              s['type'] != 'unit_separator' &&
+                              s['isNextToDo'] == true),
+                          orElse: () => MapEntry('', GlobalKey()),
+                        );
+
+                        targetContext = nextToDoEntry.value?.currentContext;
+                        if (targetContext != null) {
+                          await Scrollable.ensureVisible(
+                            targetContext,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      }
+
+                      // Trigger showcase AFTER scrolling is complete
+                      // Use the context from the ShowCaseWidget's builder
+                      if (mounted && targetContext != null) {
+                        final showcaseService = Provider.of<ShowcaseService>(
+                            context,
+                            listen: false);
+                        showcaseService.startPathwayScreenShowcase(context);
+                      }
+                    });
+
+                    return ListView.builder(
+                      padding: const EdgeInsets.symmetric(vertical: 24),
+                      itemCount: steps.length,
+                      itemBuilder: (context, index) {
+                        final step = steps[index];
+                        if (step["type"] == "unit_separator") {
+                          return _buildUnitSeparator(step["title"]);
+                        } else {
+                          stepPos++;
+                          if (step["isNextToDo"] == true) {
+                            return _buildPathwayStepWithShowcase(
+                              step: step,
+                              index: stepPos,
+                              allSteps: steps, // <-- pass all steps here
+                            );
+                          } else {
+                            return _buildPathwayStep(
+                              step: step,
+                              index: stepPos,
+                              allSteps: steps, // <-- pass all steps here
+                            );
+                          }
+                        }
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -354,6 +389,66 @@ class _PathwayUIState extends State<PathwayUI> {
     );
   }
 
+  Widget _buildPathwayStepWithShowcase({
+    required Map<String, dynamic> step,
+    required int index,
+    required List<Map<String, dynamic>> allSteps,
+  }) {
+    final bool isCompleted = step["isCompleted"] ?? false;
+    final bool isNextToDo = step["isNextToDo"] ?? false;
+    final bool isInteractive = isCompleted || isNextToDo;
+    final String title = step["title"] ?? "";
+    final bool isSubtopic = step["type"] == "subtopic";
+
+    // Check if this is the last step in the unit
+    final bool isLastInUnit = _isLastInUnit(step, allSteps);
+
+    final String subId = step["subId"] ?? '';
+    final key = GlobalKey();
+    if (!_subtopicKeys.containsKey(subId)) {
+      _subtopicKeys[subId] = key;
+    }
+
+    return KeyedSubtree(
+      key: key,
+      child: Showcase(
+        key: ShowcaseKeys.pathwayStepKey,
+        title: 'Pathway Step',
+        description:
+            'Tap here to view the lesson content or start the practice game.',
+        onTargetClick: () {
+          _handleStepTap(context, step, allSteps, title, isCompleted);
+        },
+        disposeOnTap: true,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 12.0,
+            right: 12.0,
+            top: 0.0,
+            bottom: isLastInUnit ? 2.0 : 0.0,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTimelineSection(index, isCompleted, isNextToDo, isSubtopic),
+              const SizedBox(width: 10),
+              Expanded(
+                child: GestureDetector(
+                  onTap: isInteractive
+                      ? () => _handleStepTap(
+                          context, step, allSteps, title, isCompleted)
+                      : null,
+                  child: _buildStepCard(
+                      step, isCompleted, isNextToDo, title, isSubtopic),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   bool _isLastInUnit(
       Map<String, dynamic> step, List<Map<String, dynamic>> allSteps) {
     final currentUnitId = step["unitId"];
@@ -574,20 +669,22 @@ class _PathwayUIState extends State<PathwayUI> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => SubtopicPage(
-            subtopic: title,
-            subtopicId: step["subId"] ?? "",
-            readingTitle: title,
-            readingContent: step["reading"] ?? "",
-            isCompleted: isCompleted,
-            subject: widget.subject,
-            grade: widget.grade,
-            unitId: step["unitId"] ?? "",
-            unitTitle: step["unitTitle"] ?? "",
-            userId: widget.userId ?? '',
-            lastSubtopicofUnit: lastSubtopicOfUnit,
-            lastSubtopicofGrade: lastSubtopicOfGrade,
-            lastSubtopicofSubject: lastSubtopicOfSubject,
+          builder: (context) => ShowCaseWidget(
+            builder: (context) => SubtopicPage(
+              subtopic: title,
+              subtopicId: step["subId"] ?? "",
+              readingTitle: title,
+              readingContent: step["reading"] ?? "",
+              isCompleted: isCompleted,
+              subject: widget.subject,
+              grade: widget.grade,
+              unitId: step["unitId"] ?? "",
+              unitTitle: step["unitTitle"] ?? "",
+              userId: widget.userId ?? '',
+              lastSubtopicofUnit: lastSubtopicOfUnit,
+              lastSubtopicofGrade: lastSubtopicOfGrade,
+              lastSubtopicofSubject: lastSubtopicOfSubject,
+            ),
           ),
         ),
       ).then((_) {
