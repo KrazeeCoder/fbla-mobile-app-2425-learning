@@ -77,15 +77,23 @@ Future<Map<String, dynamic>> getSubtopicNavigationInfo({
       next == null || next['subject'] != current['subject'];
 
   return {
+    // Current subtopic info
+    'readingContent': current['reading_content'] ?? "",
+    'readingTitle': current['reading_title'] ?? "",
+
+    // Next subtopic info
     'nextSubtopicId': next?['subtopic_id'] ?? "",
     'nextSubtopicTitle': next?['subtopic_title'] ?? "",
     'nextReadingContent': next?['reading_content'] ?? "",
     'nextReadingTitle': next?['reading_title'] ?? "",
     'nextUnitId': next?['unitId'],
     'nextUnitTitle': next?['unitTitle'],
+
+    // Position flags
     'isLastOfUnit': isLastOfUnit,
     'isLastOfGrade': isLastOfGrade,
     'isLastOfSubject': isLastOfSubject,
     'nextGrade': isLastOfGrade ? nextGrade : grade,
   };
+
 }

@@ -4,8 +4,8 @@ import '../utils/app_logger.dart';
 
 class ProgressService {
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  static Future<List<UserProgress>> fetchRecentLessons(String userId) async {
+  static Future<List<UserProgress>> fetchRecentLessons(String userId,
+      {bool latest = false}) async {
     try {
       final snapshot =
           await _firestore.collection('user_progress').doc(userId).get();
@@ -29,8 +29,11 @@ class ProgressService {
       progressList.sort((a, b) =>
           b.lastAccessed?.compareTo(a.lastAccessed ?? DateTime(0)) ?? 0);
 
-      final top10 = progressList.take(10).toList();
-      return top10;
+      if (latest) {
+        return progressList.isNotEmpty ? [progressList.first] : [];
+      } else {
+        return progressList.take(10).toList();
+      }
     } catch (e, stacktrace) {
       AppLogger.e('Error fetching recent lessons',
           error: e, stackTrace: stacktrace);

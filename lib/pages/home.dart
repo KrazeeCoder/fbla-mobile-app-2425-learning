@@ -1,16 +1,23 @@
 import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../models/user_progress_model.dart';
+import '../services/progress_service.dart';
+import '../utils/game_launcher.dart';
+import '../utils/subTopicNavigation.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/lessons.dart';
 import '../widgets/level_bar_homepage.dart';
 import '../widgets/recent_lessons_homepage.dart';
 import '../widgets/streak_homepage.dart';
+import '../widgets/subtopic_widget.dart';
 import '../widgets/xp_debug_controls.dart';
 import '../xp_manager.dart';
 import '../coach_marks/showcase_keys.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fbla_mobile_2425_learning_app/pages/recent_lessons_homepage_UI.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,34 +34,21 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-  // Function to determine which Earth to display based on level
   String _getEarthAssetPath(int level) {
-    // Direct mapping: Level 1 -> Earth 1, Level 2 -> Earth 2, etc.
-    // For levels beyond 5, show Earth 5 (the most developed Earth)
-    if (level <= 0) {
-      return 'assets/earths/1.svg'; // Default to first Earth for level 0 or negative
-    } else if (level >= 1 && level <= 5) {
-      return 'assets/earths/$level.svg'; // Direct mapping
-    } else {
-      return 'assets/earths/5.svg'; // Max at Earth 5 for higher levels
-    }
+    if (level <= 0) return 'assets/earths/1.svg';
+    if (level >= 1 && level <= 5) return 'assets/earths/$level.svg';
+    return 'assets/earths/5.svg';
   }
 
   @override
   Widget build(BuildContext context) {
-    // Get the screen height and width using MediaQuery
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Access XPManager to get current level
     final xpManager = Provider.of<XPManager>(context);
 
     // Build the list of earths from level 1 to currentLevel
     final currentLevel = xpManager.currentLevel;
-    final List<String> earthImages = List.generate(
-      currentLevel,
-      (index) => _getEarthAssetPath(index + 1),
-    );
 
     return Scaffold(
       appBar: CustomAppBar(),
