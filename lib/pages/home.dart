@@ -2,10 +2,16 @@ import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../models/user_progress_model.dart';
+import '../services/progress_service.dart';
+import '../utils/game_launcher.dart';
+import '../utils/subTopicNavigation.dart';
 import '../widgets/custom_app_bar.dart';
+import '../widgets/lessons.dart';
 import '../widgets/level_bar_homepage.dart';
 import '../widgets/recent_lessons_homepage.dart';
 import '../widgets/streak_homepage.dart';
+import '../widgets/subtopic_widget.dart';
 import '../widgets/xp_debug_controls.dart';
 import '../xp_manager.dart';
 import '../coach_marks/showcase_keys.dart';
@@ -227,11 +233,133 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16.0),
-                    child: SizedBox(
-                      height: 130, // or slightly less if needed
-                      child: RecentLessonsUIPage(latestOnly: true),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: FutureBuilder<List<UserProgress>>(
+                      future: ProgressService.fetchRecentLessons(user?.uid ?? "", latest: true),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+
+                        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return const Text("No recent lessons");
+                        }
+
+                        final item = snapshot.data!.first;
+
+                        return RecentSingleLessonCard(
+                          lesson: item,
+                          onTap: () async {
+                            final navData = await getSubtopicNavigationInfo(
+                              subject: item.subject,
+                              grade: item.grade,
+                              subtopicId: item.subtopicId,
+                            );
+
+                            final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+                            if (item.contentCompleted && !item.quizCompleted) {
+                              await launchRandomGame(
+                                context: context,
+                                subject: item.subject,
+                                grade: item.grade,
+                                unitId: item.unitId,
+                                unitTitle: item.unit,
+                                subtopicId: item.subtopicId,
+                                subtopicTitle: item.subtopic,
+                                nextSubtopicId: navData['nextSubtopicId'],
+                                nextSubtopicTitle: navData['nextSubtopicTitle'],
+                                nextReadingContent: navData['nextReadingContent'],
+                                userId: userId,
+                              );
+                            } else if (!item.contentCompleted) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => SubtopicPage(
+                                    subtopic: item.subtopic,
+                                    subtopicId: item.subtopicId,
+                                    readingTitle: item.subtopic,
+                                    readingContent: navData['readingContent'] ?? '',
+                                    isCompleted: false,
+                                    subject: item.subject,
+                                    grade: item.grade,
+                                    unitId: item.unitId,
+                                    unitTitle: item.unit,
+                                    userId: userId,
+                                    lastSubtopicofUnit: navData['isLastOfUnit'],
+                                    lastSubtopicofGrade: navData['isLastOfGrade'],
+                                    lastSubtopicofSubject: navData['isLastOfSubject'],
+                                  ),
+                                ),
+                              );
+                            } else {
+                              showDialog(
+                                context: context,
+                                builder: (_) => AlertDialog(
+                                  title: const Text("🎉 You've completed this topic!"),
+                                  content: const Text("What would you like to do next?"),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => SubtopicPage(
+                                              subtopic: item.subtopic,
+                                              subtopicId: item.subtopicId,
+                                              readingTitle: item.subtopic,
+                                              readingContent: navData['readingContent'] ?? '',
+                                              isCompleted: true,
+                                              subject: item.subject,
+                                              grade: item.grade,
+                                              unitId: item.unitId,
+                                              unitTitle: item.unit,
+                                              userId: userId,
+                                              lastSubtopicofUnit: navData['isLastOfUnit'],
+                                              lastSubtopicofGrade: navData['isLastOfGrade'],
+                                              lastSubtopicofSubject: navData['isLastOfSubject'],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text("📘 Review it again"),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => SubtopicPage(
+                                              subtopic: navData['nextSubtopicTitle'],
+                                              subtopicId: navData['nextSubtopicId'],
+                                              readingTitle: navData['nextReadingTitle'],
+                                              readingContent: navData['nextReadingContent'],
+                                              isCompleted: false,
+                                              subject: item.subject,
+                                              grade: item.grade,
+                                              unitId: navData['nextUnitId'],
+                                              unitTitle: navData['nextUnitTitle'],
+                                              userId: userId,
+                                              lastSubtopicofUnit: navData['isLastOfUnit'],
+                                              lastSubtopicofGrade: navData['isLastOfGrade'],
+                                              lastSubtopicofSubject: navData['isLastOfSubject'],
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: const Text("➡️ Go to next subtopic"),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      },
                     ),
                   ),
                   Padding(

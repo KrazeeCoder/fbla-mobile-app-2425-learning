@@ -54,11 +54,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (!firstNameFocus.hasFocus) {
         setState(() {
           if (firstNameController.text.isEmpty) {
-            firstNameError = "First name cannot be blank!";
+            firstNameError = "First name cannot be blank";
           } else {
             firstNameError = nameRegex.hasMatch(firstNameController.text)
                 ? null
-                : "Only letters allowed!";
+                : "Only letters allowed";
           }
         });
       }
@@ -68,11 +68,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (!lastNameFocus.hasFocus) {
         setState(() {
           if (lastNameController.text.isEmpty) {
-            lastNameError = "Last name cannot be blank!";
+            lastNameError = "Last name cannot be blank";
           } else {
             lastNameError = nameRegex.hasMatch(lastNameController.text)
                 ? null
-                : "Only letters allowed!";
+                : "Only letters allowed";
           }
         });
       }
@@ -83,7 +83,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
         setState(() {
           emailError = emailRegex.hasMatch(emailController.text)
               ? null
-              : "Enter a valid email!";
+              : "Enter a valid email";
         });
       }
     });
@@ -92,13 +92,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       if (!ageFocus.hasFocus) {
         setState(() {
           if (ageController.text.isEmpty) {
-            ageError = "Age cannot be blank!";
+            ageError = "Age cannot be blank";
           } else if (!ageRegex.hasMatch(ageController.text)) {
-            ageError = "Only numbers allowed!";
+            ageError = "Only numbers allowed";
           } else {
             int age = int.parse(ageController.text);
             if (age > 160) {
-              ageError = "Please enter a valid age!";
+              ageError = "Please enter a valid age";
             } else {
               ageError = null;
             }
@@ -112,10 +112,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
         setState(() {
           passwordError = passwordRegex.hasMatch(passwordController.text)
               ? null
-              : "At least 6 chars, 1 special char, 1 number required!";
+              : "6 characters, 1 special character, 1 number required";
         });
       }
     });
+  }
+
+  SizedBox verticalSpace(String? error) {
+    return SizedBox(height: error == null ? 16 : 8);
   }
 
   @override
@@ -144,6 +148,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       _showSnackBar("Passwords do not match");
       return;
     }
+
 
     if (firstNameError != null ||
         lastNameError != null ||
@@ -230,50 +235,46 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 const SizedBox(height: 32),
 
                 // Name Fields in Row
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: firstNameController,
-                        focusNode: firstNameFocus,
-                        decoration: InputDecoration(
-                          labelText: "First Name",
-                          errorText: firstNameError,
-                          prefixIcon: Icon(Icons.person_outline,
-                              color: Colors.green.shade800),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                                color: Colors.green.shade800, width: 2),
-                          ),
-                        ),
-                      ),
+                // First Name Field
+                TextField(
+                  controller: firstNameController,
+                  focusNode: firstNameFocus,
+                  decoration: InputDecoration(
+                    labelText: "First Name",
+                    errorText: firstNameError,
+                    prefixIcon:
+                    Icon(Icons.person_outline, color: Colors.green.shade800),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: TextField(
-                        controller: lastNameController,
-                        focusNode: lastNameFocus,
-                        decoration: InputDecoration(
-                          labelText: "Last Name",
-                          errorText: lastNameError,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            borderSide: BorderSide(
-                                color: Colors.green.shade800, width: 2),
-                          ),
-                        ),
-                      ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.green.shade800, width: 2),
                     ),
-                  ],
+                  ),
                 ),
-                const SizedBox(height: 16),
+                verticalSpace(firstNameError),
+
+// Last Name Field
+                TextField(
+                  controller: lastNameController,
+                  focusNode: lastNameFocus,
+                  decoration: InputDecoration(
+                    labelText: "Last Name",
+                    errorText: lastNameError,
+                    prefixIcon:
+                    Icon(Icons.person_outline, color: Colors.green.shade800),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.green.shade800, width: 2),
+                    ),
+                  ),
+                ),
+
+                verticalSpace(lastNameError),
 
                 // Email Field
                 TextField(
@@ -294,7 +295,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                verticalSpace(emailError),
 
                 // Age Field
                 TextField(
@@ -316,7 +317,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                verticalSpace(ageError),
 
                 // Password Field
                 TextField(
@@ -338,7 +339,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
+                verticalSpace(passwordError),
 
                 // Confirm Password Field
                 TextField(

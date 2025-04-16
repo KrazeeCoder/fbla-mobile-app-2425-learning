@@ -61,7 +61,7 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
           itemBuilder: (context, index) {
             final item = displayLessons[index];
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
                 onTap: () {
@@ -76,30 +76,19 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
                       ),
                     ),
                   );
-                  ;
                 },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade300,
-                        blurRadius: 4,
-                        offset: const Offset(2, 2),
-                      ),
-                    ],
-                    color: Colors.white,
-                  ),
+                child: IntrinsicHeight(
                   child: Row(
                     children: [
                       Container(
                         width: 64,
-                        height: 88,
                         decoration: BoxDecoration(
                           color: Colors.green.shade100,
                           borderRadius: const BorderRadius.horizontal(
-                              left: Radius.circular(16)),
+                            left: Radius.circular(16),
+                          ),
                         ),
+                        alignment: Alignment.center,
                         child: Icon(
                           _getSubjectIcon(item.subject),
                           size: 36,
@@ -107,62 +96,94 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
                         ),
                       ),
                       Expanded(
-                        child: Padding(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: const BorderRadius.horizontal(
+                              right: Radius.circular(16),
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.shade300,
+                                blurRadius: 4,
+                                offset: const Offset(2, 2),
+                              ),
+                            ],
+                          ),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
-                          child: Column(
+                              horizontal: 12, vertical: 12), // slightly tighter padding
+                          child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(item.subject,
+                              // Main text content
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          item.subject,
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "Grade ${item.grade}",
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      "Subtopic: ${item.subtopic}",
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.grey.shade700,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Text(
+                                      item.quizCompleted
+                                          ? "✅ Topic Completed"
+                                          : item.contentCompleted
+                                          ? "🎮 Game Remaining"
+                                          : "📘 Continue Reading",
                                       style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold)),
-                                  Text("Grade ${item.grade}",
-                                      style: const TextStyle(fontSize: 16)),
-                                ],
+                                        fontSize: 13,
+                                        color: Colors.deepPurple,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                              const SizedBox(height: 4),
-                              Text(item.unit,
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade800,
-                                  )),
-                              Text("Subtopic: ${item.subtopic}",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.grey.shade600,
-                                  )),
-                              const SizedBox(height: 4),
-                              Text(
-                                item.quizCompleted
-                                    ? "✅ Topic Completed"
-                                    : item.contentCompleted
-                                        ? "🎮 Game Remaining"
-                                        : "📘 Continue Reading",
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.deepPurple,
-                                  fontWeight: FontWeight.w500,
+                              // Arrow icon
+                              const Padding(
+                                padding: EdgeInsets.only(left: 8.0),
+                                child: Icon(
+                                  Icons.play_arrow,
+                                  size: 30,
+                                  color: Colors.black87,
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(right: 12.0),
-                        child: Icon(Icons.play_arrow,
-                            size: 30, color: Colors.black87),
-                      ),
                     ],
                   ),
                 ),
               ),
             );
+
+
           },
         );
       },

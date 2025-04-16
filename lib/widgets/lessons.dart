@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/user_progress_model.dart';
+
 class Lesson {
   final String subject;
   final String grade;
@@ -96,5 +98,72 @@ class LessonCard extends StatelessWidget {
         onTap: onTap,  // Trigger onTap when the card is tapped
       ),
     );
+  }
+}
+
+class RecentSingleLessonCard extends StatelessWidget {
+  final UserProgress lesson;
+  final VoidCallback onTap;
+
+  const RecentSingleLessonCard({
+    super.key,
+    required this.lesson,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.15),
+                blurRadius: 4,
+                offset: const Offset(1, 2),
+              )
+            ],
+          ),
+          child: Row(
+            children: [
+              Icon(
+                _getSubjectIcon(lesson.subject),
+                size: 32,
+                color: Colors.green.shade700,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  lesson.subtopic, // 👉 Only subtopic title shown
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  IconData _getSubjectIcon(String subject) {
+    const map = {
+      'Math': Icons.calculate,
+      'Science': Icons.science,
+      'Reading': Icons.menu_book,
+      'History': Icons.library_books,
+    };
+    return map[subject] ?? Icons.book;
   }
 }
