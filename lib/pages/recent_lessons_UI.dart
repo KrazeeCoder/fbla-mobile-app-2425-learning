@@ -161,12 +161,7 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
             );
 
             if (index == 0) {
-              return Showcase(
-                key: ShowcaseKeys.recentLessonItemKey,
-                title: 'Recent Lesson',
-                description: 'Tap here to jump back into your last lesson.',
-                child: lessonWidget,
-              );
+              return lessonWidget;
             }
             return lessonWidget;
           },

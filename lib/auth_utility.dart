@@ -22,6 +22,7 @@ class AuthService {
     required String password,
     required String firstName,
     required String lastName,
+    required String username,
     required int age,
   }) async {
     try {
@@ -51,10 +52,12 @@ class AuthService {
         'email': encryptedUserInfo['email'],
         'firstName': encryptedUserInfo['firstname'],
         'lastName': encryptedUserInfo['lastname'],
+        'username': username, // Add unencrypted username
         'iv': encryptedUserInfo['iv'],
         'age': age,
         'currentLevel': 0,
         'currentXP': 0,
+        'friends': [], // Initialize with empty friends list
         'settings': {
           'fontSize': 14,
           'profilePic':
@@ -151,6 +154,7 @@ class AuthService {
     required String firstName,
     required String lastName,
     required String? profilePic,
+    String? username, // Make username optional for LinkedIn
   }) async {
     try {
       print("🔐 Registering LinkedIn user with encryption for $userId");
@@ -158,6 +162,24 @@ class AuthService {
 
       if (user == null || user.uid != userId) {
         throw Exception("Logged-in user doesn't match LinkedIn UID.");
+      }
+
+      // Generate a unique username if not provided
+      String actualUsername;
+
+      if (username != null) {
+        // Check if provided username is unique
+        final usernameExists = await isUsernameTaken(username);
+        if (usernameExists) {
+          // If taken, generate a unique one
+          actualUsername = await _generateUniqueUsername(firstName, lastName);
+        } else {
+          // Use the provided one if it's unique
+          actualUsername = username;
+        }
+      } else {
+        // Generate a unique username
+        actualUsername = await _generateUniqueUsername(firstName, lastName);
       }
 
       // 🔐 Step 1: Set encryption key for this LinkedIn user
@@ -178,10 +200,12 @@ class AuthService {
         'email': encryptedUserInfo['email'],
         'firstName': encryptedUserInfo['firstname'],
         'lastName': encryptedUserInfo['lastname'],
+        'username': actualUsername, // Add username
         'iv': encryptedUserInfo['iv'],
         'age': 0, // default age
         'currentLevel': 0,
         'currentXP': 0,
+        'friends': [], // Initialize with empty friends list
         'settings': {
           'fontSize': 14,
           'profilePic': encryptedUserInfo['profilePic'] ?? "",
@@ -200,12 +224,44 @@ class AuthService {
     }
   }
 
+  /// Generate a unique username based on first and last name
+  Future<String> _generateUniqueUsername(
+      String firstName, String lastName) async {
+    // Base username format
+    String baseUsername = '${firstName.toLowerCase()}${lastName.toLowerCase()}';
+
+    // First try without any numbers
+    if (!await isUsernameTaken(baseUsername)) {
+      return baseUsername;
+    }
+
+    // Then try with a random 4-digit number
+    int attempt = 1;
+    String username;
+
+    do {
+      int randomSuffix = 1000 + attempt;
+      username = '$baseUsername$randomSuffix';
+      attempt++;
+
+      // Safety check to prevent infinite loops
+      if (attempt > 100) {
+        // At this point, use a timestamp to ensure uniqueness
+        username = '$baseUsername${DateTime.now().millisecondsSinceEpoch}';
+        break;
+      }
+    } while (await isUsernameTaken(username));
+
+    return username;
+  }
+
   Future<void> updateUserProfile({
     required String uid,
     required String email,
     required String firstName,
     required String lastName,
     required String profilePic,
+    String? username,
   }) async {
     // 🔒 Step 1: Encrypt all fields using your utility
     print("🔐 Updating profile Encrypting user profile for $uid");
@@ -217,8 +273,8 @@ class AuthService {
       profilePic,
     );
 
-    // 📝 Step 2: Save encrypted user info in Firestore
-    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+    // Create update map
+    Map<String, dynamic> updateData = {
       'email': encryptedUserInfo['email'],
       'firstName': encryptedUserInfo['firstname'],
       'lastName': encryptedUserInfo['lastname'],
@@ -226,7 +282,28 @@ class AuthService {
       'settings': {
         'profilePic': encryptedUserInfo['profilePic'] ?? "",
       }
-    }, SetOptions(merge: true)); // ✅ Prevents overwriting unrelated fields
+    };
+
+    // Add username to update if provided
+    if (username != null) {
+      // Check if username is different than current one
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      final currentUsername = userDoc.data()?['username'];
+
+      if (username != currentUsername) {
+        // Verify username is not taken by another user
+        final isUsernameTaken = await this.isUsernameTaken(username);
+        if (isUsernameTaken) {
+          throw Exception("Username is already taken");
+        }
+        updateData['username'] = username;
+      }
+    }
+
+    // 📝 Step 2: Save encrypted user info in Firestore
+    await FirebaseFirestore.instance.collection('users').doc(uid).set(
+        updateData,
+        SetOptions(merge: true)); // ✅ Prevents overwriting unrelated fields
   }
 
   /// Check if a user is logging in for the first time
@@ -259,4 +336,22 @@ class AuthService {
       return false; // Default to false if there's an error
     }
   }
+
+  /// Check if a username is already taken
+  Future<bool> isUsernameTaken(String username) async {
+    try {
+      final QuerySnapshot result = await _firestore
+          .collection('users')
+          .where('username', isEqualTo: username)
+          .limit(1)
+          .get();
+
+      return result.docs.isNotEmpty;
+    } catch (e) {
+      print("Error checking username availability: $e");
+      return true;
+    }
+  }
 }
+
+

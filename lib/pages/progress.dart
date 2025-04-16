@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../utils/app_logger.dart';
 import '../widgets/custom_app_bar.dart';
 import '../services/streak_manager.dart';
+import '../widgets/leaderboard_widget.dart';
 
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
@@ -152,7 +153,9 @@ class _ProgressPageState extends State<ProgressPage>
                           ],
                         ),
 
-                        const SizedBox(height: 24),
+                        // Leaderboard Section
+                        const LeaderboardWidget(),
+                        const SizedBox(height: 20),
 
                         // Recent Activity
                         Row(

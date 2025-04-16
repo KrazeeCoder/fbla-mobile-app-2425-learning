@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_keys.dart';
 import 'navigation_chatbot.dart';
 
 class NavigationHelpPage extends StatefulWidget {
@@ -28,6 +30,10 @@ class _NavigationHelpPageState extends State<NavigationHelpPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: const Text('Navigation Help'),
         bottom: TabBar(
           controller: _tabController,

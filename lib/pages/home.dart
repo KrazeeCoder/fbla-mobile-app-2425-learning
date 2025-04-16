@@ -214,13 +214,18 @@ class _HomePageState extends State<HomePage> {
             // Recent Lessons List (Non-Scrollable)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: RecentLessonsPage(),
+              child: Showcase(
+                key: ShowcaseKeys.pickUpLessonKey,
+                title: 'Pick Up Where You Left Off',
+                description: 'Quickly access your most recent lessons here.',
+                child: RecentLessonsPage(),
+              ),
             ), // Ensure this widget is non-scrollable
 
             // Debug controls for XP testing (remove before production release)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: const XPDebugControls(),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: XPDebugControls(),
             ),
 
             // Add some bottom padding

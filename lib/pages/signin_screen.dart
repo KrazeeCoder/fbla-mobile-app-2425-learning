@@ -43,8 +43,7 @@ class _SignInScreenState extends State<SignInScreen> {
         await setLoginUserKeys(user);
         final isNewUser = await _authService.isFirstLogin(user.uid);
         if (isNewUser) {
-          Provider.of<ShowcaseProvider>(context, listen: false)
-              .markTutorialNeeded();
+          Provider.of<ShowcaseService>(context, listen: false).resetShowcase();
         }
 
         Navigator.pushReplacement(

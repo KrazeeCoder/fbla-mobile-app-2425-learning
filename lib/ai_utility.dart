@@ -47,7 +47,9 @@ Future<String?> generateResponseForTextContentQuestion(String text,
 
     Guidelines for responses:
     1. If the question is not about the lesson content, respond with:
-       "I'm sorry, I can only help with questions about this specific lesson. Please ask me about the lesson content, request examples, or ask for clarification on concepts covered in this lesson."
+       "I'm sorry, I can only help with questions about this specific
+       lesson. Please ask me about the lesson content, request examples,
+       or ask for clarification on concepts covered in this lesson."
 
     2. Keep responses:
        - Under 2 paragraphs (or more concise if applicable)

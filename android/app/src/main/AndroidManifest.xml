@@ -7,6 +7,7 @@
         android:label="fbla_mobile_2425_learning_app"
         android:usesCleartextTraffic="true"
         android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

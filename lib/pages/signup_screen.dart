@@ -13,6 +13,7 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController ageController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -22,6 +23,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // Add FocusNodes
   final FocusNode firstNameFocus = FocusNode();
   final FocusNode lastNameFocus = FocusNode();
+  final FocusNode usernameFocus = FocusNode();
   final FocusNode emailFocus = FocusNode();
   final FocusNode ageFocus = FocusNode();
   final FocusNode passwordFocus = FocusNode();
@@ -33,12 +35,14 @@ class _SignUpScreenState extends State<SignUpScreen> {
   // Validation error messages
   String? firstNameError;
   String? lastNameError;
+  String? usernameError;
   String? emailError;
   String? ageError;
   String? passwordError;
 
   // Regex Patterns
   final RegExp nameRegex = RegExp(r"^[a-zA-Z]+$");
+  final RegExp usernameRegex = RegExp(r"^[a-zA-Z0-9_]{3,20}$");
   final RegExp emailRegex =
       RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$");
   final RegExp ageRegex = RegExp(r"^[0-9]+$");
@@ -116,6 +120,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
         });
       }
     });
+
+    usernameFocus.addListener(() {
+      if (!usernameFocus.hasFocus) {
+        setState(() {
+          if (usernameController.text.isEmpty) {
+            usernameError = "Username cannot be blank!";
+          } else if (!usernameRegex.hasMatch(usernameController.text)) {
+            usernameError =
+                "3-20 characters, letters, numbers, and underscores only!";
+          } else {
+            // Check if username is available when focus is lost
+            _checkUsernameAvailability(usernameController.text.trim());
+          }
+        });
+      }
+    });
   }
 
   @override
@@ -123,6 +143,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // Dispose controllers
     firstNameController.dispose();
     lastNameController.dispose();
+    usernameController.dispose();
     emailController.dispose();
     ageController.dispose();
     passwordController.dispose();
@@ -131,6 +152,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     // Dispose focus nodes
     firstNameFocus.dispose();
     lastNameFocus.dispose();
+    usernameFocus.dispose();
     emailFocus.dispose();
     ageFocus.dispose();
     passwordFocus.dispose();
@@ -147,6 +169,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
     if (firstNameError != null ||
         lastNameError != null ||
+        usernameError != null ||
         emailError != null ||
         ageError != null ||
         passwordError != null) {
@@ -155,6 +178,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
     }
 
     setState(() => isLoading = true);
+
+    // Check if username is already taken
+    final username = usernameController.text.trim();
+    final isUsernameTaken = await _authService.isUsernameTaken(username);
+
+    if (isUsernameTaken) {
+      setState(() => isLoading = false);
+      _showSnackBar(
+          "Username '$username' is already taken. Please choose a different username.");
+      return;
+    }
 
     int? age = int.tryParse(ageController.text.trim());
     if (age == null || age < 13 || age > 120) {
@@ -168,15 +202,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
       password: passwordController.text.trim(),
       firstName: firstNameController.text.trim(),
       lastName: lastNameController.text.trim(),
+      username: username,
       age: age,
     );
 
     setState(() => isLoading = false);
 
     if (result == "Success") {
-      // Mark tutorial as needed using the ShowcaseProvider
-      Provider.of<ShowcaseProvider>(context, listen: false)
-          .markTutorialNeeded();
+      // Mark tutorial as needed using the ShowcaseService
+      Provider.of<ShowcaseService>(context, listen: false).resetShowcase();
 
       if (mounted) {
         Navigator.pushAndRemoveUntil(
@@ -187,6 +221,22 @@ class _SignUpScreenState extends State<SignUpScreen> {
       }
     } else {
       _showSnackBar(result ?? "Registration failed");
+    }
+  }
+
+  // Add a method to check username availability in real-time
+  Future<void> _checkUsernameAvailability(String username) async {
+    if (username.isEmpty || !usernameRegex.hasMatch(username)) {
+      return; // Don't check availability if format is invalid
+    }
+
+    final isUsernameTaken = await _authService.isUsernameTaken(username);
+
+    if (mounted) {
+      setState(() {
+        usernameError =
+            isUsernameTaken ? "Username '$username' is already taken" : null;
+      });
     }
   }
 
@@ -272,6 +322,27 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ),
                     ),
                   ],
+                ),
+                const SizedBox(height: 16),
+
+                // Username Field
+                TextField(
+                  controller: usernameController,
+                  focusNode: usernameFocus,
+                  decoration: InputDecoration(
+                    labelText: "Username",
+                    errorText: usernameError,
+                    prefixIcon: Icon(Icons.alternate_email,
+                        color: Colors.green.shade800),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide:
+                          BorderSide(color: Colors.green.shade800, width: 2),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 16),
 
