@@ -17,7 +17,6 @@ import '../xp_manager.dart';
 import '../coach_marks/showcase_keys.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fbla_mobile_2425_learning_app/pages/recent_lessons_homepage_UI.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
