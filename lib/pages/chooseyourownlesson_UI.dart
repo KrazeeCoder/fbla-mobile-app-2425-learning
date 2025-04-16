@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
 
 class ChooseLessonUIPage extends StatefulWidget {
   const ChooseLessonUIPage({super.key});

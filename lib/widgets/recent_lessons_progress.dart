@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../jsonUtility.dart';
 import '../utils/app_logger.dart';
 import '../widgets/subtopic_widget.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
 
 class RecentLessonsTabWidget extends StatefulWidget {
   final Map<String, dynamic> userProgress;

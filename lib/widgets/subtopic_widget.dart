@@ -19,6 +19,8 @@ import 'earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../utils/subTopicNavigation.dart';
 import '../utils/game_launcher.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
 
 class SubtopicPage extends StatefulWidget {
   final String subtopic;
@@ -217,6 +219,10 @@ class _SubtopicPageState extends State<SubtopicPage> {
 
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_new),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
         title: Text(widget.subtopic),
         backgroundColor: primaryGreen,
         foregroundColor: Colors.white,

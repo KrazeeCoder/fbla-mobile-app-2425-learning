@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'coach_marks/showcase_keys.dart';
 import 'pages/home.dart';
 import 'pages/progress.dart';
 import 'pages/learn.dart';
@@ -16,6 +17,8 @@ import 'package:flutter/services.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'coach_marks/showcase_provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -99,13 +102,14 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final showcaseProvider = ShowcaseProvider();
+  final showcaseService = ShowcaseService();
+  bool _showcaseTriggered = false;
 
   @override
   void initState() {
     super.initState();
-    // Initialize the showcase provider
-    showcaseProvider.initialize();
+    // Initialize the showcase service
+    showcaseService.initialize();
   }
 
   @override
@@ -113,10 +117,10 @@ class _MyAppState extends State<MyApp> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => XPManager()),
-        ChangeNotifierProvider.value(value: showcaseProvider),
+        ChangeNotifierProvider.value(value: showcaseService),
       ],
       child: MaterialApp(
-        title: 'FBLA Learning App',
+        title: 'WorldWise',
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF7FB069)),
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -125,7 +129,7 @@ class _MyAppState extends State<MyApp> {
         ),
         debugShowCheckedModeBanner: false,
         home: const AuthWrapper(),
-        localizationsDelegates: [
+        localizationsDelegates: const [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
@@ -139,8 +143,15 @@ class _MyAppState extends State<MyApp> {
 }
 
 // ✅ Decides whether to show Login Screen or Home Page
-class AuthWrapper extends StatelessWidget {
+class AuthWrapper extends StatefulWidget {
   const AuthWrapper({super.key});
+
+  @override
+  State<AuthWrapper> createState() => _AuthWrapperState();
+}
+
+class _AuthWrapperState extends State<AuthWrapper> {
+  bool _showcaseTriggered = false;
 
   Future<bool> checkUserStillExists(User user) async {
     try {
@@ -180,7 +191,44 @@ class AuthWrapper extends StatelessWidget {
 
               if (existenceSnapshot.hasData && existenceSnapshot.data == true) {
                 setLoginUserKeys(snapshot.data!);
-                return const MainPage(); // ✅ User exists → Proceed
+                return ShowCaseWidget(
+                  onStart: (index, key) {
+                    AppLogger.i("Showcase started with index: $index");
+                  },
+                  onComplete: (index, key) {
+                    if (index == null) {
+                      AppLogger.i("Showcase completed");
+                      Provider.of<ShowcaseService>(context, listen: false)
+                          .markShowcaseComplete();
+                    }
+                  },
+                  builder: (context) => Builder(
+                    builder: (builderContext) {
+                      // Use a Builder to get the correct context that has access to ShowCaseWidget
+                      if (!_showcaseTriggered) {
+                        _showcaseTriggered = true;
+                        // Delay to ensure all widgets are properly laid out
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          AppLogger.i("Attempting to start showcase");
+                          try {
+                            final showcaseService =
+                                Provider.of<ShowcaseService>(builderContext,
+                                    listen: false);
+                            if (!showcaseService.hasCompletedInitialShowcase) {
+                              showcaseService
+                                  .startHomeScreenShowcase(builderContext);
+                              AppLogger.i("Showcase started successfully");
+                            }
+                          } catch (e) {
+                            AppLogger.e("Error starting showcase: $e");
+                          }
+                        });
+                      }
+
+                      return const MainPage();
+                    },
+                  ),
+                );
               } else {
                 return SignInScreen(); // ❌ User deleted → Go to sign-in
               }
@@ -204,7 +252,7 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  late int _selectedIndex = 0;
+  int _selectedIndex = 0;
 
   static const List<Widget> _pages = <Widget>[
     HomePage(),
@@ -240,24 +288,67 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final bottomNavBar = BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Showcase(
+            key: ShowcaseKeys.homeNavKey,
+            title: 'Home',
+            description: 'Return to the main home screen.',
+            child: const Icon(Icons.home),
+          ),
           label: 'Home',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.menu_book),
+          icon: Showcase(
+            key: ShowcaseKeys.learnNavKey,
+            title: 'Learn',
+            description: 'Access new lessons and review recent topics here.',
+            child: const Icon(Icons.menu_book),
+            onTargetClick: () {
+              _onItemTapped(1);
+              final showcaseService =
+                  Provider.of<ShowcaseService>(context, listen: false);
+              showcaseService.startLearnScreenShowcase(context);
+            },
+            disposeOnTap: true,
+          ),
           label: 'Learn',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.bar_chart),
+          icon: Showcase(
+            key: ShowcaseKeys.progressNavKey,
+            title: 'Progress',
+            description: 'Track your learning streaks and overall progress.',
+            child: const Icon(Icons.bar_chart),
+            onTargetClick: () {
+              _onItemTapped(2);
+              // When clicked, start the progress showcase
+              final showcaseService =
+                  Provider.of<ShowcaseService>(context, listen: false);
+              showcaseService.startProgressScreenShowcase(context);
+            },
+            disposeOnTap: true,
+          ),
           label: 'Progress',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.settings),
+          icon: Showcase(
+            key: ShowcaseKeys.settingsNavKey,
+            title: 'Settings',
+            description: 'Adjust app settings and manage your profile.',
+            child: const Icon(Icons.settings),
+            onTargetClick: () {
+              _onItemTapped(3);
+              // When clicked, start the settings showcase
+              final showcaseService =
+                  Provider.of<ShowcaseService>(context, listen: false);
+              showcaseService.startSettingsScreenShowcase(context);
+            },
+            disposeOnTap: true,
+          ),
           label: 'Settings',
         ),
-        BottomNavigationBarItem(
+        const BottomNavigationBarItem(
           icon: Icon(Icons.developer_board),
           label: 'Test Page',
         ),
@@ -266,6 +357,7 @@ class _MainPageState extends State<MainPage> {
       selectedItemColor: Colors.deepPurple,
       unselectedItemColor: Colors.grey,
       onTap: _onItemTapped,
+      type: BottomNavigationBarType.fixed, // Ensure labels are always visible
     );
 
     return Scaffold(

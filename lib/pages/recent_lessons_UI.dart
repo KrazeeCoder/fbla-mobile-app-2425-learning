@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_progress_model.dart';
 import '../services/progress_service.dart';
-import '../utils/subTopicNavigation.dart';
-import '../widgets/subtopic_widget.dart';
-import '../utils/game_launcher.dart';
+
 import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart';
+import 'package:showcaseview/showcaseview.dart';
+import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
 
 class RecentLessonsUIPage extends StatefulWidget {
   final bool latestOnly;
@@ -59,9 +59,9 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
         return ListView.builder(
           itemCount: displayLessons.length,
           itemBuilder: (context, index) {
-            final item = displayLessons[index];
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+            final item = lessons[index];
+            final lessonWidget = Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
                 onTap: () {
@@ -111,7 +111,8 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
                             ],
                           ),
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 12), // slightly tighter padding
+                              horizontal: 12,
+                              vertical: 12), // slightly tighter padding
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -122,7 +123,7 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
                                   children: [
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           item.subject,
@@ -153,8 +154,8 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
                                       item.quizCompleted
                                           ? "✅ Topic Completed"
                                           : item.contentCompleted
-                                          ? "🎮 Game Remaining"
-                                          : "📘 Continue Reading",
+                                              ? "🎮 Game Remaining"
+                                              : "📘 Continue Reading",
                                       style: const TextStyle(
                                         fontSize: 13,
                                         color: Colors.deepPurple,
@@ -183,7 +184,10 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
               ),
             );
 
-
+            if (index == 0) {
+              return lessonWidget;
+            }
+            return lessonWidget;
           },
         );
       },

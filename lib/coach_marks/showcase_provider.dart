@@ -1,53 +1,92 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'showcase_keys.dart';
 
-class ShowcaseProvider extends ChangeNotifier {
-  bool _needsShowcase = false;
-  bool _isInitialized = false;
+class ShowcaseService extends ChangeNotifier {
+  bool _hasCompletedInitialShowcase = false;
+  bool _isShowcaseActive = false;
 
-  bool get needsShowcase => _needsShowcase;
-  bool get isInitialized => _isInitialized;
+  bool get hasCompletedInitialShowcase => _hasCompletedInitialShowcase;
+  bool get isShowcaseActive => _isShowcaseActive;
 
-  // Preference keys
-  static const String _showcaseShownKey = 'showcase_shown';
-  static const String _shouldShowTutorialKey = 'should_show_tutorial';
+  // Key for shared preferences
+  static const String _showcaseCompletedKey = 'showcase_completed';
 
-  // Initialize the provider by checking preferences
+  // Initialize the showcase service
   Future<void> initialize() async {
-    if (_isInitialized) return;
-
     final prefs = await SharedPreferences.getInstance();
-    _needsShowcase = prefs.getBool(_shouldShowTutorialKey) ?? false;
-    _isInitialized = true;
+    _hasCompletedInitialShowcase =
+        prefs.getBool(_showcaseCompletedKey) ?? false;
     notifyListeners();
   }
 
-  // Mark that showcase has been shown
+  // Mark showcase as completed
   Future<void> markShowcaseComplete() async {
+    _hasCompletedInitialShowcase = true;
+    _isShowcaseActive = false;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_showcaseShownKey, true);
-    await prefs.setBool(_shouldShowTutorialKey, false);
-
-    _needsShowcase = false;
+    await prefs.setBool(_showcaseCompletedKey, true);
     notifyListeners();
   }
 
-  // Reset showcase to be shown again
+  // Reset showcase (for testing)
   Future<void> resetShowcase() async {
+    _hasCompletedInitialShowcase = false;
+    _isShowcaseActive = false;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_showcaseShownKey, false);
-    await prefs.setBool(_shouldShowTutorialKey, true);
-
-    _needsShowcase = true;
+    await prefs.setBool(_showcaseCompletedKey, false);
     notifyListeners();
   }
 
-  // Mark tutorial as needed for next load (e.g., after sign up)
-  Future<void> markTutorialNeeded() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool(_shouldShowTutorialKey, true);
+  // Start a showcase with custom keys
+  static void startCustomShowcase(BuildContext context, List<GlobalKey> keys) {
+    if (keys.isEmpty) return;
 
-    _needsShowcase = true;
+    try {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        final ShowCaseWidgetState? showcaseWidget = ShowCaseWidget.of(context);
+        if (showcaseWidget != null) {
+          showcaseWidget.startShowCase(keys);
+        }
+      });
+    } catch (e) {
+      debugPrint('Error starting custom showcase: $e');
+    }
+  }
+
+  // Start Home screen showcase
+  void startHomeScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
     notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getFirstShowcaseKeys());
+  }
+
+  // Start Learn screen showcase
+  void startLearnScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getSecondShowcaseKeys());
+  }
+
+  // Start Pathway screen showcase
+  void startPathwayScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getThirdShowcaseKeys());
+  }
+
+  // Start Progress screen showcase
+  void startProgressScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getFourthShowcaseKeys());
+  }
+
+  // Start Settings screen showcase
+  void startSettingsScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getFifthShowcaseKeys());
   }
 }
