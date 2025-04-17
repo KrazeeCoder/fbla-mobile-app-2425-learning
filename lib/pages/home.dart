@@ -189,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                   Text(
                     'Pick Up Where You Left Off',
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: 20, //font
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       shadows: [
