@@ -1,4 +1,7 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:convert';
 
 /// Generates a professional LinkedIn post message
@@ -9,12 +12,10 @@ String generateProfessionalLinkedInPost({
   required String subtopic,
 }) {
   return '''
-🎉 Achievement Unlocked! 🎉
+I'm proud to share that I just reached Level $level with $totalXP XP while exploring $subject in the FBLA Learning App 📚  
+Most recently, I completed "$subtopic", and the journey has been both fun and educational.
 
-I'm proud to share that I just reached **Level $level** with **$totalXP XP** while exploring **$subject** in the FBLA Learning App! 📚✨  
-Most recently, I mastered **"$subtopic"**, and the journey has been both fun and educational.
-
-This app transforms learning into an exciting adventure — combining knowledge, gameplay, and real growth. Every subtopic I complete brings me closer to mastering subjects like **Math, Science, History, and English** — the fun way! 🚀
+This app turns learning into an exciting adventure — combining knowledge, gameplay, and real growth. Every subtopic brings me closer to mastering Math, Science, History, and English — the fun way 🚀
 
 #GamifiedLearning #StudentMilestone #LevelUp #XP #EdTech #FBLA #LearningApp #AchievementUnlocked #GrowthMindset
 ''';
@@ -22,9 +23,17 @@ This app transforms learning into an exciting adventure — combining knowledge,
 
 /// Posts the given message to LinkedIn
 Future<void> postToLinkedIn({
+  required BuildContext context,
   required String accessToken,
   required String message,
 }) async {
+  if (accessToken.isEmpty) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("You must be signed into LinkedIn to share.")),
+    );
+    return;
+  }
+
   try {
     final userId = await fetchLinkedInUserID(accessToken);
 
@@ -43,8 +52,7 @@ Future<void> postToLinkedIn({
           "shareCommentary": {
             "text": message,
           },
-          "shareMediaCategory":
-              "NONE", // You can change this if you add image upload
+          "shareMediaCategory": "NONE",
         },
       },
       "visibility": {
@@ -59,21 +67,28 @@ Future<void> postToLinkedIn({
     );
 
     if (response.statusCode == 201) {
-      showTextDialog('Success', 'Post shared successfully on LinkedIn.');
-    } else {
-      showTextDialog(
-        'Error',
-        'Failed to share post on LinkedIn. Status Code: ${response.statusCode}\nResponse: ${response.body}',
-      );
+      final locationHeader = response.headers['location'];
+      if (locationHeader != null && locationHeader.contains('ugcPost')) {
+        final postUrn = locationHeader.split('/').last;
+        final postUrl = 'https://www.linkedin.com/feed/update/$postUrn';
+
+        showTextDialog('Success', 'Post shared successfully. Opening your post...');
+        await launchUrl(Uri.parse(postUrl), mode: LaunchMode.externalApplication);
+      } else {
+        showTextDialog('Success', 'Post shared successfully, but could not get post link.');
+        await launchUrl(Uri.parse('https://www.linkedin.com/feed/'), mode: LaunchMode.externalApplication);
+      }
     }
+
   } catch (error) {
     showTextDialog('Error', 'Failed to share post on LinkedIn. Error: $error');
   }
 }
 
-/// Shows a basic dialog or message (can be updated with Flutter dialog)
+
+/// Shows a basic dialog or prints message (replace with real UI dialog in Flutter)
 void showTextDialog(String title, String message) {
-  print('$title: $message'); // Replace with actual UI dialog if needed
+  print('$title: $message');
 }
 
 /// Fetches LinkedIn user ID using the access token

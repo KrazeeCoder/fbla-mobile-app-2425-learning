@@ -67,7 +67,7 @@ class _StreakHomepageState extends State<StreakHomepage>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -112,8 +112,8 @@ class _StreakHomepageState extends State<StreakHomepage>
                   animation: _flameAnimation,
                   builder: (context, child) {
                     return Container(
-                      width: 48,
-                      height: 48,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
                         gradient: _currentStreak > 0
                             ? LinearGradient(
@@ -149,7 +149,7 @@ class _StreakHomepageState extends State<StreakHomepage>
                               color: _currentStreak > 0
                                   ? const Color.fromARGB(255, 255, 94, 0)
                                   : Colors.grey,
-                              size: 32,
+                              size: 28,
                             ),
                           ),
                         ),
@@ -167,7 +167,7 @@ class _StreakHomepageState extends State<StreakHomepage>
                       Text(
                         _currentStreak == 0 ? "Start Your Streak" : "🔥 Streak",
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: _currentStreak > 0
                               ? const Color(0xFFFF6B00)
                               : Colors.grey.shade600,
@@ -184,7 +184,7 @@ class _StreakHomepageState extends State<StreakHomepage>
                                 ? "Complete a lesson today"
                                 : "$_currentStreak ${_currentStreak == 1 ? 'day' : 'days'}",
                             style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               foreground: Paint()
                                 ..shader = _currentStreak > 0
@@ -212,7 +212,7 @@ class _StreakHomepageState extends State<StreakHomepage>
                             Text(
                               "• ${_currentStreak ~/ 7} ${_currentStreak ~/ 7 == 1 ? 'week' : 'weeks'}",
                               style: TextStyle(
-                                fontSize: 14,
+                                fontSize: 12,
                                 color: Colors.grey.shade600,
                               ),
                             ),
@@ -224,7 +224,7 @@ class _StreakHomepageState extends State<StreakHomepage>
                 // Streak Progress
                 if (_currentStreak > 0)
                   Container(
-                    width: 68,
+                    width: 56,
                     height: 68,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -237,8 +237,8 @@ class _StreakHomepageState extends State<StreakHomepage>
                       alignment: Alignment.center,
                       children: [
                         SizedBox(
-                          width: 50,
-                          height: 50,
+                          width: 55,
+                          height: 55,
                           child: CircularProgressIndicator(
                             value: (_currentStreak % 7) / 7,
                             backgroundColor: Colors.grey.shade200,
