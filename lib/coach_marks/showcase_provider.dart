@@ -17,8 +17,10 @@ class ShowcaseService extends ChangeNotifier {
   // Initialize the showcase service
   Future<void> initialize() async {
     final prefs = await SharedPreferences.getInstance();
-    _hasCompletedInitialShowcase =
-        prefs.getBool(_showcaseCompletedKey) ?? false;
+    // Comment out actual preference and force to false for debugging
+    // _hasCompletedInitialShowcase =
+    //     prefs.getBool(_showcaseCompletedKey) ?? false;
+    _hasCompletedInitialShowcase = false; // Always start showcase for debugging
     notifyListeners();
   }
 
@@ -46,9 +48,14 @@ class ShowcaseService extends ChangeNotifier {
 
     try {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Get the ShowCaseWidgetState from the context
         final ShowCaseWidgetState? showcaseWidget = ShowCaseWidget.of(context);
+
         if (showcaseWidget != null) {
+          // Use the existing ShowCaseWidget
           showcaseWidget.startShowCase(keys);
+        } else {
+          debugPrint('Error: No ShowCaseWidget found in context hierarchy');
         }
       });
     } catch (e) {
@@ -90,5 +97,25 @@ class ShowcaseService extends ChangeNotifier {
     _isShowcaseActive = true;
     notifyListeners();
     startCustomShowcase(context, ShowcaseKeys.getGameScreenShowcaseKeys());
+  }
+
+  // Start Pathway to Progress screen showcase
+  void startPathwayToProgressScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(
+        context, ShowcaseKeys.getPathwayToProgressScreenShowcaseKeys());
+  }
+
+  void startProgressScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getProgressScreenShowcaseKeys());
+  }
+
+  void startSettingsScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getSettingsScreenShowcaseKeys());
   }
 }

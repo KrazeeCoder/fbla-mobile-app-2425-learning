@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_keys.dart';
 import '/auth_utility.dart';
 import 'signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -226,208 +228,217 @@ class _SettingsPageState extends State<SettingsPage> {
     return Scaffold(
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const CustomAppBar(), // ✅ Add your custom app bar
+          : Showcase(
+              key: ShowcaseKeys.settingsScreenKey,
+              title: 'Settings',
+              description: 'This is the settings screen',
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CustomAppBar(), // ✅ Add your custom app bar
 
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
-                    child: Text(
-                      "Settings",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
+                    const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
+                      child: Text(
+                        "Settings",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        // Profile Picture
-                        Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundImage: profilePicUrl.isNotEmpty
-                                  ? NetworkImage(profilePicUrl)
-                                  : const AssetImage(
-                                          'assets/default_avatar.png')
-                                      as ImageProvider,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.edit,
-                                  color: Colors.deepPurple),
-                              onPressed: _editProfilePicture,
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Email (read-only)
-                        TextFormField(
-                          controller: _emailController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            border: OutlineInputBorder(),
-                            fillColor: Colors.grey.shade100,
-                            filled: true,
-                            prefixIcon: const Icon(Icons.email_outlined),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          // Profile Picture
+                          Stack(
+                            alignment: Alignment.bottomRight,
+                            children: [
+                              CircleAvatar(
+                                radius: 50,
+                                backgroundImage: profilePicUrl.isNotEmpty
+                                    ? NetworkImage(profilePicUrl)
+                                    : const AssetImage(
+                                            'assets/default_avatar.png')
+                                        as ImageProvider,
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.edit,
+                                    color: Colors.deepPurple),
+                                onPressed: _editProfilePicture,
+                              )
+                            ],
                           ),
-                          style: TextStyle(color: Colors.grey.shade700),
-                        ),
-                        const SizedBox(height: 16),
+                          const SizedBox(height: 20),
 
-                        // Username Field
-                        TextField(
-                          controller: _usernameController,
-                          decoration: InputDecoration(
-                            labelText: 'Username',
-                            errorText: usernameError,
-                            prefixIcon: const Icon(Icons.alternate_email),
-                            border: OutlineInputBorder(),
-                            helperText: 'Your unique username for leaderboards',
-                          ),
-                          onChanged: (value) {
-                            // Reset error when user types
-                            if (usernameError != null) {
-                              setState(() => usernameError = null);
-                            }
-                            // Validate format as user types
-                            _validateUsernameFormat(value);
-                          },
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Name Fields
-                        TextField(
-                          controller: _firstNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'First Name',
-                            prefixIcon: Icon(Icons.person),
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _lastNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Last Name',
-                            prefixIcon: Icon(Icons.person_outline),
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // XP & Level (Read-Only Display)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Chip(
-                              label: Text("Level: $currentLevel"),
-                              avatar:
-                                  const Icon(Icons.star, color: Colors.amber),
+                          // Email (read-only)
+                          TextFormField(
+                            controller: _emailController,
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              labelText: 'Email',
+                              border: OutlineInputBorder(),
+                              fillColor: Colors.grey.shade100,
+                              filled: true,
+                              prefixIcon: const Icon(Icons.email_outlined),
                             ),
-                            Chip(
-                              label: Text("XP: $currentXP"),
-                              avatar: const Icon(Icons.flash_on,
-                                  color: Colors.orange),
+                            style: TextStyle(color: Colors.grey.shade700),
+                          ),
+                          const SizedBox(height: 16),
+
+                          // Username Field
+                          TextField(
+                            controller: _usernameController,
+                            decoration: InputDecoration(
+                              labelText: 'Username',
+                              errorText: usernameError,
+                              prefixIcon: const Icon(Icons.alternate_email),
+                              border: OutlineInputBorder(),
+                              helperText:
+                                  'Your unique username for leaderboards',
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Stay On Track Toggle
-                        SwitchListTile(
-                          title: const Text("Stay On Track"),
-                          value: stayOnTrack,
-                          onChanged: (val) => setState(() => stayOnTrack = val),
-                          activeColor: Colors.deepPurple,
-                        ),
-                        const SizedBox(height: 10),
-
-                        // Font Size Slider
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("Font Size",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Slider(
-                              min: 10,
-                              max: 24,
-                              divisions: 7,
-                              label: fontSize.toStringAsFixed(0),
-                              value: fontSize,
-                              onChanged: (val) =>
-                                  setState(() => fontSize = val),
-                              activeColor: Colors.deepPurple,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Add a section for tutorials
-                        ListTile(
-                          title: const Text('App Tutorial'),
-                          subtitle: const Text('Reset the app tutorial'),
-                          trailing: ElevatedButton(
-                            onPressed: () async {
-                              await Provider.of<ShowcaseService>(context,
-                                      listen: false)
-                                  .resetShowcase();
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Tutorial reset! It will appear next time you open the app.'),
-                                  ),
-                                );
+                            onChanged: (value) {
+                              // Reset error when user types
+                              if (usernameError != null) {
+                                setState(() => usernameError = null);
                               }
+                              // Validate format as user types
+                              _validateUsernameFormat(value);
                             },
-                            child: const Text('Reset'),
                           ),
-                        ),
+                          const SizedBox(height: 16),
 
-                        // Save Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _saveChanges,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepPurple,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                            child: const Text("Save Changes",
-                                style: TextStyle(fontSize: 16)),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-
-                        // Logout
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: _showLogoutDialog,
-                            icon: const Icon(Icons.logout),
-                            label: const Text("Logout"),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.redAccent,
-                              side: const BorderSide(color: Colors.redAccent),
+                          // Name Fields
+                          TextField(
+                            controller: _firstNameController,
+                            decoration: const InputDecoration(
+                              labelText: 'First Name',
+                              prefixIcon: Icon(Icons.person),
+                              border: OutlineInputBorder(),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
-                  )
-                ],
+                          const SizedBox(height: 16),
+                          TextField(
+                            controller: _lastNameController,
+                            decoration: const InputDecoration(
+                              labelText: 'Last Name',
+                              prefixIcon: Icon(Icons.person_outline),
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // XP & Level (Read-Only Display)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Chip(
+                                label: Text("Level: $currentLevel"),
+                                avatar:
+                                    const Icon(Icons.star, color: Colors.amber),
+                              ),
+                              Chip(
+                                label: Text("XP: $currentXP"),
+                                avatar: const Icon(Icons.flash_on,
+                                    color: Colors.orange),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Stay On Track Toggle
+                          SwitchListTile(
+                            title: const Text("Stay On Track"),
+                            value: stayOnTrack,
+                            onChanged: (val) =>
+                                setState(() => stayOnTrack = val),
+                            activeColor: Colors.deepPurple,
+                          ),
+                          const SizedBox(height: 10),
+
+                          // Font Size Slider
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text("Font Size",
+                                  style:
+                                      TextStyle(fontWeight: FontWeight.bold)),
+                              Slider(
+                                min: 10,
+                                max: 24,
+                                divisions: 7,
+                                label: fontSize.toStringAsFixed(0),
+                                value: fontSize,
+                                onChanged: (val) =>
+                                    setState(() => fontSize = val),
+                                activeColor: Colors.deepPurple,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Add a section for tutorials
+                          ListTile(
+                            title: const Text('App Tutorial'),
+                            subtitle: const Text('Reset the app tutorial'),
+                            trailing: ElevatedButton(
+                              onPressed: () async {
+                                await Provider.of<ShowcaseService>(context,
+                                        listen: false)
+                                    .resetShowcase();
+                                if (context.mounted) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text(
+                                          'Tutorial reset! It will appear next time you open the app.'),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: const Text('Reset'),
+                            ),
+                          ),
+
+                          // Save Button
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _saveChanges,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.deepPurple,
+                                foregroundColor: Colors.white,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 14),
+                              ),
+                              child: const Text("Save Changes",
+                                  style: TextStyle(fontSize: 16)),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Logout
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: _showLogoutDialog,
+                              icon: const Icon(Icons.logout),
+                              label: const Text("Logout"),
+                              style: OutlinedButton.styleFrom(
+                                foregroundColor: Colors.redAccent,
+                                side: const BorderSide(color: Colors.redAccent),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
     );

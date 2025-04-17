@@ -35,12 +35,26 @@ class ShowcaseKeys {
       GlobalKey(debugLabel: 'continue_to_practice_key');
 
   // practice screen keys
+  static final GlobalKey gameContentKey =
+      GlobalKey(debugLabel: 'game_content_key');
   static final GlobalKey backFromGameKey =
       GlobalKey(debugLabel: 'back_from_game_key');
 
+  // progress screen keys
+  static final GlobalKey progressStatsKey =
+      GlobalKey(debugLabel: 'progress_stats_key');
+  static final GlobalKey progressLeaderboardKey =
+      GlobalKey(debugLabel: 'progress_leaderboard_key');
+  static final GlobalKey progressRecentActivityKey =
+      GlobalKey(debugLabel: 'progress_recent_activity_key');
+
+  // settings screen keys
+  static final GlobalKey settingsScreenKey =
+      GlobalKey(debugLabel: 'settings_screen_key');
+
   static List<GlobalKey> getHomeShowcaseKeys() => [
         helpIconKey, // help icon at top of customappbar
-        pickUpLessonKey, // "recetn lessons" widget at bottom of home screen
+        pickUpLessonKey, // "recent lessons" widget at bottom of home screen
         learnNavKey, // learn tab at bottom of home screen
       ];
 
@@ -65,6 +79,23 @@ class ShowcaseKeys {
       ];
 
   static List<GlobalKey> getGameScreenShowcaseKeys() => [
+        gameContentKey, // game content in practice screen
         backFromGameKey, // back from game button in practice screen
+      ];
+
+  static List<GlobalKey> getPathwayToProgressScreenShowcaseKeys() => [
+        progressNavKey, // progress nav key in main screen
+      ];
+
+  static List<GlobalKey> getProgressScreenShowcaseKeys() => [
+        progressStatsKey, // progress stats in progress screen
+        progressLeaderboardKey, // progress leaderboard in progress screen
+        progressRecentActivityKey, // progress recent activity in progress screen
+        settingsNavKey, // settings nav key to go to settings screen
+      ];
+
+  static List<GlobalKey> getSettingsScreenShowcaseKeys() => [
+        settingsScreenKey, // settings screen key to go to settings screen
+        homeNavKey, // home nav key to go back to home screen
       ];
 }

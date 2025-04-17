@@ -312,6 +312,35 @@ class _SubtopicPageState extends State<SubtopicPage> {
                           title: 'Continue to Practice',
                           description:
                               'Finished reading? Tap here to mark as complete and practice with a mini-game!',
+                          disposeOnTap: true,
+                          onTargetClick: () async {
+                            final user = FirebaseAuth.instance.currentUser;
+
+                            if (user != null) {
+                              await _handleSubTopicCompletion(context);
+
+                              if (mounted) {
+                                Navigator.pop(context);
+                              }
+
+                              await launchPuzzleGame(
+                                context: context,
+                                subject: widget.subject,
+                                grade: widget.grade,
+                                unitId: widget.unitId,
+                                unitTitle: widget.unitTitle,
+                                subtopicId: widget.subtopicId,
+                                subtopicTitle: widget.readingTitle,
+                                nextSubtopicId:
+                                    subtopicNav?['nextSubtopicId'] ?? "",
+                                nextSubtopicTitle:
+                                    subtopicNav?['nextReadingTitle'] ?? "",
+                                nextReadingContent:
+                                    subtopicNav?['nextReadingContent'] ?? "",
+                                userId: widget.userId,
+                              );
+                            }
+                          },
                           child: ElevatedButton(
                             onPressed: () async {
                               final user = FirebaseAuth.instance.currentUser;

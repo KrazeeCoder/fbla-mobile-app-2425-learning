@@ -198,8 +198,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
                   onComplete: (index, key) {
                     if (index == null) {
                       AppLogger.i("Showcase completed");
-                      Provider.of<ShowcaseService>(context, listen: false)
-                          .markShowcaseComplete();
+                      // Comment out so showcase always starts on restart
+                      // Provider.of<ShowcaseService>(context, listen: false)
+                      //     .markShowcaseComplete();
                     }
                   },
                   builder: (context) => Builder(
@@ -214,11 +215,12 @@ class _AuthWrapperState extends State<AuthWrapper> {
                             final showcaseService =
                                 Provider.of<ShowcaseService>(builderContext,
                                     listen: false);
-                            if (!showcaseService.hasCompletedInitialShowcase) {
-                              showcaseService
-                                  .startHomeScreenShowcase(builderContext);
-                              AppLogger.i("Showcase started successfully");
-                            }
+                            // Comment out condition to always start showcase
+                            // if (!showcaseService.hasCompletedInitialShowcase) {
+                            showcaseService
+                                .startHomeScreenShowcase(builderContext);
+                            AppLogger.i("Showcase started successfully");
+                            // }
                           } catch (e) {
                             AppLogger.e("Error starting showcase: $e");
                           }
@@ -242,7 +244,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
   }
 }
 
-// ✅ Main Page (Home Page with Bottom Navigation)
+// ✅ Main Page (Pages with Bottom Navigation)
 class MainPage extends StatefulWidget {
   final int initialTab;
   const MainPage({super.key, this.initialTab = 0});
@@ -259,18 +261,6 @@ class _MainPageState extends State<MainPage> {
     LearnPage(),
     ProgressPage(),
     SettingsPage(),
-    CypherUI(
-      subject: "Math",
-      grade: 1,
-      unitId: 123,
-      unitTitle: "Introduction to Algebra",
-      subtopicId: "f51f2584-8b3b-42f2-b10c-3c47f93fbd37",
-      subtopicTitle: "Basic Algebra",
-      nextSubtopicId: "f51f2584-8b3b-42f2-b10c-3c47f93fbd38",
-      nextSubtopicTitle: "Advanced Algebra",
-      nextReadingContent: "Learn about solving equations.",
-      userId: "user-456",
-    )
   ];
 
   void _onItemTapped(int index) {
@@ -296,6 +286,12 @@ class _MainPageState extends State<MainPage> {
             title: 'Home',
             description: 'Return to the main home screen.',
             child: const Icon(Icons.home),
+            targetPadding:
+                EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
+            onTargetClick: () {
+              _onItemTapped(0);
+            },
+            disposeOnTap: true,
           ),
           label: 'Home',
         ),
@@ -323,9 +319,14 @@ class _MainPageState extends State<MainPage> {
             title: 'Progress',
             description: 'Track your learning streaks and overall progress.',
             child: const Icon(Icons.bar_chart),
+            targetPadding:
+                EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
             onTargetClick: () {
               _onItemTapped(2);
               // When clicked, start the progress showcase
+              final showcaseService =
+                  Provider.of<ShowcaseService>(context, listen: false);
+              showcaseService.startProgressScreenShowcase(context);
             },
             disposeOnTap: true,
           ),
@@ -340,14 +341,13 @@ class _MainPageState extends State<MainPage> {
             onTargetClick: () {
               _onItemTapped(3);
               // When clicked, start the settings showcase
+              final showcaseService =
+                  Provider.of<ShowcaseService>(context, listen: false);
+              showcaseService.startSettingsScreenShowcase(context);
             },
             disposeOnTap: true,
           ),
           label: 'Settings',
-        ),
-        const BottomNavigationBarItem(
-          icon: Icon(Icons.developer_board),
-          label: 'Test Page',
         ),
       ],
       currentIndex: _selectedIndex,
