@@ -12,6 +12,7 @@ import '../utils/game_launcher.dart';
 import 'package:showcaseview/showcaseview.dart';
 import '../coach_marks/showcase_keys.dart';
 import '../coach_marks/showcase_provider.dart';
+import '../providers/settings_provider.dart';
 
 class SubtopicPage extends StatefulWidget {
   final String subtopic;
@@ -112,6 +113,11 @@ class _SubtopicPageState extends State<SubtopicPage> {
     final Color mediumGreen = Colors.green.shade300;
     final Color darkGreen = Colors.green.shade800;
 
+    // Get the font size from settings provider
+    final settingsProvider = Provider.of<SettingsProvider>(context);
+    final double contentFontSize =
+        settingsProvider.isLoading ? 14.0 : settingsProvider.fontSize;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -204,6 +210,28 @@ class _SubtopicPageState extends State<SubtopicPage> {
                             url_launcher.launchUrl(Uri.parse(href));
                           }
                         },
+                        styleSheet: MarkdownStyleSheet(
+                          p: TextStyle(fontSize: contentFontSize),
+                          h1: TextStyle(
+                              fontSize: contentFontSize + 8,
+                              fontWeight: FontWeight.bold),
+                          h2: TextStyle(
+                              fontSize: contentFontSize + 6,
+                              fontWeight: FontWeight.bold),
+                          h3: TextStyle(
+                              fontSize: contentFontSize + 4,
+                              fontWeight: FontWeight.bold),
+                          h4: TextStyle(
+                              fontSize: contentFontSize + 2,
+                              fontWeight: FontWeight.bold),
+                          h5: TextStyle(
+                              fontSize: contentFontSize + 1,
+                              fontWeight: FontWeight.bold),
+                          h6: TextStyle(
+                              fontSize: contentFontSize,
+                              fontWeight: FontWeight.bold),
+                          listBullet: TextStyle(fontSize: contentFontSize),
+                        ),
                       ),
                     ),
                   ),

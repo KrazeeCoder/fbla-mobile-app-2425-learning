@@ -19,6 +19,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'coach_marks/showcase_provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
+import 'providers/settings_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -118,6 +119,7 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) => XPManager()),
         ChangeNotifierProvider.value(value: showcaseService),
+        ChangeNotifierProvider(create: (_) => SettingsProvider()),
       ],
       child: MaterialApp(
         title: 'WorldWise',
