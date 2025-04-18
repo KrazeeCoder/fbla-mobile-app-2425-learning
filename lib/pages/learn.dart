@@ -17,9 +17,11 @@ class LearnPage extends StatefulWidget {
   State<LearnPage> createState() => _LearnPageState();
 }
 
-class _LearnPageState extends State<LearnPage> {
+class _LearnPageState extends State<LearnPage>
+    with SingleTickerProviderStateMixin {
   int _selectedTabIndex = 0;
   final PageController _pageController = PageController();
+  late AnimationController _animationController;
 
   // State for showing PathwayUI
   bool _showingPathway = false;
@@ -30,11 +32,16 @@ class _LearnPageState extends State<LearnPage> {
   @override
   void initState() {
     super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -79,113 +86,192 @@ class _LearnPageState extends State<LearnPage> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
+
+    // Run the animation
+    if (index == 0) {
+      _animationController.reverse();
+    } else {
+      _animationController.forward();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CustomAppBar(),
 
-          // Conditionally include the tab bar
+          // Title and welcome section
           if (!_showingPathway)
-            Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.grey.shade300,
-                    width: 1.0,
-                  ),
-                ),
-              ),
-              child: Row(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Recent Lessons Tab
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => _switchTab(0),
-                      child: Showcase(
-                        key: ShowcaseKeys.recentLessonTabKey,
-                        title: 'Recent Lessons',
-                        description: 'View your recent lessons here.',
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color:
-                                    _selectedTabIndex == 0 && !_showingPathway
-                                        ? Colors.green
-                                        : Colors.transparent,
-                                width: 3.0,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            "Recent Lessons",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: _selectedTabIndex == 0 && !_showingPathway
-                                  ? Colors.black
-                                  : Colors.grey,
-                              fontWeight:
-                                  _selectedTabIndex == 0 && !_showingPathway
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ),
+                  Text(
+                    "Learn",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
                     ),
                   ),
-
-                  // Choose Your Lesson Tab
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => _switchTab(1),
-                      child: Showcase(
-                        key: ShowcaseKeys.chooseLessonTabKey,
-                        title: 'Choose Your Lesson',
-                        description: 'Choose your lesson here.',
-                        onTargetClick: () {
-                          _switchTab(1);
-                        },
-                        disposeOnTap: false,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              bottom: BorderSide(
-                                color:
-                                    _selectedTabIndex == 1 && !_showingPathway
-                                        ? Colors.green
-                                        : Colors.transparent,
-                                width: 3.0,
-                              ),
-                            ),
-                          ),
-                          child: Text(
-                            "Choose Your Lesson",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: _selectedTabIndex == 1 && !_showingPathway
-                                  ? Colors.black
-                                  : Colors.grey,
-                              fontWeight:
-                                  _selectedTabIndex == 1 && !_showingPathway
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                            ),
-                          ),
-                        ),
-                      ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Continue your learning journey",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
                     ),
                   ),
                 ],
               ),
             ),
+
+          // Improved tab bar with animation
+          if (!_showingPathway)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Stack(
+                  children: [
+                    // Animated selection indicator
+                    AnimatedBuilder(
+                      animation: _animationController,
+                      builder: (context, child) {
+                        return Positioned(
+                          left: _animationController.value *
+                              (MediaQuery.of(context).size.width - 32) /
+                              2,
+                          top: 5,
+                          bottom: 5,
+                          width: (MediaQuery.of(context).size.width - 32) / 2,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: primaryColor.withOpacity(0.15),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
+                    // Tab buttons
+                    Row(
+                      children: [
+                        // Recent Lessons Tab
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => _switchTab(0),
+                            child: Showcase(
+                              key: ShowcaseKeys.recentLessonTabKey,
+                              title: 'Recent Lessons',
+                              description: 'View your recent lessons here.',
+                              child: Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.history,
+                                        size: 16,
+                                        color: _selectedTabIndex == 0
+                                            ? primaryColor
+                                            : Colors.grey.shade600,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        "Recent",
+                                        style: TextStyle(
+                                          color: _selectedTabIndex == 0
+                                              ? primaryColor
+                                              : Colors.grey.shade600,
+                                          fontWeight: _selectedTabIndex == 0
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Choose Your Lesson Tab
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => _switchTab(1),
+                            child: Showcase(
+                              key: ShowcaseKeys.chooseLessonTabKey,
+                              title: 'Choose Your Lesson',
+                              description: 'Choose your lesson here.',
+                              onTargetClick: () {
+                                _switchTab(1);
+                              },
+                              disposeOnTap: false,
+                              child: Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.menu_book,
+                                        size: 16,
+                                        color: _selectedTabIndex == 1
+                                            ? primaryColor
+                                            : Colors.grey.shade600,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        "Browse",
+                                        style: TextStyle(
+                                          color: _selectedTabIndex == 1
+                                              ? primaryColor
+                                              : Colors.grey.shade600,
+                                          fontWeight: _selectedTabIndex == 1
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          // Spacer after tabs
+          if (!_showingPathway) const SizedBox(height: 8),
 
           // Content area: Conditionally show Pathway or PageView
           Expanded(
@@ -205,21 +291,51 @@ class _LearnPageState extends State<LearnPage> {
                       onBackRequested: _hidePathway,
                       // userId will be fetched internally by PathwayUI
                     )
-                  : PageView(
-                      controller: _pageController,
-                      onPageChanged: (index) {
-                        if (!_showingPathway) {
-                          // Only update if not showing pathway
-                          setState(() {
-                            _selectedTabIndex = index;
-                          });
-                        }
-                      },
-                      children: [
-                        // Pass the callback to the children
-                        RecentLessonsUIPage(onPathwayRequested: _showPathway),
-                        ChooseLessonUIPage(onPathwayRequested: _showPathway),
-                      ],
+                  : Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.05),
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        child: PageView(
+                          controller: _pageController,
+                          onPageChanged: (index) {
+                            if (!_showingPathway) {
+                              // Only update if not showing pathway
+                              setState(() {
+                                _selectedTabIndex = index;
+                              });
+                              // Run the animation
+                              if (index == 0) {
+                                _animationController.reverse();
+                              } else {
+                                _animationController.forward();
+                              }
+                            }
+                          },
+                          children: [
+                            // Pass the callback to the children
+                            RecentLessonsUIPage(
+                                onPathwayRequested: _showPathway),
+                            ChooseLessonUIPage(
+                                onPathwayRequested: _showPathway),
+                          ],
+                        ),
+                      ),
                     ),
             ),
           ),
