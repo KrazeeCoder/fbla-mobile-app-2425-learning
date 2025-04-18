@@ -77,6 +77,7 @@ class ShowcaseService extends ChangeNotifier {
 
   // Start Pathway step showcase
   void startPathwayScreenShowcase(BuildContext context) {
+    AppLogger.i("Starting Pathway screen showcase");
     _isShowcaseActive = true;
     notifyListeners();
     startCustomShowcase(context, ShowcaseKeys.getPathwayScreenShowcaseKeys());
@@ -84,6 +85,7 @@ class ShowcaseService extends ChangeNotifier {
 
   // Start Subtopic screen showcase
   void startSubtopicScreenShowcase(BuildContext context) {
+    AppLogger.i("Starting Subtopic screen showcase");
     _isShowcaseActive = true;
     notifyListeners();
     startCustomShowcase(context, ShowcaseKeys.getSubtopicScreenShowcaseKeys());
@@ -91,6 +93,7 @@ class ShowcaseService extends ChangeNotifier {
 
   // Start Game screen showcase
   void startGameScreenShowcase(BuildContext context) {
+    AppLogger.i("Starting Game screen showcase");
     _isShowcaseActive = true;
     notifyListeners();
     startCustomShowcase(context, ShowcaseKeys.getGameScreenShowcaseKeys());

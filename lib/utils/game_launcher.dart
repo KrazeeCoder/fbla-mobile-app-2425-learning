@@ -9,6 +9,8 @@ import '../minigames/quiz_challenge_game.dart';
 import '../minigames/word_scramble_game.dart';
 import 'package:provider/provider.dart';
 
+import 'app_logger.dart';
+
 Future<void> launchRandomGame({
   required BuildContext context,
   required String subject,
@@ -22,6 +24,7 @@ Future<void> launchRandomGame({
   required String nextReadingContent,
   required String userId,
 }) async {
+  AppLogger.i("launched Random Game");
   final games = [
     RacingGame(
       subject: subject,
@@ -71,18 +74,6 @@ Future<void> launchRandomGame({
       nextReadingContent: nextReadingContent,
       userId: userId,
     ),
-    PuzzleScreen(
-      subject: subject,
-      grade: grade,
-      unitId: unitId,
-      unitTitle: unitTitle,
-      subtopicId: subtopicId,
-      subtopicTitle: subtopicTitle,
-      nextSubtopicId: nextSubtopicId,
-      nextSubtopicTitle: nextSubtopicTitle,
-      nextReadingContent: nextReadingContent,
-      userId: userId,
-    )
   ];
 
   if (subject.toLowerCase() == "history" ||
@@ -123,6 +114,7 @@ Future<void> launchPuzzleGame({
   required String nextReadingContent,
   required String userId,
 }) async {
+  AppLogger.i("launched Puzzle Game");
   await Navigator.push(
     context,
     MaterialPageRoute(

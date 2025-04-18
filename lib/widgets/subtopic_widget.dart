@@ -81,8 +81,12 @@ class _SubtopicPageState extends State<SubtopicPage> {
       );
 
       // Trigger the subtopic showcase after the frame is built
-      Provider.of<ShowcaseService>(context, listen: false)
-          .startSubtopicScreenShowcase(context);
+      // ❗ Only start if showcase hasn't been completed/skipped
+      final showcaseService =
+          Provider.of<ShowcaseService>(context, listen: false);
+      if (!showcaseService.hasCompletedInitialShowcase) {
+        showcaseService.startSubtopicScreenShowcase(context);
+      }
     });
   }
 
@@ -323,6 +327,9 @@ class _SubtopicPageState extends State<SubtopicPage> {
                                 Navigator.pop(context);
                               }
 
+                              AppLogger.i("Launching Puzzle Game");
+
+                              // For showcase/tutorial path: always use puzzle game with tutorial
                               await launchPuzzleGame(
                                 context: context,
                                 subject: widget.subject,
@@ -351,7 +358,9 @@ class _SubtopicPageState extends State<SubtopicPage> {
                                 if (mounted) {
                                   Navigator.pop(context);
                                 }
+                                AppLogger.i("Launching Random Game");
 
+                                // For normal gameplay: use random game without tutorial
                                 await launchRandomGame(
                                   context: context,
                                   subject: widget.subject,

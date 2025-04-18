@@ -153,6 +153,39 @@ class AuthWrapper extends StatefulWidget {
 class _AuthWrapperState extends State<AuthWrapper> {
   bool _showcaseTriggered = false;
 
+  // 🆕 Helper function to build the FAB
+  FloatingActionWidget _buildShowcaseFab(BuildContext fabContext) {
+    return FloatingActionWidget(
+        left: 20,
+        top: 20,
+        width: 60,
+        height: 30,
+        child: FloatingActionButton(
+          onPressed: () {
+            // Dismiss the showcase
+            ShowCaseWidget.of(fabContext).dismiss();
+            // Mark as complete in the service
+            Provider.of<ShowcaseService>(fabContext, listen: false)
+                .markShowcaseComplete();
+            AppLogger.i("Showcase dismissed and marked complete by FAB");
+          },
+          tooltip: 'Skip Tutorial',
+          mini: true, // Optional: make it smaller
+          backgroundColor: Colors.green,
+          foregroundColor: Colors.white,
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.skip_next_rounded, size: 18),
+              SizedBox(width: 2),
+              Text('Skip',
+                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+            ],
+          ),
+        ));
+  }
+
   Future<bool> checkUserStillExists(User user) async {
     try {
       await user.reload(); // Tries to get fresh data from Firebase
@@ -202,6 +235,9 @@ class _AuthWrapperState extends State<AuthWrapper> {
                           .markShowcaseComplete();
                     }
                   },
+                  // 🆕 Assign the FAB builder function with explicit cast
+                  globalFloatingActionWidget:
+                      _buildShowcaseFab as FloatingActionBuilderCallback?,
                   builder: (context) => Builder(
                     builder: (builderContext) {
                       // Use a Builder to get the correct context that has access to ShowCaseWidget
@@ -305,7 +341,9 @@ class _MainPageState extends State<MainPage> {
               _onItemTapped(1);
               final showcaseService =
                   Provider.of<ShowcaseService>(context, listen: false);
-              showcaseService.startLearnScreenShowcase(context);
+              if (!showcaseService.hasCompletedInitialShowcase) {
+                showcaseService.startLearnScreenShowcase(context);
+              }
             },
             disposeOnTap: true,
           ),
@@ -321,10 +359,11 @@ class _MainPageState extends State<MainPage> {
                 EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
             onTargetClick: () {
               _onItemTapped(2);
-              // When clicked, start the progress showcase
               final showcaseService =
                   Provider.of<ShowcaseService>(context, listen: false);
-              showcaseService.startProgressScreenShowcase(context);
+              if (!showcaseService.hasCompletedInitialShowcase) {
+                showcaseService.startProgressScreenShowcase(context);
+              }
             },
             disposeOnTap: true,
           ),
@@ -338,10 +377,11 @@ class _MainPageState extends State<MainPage> {
             child: const Icon(Icons.settings),
             onTargetClick: () {
               _onItemTapped(3);
-              // When clicked, start the settings showcase
               final showcaseService =
                   Provider.of<ShowcaseService>(context, listen: false);
-              showcaseService.startSettingsScreenShowcase(context);
+              if (!showcaseService.hasCompletedInitialShowcase) {
+                showcaseService.startSettingsScreenShowcase(context);
+              }
             },
             disposeOnTap: true,
           ),

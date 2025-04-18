@@ -132,7 +132,10 @@ class _PathwayUIState extends State<PathwayUI> {
                       // Get the ShowCaseWidget context from the main widget tree
                       final showcaseContext = ShowCaseWidget.of(context);
                       if (showcaseContext != null) {
-                        showcaseService.startPathwayScreenShowcase(context);
+                        // ❗ Only start if showcase hasn't been completed/skipped
+                        if (!showcaseService.hasCompletedInitialShowcase) {
+                          showcaseService.startPathwayScreenShowcase(context);
+                        }
                       }
                     }
                   });
@@ -710,7 +713,10 @@ class _PathwayUIState extends State<PathwayUI> {
         if (mounted) {
           final showcaseService =
               Provider.of<ShowcaseService>(context, listen: false);
-          showcaseService.startPathwayToProgressScreenShowcase(context);
+          // ❗ Only start if showcase hasn't been completed/skipped
+          if (!showcaseService.hasCompletedInitialShowcase) {
+            showcaseService.startPathwayToProgressScreenShowcase(context);
+          }
         }
       });
     } else if (step["type"] == 'game') {
@@ -759,7 +765,10 @@ class _PathwayUIState extends State<PathwayUI> {
         if (mounted) {
           final showcaseService =
               Provider.of<ShowcaseService>(context, listen: false);
-          showcaseService.startPathwayToProgressScreenShowcase(context);
+          // ❗ Only start if showcase hasn't been completed/skipped
+          if (!showcaseService.hasCompletedInitialShowcase) {
+            showcaseService.startPathwayToProgressScreenShowcase(context);
+          }
         }
       });
     }

@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:showcaseview/showcaseview.dart';
 import '../coach_marks/showcase_keys.dart';
 import '../coach_marks/showcase_provider.dart';
+import '../utils/app_logger.dart';
 import '../widgets/subtopic_widget.dart';
 import '../services/updateprogress.dart';
 import '../utils/subTopicNavigation.dart';
@@ -79,7 +80,9 @@ class _PuzzleScreenState extends State<PuzzleScreen>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final showcaseService =
           Provider.of<ShowcaseService>(context, listen: false);
-      showcaseService.startGameScreenShowcase(context);
+      if (!showcaseService.hasCompletedInitialShowcase) {
+        showcaseService.startGameScreenShowcase(context);
+      }
     });
   }
 
@@ -433,6 +436,7 @@ class _PuzzleScreenState extends State<PuzzleScreen>
         backgroundColor: theme.primaryColor,
         leading: Builder(
           builder: (BuildContext context) {
+            AppLogger.i(context.mounted.toString());
             return Showcase(
               key: ShowcaseKeys.backFromGameKey,
               title: 'Return to Previous Screen',

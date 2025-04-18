@@ -56,299 +56,538 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
-            // Enhanced Level Progress Bar
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              // Keep the outer container for styling
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xA17AE645), Color(0x9E94E680)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: const LevelBarHomepage(),
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Earth Widget with Green Curved Shapes - Now dynamically selected based on level
-            xpManager.isLoading
-                ? Center(
-                    child: Container(
-                      height: screenHeight * 0.38,
-                      width: screenHeight * 0.38,
-                      alignment: Alignment.center,
-                      child: const CircularProgressIndicator(),
-                    ),
-                  )
-                : Builder(builder: (context) {
-                    final currentLevel = xpManager.currentLevel;
-                    final maxVisualLevel =
-                        currentLevel < 5 ? currentLevel + 1 : 5;
-
-                    final List<String> earthImages = List.generate(
-                      maxVisualLevel,
-                      (index) => _getEarthAssetPath(index + 1),
-                    );
-
-                    final PageController _pageController = PageController(
-                      initialPage: currentLevel - 1,
-                      viewportFraction: 0.6,
-                    );
-
-                    bool isResettingPage = false;
-
-                    return NotificationListener<ScrollNotification>(
-                      onNotification: (scrollNotification) {
-                        if (scrollNotification is ScrollUpdateNotification &&
-                            !isResettingPage &&
-                            _pageController.hasClients &&
-                            _pageController.page != null &&
-                            _pageController.page! > currentLevel - 1) {
-                          isResettingPage = true;
-                          _pageController
-                              .animateToPage(
-                                currentLevel - 1,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.easeOut,
-                              )
-                              .then((_) => isResettingPage = false);
-                          return true;
-                        }
-                        return false;
-                      },
-                      child: SizedBox(
-                        height: screenHeight * 0.42,
-                        width: screenWidth,
-                        child: PageView.builder(
-                          controller: _pageController,
-                          itemCount: earthImages.length,
-                          itemBuilder: (context, index) {
-                            return AnimatedBuilder(
-                              animation: _pageController,
-                              builder: (context, child) {
-                                double value = 1.0;
-                                if (_pageController.position.haveDimensions) {
-                                  value = (_pageController.page! - index).abs();
-                                } else {
-                                  value = (currentLevel - 1 - index)
-                                      .abs()
-                                      .toDouble();
-                                }
-                                value = (1.2 - (value * 0.5))
-                                    .clamp(0.6, 1.2); // <-- max scale now 1.2
-                                return Center(
-                                  child: Transform.scale(
-                                    scale: value,
-                                    child: SvgPicture.asset(
-                                      earthImages[index],
-                                      height: screenHeight *
-                                          0.4, // Center image will grow ~32% of screen height
-                                      width: screenHeight *
-                                          0.4, // Keep square proportion
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    );
-                  }),
-
-            const SizedBox(height: 16),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: StreakHomepage(
-                userId: user?.uid ?? '',
-              ),
-            ),
-            const SizedBox(height: 24),
-            // Enhanced Recent Lessons Title
-            // 🆕 Updated Title
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.bookmark_outline,
-                    color: Colors.black,
-                    size: 28,
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Pick Up Where You Left Off',
-                    style: TextStyle(
-                      fontSize: 20, //font
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black12,
-                          blurRadius: 2,
-                          offset: Offset(1, 1),
+            // Container for the top section with gradient background
+            Column(
+              children: [
+                const SizedBox(height: 16),
+                // Enhanced Level Progress Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  // Keep the outer container for styling
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 6,
+                          offset: const Offset(0, 3),
                         ),
                       ],
+                      border: Border.all(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: const LevelBarHomepage(),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Earth Widget Section - Don't modify the Earth widget logic
+                xpManager.isLoading
+                    ? Center(
+                        child: Container(
+                          height: screenHeight * 0.38,
+                          width: screenHeight * 0.38,
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(),
+                        ),
+                      )
+                    : Builder(builder: (context) {
+                        final currentLevel = xpManager.currentLevel;
+                        final totalEarthLevels = 5;
+                        final List<String> earthImages = List.generate(
+                          totalEarthLevels,
+                          (index) => _getEarthAssetPath(index + 1),
+                        );
+
+                        final PageController _pageController = PageController(
+                          initialPage:
+                              (currentLevel - 1).clamp(0, totalEarthLevels - 1),
+                          viewportFraction: 0.6,
+                        );
+
+                        // Track current page to know when to show "back to current level" button
+                        ValueNotifier<int> _currentPageNotifier =
+                            ValueNotifier<int>((currentLevel - 1)
+                                .clamp(0, totalEarthLevels - 1));
+
+                        return Stack(
+                          children: [
+                            SizedBox(
+                              height: screenHeight * 0.42,
+                              width: screenWidth,
+                              child: PageView.builder(
+                                controller: _pageController,
+                                itemCount: earthImages.length,
+                                onPageChanged: (index) {
+                                  // Update current page
+                                  _currentPageNotifier.value = index;
+                                },
+                                itemBuilder: (context, index) {
+                                  final level = index + 1;
+                                  final bool isLocked = level > currentLevel;
+                                  final bool isCurrentLevel =
+                                      level == currentLevel;
+
+                                  return AnimatedBuilder(
+                                    animation: _pageController,
+                                    builder: (context, child) {
+                                      double value = 1.0;
+                                      if (_pageController
+                                          .position.haveDimensions) {
+                                        value = (_pageController.page! - index)
+                                            .abs();
+                                      } else {
+                                        value = (_pageController.initialPage -
+                                                index)
+                                            .abs()
+                                            .toDouble();
+                                      }
+                                      value =
+                                          (1.2 - (value * 0.5)).clamp(0.6, 1.2);
+
+                                      Widget earthVisual = SvgPicture.asset(
+                                        earthImages[index],
+                                        height: screenHeight * 0.3,
+                                        width: screenHeight * 0.3,
+                                        fit: BoxFit.contain,
+                                      );
+
+                                      if (isLocked) {
+                                        earthVisual = Container(
+                                          height: screenHeight * 0.3,
+                                          width: screenHeight * 0.3,
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.shade200,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.lock_outline_rounded,
+                                              color: Colors.grey.shade600,
+                                              size: 40,
+                                            ),
+                                          ),
+                                        );
+                                      }
+
+                                      return Center(
+                                        child: Transform.scale(
+                                          scale: value,
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              earthVisual,
+                                              const SizedBox(height: 8),
+                                              // Enhanced level indicator
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 6,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  gradient: isLocked
+                                                      ? null
+                                                      : isCurrentLevel
+                                                          ? const LinearGradient(
+                                                              colors: [
+                                                                Color(
+                                                                    0xFF3A8C44),
+                                                                Color(
+                                                                    0xFF4CAF50),
+                                                              ],
+                                                              begin: Alignment
+                                                                  .topLeft,
+                                                              end: Alignment
+                                                                  .bottomRight,
+                                                            )
+                                                          : LinearGradient(
+                                                              colors: [
+                                                                Colors
+                                                                    .blue[700]!,
+                                                                Colors
+                                                                    .blue[500]!,
+                                                              ],
+                                                              begin: Alignment
+                                                                  .topLeft,
+                                                              end: Alignment
+                                                                  .bottomRight,
+                                                            ),
+                                                  color: isLocked
+                                                      ? Colors.grey.shade300
+                                                      : null,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  boxShadow: isLocked
+                                                      ? null
+                                                      : [
+                                                          BoxShadow(
+                                                            color: isCurrentLevel
+                                                                ? Color(0xFF3A8C44)
+                                                                    .withOpacity(
+                                                                        0.3)
+                                                                : Colors
+                                                                    .blue[700]!
+                                                                    .withOpacity(
+                                                                        0.3),
+                                                            blurRadius: 4,
+                                                            offset:
+                                                                const Offset(
+                                                                    0, 2),
+                                                          ),
+                                                        ],
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    // Icon based on level status
+                                                    Icon(
+                                                      isLocked
+                                                          ? Icons.lock_outline
+                                                          : isCurrentLevel
+                                                              ? Icons
+                                                                  .stars_rounded
+                                                              : Icons
+                                                                  .check_circle_outline,
+                                                      size: 16,
+                                                      color: isLocked
+                                                          ? Colors.grey.shade700
+                                                          : Colors.white,
+                                                    ),
+                                                    const SizedBox(width: 6),
+                                                    Text(
+                                                      'Level $level',
+                                                      style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: isLocked
+                                                            ? Colors
+                                                                .grey.shade700
+                                                            : Colors.white,
+                                                        fontSize: 14,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                            ),
+                            // "Back to current level" FAB that appears when not on current level
+                            ValueListenableBuilder<int>(
+                                valueListenable: _currentPageNotifier,
+                                builder: (context, currentPage, child) {
+                                  // Check if the current page differs from currentLevel
+                                  final isNotAtCurrentLevel = currentPage !=
+                                      (currentLevel - 1)
+                                          .clamp(0, totalEarthLevels - 1);
+
+                                  return AnimatedPositioned(
+                                    duration: const Duration(milliseconds: 300),
+                                    curve: Curves.easeInOut,
+                                    bottom: isNotAtCurrentLevel
+                                        ? 20
+                                        : -60, // Slide in when needed, hide when not
+                                    right: 20,
+                                    child: FloatingActionButton.extended(
+                                      heroTag: "backToCurrentLevel",
+                                      backgroundColor: Color(0xFF4CAF50),
+                                      foregroundColor: Colors.white,
+                                      elevation: 4,
+                                      label: const Text(
+                                        'Back to my level',
+                                        style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      icon: const Icon(Icons.home_rounded,
+                                          size: 18),
+                                      onPressed: () {
+                                        // Scroll back to current level
+                                        _pageController.animateToPage(
+                                          (currentLevel - 1)
+                                              .clamp(0, totalEarthLevels - 1),
+                                          duration:
+                                              const Duration(milliseconds: 600),
+                                          curve: Curves.easeInOut,
+                                        );
+                                      },
+                                      tooltip: 'Back to current level',
+                                      isExtended: true,
+                                    ),
+                                  );
+                                }),
+                          ],
+                        );
+                      }),
+              ],
+            ),
+
+            // Streak Section with Card-like design
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Card(
+                elevation: 4,
+                shadowColor: Colors.black26,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(12.0),
+                  child: StreakHomepage(
+                    userId: user?.uid ?? '',
+                  ),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 24),
+
+            // Recent Lessons Section with improved styling
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withOpacity(0.1),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      Icons.bookmark_outline,
+                      color: Theme.of(context).colorScheme.primary,
+                      size: 24,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Pick Up Where You Left Off',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.5,
+                      color: Colors.black87,
                     ),
                   ),
                 ],
               ),
             ),
+
             const SizedBox(height: 16),
-// 🆕 Single Recent Lesson Showcase Wrapper
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: FutureBuilder<List<UserProgress>>(
-                future: ProgressService.fetchRecentLessons(user?.uid ?? "", latest: true),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
 
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Text("No recent lessons");
-                  }
-
-                  final item = snapshot.data!.first;
-
-                  return RecentSingleLessonCard(
-                    lesson: item,
-                    onTap: () async {
-                      final navData = await getSubtopicNavigationInfo(
-                        subject: item.subject,
-                        grade: item.grade,
-                        subtopicId: item.subtopicId,
+            // Enhanced Recent Lesson Card
+            Showcase(
+              key: ShowcaseKeys.pickUpLessonKey,
+              description:
+                  'Tap on a lesson to continue learning from where you left off.',
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: FutureBuilder<List<UserProgress>>(
+                  future: ProgressService.fetchRecentLessons(user?.uid ?? "",
+                      latest: true),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(24.0),
+                          child: CircularProgressIndicator(),
+                        ),
                       );
+                    }
 
-                      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+                    if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Card(
+                        elevation: 2,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text(
+                            "No recent lessons found. Start learning now!",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.black54,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      );
+                    }
 
-                      if (item.contentCompleted && !item.quizCompleted) {
-                        await launchRandomGame(
-                          context: context,
+                    final item = snapshot.data!.first;
+
+                    return RecentSingleLessonCard(
+                      lesson: item,
+                      onTap: () async {
+                        final navData = await getSubtopicNavigationInfo(
                           subject: item.subject,
                           grade: item.grade,
-                          unitId: item.unitId,
-                          unitTitle: item.unit,
                           subtopicId: item.subtopicId,
-                          subtopicTitle: item.subtopic,
-                          nextSubtopicId: navData['nextSubtopicId'],
-                          nextSubtopicTitle: navData['nextSubtopicTitle'],
-                          nextReadingContent: navData['nextReadingContent'],
-                          userId: userId,
                         );
-                      } else if (!item.contentCompleted) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => SubtopicPage(
-                              subtopic: item.subtopic,
-                              subtopicId: item.subtopicId,
-                              readingTitle: item.subtopic,
-                              readingContent: navData['readingContent'] ?? '',
-                              isCompleted: false,
-                              subject: item.subject,
-                              grade: item.grade,
-                              unitId: item.unitId,
-                              unitTitle: item.unit,
-                              userId: userId,
-                              lastSubtopicofUnit: navData['isLastOfUnit'],
-                              lastSubtopicofGrade: navData['isLastOfGrade'],
-                              lastSubtopicofSubject: navData['isLastOfSubject'],
+
+                        final userId =
+                            FirebaseAuth.instance.currentUser?.uid ?? '';
+
+                        if (item.contentCompleted && !item.quizCompleted) {
+                          await launchRandomGame(
+                            context: context,
+                            subject: item.subject,
+                            grade: item.grade,
+                            unitId: item.unitId,
+                            unitTitle: item.unit,
+                            subtopicId: item.subtopicId,
+                            subtopicTitle: item.subtopic,
+                            nextSubtopicId: navData['nextSubtopicId'],
+                            nextSubtopicTitle: navData['nextSubtopicTitle'],
+                            nextReadingContent: navData['nextReadingContent'],
+                            userId: userId,
+                          );
+                        } else if (!item.contentCompleted) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => SubtopicPage(
+                                subtopic: item.subtopic,
+                                subtopicId: item.subtopicId,
+                                readingTitle: item.subtopic,
+                                readingContent: navData['readingContent'] ?? '',
+                                isCompleted: false,
+                                subject: item.subject,
+                                grade: item.grade,
+                                unitId: item.unitId,
+                                unitTitle: item.unit,
+                                userId: userId,
+                                lastSubtopicofUnit: navData['isLastOfUnit'],
+                                lastSubtopicofGrade: navData['isLastOfGrade'],
+                                lastSubtopicofSubject:
+                                    navData['isLastOfSubject'],
+                              ),
                             ),
-                          ),
-                        );
-                      } else {
-                        showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title: const Text("🎉 You've completed this topic!"),
-                            content: const Text("What would you like to do next?"),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => SubtopicPage(
-                                        subtopic: item.subtopic,
-                                        subtopicId: item.subtopicId,
-                                        readingTitle: item.subtopic,
-                                        readingContent: navData['readingContent'] ?? '',
-                                        isCompleted: true,
-                                        subject: item.subject,
-                                        grade: item.grade,
-                                        unitId: item.unitId,
-                                        unitTitle: item.unit,
-                                        userId: userId,
-                                        lastSubtopicofUnit: navData['isLastOfUnit'],
-                                        lastSubtopicofGrade: navData['isLastOfGrade'],
-                                        lastSubtopicofSubject: navData['isLastOfSubject'],
+                          );
+                        } else {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title:
+                                  const Text("🎉 You've completed this topic!"),
+                              content:
+                                  const Text("What would you like to do next?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => SubtopicPage(
+                                          subtopic: item.subtopic,
+                                          subtopicId: item.subtopicId,
+                                          readingTitle: item.subtopic,
+                                          readingContent:
+                                              navData['readingContent'] ?? '',
+                                          isCompleted: true,
+                                          subject: item.subject,
+                                          grade: item.grade,
+                                          unitId: item.unitId,
+                                          unitTitle: item.unit,
+                                          userId: userId,
+                                          lastSubtopicofUnit:
+                                              navData['isLastOfUnit'],
+                                          lastSubtopicofGrade:
+                                              navData['isLastOfGrade'],
+                                          lastSubtopicofSubject:
+                                              navData['isLastOfSubject'],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                child: const Text("📘 Review it again"),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => SubtopicPage(
-                                        subtopic: navData['nextSubtopicTitle'],
-                                        subtopicId: navData['nextSubtopicId'],
-                                        readingTitle: navData['nextReadingTitle'],
-                                        readingContent: navData['nextReadingContent'],
-                                        isCompleted: false,
-                                        subject: item.subject,
-                                        grade: item.grade,
-                                        unitId: navData['nextUnitId'],
-                                        unitTitle: navData['nextUnitTitle'],
-                                        userId: userId,
-                                        lastSubtopicofUnit: navData['isLastOfUnit'],
-                                        lastSubtopicofGrade: navData['isLastOfGrade'],
-                                        lastSubtopicofSubject: navData['isLastOfSubject'],
+                                    );
+                                  },
+                                  child: const Text("📘 Review it again"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => SubtopicPage(
+                                          subtopic:
+                                              navData['nextSubtopicTitle'],
+                                          subtopicId: navData['nextSubtopicId'],
+                                          readingTitle:
+                                              navData['nextReadingTitle'],
+                                          readingContent:
+                                              navData['nextReadingContent'],
+                                          isCompleted: false,
+                                          subject: item.subject,
+                                          grade: item.grade,
+                                          unitId: navData['nextUnitId'],
+                                          unitTitle: navData['nextUnitTitle'],
+                                          userId: userId,
+                                          lastSubtopicofUnit:
+                                              navData['isLastOfUnit'],
+                                          lastSubtopicofGrade:
+                                              navData['isLastOfGrade'],
+                                          lastSubtopicofSubject:
+                                              navData['isLastOfSubject'],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                },
-                                child: const Text("➡️ Go to next subtopic"),
-                              ),
-                            ],
-                          ),
-                        );
-                      }
-                    },
-                  );
-                },
+                                    );
+                                  },
+                                  child: const Text("➡️ Go to next subtopic"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  },
+                ),
               ),
             ),
 
-
-            // Debug controls for XP testing (remove before production release)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
-              child: XPDebugControls(),
+            // Debug controls with better styling
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Card(
+                elevation: 1,
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  side: BorderSide(color: Colors.grey.shade200, width: 1),
+                ),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: XPDebugControls(),
+                ),
+              ),
             ),
 
             // Add some bottom padding
-            const SizedBox(height: 30),
+            const SizedBox(height: 24),
           ],
         ),
       ),
