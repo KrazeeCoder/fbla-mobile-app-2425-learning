@@ -35,9 +35,10 @@ class Lesson {
   }
 }
 
+
 class LessonCard extends StatelessWidget {
   final Lesson lesson;
-  final VoidCallback onTap; // Added onTap callback parameter
+  final VoidCallback onTap;  // Added onTap callback parameter
 
   const LessonCard({
     required this.lesson,
@@ -94,7 +95,7 @@ class LessonCard extends StatelessWidget {
           size: 30,
           color: Colors.green,
         ),
-        onTap: onTap, // Trigger onTap when the card is tapped
+        onTap: onTap,  // Trigger onTap when the card is tapped
       ),
     );
   }

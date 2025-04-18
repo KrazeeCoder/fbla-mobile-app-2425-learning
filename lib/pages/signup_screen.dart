@@ -171,7 +171,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       return;
     }
 
-
     if (firstNameError != null ||
         lastNameError != null ||
         usernameError != null ||
@@ -292,14 +291,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     labelText: "First Name",
                     errorText: firstNameError,
-                    prefixIcon:
-                    Icon(Icons.person_outline, color: Colors.green.shade800),
+                    prefixIcon: Icon(Icons.person_outline,
+                        color: Colors.green.shade800),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.green.shade800, width: 2),
+                      borderSide:
+                          BorderSide(color: Colors.green.shade800, width: 2),
                     ),
                   ),
                 ),
@@ -312,14 +312,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   decoration: InputDecoration(
                     labelText: "Last Name",
                     errorText: lastNameError,
-                    prefixIcon:
-                    Icon(Icons.person_outline, color: Colors.green.shade800),
+                    prefixIcon: Icon(Icons.person_outline,
+                        color: Colors.green.shade800),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: BorderSide(color: Colors.green.shade800, width: 2),
+                      borderSide:
+                          BorderSide(color: Colors.green.shade800, width: 2),
                     ),
                   ),
                 ),

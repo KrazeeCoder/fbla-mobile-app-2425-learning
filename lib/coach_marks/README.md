@@ -16,9 +16,6 @@ The ShowcaseService provides methods for starting pre-defined showcases for diff
 // Using context.read extension (requires Provider package)
 context.read<ShowcaseService>().startHomeScreenShowcase(context);
 context.read<ShowcaseService>().startLearnScreenShowcase(context);
-context.read<ShowcaseService>().startPathwayScreenShowcase(context);
-context.read<ShowcaseService>().startProgressScreenShowcase(context);
-context.read<ShowcaseService>().startSettingsScreenShowcase(context);
 ```
 
 ### Starting a custom showcase

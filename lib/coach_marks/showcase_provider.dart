@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../utils/app_logger.dart';
 import 'showcase_keys.dart';
 
 class ShowcaseService extends ChangeNotifier {
@@ -16,8 +17,7 @@ class ShowcaseService extends ChangeNotifier {
   // Initialize the showcase service
   Future<void> initialize() async {
     final prefs = await SharedPreferences.getInstance();
-    _hasCompletedInitialShowcase =
-        prefs.getBool(_showcaseCompletedKey) ?? false;
+    _hasCompletedInitialShowcase = prefs.getBool(_showcaseCompletedKey) ?? true;
     notifyListeners();
   }
 
@@ -45,9 +45,14 @@ class ShowcaseService extends ChangeNotifier {
 
     try {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Get the ShowCaseWidgetState from the context
         final ShowCaseWidgetState? showcaseWidget = ShowCaseWidget.of(context);
+
         if (showcaseWidget != null) {
+          // Use the existing ShowCaseWidget
           showcaseWidget.startShowCase(keys);
+        } else {
+          debugPrint('Error: No ShowCaseWidget found in context hierarchy');
         }
       });
     } catch (e) {
@@ -59,34 +64,58 @@ class ShowcaseService extends ChangeNotifier {
   void startHomeScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getFirstShowcaseKeys());
+    startCustomShowcase(context, ShowcaseKeys.getHomeShowcaseKeys());
   }
 
   // Start Learn screen showcase
   void startLearnScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getSecondShowcaseKeys());
+    startCustomShowcase(context, ShowcaseKeys.getLearnTabShowcaseKeys());
+    AppLogger.i("Starting Learn screen showcase");
   }
 
-  // Start Pathway screen showcase
+  // Start Pathway step showcase
   void startPathwayScreenShowcase(BuildContext context) {
+    AppLogger.i("Starting Pathway screen showcase");
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getThirdShowcaseKeys());
+    startCustomShowcase(context, ShowcaseKeys.getPathwayScreenShowcaseKeys());
   }
 
-  // Start Progress screen showcase
+  // Start Subtopic screen showcase
+  void startSubtopicScreenShowcase(BuildContext context) {
+    AppLogger.i("Starting Subtopic screen showcase");
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getSubtopicScreenShowcaseKeys());
+  }
+
+  // Start Game screen showcase
+  void startGameScreenShowcase(BuildContext context) {
+    AppLogger.i("Starting Game screen showcase");
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(context, ShowcaseKeys.getGameScreenShowcaseKeys());
+  }
+
+  // Start Pathway to Progress screen showcase
+  void startPathwayToProgressScreenShowcase(BuildContext context) {
+    _isShowcaseActive = true;
+    notifyListeners();
+    startCustomShowcase(
+        context, ShowcaseKeys.getPathwayToProgressScreenShowcaseKeys());
+  }
+
   void startProgressScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getFourthShowcaseKeys());
+    startCustomShowcase(context, ShowcaseKeys.getProgressScreenShowcaseKeys());
   }
 
-  // Start Settings screen showcase
   void startSettingsScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getFifthShowcaseKeys());
+    startCustomShowcase(context, ShowcaseKeys.getSettingsScreenShowcaseKeys());
   }
 }

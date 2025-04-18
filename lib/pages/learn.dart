@@ -4,8 +4,11 @@ import 'package:fbla_mobile_2425_learning_app/pages/chooseyourownlesson_UI.dart'
 import 'package:fbla_mobile_2425_learning_app/widgets/custom_app_bar.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
-import 'package:provider/provider.dart';
-import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_provider.dart';
+import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart'; // Import PathwayUI
+
+// Define a callback type
+typedef PathwayRequestedCallback = void Function(String subject, int grade,
+    {String? highlightSubtopicId});
 
 class LearnPage extends StatefulWidget {
   const LearnPage({super.key});
@@ -14,25 +17,67 @@ class LearnPage extends StatefulWidget {
   State<LearnPage> createState() => _LearnPageState();
 }
 
-class _LearnPageState extends State<LearnPage> {
-  bool _shouldShowCoachMarks = false;
+class _LearnPageState extends State<LearnPage>
+    with SingleTickerProviderStateMixin {
   int _selectedTabIndex = 0;
   final PageController _pageController = PageController();
+  late AnimationController _animationController;
+
+  // State for showing PathwayUI
+  bool _showingPathway = false;
+  String? _pathwaySubject;
+  int? _pathwayGrade;
+  String? _pathwayHighlightSubtopicId;
 
   @override
   void initState() {
     super.initState();
-    // No need to check coach marks for now, we're focusing on the homepage level bar
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 200),
+      vsync: this,
+    );
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
-  // Function to handle tab switching
+  void _showPathway(String subject, int grade, {String? highlightSubtopicId}) {
+    setState(() {
+      _showingPathway = true;
+      _pathwaySubject = subject;
+      _pathwayGrade = grade;
+      _pathwayHighlightSubtopicId = highlightSubtopicId;
+    });
+  }
+
+  void _hidePathway() {
+    setState(() {
+      _showingPathway = false;
+      _pathwaySubject = null;
+      _pathwayGrade = null;
+      _pathwayHighlightSubtopicId = null;
+    });
+    // After hiding the pathway, ensure the PageView shows the correct page
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_pageController.hasClients) {
+        // Check if controller is attached
+        _pageController.animateToPage(
+          _selectedTabIndex, // Go to the last selected tab index
+          duration: const Duration(
+              milliseconds: 10), // Very short duration for quick sync
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
+  // Function to handle tab switching (only when not showing pathway)
   void _switchTab(int index) {
+    if (_showingPathway) return; // Prevent switching tabs when pathway is shown
     setState(() {
       _selectedTabIndex = index;
     });
@@ -41,136 +86,257 @@ class _LearnPageState extends State<LearnPage> {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
-  }
 
-  // Example of how to manually start a showcase
-  void _startLearnShowcase() {
-    // Using context.read<T>() extension
-    context.read<ShowcaseService>().startLearnScreenShowcase(context);
-  }
-
-  // Example of how to start a custom showcase
-  void _startCustomShowcase() {
-    // Using the static method
-    ShowcaseService.startCustomShowcase(context,
-        [ShowcaseKeys.chooseLessonTabKey, ShowcaseKeys.selectSubjectKey]);
+    // Run the animation
+    if (index == 0) {
+      _animationController.reverse();
+    } else {
+      _animationController.forward();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CustomAppBar(),
 
-          // Custom tab bar
-          Container(
-            decoration: BoxDecoration(
-              border: Border(
-                bottom: BorderSide(
-                  color: Colors.grey.shade300,
-                  width: 1.0,
+          // Title and welcome section
+          if (!_showingPathway)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Learn",
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    "Continue your learning journey",
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+          // Improved tab bar with animation
+          if (!_showingPathway)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+              child: Container(
+                height: 50,
+                decoration: BoxDecoration(
+                  color: Colors.grey.shade100,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Stack(
+                  children: [
+                    // Animated selection indicator
+                    AnimatedBuilder(
+                      animation: _animationController,
+                      builder: (context, child) {
+                        return Positioned(
+                          left: _animationController.value *
+                              (MediaQuery.of(context).size.width - 32) /
+                              2,
+                          top: 5,
+                          bottom: 5,
+                          width: (MediaQuery.of(context).size.width - 32) / 2,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: primaryColor.withOpacity(0.15),
+                                  blurRadius: 4,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+
+                    // Tab buttons
+                    Row(
+                      children: [
+                        // Recent Lessons Tab
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => _switchTab(0),
+                            child: Showcase(
+                              key: ShowcaseKeys.recentLessonTabKey,
+                              title: 'Recent Lessons',
+                              description: 'View your recent lessons here.',
+                              child: Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.history,
+                                        size: 16,
+                                        color: _selectedTabIndex == 0
+                                            ? primaryColor
+                                            : Colors.grey.shade600,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        "Recent",
+                                        style: TextStyle(
+                                          color: _selectedTabIndex == 0
+                                              ? primaryColor
+                                              : Colors.grey.shade600,
+                                          fontWeight: _selectedTabIndex == 0
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // Choose Your Lesson Tab
+                        Expanded(
+                          child: InkWell(
+                            onTap: () => _switchTab(1),
+                            child: Showcase(
+                              key: ShowcaseKeys.chooseLessonTabKey,
+                              title: 'Choose Your Lesson',
+                              description: 'Choose your lesson here.',
+                              onTargetClick: () {
+                                _switchTab(1);
+                              },
+                              disposeOnTap: false,
+                              child: Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 12),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.menu_book,
+                                        size: 16,
+                                        color: _selectedTabIndex == 1
+                                            ? primaryColor
+                                            : Colors.grey.shade600,
+                                      ),
+                                      const SizedBox(width: 6),
+                                      Text(
+                                        "Browse",
+                                        style: TextStyle(
+                                          color: _selectedTabIndex == 1
+                                              ? primaryColor
+                                              : Colors.grey.shade600,
+                                          fontWeight: _selectedTabIndex == 1
+                                              ? FontWeight.bold
+                                              : FontWeight.normal,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ),
-            child: Row(
-              children: [
-                // Recent Lessons Tab
-                Expanded(
-                  child: InkWell(
-                    onTap: () => _switchTab(0),
-                    child: Showcase(
-                      key: ShowcaseKeys.recentLessonTabKey,
-                      title: 'Recent Lessons',
-                      description: 'View your recent lessons here.',
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: _selectedTabIndex == 0
-                                  ? Colors.green
-                                  : Colors.transparent,
-                              width: 3.0,
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          "Recent Lessons",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: _selectedTabIndex == 0
-                                ? Colors.black
-                                : Colors.grey,
-                            fontWeight: _selectedTabIndex == 0
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
 
-                // Choose Your Lesson Tab
-                Expanded(
-                  child: InkWell(
-                    onTap: () => _switchTab(1),
-                    child: Showcase(
-                      key: ShowcaseKeys.chooseLessonTabKey,
-                      title: 'Choose Your Lesson',
-                      description: 'Choose your lesson here.',
-                      onTargetClick: () {
-                        // Switch to the Choose Your Lesson tab
-                        _switchTab(1);
-                      },
-                      disposeOnTap: true,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: _selectedTabIndex == 1
-                                  ? Colors.green
-                                  : Colors.transparent,
-                              width: 3.0,
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          "Choose Your Lesson",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: _selectedTabIndex == 1
-                                ? Colors.black
-                                : Colors.grey,
-                            fontWeight: _selectedTabIndex == 1
-                                ? FontWeight.bold
-                                : FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Spacer after tabs
+          if (!_showingPathway) const SizedBox(height: 8),
 
-          // Content area with PageView for swiping
+          // Content area: Conditionally show Pathway or PageView
           Expanded(
-            child: PageView(
-              controller: _pageController,
-              onPageChanged: (index) {
-                setState(() {
-                  _selectedTabIndex = index;
-                });
+            child: WillPopScope(
+              onWillPop: () async {
+                if (_showingPathway) {
+                  _hidePathway();
+                  return false; // Prevent default pop
+                }
+                return true; // Allow default pop
               },
-              children: const [
-                RecentLessonsUIPage(),
-                ChooseLessonUIPage(),
-              ],
+              child: _showingPathway
+                  ? PathwayUI(
+                      subject: _pathwaySubject!,
+                      grade: _pathwayGrade!,
+                      highlightSubtopicId: _pathwayHighlightSubtopicId,
+                      onBackRequested: _hidePathway,
+                      // userId will be fetched internally by PathwayUI
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.05),
+                            spreadRadius: 1,
+                            blurRadius: 1,
+                          ),
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                        child: PageView(
+                          controller: _pageController,
+                          onPageChanged: (index) {
+                            if (!_showingPathway) {
+                              // Only update if not showing pathway
+                              setState(() {
+                                _selectedTabIndex = index;
+                              });
+                              // Run the animation
+                              if (index == 0) {
+                                _animationController.reverse();
+                              } else {
+                                _animationController.forward();
+                              }
+                            }
+                          },
+                          children: [
+                            // Pass the callback to the children
+                            RecentLessonsUIPage(
+                                onPathwayRequested: _showPathway),
+                            ChooseLessonUIPage(
+                                onPathwayRequested: _showPathway),
+                          ],
+                        ),
+                      ),
+                    ),
             ),
           ),
         ],

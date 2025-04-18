@@ -333,8 +333,8 @@ class _SignInScreenState extends State<SignInScreen> {
                               onPressed: signInWithEmail,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green.shade800,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 14, horizontal: 28),
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 14, horizontal: 28),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),

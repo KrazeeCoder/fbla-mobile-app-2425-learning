@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_provider.dart';
 import '../minigames/racing_game.dart';
 import '../minigames/cypher_game.dart';
 import '../minigames/maze_game.dart';
 import '../minigames/puzzle_game.dart';
 import '../minigames/quiz_challenge_game.dart';
 import '../minigames/word_scramble_game.dart';
+import 'package:provider/provider.dart';
+
+import 'app_logger.dart';
 
 Future<void> launchRandomGame({
   required BuildContext context,
@@ -19,6 +24,7 @@ Future<void> launchRandomGame({
   required String nextReadingContent,
   required String userId,
 }) async {
+  AppLogger.i("launched Random Game");
   final games = [
     RacingGame(
       subject: subject,
@@ -68,18 +74,6 @@ Future<void> launchRandomGame({
       nextReadingContent: nextReadingContent,
       userId: userId,
     ),
-    PuzzleScreen(
-      subject: subject,
-      grade: grade,
-      unitId: unitId,
-      unitTitle: unitTitle,
-      subtopicId: subtopicId,
-      subtopicTitle: subtopicTitle,
-      nextSubtopicId: nextSubtopicId,
-      nextSubtopicTitle: nextSubtopicTitle,
-      nextReadingContent: nextReadingContent,
-      userId: userId,
-    )
   ];
 
   if (subject.toLowerCase() == "history" ||
@@ -104,5 +98,38 @@ Future<void> launchRandomGame({
   await Navigator.push(
     context,
     MaterialPageRoute(builder: (_) => games.first),
+  );
+}
+
+Future<void> launchPuzzleGame({
+  required BuildContext context,
+  required String subject,
+  required int grade,
+  required int unitId,
+  required String unitTitle,
+  required String subtopicId,
+  required String subtopicTitle,
+  required String nextSubtopicId,
+  required String nextSubtopicTitle,
+  required String nextReadingContent,
+  required String userId,
+}) async {
+  AppLogger.i("launched Puzzle Game");
+  await Navigator.push(
+    context,
+    MaterialPageRoute(
+        builder: (context) => ShowCaseWidget(
+            builder: (context) => PuzzleScreen(
+                  subject: subject,
+                  grade: grade,
+                  unitId: unitId,
+                  unitTitle: unitTitle,
+                  subtopicId: subtopicId,
+                  subtopicTitle: subtopicTitle,
+                  nextSubtopicId: nextSubtopicId,
+                  nextSubtopicTitle: nextSubtopicTitle,
+                  nextReadingContent: nextReadingContent,
+                  userId: userId,
+                ))),
   );
 }

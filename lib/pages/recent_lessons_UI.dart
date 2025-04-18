@@ -2,15 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../models/user_progress_model.dart';
 import '../services/progress_service.dart';
-
+import 'package:fbla_mobile_2425_learning_app/pages/learn.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
 
 class RecentLessonsUIPage extends StatefulWidget {
   final bool latestOnly;
+  final PathwayRequestedCallback onPathwayRequested;
 
-  const RecentLessonsUIPage({super.key, this.latestOnly = false});
+  const RecentLessonsUIPage({
+    super.key,
+    this.latestOnly = false,
+    required this.onPathwayRequested,
+  });
 
   @override
   State<RecentLessonsUIPage> createState() => _RecentLessonsUIPageState();
@@ -65,16 +70,10 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => PathwayUI(
-                        subject: item.subject,
-                        grade: item.grade,
-                        userId: FirebaseAuth.instance.currentUser?.uid ?? '',
-                        highlightSubtopicId: item.subtopicId,
-                      ),
-                    ),
+                  widget.onPathwayRequested(
+                    item.subject,
+                    item.grade,
+                    highlightSubtopicId: item.subtopicId,
                   );
                 },
                 child: IntrinsicHeight(

@@ -1,26 +1,18 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import '../minigames/maze_game.dart';
-import '../minigames/puzzle_game.dart';
-import '../minigames/cypher_game.dart';
-import '../minigames/racing_game.dart';
-import '../minigames/quiz_challenge_game.dart';
-import '../minigames/word_scramble_game.dart';
 import '../pages/lesson_chatbot.dart';
 import '../services/updateprogress.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import '../xp_manager.dart';
 import '../utils/app_logger.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'earth_unlock_animation.dart';
-import 'package:audioplayers/audioplayers.dart';
 import '../utils/subTopicNavigation.dart';
 import '../utils/game_launcher.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
+import '../coach_marks/showcase_keys.dart';
+import '../coach_marks/showcase_provider.dart';
+import '../providers/settings_provider.dart';
 
 class SubtopicPage extends StatefulWidget {
   final String subtopic;
@@ -88,6 +80,14 @@ class _SubtopicPageState extends State<SubtopicPage> {
         unitId: widget.unitId,
         subject: widget.subject,
       );
+
+      // Trigger the subtopic showcase after the frame is built
+      // ❗ Only start if showcase hasn't been completed/skipped
+      final showcaseService =
+          Provider.of<ShowcaseService>(context, listen: false);
+      if (!showcaseService.hasCompletedInitialShowcase) {
+        showcaseService.startSubtopicScreenShowcase(context);
+      }
     });
   }
 
@@ -106,116 +106,17 @@ class _SubtopicPageState extends State<SubtopicPage> {
     }
   }
 
-/*
-  void launchRandomGame(BuildContext context) {
-    final nextSubtopicId = subtopicNav?['nextSubtopicId'] ?? "";
-    final nextSubtopicTitle = subtopicNav?['nextReadingTitle'] ?? "";
-    final nextReadingContent = subtopicNav?['nextReadingContent'] ?? "";
-    final currentUserId = FirebaseAuth.instance.currentUser?.uid ?? "";
-
-    final games = [
-      CypherUI(
-        subject: widget.subject,
-        grade: widget.grade,
-        unitId: widget.unitId,
-        unitTitle: widget.unitTitle,
-        subtopicTitle: widget.readingTitle,
-        subtopicId: widget.subtopicId,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: currentUserId,
-      ),
-      MazeGame(
-        subject: widget.subject,
-        grade: widget.grade,
-        unitId: widget.unitId,
-        unitTitle: widget.unitTitle,
-        subtopicTitle: widget.readingTitle,
-        subtopicId: widget.subtopicId,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: currentUserId,
-      ),
-      PuzzleScreen(
-        subject: widget.subject,
-        grade: widget.grade,
-        unitId: widget.unitId,
-        unitTitle: widget.unitTitle,
-        subtopicTitle: widget.readingTitle,
-        subtopicId: widget.subtopicId,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: currentUserId,
-      ),
-      RacingGame(
-        subject: widget.subject,
-        grade: widget.grade,
-        unitId: widget.unitId,
-        unitTitle: widget.unitTitle,
-        subtopicTitle: widget.readingTitle,
-        subtopicId: widget.subtopicId,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: currentUserId,
-      ),
-      QuizChallengeGame(
-        subject: widget.subject,
-        grade: widget.grade,
-        unitId: widget.unitId,
-        unitTitle: widget.unitTitle,
-        subtopicTitle: widget.readingTitle,
-        subtopicId: widget.subtopicId,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: currentUserId,
-      ),
-    ];
-
-    // Add WordScrambleGame only for specific subjects
-    if (widget.subject.toLowerCase() == "english" ||
-        widget.subject.toLowerCase() == "history") {
-      games.add(
-        WordScrambleGame(
-          subject: widget.subject,
-          grade: widget.grade,
-          unitId: widget.unitId,
-          unitTitle: widget.unitTitle,
-          subtopicTitle: widget.readingTitle,
-          subtopicId: widget.subtopicId,
-          nextSubtopicId: nextSubtopicId,
-          nextSubtopicTitle: nextSubtopicTitle,
-          nextReadingContent: nextReadingContent,
-          userId: currentUserId,
-        ),
-      );
-    }
-
-    games.shuffle();
-
-    debugPrint(
-      '[SubtopicPage → Game Launch] subtopic: ${widget.subtopicId} | launching: ${games.first.runtimeType}',
-    );
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => games.first),
-    ).then((_) => _checkSubtopicCompletion());
-  }
-*/
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
-    final ColorScheme colorScheme = theme.colorScheme;
-
     final Color primaryGreen = Colors.green.shade600;
     final Color lightGreen = Colors.green.shade100;
     final Color mediumGreen = Colors.green.shade300;
     final Color darkGreen = Colors.green.shade800;
+
+    // Get the font size from settings provider
+    final settingsProvider = Provider.of<SettingsProvider>(context);
+    final double contentFontSize =
+        settingsProvider.isLoading ? 14.0 : settingsProvider.fontSize;
 
     return Scaffold(
       appBar: AppBar(
@@ -284,26 +185,54 @@ class _SubtopicPageState extends State<SubtopicPage> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
+                  Showcase(
+                    key: ShowcaseKeys.contentKey,
+                    title: 'Lesson Content',
+                    description:
+                        'Read through the lesson material here. Content follows Common Core Standards.',
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(16),
+                      child: MarkdownBody(
+                        data: widget.readingContent,
+                        onTapLink: (text, href, title) {
+                          if (href != null) {
+                            url_launcher.launchUrl(Uri.parse(href));
+                          }
+                        },
+                        styleSheet: MarkdownStyleSheet(
+                          p: TextStyle(fontSize: contentFontSize),
+                          h1: TextStyle(
+                              fontSize: contentFontSize + 8,
+                              fontWeight: FontWeight.bold),
+                          h2: TextStyle(
+                              fontSize: contentFontSize + 6,
+                              fontWeight: FontWeight.bold),
+                          h3: TextStyle(
+                              fontSize: contentFontSize + 4,
+                              fontWeight: FontWeight.bold),
+                          h4: TextStyle(
+                              fontSize: contentFontSize + 2,
+                              fontWeight: FontWeight.bold),
+                          h5: TextStyle(
+                              fontSize: contentFontSize + 1,
+                              fontWeight: FontWeight.bold),
+                          h6: TextStyle(
+                              fontSize: contentFontSize,
+                              fontWeight: FontWeight.bold),
+                          listBullet: TextStyle(fontSize: contentFontSize),
                         ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.all(16),
-                    child: MarkdownBody(
-                      data: widget.readingContent,
-                      onTapLink: (text, href, title) {
-                        if (href != null) {
-                          url_launcher.launchUrl(Uri.parse(href));
-                        }
-                      },
+                      ),
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -387,31 +316,49 @@ class _SubtopicPageState extends State<SubtopicPage> {
                   ),
                   child: Row(
                     children: [
-                      FloatingActionButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ChatbotScreen(topicId: widget.subtopicId),
-                            ),
-                          );
-                        },
-                        backgroundColor: lightGreen,
-                        foregroundColor: darkGreen,
-                        child: const Icon(Icons.chat_bubble_outline),
-                        tooltip: "Ask Chat-it",
+                      Showcase(
+                        key: ShowcaseKeys.chatIconKey,
+                        title: 'Ask EarthPal',
+                        description:
+                            'Need help understanding? Tap here to ask our AI assistant, EarthPal.',
+                        child: FloatingActionButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ChatbotScreen(topicId: widget.subtopicId),
+                              ),
+                            );
+                          },
+                          backgroundColor: lightGreen,
+                          foregroundColor: darkGreen,
+                          child: const Icon(Icons.chat_bubble_outline),
+                          tooltip: "Ask EarthPal",
+                        ),
                       ),
                       const SizedBox(width: 16),
                       Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
+                        child: Showcase(
+                          key: ShowcaseKeys.continueToPracticeKey,
+                          title: 'Continue to Practice',
+                          description:
+                              'Finished reading? Tap here to mark as complete and practice with a mini-game!',
+                          disposeOnTap: true,
+                          onTargetClick: () async {
                             final user = FirebaseAuth.instance.currentUser;
 
                             if (user != null) {
-                              _handleSubTopicCompletion(context);
+                              await _handleSubTopicCompletion(context);
 
-                              await launchRandomGame(
+                              if (mounted) {
+                                Navigator.pop(context);
+                              }
+
+                              AppLogger.i("Launching Puzzle Game");
+
+                              // For showcase/tutorial path: always use puzzle game with tutorial
+                              await launchPuzzleGame(
                                 context: context,
                                 subject: widget.subject,
                                 grade: widget.grade,
@@ -427,21 +374,51 @@ class _SubtopicPageState extends State<SubtopicPage> {
                                     subtopicNav?['nextReadingContent'] ?? "",
                                 userId: widget.userId,
                               );
-
-                              _checkSubtopicCompletion(); // ✅ Refresh state after game
                             }
                           },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: primaryGreen,
-                            foregroundColor: Colors.white,
-                            minimumSize: const Size.fromHeight(50),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              final user = FirebaseAuth.instance.currentUser;
+
+                              if (user != null) {
+                                await _handleSubTopicCompletion(context);
+
+                                if (mounted) {
+                                  Navigator.pop(context);
+                                }
+                                AppLogger.i("Launching Random Game");
+
+                                // For normal gameplay: use random game without tutorial
+                                await launchRandomGame(
+                                  context: context,
+                                  subject: widget.subject,
+                                  grade: widget.grade,
+                                  unitId: widget.unitId,
+                                  unitTitle: widget.unitTitle,
+                                  subtopicId: widget.subtopicId,
+                                  subtopicTitle: widget.readingTitle,
+                                  nextSubtopicId:
+                                      subtopicNav?['nextSubtopicId'] ?? "",
+                                  nextSubtopicTitle:
+                                      subtopicNav?['nextReadingTitle'] ?? "",
+                                  nextReadingContent:
+                                      subtopicNav?['nextReadingContent'] ?? "",
+                                  userId: widget.userId,
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: primaryGreen,
+                              foregroundColor: Colors.white,
+                              minimumSize: const Size.fromHeight(50),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
                             ),
-                            elevation: 2,
+                            child: const Text("Continue to Practice",
+                                style: TextStyle(fontSize: 16)),
                           ),
-                          child: const Text("Continue to Practice",
-                              style: TextStyle(fontSize: 16)),
                         ),
                       ),
                     ],

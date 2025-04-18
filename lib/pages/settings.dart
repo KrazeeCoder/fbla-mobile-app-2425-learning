@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_keys.dart';
 import '/auth_utility.dart';
 import 'signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +9,7 @@ import 'package:provider/provider.dart';
 import '/security.dart';
 import '../coach_marks/showcase_provider.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/custom_app_bar.dart';
+import '../providers/settings_provider.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -28,8 +31,6 @@ class _SettingsPageState extends State<SettingsPage> {
       TextEditingController();
 
   bool isLoading = false;
-  bool stayOnTrack = false;
-  double fontSize = 14;
   int currentXP = 0;
   int currentLevel = 0;
   String profilePicUrl = '';
@@ -48,13 +49,10 @@ class _SettingsPageState extends State<SettingsPage> {
     if (user == null) return;
 
     final doc = await _firestore.collection('users').doc(user.uid).get();
-    final settings = doc['settings'] ?? {};
 
     setState(() {
       currentLevel = doc['currentLevel'] ?? 0;
       currentXP = doc['currentXP'] ?? 0;
-      stayOnTrack = settings['stayOnTrack'] ?? false;
-      fontSize = (settings['fontSize'] ?? 14).toDouble();
       _usernameController.text = doc['username'] ?? '';
     });
 
@@ -138,10 +136,7 @@ class _SettingsPageState extends State<SettingsPage> {
         username: username,
       );
 
-      await _firestore.collection('users').doc(user.uid).update({
-        'settings.stayOnTrack': stayOnTrack,
-        'settings.fontSize': fontSize,
-      });
+      // No need to update settings in Firestore here, the provider handles it
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('✅ Profile updated')),
@@ -223,213 +218,359 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const CustomAppBar(), // ✅ Add your custom app bar
+    final settingsProvider = Provider.of<SettingsProvider>(context);
 
-                  const Padding(
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
-                    child: Text(
-                      "Settings",
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
+    return Scaffold(
+      body: isLoading || settingsProvider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : Showcase(
+              key: ShowcaseKeys.settingsScreenKey,
+              title: 'Settings',
+              description: 'This is the settings screen',
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const CustomAppBar(),
+                    const Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20.0, vertical: 12),
+                      child: Text(
+                        "Settings",
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        // Profile Picture
-                        Stack(
-                          alignment: Alignment.bottomRight,
-                          children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundImage: profilePicUrl.isNotEmpty
-                                  ? NetworkImage(profilePicUrl)
-                                  : const AssetImage(
-                                          'assets/default_avatar.png')
-                                      as ImageProvider,
-                            ),
-                            IconButton(
-                              icon: const Icon(Icons.edit,
-                                  color: Colors.deepPurple),
-                              onPressed: _editProfilePicture,
-                            )
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Email (read-only)
-                        TextFormField(
-                          controller: _emailController,
-                          readOnly: true,
-                          decoration: InputDecoration(
-                            labelText: 'Email',
-                            border: OutlineInputBorder(),
-                            fillColor: Colors.grey.shade100,
-                            filled: true,
-                            prefixIcon: const Icon(Icons.email_outlined),
-                          ),
-                          style: TextStyle(color: Colors.grey.shade700),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Username Field
-                        TextField(
-                          controller: _usernameController,
-                          decoration: InputDecoration(
-                            labelText: 'Username',
-                            errorText: usernameError,
-                            prefixIcon: const Icon(Icons.alternate_email),
-                            border: OutlineInputBorder(),
-                            helperText: 'Your unique username for leaderboards',
-                          ),
-                          onChanged: (value) {
-                            // Reset error when user types
-                            if (usernameError != null) {
-                              setState(() => usernameError = null);
-                            }
-                            // Validate format as user types
-                            _validateUsernameFormat(value);
-                          },
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Name Fields
-                        TextField(
-                          controller: _firstNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'First Name',
-                            prefixIcon: Icon(Icons.person),
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _lastNameController,
-                          decoration: const InputDecoration(
-                            labelText: 'Last Name',
-                            prefixIcon: Icon(Icons.person_outline),
-                            border: OutlineInputBorder(),
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // XP & Level (Read-Only Display)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Chip(
-                              label: Text("Level: $currentLevel"),
-                              avatar:
-                                  const Icon(Icons.star, color: Colors.amber),
-                            ),
-                            Chip(
-                              label: Text("XP: $currentXP"),
-                              avatar: const Icon(Icons.flash_on,
-                                  color: Colors.orange),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Stay On Track Toggle
-                        SwitchListTile(
-                          title: const Text("Stay On Track"),
-                          value: stayOnTrack,
-                          onChanged: (val) => setState(() => stayOnTrack = val),
-                          activeColor: Colors.deepPurple,
-                        ),
-                        const SizedBox(height: 10),
-
-                        // Font Size Slider
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("Font Size",
-                                style: TextStyle(fontWeight: FontWeight.bold)),
-                            Slider(
-                              min: 10,
-                              max: 24,
-                              divisions: 7,
-                              label: fontSize.toStringAsFixed(0),
-                              value: fontSize,
-                              onChanged: (val) =>
-                                  setState(() => fontSize = val),
-                              activeColor: Colors.deepPurple,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Add a section for tutorials
-                        ListTile(
-                          title: const Text('App Tutorial'),
-                          subtitle: const Text('Reset the app tutorial'),
-                          trailing: ElevatedButton(
-                            onPressed: () async {
-                              await Provider.of<ShowcaseService>(context,
-                                      listen: false)
-                                  .resetShowcase();
-                              if (context.mounted) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Tutorial reset! It will appear next time you open the app.'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Profile Section
+                          _buildSectionHeader("Profile"),
+                          Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.only(bottom: 20),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                children: [
+                                  // Profile Picture
+                                  Center(
+                                    child: Stack(
+                                      alignment: Alignment.bottomRight,
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 50,
+                                          backgroundImage: profilePicUrl
+                                                  .isNotEmpty
+                                              ? NetworkImage(profilePicUrl)
+                                              : const AssetImage(
+                                                      'assets/default_avatar.png')
+                                                  as ImageProvider,
+                                        ),
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            shape: BoxShape.circle,
+                                            boxShadow: [
+                                              BoxShadow(
+                                                color: Colors.grey
+                                                    .withOpacity(0.3),
+                                                blurRadius: 3,
+                                                offset: const Offset(0, 1),
+                                              ),
+                                            ],
+                                          ),
+                                          child: IconButton(
+                                            icon: const Icon(Icons.edit,
+                                                color: Colors.deepPurple,
+                                                size: 20),
+                                            onPressed: _editProfilePicture,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                );
-                              }
-                            },
-                            child: const Text('Reset'),
-                          ),
-                        ),
+                                  const SizedBox(height: 24),
 
-                        // Save Button
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: _saveChanges,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepPurple,
-                              foregroundColor: Colors.white,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                            ),
-                            child: const Text("Save Changes",
-                                style: TextStyle(fontSize: 16)),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
+                                  // Email (read-only)
+                                  TextFormField(
+                                    controller: _emailController,
+                                    readOnly: true,
+                                    decoration: InputDecoration(
+                                      labelText: 'Email',
+                                      border: OutlineInputBorder(),
+                                      fillColor: Colors.grey.shade100,
+                                      filled: true,
+                                      prefixIcon:
+                                          const Icon(Icons.email_outlined),
+                                    ),
+                                    style:
+                                        TextStyle(color: Colors.grey.shade700),
+                                  ),
+                                  const SizedBox(height: 16),
 
-                        // Logout
-                        SizedBox(
-                          width: double.infinity,
-                          child: OutlinedButton.icon(
-                            onPressed: _showLogoutDialog,
-                            icon: const Icon(Icons.logout),
-                            label: const Text("Logout"),
-                            style: OutlinedButton.styleFrom(
-                              foregroundColor: Colors.redAccent,
-                              side: const BorderSide(color: Colors.redAccent),
+                                  // Username Field
+                                  TextField(
+                                    controller: _usernameController,
+                                    decoration: InputDecoration(
+                                      labelText: 'Username',
+                                      errorText: usernameError,
+                                      prefixIcon:
+                                          const Icon(Icons.alternate_email),
+                                      border: OutlineInputBorder(),
+                                      helperText:
+                                          'Your unique username for leaderboards',
+                                    ),
+                                    onChanged: (value) {
+                                      if (usernameError != null) {
+                                        setState(() => usernameError = null);
+                                      }
+                                      _validateUsernameFormat(value);
+                                    },
+                                  ),
+                                  const SizedBox(height: 16),
+
+                                  // Name Fields
+                                  TextField(
+                                    controller: _firstNameController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'First Name',
+                                      prefixIcon: Icon(Icons.person),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 16),
+                                  TextField(
+                                    controller: _lastNameController,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Last Name',
+                                      prefixIcon: Icon(Icons.person_outline),
+                                      border: OutlineInputBorder(),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
-                  )
-                ],
+
+                          // Progress Section
+                          _buildSectionHeader("Progress"),
+                          Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.only(bottom: 20),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _buildProgressItem(
+                                    icon: Icons.star,
+                                    iconColor: Colors.amber,
+                                    label: "Level",
+                                    value: "$currentLevel",
+                                  ),
+                                  const SizedBox(width: 20),
+                                  _buildProgressItem(
+                                    icon: Icons.flash_on,
+                                    iconColor: Colors.orange,
+                                    label: "XP",
+                                    value: "$currentXP",
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          // App Preferences Section
+                          _buildSectionHeader("App Preferences"),
+                          Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.only(bottom: 20),
+                            child: Column(
+                              children: [
+                                // Stay On Track Toggle
+                                SwitchListTile(
+                                  title: const Text("Stay On Track"),
+                                  subtitle: const Text(
+                                      "Receive reminders to complete your learning goals"),
+                                  value: settingsProvider.stayOnTrack,
+                                  onChanged: (val) =>
+                                      settingsProvider.updateStayOnTrack(val),
+                                  activeColor: Colors.deepPurple,
+                                ),
+                                const Divider(height: 1),
+
+                                // Font Size Slider
+                                Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text("Font Size",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                          )),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          const Text("A",
+                                              style: TextStyle(fontSize: 12)),
+                                          Expanded(
+                                            child: Slider(
+                                              min: 10,
+                                              max: 24,
+                                              divisions: 7,
+                                              label:
+                                                  "${settingsProvider.fontSize.toInt()}",
+                                              value: settingsProvider.fontSize,
+                                              onChanged: (val) =>
+                                                  settingsProvider
+                                                      .updateFontSize(val),
+                                              activeColor: Colors.deepPurple,
+                                            ),
+                                          ),
+                                          const Text("A",
+                                              style: TextStyle(fontSize: 24)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const Divider(height: 1),
+
+                                // App Tutorial
+                                ListTile(
+                                  leading: const Icon(Icons.help_outline,
+                                      color: Colors.deepPurple),
+                                  title: const Text('App Tutorial'),
+                                  subtitle:
+                                      const Text('Reset the app tutorial'),
+                                  trailing: OutlinedButton(
+                                    onPressed: () async {
+                                      await Provider.of<ShowcaseService>(
+                                              context,
+                                              listen: false)
+                                          .resetShowcase();
+                                      if (context.mounted) {
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(
+                                          const SnackBar(
+                                            content: Text(
+                                                'Tutorial reset! It will appear next time you open the app.'),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: const Text('Reset'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Account Actions Section
+                          _buildSectionHeader("Account Actions"),
+                          Card(
+                            elevation: 2,
+                            margin: const EdgeInsets.only(bottom: 30),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16),
+                              child: Column(
+                                children: [
+                                  // Save Button
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: ElevatedButton(
+                                      onPressed: _saveChanges,
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.deepPurple,
+                                        foregroundColor: Colors.white,
+                                        padding: const EdgeInsets.symmetric(
+                                            vertical: 14),
+                                      ),
+                                      child: const Text("Save Changes",
+                                          style: TextStyle(fontSize: 16)),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  // Logout
+                                  SizedBox(
+                                    width: double.infinity,
+                                    child: OutlinedButton.icon(
+                                      onPressed: _showLogoutDialog,
+                                      icon: const Icon(Icons.logout),
+                                      label: const Text("Logout"),
+                                      style: OutlinedButton.styleFrom(
+                                        foregroundColor: Colors.redAccent,
+                                        side: const BorderSide(
+                                            color: Colors.redAccent),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
+    );
+  }
+
+  Widget _buildSectionHeader(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.deepPurple,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProgressItem({
+    required IconData icon,
+    required Color iconColor,
+    required String label,
+    required String value,
+  }) {
+    return Expanded(
+      child: Column(
+        children: [
+          Icon(icon, color: iconColor, size: 40),
+          const SizedBox(height: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

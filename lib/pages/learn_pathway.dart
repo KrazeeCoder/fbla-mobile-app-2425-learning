@@ -1,21 +1,28 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_keys.dart';
 import '../jsonUtility.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/game_launcher.dart';
+import '../coach_marks/showcase_provider.dart';
 
 class PathwayUI extends StatefulWidget {
   final int grade;
   final String subject;
   String? userId;
   final String? highlightSubtopicId;
+  final VoidCallback onBackRequested;
 
-  PathwayUI(
-      {required this.grade,
-      required this.subject,
-      this.userId,
-      this.highlightSubtopicId});
+  PathwayUI({
+    required this.grade,
+    required this.subject,
+    this.userId,
+    this.highlightSubtopicId,
+    required this.onBackRequested,
+  });
 
   @override
   State<PathwayUI> createState() => _PathwayUIState();
@@ -37,15 +44,159 @@ class _PathwayUIState extends State<PathwayUI> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Learning Pathway'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
+      backgroundColor: Colors.grey.shade50,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(kToolbarHeight + 15),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+            child: Container(
+              height: kToolbarHeight + 12,
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.primary,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: Row(
+                  children: [
+                    // Back Button
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new,
+                          color: Colors.white),
+                      onPressed: widget.onBackRequested,
+                      tooltip:
+                          MaterialLocalizations.of(context).backButtonTooltip,
+                    ),
+                    // Icon and Title - Simplified
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.3),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(
+                        Icons.school,
+                        color: Colors.white,
+                        size: 22,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Grade and Subject - Main focus with enhanced styling and better contrast
+                          Row(
+                            children: [
+                              Text(
+                                'Grade ${widget.grade}',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  shadows: [
+                                    Shadow(
+                                      offset: Offset(0, 1),
+                                      blurRadius: 2.0,
+                                      color: Color.fromARGB(100, 0, 0, 0),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                width: 4,
+                                height: 4,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 1,
+                                      offset: const Offset(0, 1),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Text(
+                                widget.subject,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  shadows: [
+                                    Shadow(
+                                      offset: Offset(0, 1),
+                                      blurRadius: 2.0,
+                                      color: Color.fromARGB(100, 0, 0, 0),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          // Learning Pathway - Secondary text
+                          Text(
+                            'Learning Pathway',
+                            style: TextStyle(
+                              color: Colors.white.withOpacity(0.9),
+                              fontWeight: FontWeight.w500,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // Info Button
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.3),
+                          shape: BoxShape.circle,
+                        ),
+                        child: IconButton(
+                          icon: const Icon(Icons.info_outline,
+                              color: Colors.white, size: 20),
+                          onPressed: () {
+                            // Show info about the learning pathway
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    'This pathway shows your learning journey'),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          tooltip: 'Pathway Info',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
       body: Column(
         children: [
-          _buildHeader(context),
+          // Space to compensate for the floating AppBar - reduced
+          const SizedBox(height: 4),
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: _pathwayData,
@@ -61,15 +212,18 @@ class _PathwayUIState extends State<PathwayUI> {
                 } else {
                   final steps = snapshot.data!;
 
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                  WidgetsBinding.instance.addPostFrameCallback((_) async {
+                    BuildContext? targetContext;
                     // Case 1: Scroll to explicitly passed subtopic
+
                     if (widget.highlightSubtopicId != null &&
                         _subtopicKeys.containsKey(widget.highlightSubtopicId)) {
-                      final context = _subtopicKeys[widget.highlightSubtopicId]!
+                      print("Scrolling to explicitly passed subtopic");
+                      targetContext = _subtopicKeys[widget.highlightSubtopicId]!
                           .currentContext;
-                      if (context != null) {
-                        Scrollable.ensureVisible(
-                          context,
+                      if (targetContext != null) {
+                        await Scrollable.ensureVisible(
+                          targetContext,
                           duration: const Duration(seconds: 1),
                           curve: Curves.easeInOut,
                         );
@@ -77,25 +231,56 @@ class _PathwayUIState extends State<PathwayUI> {
                     }
                     // Case 2: Scroll to first blue step (next to do)
                     else {
+                      print("Scrolling to first blue step");
+                      print(_subtopicKeys.entries.last);
                       final nextToDoEntry = _subtopicKeys.entries.firstWhere(
                         (e) => steps.any((s) =>
                             s['subId'] == e.key &&
                             s['type'] != 'unit_separator' &&
                             s['isNextToDo'] == true),
-                        orElse: () => MapEntry('', GlobalKey()),
+                        orElse: () {
+                          print("No blue step found, scrolling to bottom");
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeInOut,
+                          );
+                          return MapEntry(
+                              '', GlobalKey()); // Return dummy entry
+                        },
                       );
 
-                      if (nextToDoEntry.value?.currentContext != null) {
-                        Scrollable.ensureVisible(
-                          nextToDoEntry.value!.currentContext!,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.easeInOut,
-                        );
+                      // Only try to scroll if a valid next step was found
+                      if (nextToDoEntry.key.isNotEmpty) {
+                        targetContext = nextToDoEntry.value.currentContext;
+                        if (targetContext != null) {
+                          await Scrollable.ensureVisible(
+                            targetContext,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeInOut,
+                          );
+                        }
+                      }
+                    }
+
+                    // Trigger showcase AFTER scrolling is complete
+                    // Use the context from the main ShowCaseWidget
+                    if (mounted && targetContext != null) {
+                      final showcaseService =
+                          Provider.of<ShowcaseService>(context, listen: false);
+                      // Get the ShowCaseWidget context from the main widget tree
+                      final showcaseContext = ShowCaseWidget.of(context);
+                      if (showcaseContext != null) {
+                        // ❗ Only start if showcase hasn't been completed/skipped
+                        if (!showcaseService.hasCompletedInitialShowcase) {
+                          showcaseService.startPathwayScreenShowcase(context);
+                        }
                       }
                     }
                   });
 
                   return ListView.builder(
+                    controller: _scrollController,
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     itemCount: steps.length,
                     itemBuilder: (context, index) {
@@ -104,11 +289,19 @@ class _PathwayUIState extends State<PathwayUI> {
                         return _buildUnitSeparator(step["title"]);
                       } else {
                         stepPos++;
-                        return _buildPathwayStep(
-                          step: step,
-                          index: stepPos,
-                          allSteps: steps, // <-- pass all steps here
-                        );
+                        if (step["isNextToDo"] == true) {
+                          return _buildPathwayStepWithShowcase(
+                            step: step,
+                            index: stepPos,
+                            allSteps: steps, // <-- pass all steps here
+                          );
+                        } else {
+                          return _buildPathwayStep(
+                            step: step,
+                            index: stepPos,
+                            allSteps: steps, // <-- pass all steps here
+                          );
+                        }
                       }
                     },
                   );
@@ -117,88 +310,6 @@ class _PathwayUIState extends State<PathwayUI> {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Theme.of(context).colorScheme.primary,
-            Theme.of(context).colorScheme.primary.withOpacity(0.9),
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: const Icon(
-                Icons.school,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      'Grade ${widget.grade}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    widget.subject,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      letterSpacing: 0.5,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -349,6 +460,66 @@ class _PathwayUIState extends State<PathwayUI> {
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPathwayStepWithShowcase({
+    required Map<String, dynamic> step,
+    required int index,
+    required List<Map<String, dynamic>> allSteps,
+  }) {
+    final bool isCompleted = step["isCompleted"] ?? false;
+    final bool isNextToDo = step["isNextToDo"] ?? false;
+    final bool isInteractive = isCompleted || isNextToDo;
+    final String title = step["title"] ?? "";
+    final bool isSubtopic = step["type"] == "subtopic";
+
+    // Check if this is the last step in the unit
+    final bool isLastInUnit = _isLastInUnit(step, allSteps);
+
+    final String subId = step["subId"] ?? '';
+    final key = GlobalKey();
+    if (!_subtopicKeys.containsKey(subId)) {
+      _subtopicKeys[subId] = key;
+    }
+
+    return KeyedSubtree(
+      key: key,
+      child: Showcase(
+        key: ShowcaseKeys.pathwayStepKey,
+        title: 'Pathway Step',
+        description:
+            'Tap here to view the lesson content or start the practice game.',
+        onTargetClick: () {
+          _handleStepTap(context, step, allSteps, title, isCompleted);
+        },
+        disposeOnTap: true,
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 12.0,
+            right: 12.0,
+            top: 0.0,
+            bottom: isLastInUnit ? 2.0 : 0.0,
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildTimelineSection(index, isCompleted, isNextToDo, isSubtopic),
+              const SizedBox(width: 10),
+              Expanded(
+                child: GestureDetector(
+                  onTap: isInteractive
+                      ? () => _handleStepTap(
+                          context, step, allSteps, title, isCompleted)
+                      : null,
+                  child: _buildStepCard(
+                      step, isCompleted, isNextToDo, title, isSubtopic),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -572,28 +743,38 @@ class _PathwayUIState extends State<PathwayUI> {
           step["subIndex"] == subjectSubtopics.length - 1;
 
       Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SubtopicPage(
-            subtopic: title,
-            subtopicId: step["subId"] ?? "",
-            readingTitle: title,
-            readingContent: step["reading"] ?? "",
-            isCompleted: isCompleted,
-            subject: widget.subject,
-            grade: widget.grade,
-            unitId: step["unitId"] ?? "",
-            unitTitle: step["unitTitle"] ?? "",
-            userId: widget.userId ?? '',
-            lastSubtopicofUnit: lastSubtopicOfUnit,
-            lastSubtopicofGrade: lastSubtopicOfGrade,
-            lastSubtopicofSubject: lastSubtopicOfSubject,
-          ),
-        ),
-      ).then((_) {
+          context,
+          MaterialPageRoute(
+            builder: (context) => ShowCaseWidget(
+              builder: (context) => SubtopicPage(
+                subtopic: title,
+                subtopicId: step["subId"] ?? "",
+                readingTitle: title,
+                readingContent: step["reading"] ?? "",
+                isCompleted: isCompleted,
+                subject: widget.subject,
+                grade: widget.grade,
+                unitId: step["unitId"] ?? "",
+                unitTitle: step["unitTitle"] ?? "",
+                userId: widget.userId ?? '',
+                lastSubtopicofUnit: lastSubtopicOfUnit,
+                lastSubtopicofGrade: lastSubtopicOfGrade,
+                lastSubtopicofSubject: lastSubtopicOfSubject,
+              ),
+            ),
+          )).then((_) {
         setState(() {
           _pathwayData = parsePathwayData();
         });
+        // Trigger showcase after returning
+        if (mounted) {
+          final showcaseService =
+              Provider.of<ShowcaseService>(context, listen: false);
+          // ❗ Only start if showcase hasn't been completed/skipped
+          if (!showcaseService.hasCompletedInitialShowcase) {
+            showcaseService.startPathwayToProgressScreenShowcase(context);
+          }
+        }
       });
     } else if (step["type"] == 'game') {
       final nextSubtopicData = {
@@ -637,6 +818,15 @@ class _PathwayUIState extends State<PathwayUI> {
         setState(() {
           _pathwayData = parsePathwayData();
         });
+        // Trigger showcase after returning
+        if (mounted) {
+          final showcaseService =
+              Provider.of<ShowcaseService>(context, listen: false);
+          // ❗ Only start if showcase hasn't been completed/skipped
+          if (!showcaseService.hasCompletedInitialShowcase) {
+            showcaseService.startPathwayToProgressScreenShowcase(context);
+          }
+        }
       });
     }
   }

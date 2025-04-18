@@ -5,6 +5,8 @@ import 'package:fbla_mobile_2425_learning_app/services/progress_service.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_keys.dart';
 import '../utils/app_logger.dart';
 import '../widgets/custom_app_bar.dart';
 import '../services/streak_manager.dart';
@@ -120,41 +122,51 @@ class _ProgressPageState extends State<ProgressPage>
                         ),
 
                         // Streak and Stats Cards
-                        Row(
-                          children: [
-                            // Streak Card - 50%
-                            Expanded(
-                              flex: 2,
-                              child: _buildStreakCard(),
-                            ),
-                            const SizedBox(width: 12),
-
-                            // Stats Cards - 50%
-                            Expanded(
-                              flex: 2,
-                              child: Column(
-                                children: [
-                                  _StatCard(
-                                    label: "Level",
-                                    value: "$level",
-                                    icon: Icons.star_rounded,
-                                    color: Colors.amber.shade600,
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _StatCard(
-                                    label: "Completed",
-                                    value: "$subtopicsCompleted",
-                                    icon: Icons.check_circle_rounded,
-                                    color: Colors.green.shade600,
-                                  ),
-                                ],
+                        Showcase(
+                          key: ShowcaseKeys.progressStatsKey,
+                          title: 'Streak and Stats',
+                          description: 'This is the streak and stats card',
+                          child: Row(
+                            children: [
+                              // Streak Card - 50%
+                              Expanded(
+                                flex: 2,
+                                child: _buildStreakCard(),
                               ),
-                            ),
-                          ],
+                              const SizedBox(width: 12),
+
+                              // Stats Cards - 50%
+                              Expanded(
+                                flex: 2,
+                                child: Column(
+                                  children: [
+                                    _StatCard(
+                                      label: "Level",
+                                      value: "$level",
+                                      icon: Icons.star_rounded,
+                                      color: Colors.amber.shade600,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    _StatCard(
+                                      label: "Completed",
+                                      value: "$subtopicsCompleted",
+                                      icon: Icons.check_circle_rounded,
+                                      color: Colors.green.shade600,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
 
                         // Leaderboard Section
-                        const LeaderboardWidget(),
+                        Showcase(
+                          key: ShowcaseKeys.progressLeaderboardKey,
+                          title: 'Leaderboard',
+                          description: 'This is the leaderboard',
+                          child: const LeaderboardWidget(),
+                        ),
                         const SizedBox(height: 20),
 
                         // Recent Activity
@@ -175,23 +187,28 @@ class _ProgressPageState extends State<ProgressPage>
 
                         // Recent Lessons - takes remaining vertical space
                         Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withOpacity(0.08),
-                                  blurRadius: 12,
-                                  spreadRadius: 1,
-                                  offset: const Offset(0, 2),
+                          child: Showcase(
+                            key: ShowcaseKeys.progressRecentActivityKey,
+                            title: 'Recent Lessons',
+                            description: 'This is your recent activity',
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.08),
+                                    blurRadius: 12,
+                                    spreadRadius: 1,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(16),
+                                child: RecentLessonsTabWidget(
+                                  userProgress: userProgress,
                                 ),
-                              ],
-                            ),
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(16),
-                              child: RecentLessonsTabWidget(
-                                userProgress: userProgress,
                               ),
                             ),
                           ),

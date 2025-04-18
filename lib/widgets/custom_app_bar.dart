@@ -21,24 +21,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 height: 55),
           ),
           const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.person),
-            onPressed: () => {},
-            color: const Color(0xFF8D9A8D),
-          ),
           Showcase(
             key: ShowcaseKeys.helpIconKey,
             title: 'Help',
             description:
                 'Use the help button to get help with navigating WorldWise',
-            child: IconButton(
-              icon: const Icon(Icons.help),
+            child: TextButton(
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => const NavigationHelpPage()),
               ),
-              color: const Color(0xFF8D9A8D),
+              child: const Row(
+                children: [
+                  Text('Need Help?',
+                      style: TextStyle(
+                          color: const Color(0xFF8D9A8D),
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold)),
+                  const SizedBox(width: 4),
+                  Icon(Icons.help, color: const Color(0xFF8D9A8D), size: 22),
+                ],
+              ),
             ),
           ),
         ],
