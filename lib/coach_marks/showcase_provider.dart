@@ -17,10 +17,7 @@ class ShowcaseService extends ChangeNotifier {
   // Initialize the showcase service
   Future<void> initialize() async {
     final prefs = await SharedPreferences.getInstance();
-    // Comment out actual preference and force to false for debugging
-    // _hasCompletedInitialShowcase =
-    //     prefs.getBool(_showcaseCompletedKey) ?? false;
-    _hasCompletedInitialShowcase = false; // Always start showcase for debugging
+    _hasCompletedInitialShowcase = prefs.getBool(_showcaseCompletedKey) ?? true;
     notifyListeners();
   }
 

@@ -142,9 +142,13 @@ class _HomePageState extends State<HomePage> {
                                 double value = 1.0;
                                 if (_pageController.position.haveDimensions) {
                                   value = (_pageController.page! - index).abs();
-                                  value = (1.2 - (value * 0.5))
-                                      .clamp(0.6, 1.2); // <-- max scale now 1.2
+                                } else {
+                                  value = (currentLevel - 1 - index)
+                                      .abs()
+                                      .toDouble();
                                 }
+                                value = (1.2 - (value * 0.5))
+                                    .clamp(0.6, 1.2); // <-- max scale now 1.2
                                 return Center(
                                   child: Transform.scale(
                                     scale: value,

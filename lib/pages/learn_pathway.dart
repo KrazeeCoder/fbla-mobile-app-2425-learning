@@ -93,24 +93,34 @@ class _PathwayUIState extends State<PathwayUI> {
                     // Case 2: Scroll to first blue step (next to do)
                     else {
                       print("Scrolling to first blue step");
+                      print(_subtopicKeys.entries.last);
                       final nextToDoEntry = _subtopicKeys.entries.firstWhere(
                         (e) => steps.any((s) =>
                             s['subId'] == e.key &&
                             s['type'] != 'unit_separator' &&
                             s['isNextToDo'] == true),
                         orElse: () {
-                          print("No blue step found");
-                          return MapEntry('', GlobalKey());
+                          print("No blue step found, scrolling to bottom");
+                          _scrollController.animateTo(
+                            _scrollController.position.maxScrollExtent,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeInOut,
+                          );
+                          return MapEntry(
+                              '', GlobalKey()); // Return dummy entry
                         },
                       );
 
-                      targetContext = nextToDoEntry.value?.currentContext;
-                      if (targetContext != null) {
-                        await Scrollable.ensureVisible(
-                          targetContext,
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.easeInOut,
-                        );
+                      // Only try to scroll if a valid next step was found
+                      if (nextToDoEntry.key.isNotEmpty) {
+                        targetContext = nextToDoEntry.value.currentContext;
+                        if (targetContext != null) {
+                          await Scrollable.ensureVisible(
+                            targetContext,
+                            duration: const Duration(seconds: 1),
+                            curve: Curves.easeInOut,
+                          );
+                        }
                       }
                     }
 
@@ -128,6 +138,7 @@ class _PathwayUIState extends State<PathwayUI> {
                   });
 
                   return ListView.builder(
+                    controller: _scrollController,
                     padding: const EdgeInsets.symmetric(vertical: 24),
                     itemCount: steps.length,
                     itemBuilder: (context, index) {

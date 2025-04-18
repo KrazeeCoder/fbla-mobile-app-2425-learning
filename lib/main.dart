@@ -198,9 +198,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
                   onComplete: (index, key) {
                     if (index == null) {
                       AppLogger.i("Showcase completed");
-                      // Comment out so showcase always starts on restart
-                      // Provider.of<ShowcaseService>(context, listen: false)
-                      //     .markShowcaseComplete();
+                      Provider.of<ShowcaseService>(context, listen: false)
+                          .markShowcaseComplete();
                     }
                   },
                   builder: (context) => Builder(
@@ -215,12 +214,11 @@ class _AuthWrapperState extends State<AuthWrapper> {
                             final showcaseService =
                                 Provider.of<ShowcaseService>(builderContext,
                                     listen: false);
-                            // Comment out condition to always start showcase
-                            // if (!showcaseService.hasCompletedInitialShowcase) {
-                            showcaseService
-                                .startHomeScreenShowcase(builderContext);
-                            AppLogger.i("Showcase started successfully");
-                            // }
+                            if (!showcaseService.hasCompletedInitialShowcase) {
+                              showcaseService
+                                  .startHomeScreenShowcase(builderContext);
+                              AppLogger.i("Showcase started successfully");
+                            }
                           } catch (e) {
                             AppLogger.e("Error starting showcase: $e");
                           }
