@@ -8,8 +8,22 @@ import 'package:cross_file/cross_file.dart';
 import '../utils/share/achievement_image_generator.dart';
 import '../linkedin_post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:share_to_social/social/instgram.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
+import 'package:flutter/services.dart';
+
+const MethodChannel _channel = MethodChannel('instagram_story');
+
+Future<void> shareToInstagramStoryIOS(String imagePath) async {
+  try {
+    print("Sharing to Instagram Story");
+    print(imagePath);
+    await _channel.invokeMethod('shareToInstagramStory', {
+      'imagePath': imagePath,
+    });
+  } on PlatformException catch (e) {
+    AppLogger.e("Platform channel error", error: e.message);
+  }
+}
 
 class EarthUnlockAnimation extends StatefulWidget {
   final int newLevel;
@@ -417,7 +431,8 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
 
       await postToLinkedIn(
         accessToken: token,
-        message: message, context: context,
+        message: message,
+        context: context,
       );
     } catch (e) {
       AppLogger.e("Error sharing to LinkedIn", error: e);
@@ -488,8 +503,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
       final file = File(imagePath);
       if (!await file.exists()) throw Exception('Image not found');
 
-      // Share to Instagram using share_to_social package
-      await Instagram.share([imagePath]);
+      await shareToInstagramStoryIOS(imagePath);
 
       AppLogger.i("Instagram Story share initiated");
     } catch (e) {

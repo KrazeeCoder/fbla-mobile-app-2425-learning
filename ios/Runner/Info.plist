@@ -69,6 +69,8 @@
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <string>linkedin</string>
+            <string>instagram-stories</string>
+
     </array>
 
 </dict>
