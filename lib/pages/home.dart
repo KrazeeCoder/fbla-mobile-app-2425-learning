@@ -179,20 +179,21 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 24),
             // Enhanced Recent Lessons Title
+            // 🆕 Updated Title
             const Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
                 children: [
-                  const Icon(
-                    Icons.book,
+                  Icon(
+                    Icons.bookmark_outline,
                     color: Colors.black,
                     size: 28,
                   ),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Recent Lessons',
+                  SizedBox(width: 8),
+                  Text(
+                    'Pick Up Where You Left Off',
                     style: TextStyle(
-                      fontSize: 24,
+                      fontSize: 20, //font
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       shadows: [
@@ -208,16 +209,137 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             const SizedBox(height: 16),
-            // Recent Lessons List (Non-Scrollable)
+// 🆕 Single Recent Lesson Showcase Wrapper
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Showcase(
-                key: ShowcaseKeys.pickUpLessonKey,
-                title: 'Pick Up Where You Left Off',
-                description: 'Quickly access your most recent lessons here.',
-                child: RecentLessonsPage(),
+              child: FutureBuilder<List<UserProgress>>(
+                future: ProgressService.fetchRecentLessons(user?.uid ?? "", latest: true),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Text("No recent lessons");
+                  }
+
+                  final item = snapshot.data!.first;
+
+                  return RecentSingleLessonCard(
+                    lesson: item,
+                    onTap: () async {
+                      final navData = await getSubtopicNavigationInfo(
+                        subject: item.subject,
+                        grade: item.grade,
+                        subtopicId: item.subtopicId,
+                      );
+
+                      final userId = FirebaseAuth.instance.currentUser?.uid ?? '';
+
+                      if (item.contentCompleted && !item.quizCompleted) {
+                        await launchRandomGame(
+                          context: context,
+                          subject: item.subject,
+                          grade: item.grade,
+                          unitId: item.unitId,
+                          unitTitle: item.unit,
+                          subtopicId: item.subtopicId,
+                          subtopicTitle: item.subtopic,
+                          nextSubtopicId: navData['nextSubtopicId'],
+                          nextSubtopicTitle: navData['nextSubtopicTitle'],
+                          nextReadingContent: navData['nextReadingContent'],
+                          userId: userId,
+                        );
+                      } else if (!item.contentCompleted) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => SubtopicPage(
+                              subtopic: item.subtopic,
+                              subtopicId: item.subtopicId,
+                              readingTitle: item.subtopic,
+                              readingContent: navData['readingContent'] ?? '',
+                              isCompleted: false,
+                              subject: item.subject,
+                              grade: item.grade,
+                              unitId: item.unitId,
+                              unitTitle: item.unit,
+                              userId: userId,
+                              lastSubtopicofUnit: navData['isLastOfUnit'],
+                              lastSubtopicofGrade: navData['isLastOfGrade'],
+                              lastSubtopicofSubject: navData['isLastOfSubject'],
+                            ),
+                          ),
+                        );
+                      } else {
+                        showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title: const Text("🎉 You've completed this topic!"),
+                            content: const Text("What would you like to do next?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SubtopicPage(
+                                        subtopic: item.subtopic,
+                                        subtopicId: item.subtopicId,
+                                        readingTitle: item.subtopic,
+                                        readingContent: navData['readingContent'] ?? '',
+                                        isCompleted: true,
+                                        subject: item.subject,
+                                        grade: item.grade,
+                                        unitId: item.unitId,
+                                        unitTitle: item.unit,
+                                        userId: userId,
+                                        lastSubtopicofUnit: navData['isLastOfUnit'],
+                                        lastSubtopicofGrade: navData['isLastOfGrade'],
+                                        lastSubtopicofSubject: navData['isLastOfSubject'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text("📘 Review it again"),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => SubtopicPage(
+                                        subtopic: navData['nextSubtopicTitle'],
+                                        subtopicId: navData['nextSubtopicId'],
+                                        readingTitle: navData['nextReadingTitle'],
+                                        readingContent: navData['nextReadingContent'],
+                                        isCompleted: false,
+                                        subject: item.subject,
+                                        grade: item.grade,
+                                        unitId: navData['nextUnitId'],
+                                        unitTitle: navData['nextUnitTitle'],
+                                        userId: userId,
+                                        lastSubtopicofUnit: navData['isLastOfUnit'],
+                                        lastSubtopicofGrade: navData['isLastOfGrade'],
+                                        lastSubtopicofSubject: navData['isLastOfSubject'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: const Text("➡️ Go to next subtopic"),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
               ),
-            ), // Ensure this widget is non-scrollable
+            ),
+
 
             // Debug controls for XP testing (remove before production release)
             const Padding(
