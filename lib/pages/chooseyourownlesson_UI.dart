@@ -37,6 +37,14 @@ class _ChooseLessonUIPageState extends State<ChooseLessonUIPage>
     "History": Color(0xFFFF9800), // Orange
   };
 
+  // Subject-specific background colors
+  final Map<String, Color> subjectBackgrounds = {
+    "Math": Color(0xFFEDE7F6), // Light purple
+    "Science": Color(0xFFE8F5E9), // Light green
+    "Reading": Color(0xFFE3F2FD), // Light blue
+    "History": Color(0xFFFFF3E0), // Light orange
+  };
+
   @override
   void initState() {
     super.initState();
@@ -100,456 +108,495 @@ class _ChooseLessonUIPageState extends State<ChooseLessonUIPage>
         .firstWhere((s) => s['name'] == selectedSubject, orElse: () => null);
     final grades = subjectData != null ? subjectData['grades'] : [];
 
-    // Get current subject color
+    // Get current subject color and background
     final Color subjectColor =
         subjectColors[selectedSubject] ?? Color(0xFF5C4DB1);
+    final Color backgroundColor =
+        subjectBackgrounds[selectedSubject] ?? Color(0xFFF5F5F5);
 
     return AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
           return FadeTransition(
             opacity: _animationController,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Subject selection
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 4, bottom: 8),
-                        child: Text(
-                          "Select a Subject",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.grey.shade800,
+            child: Container(
+              decoration: BoxDecoration(
+                color: backgroundColor.withOpacity(0.3),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Subject selection
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: subjectColor.withOpacity(0.1),
+                            blurRadius: 6,
+                            offset: Offset(0, 2),
                           ),
-                        ),
+                        ],
                       ),
-                      Container(
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
-                              blurRadius: 6,
-                              offset: Offset(0, 2),
+                      child: Row(
+                        children: [
+                          // Subject icon
+                          Container(
+                            width: 56,
+                            height: 56,
+                            decoration: BoxDecoration(
+                              color: subjectColor.withOpacity(0.15),
+                              borderRadius: BorderRadius.horizontal(
+                                left: Radius.circular(16),
+                              ),
                             ),
-                          ],
-                        ),
-                        child: Row(
-                          children: [
-                            // Subject icon
-                            Container(
-                              width: 52,
-                              height: 52,
-                              decoration: BoxDecoration(
+                            child: Icon(
+                              _getSubjectIcon(selectedSubject),
+                              color: subjectColor,
+                              size: 24,
+                            ),
+                          ),
+
+                          // Subject name
+                          Expanded(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Text(
+                                selectedSubject,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey.shade800,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Dropdown button
+                          Container(
+                            margin: EdgeInsets.only(right: 12),
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            decoration: BoxDecoration(
+                              color: subjectColor.withOpacity(0.08),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
                                 color: subjectColor.withOpacity(0.15),
-                                borderRadius: BorderRadius.horizontal(
-                                  left: Radius.circular(12),
-                                ),
-                              ),
-                              child: Icon(
-                                _getSubjectIcon(selectedSubject),
-                                color: subjectColor,
+                                width: 1,
                               ),
                             ),
-
-                            // Subject name
-                            Expanded(
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16),
-                                child: Text(
-                                  selectedSubject,
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                icon: Icon(Icons.arrow_drop_down,
+                                    color: subjectColor),
+                                hint: Text(
+                                  "Change subject",
                                   style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey.shade800,
+                                    color: subjectColor.withOpacity(0.8),
+                                    fontSize: 14,
                                   ),
                                 ),
-                              ),
-                            ),
-
-                            // Dropdown button
-                            Container(
-                              margin: EdgeInsets.only(right: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.grey.shade100,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  icon: Icon(Icons.arrow_drop_down,
-                                      color: subjectColor),
-                                  hint: Text(
-                                    "select subject",
-                                    style: TextStyle(
-                                      color: Colors.grey,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                  onChanged: (value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        selectedSubject = value;
-                                      });
-                                      // Animate when changing subject
-                                      _animationController.reset();
-                                      _animationController.forward();
-                                    }
-                                  },
-                                  borderRadius: BorderRadius.circular(12),
-                                  underline: Container(),
-                                  items:
-                                      availableSubjects.toSet().map((subject) {
-                                    return DropdownMenuItem<String>(
-                                      value: subject,
-                                      child: Row(
-                                        children: [
-                                          Icon(_getSubjectIcon(subject),
-                                              size: 18,
-                                              color: subjectColors[subject]),
-                                          SizedBox(width: 8),
-                                          Text(
-                                            subject,
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight:
-                                                  subject == selectedSubject
-                                                      ? FontWeight.bold
-                                                      : FontWeight.normal,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // Grade selection header
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
-                  child: Text(
-                    "Select a Grade Level",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey.shade800,
-                    ),
-                  ),
-                ),
-
-                // Grade cards list
-                Expanded(
-                  child: grades.isEmpty
-                      ? Center(
-                          child: Text(
-                            "No grades available for $selectedSubject",
-                            style: TextStyle(
-                              color: Colors.grey.shade600,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: EdgeInsets.only(bottom: 20),
-                          itemCount: grades.length,
-                          itemBuilder: (context, index) {
-                            final gradeData = grades[index];
-                            final gradeLabel = gradeData['grade'];
-                            final units = gradeData['units'] as List;
-
-                            // Calculate progress
-                            int totalSubtopics = 0;
-                            int completed = 0;
-
-                            for (var unit in units) {
-                              for (var sub in unit['subtopics']) {
-                                totalSubtopics++;
-                                String subId = sub['subtopic_id'];
-                                if (userProgress[subId]?['isCompleted'] ==
-                                    true) {
-                                  completed++;
-                                }
-                              }
-                            }
-
-                            final percent = totalSubtopics > 0
-                                ? (completed / totalSubtopics * 100).round()
-                                : 0;
-
-                            // Extract numerical grade value for sorting/display
-                            int gradeNumber = int.tryParse(gradeLabel
-                                    .replaceAll(RegExp(r'[^0-9]'), '')) ??
-                                1;
-
-                            Widget gradeCard = Container(
-                              margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: subjectColor.withOpacity(0.1),
-                                    blurRadius: 8,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                                border: Border.all(
-                                  color: percent > 0
-                                      ? subjectColor.withOpacity(0.3)
-                                      : Colors.grey.shade200,
-                                  width: 1.5,
-                                ),
-                              ),
-                              child: Material(
-                                color: Colors.transparent,
-                                borderRadius: BorderRadius.circular(16),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(16),
-                                  onTap: () {
-                                    widget.onPathwayRequested(
-                                        selectedSubject, gradeNumber);
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.all(16),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    setState(() {
+                                      selectedSubject = value;
+                                    });
+                                    // Animate when changing subject
+                                    _animationController.reset();
+                                    _animationController.forward();
+                                  }
+                                },
+                                borderRadius: BorderRadius.circular(12),
+                                underline: Container(),
+                                items: availableSubjects.toSet().map((subject) {
+                                  return DropdownMenuItem<String>(
+                                    value: subject,
                                     child: Row(
                                       children: [
-                                        // Progress circle
-                                        SizedBox(
-                                          width: 60,
-                                          height: 60,
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              // Background track
-                                              SizedBox(
-                                                width: 60,
-                                                height: 60,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  value: 1.0,
-                                                  strokeWidth: 6,
-                                                  backgroundColor:
-                                                      Colors.grey.shade200,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(
-                                                    Colors.transparent,
-                                                  ),
-                                                ),
-                                              ),
-                                              // Progress indicator
-                                              SizedBox(
-                                                width: 60,
-                                                height: 60,
-                                                child:
-                                                    CircularProgressIndicator(
-                                                  value: percent / 100,
-                                                  strokeWidth: 6,
-                                                  backgroundColor:
-                                                      Colors.transparent,
-                                                  valueColor:
-                                                      AlwaysStoppedAnimation<
-                                                          Color>(
-                                                    subjectColor,
-                                                  ),
-                                                ),
-                                              ),
-                                              // Center text
-                                              Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    "$percent%",
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: subjectColor,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "done",
-                                                    style: TextStyle(
-                                                      fontSize: 10,
-                                                      color:
-                                                          Colors.grey.shade600,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        SizedBox(width: 16),
-
-                                        // Grade info
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                      horizontal: 8,
-                                                      vertical: 3,
-                                                    ),
-                                                    decoration: BoxDecoration(
-                                                      color: subjectColor
-                                                          .withOpacity(0.1),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              8),
-                                                    ),
-                                                    child: Text(
-                                                      gradeLabel,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18,
-                                                        color: subjectColor,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  if (percent >= 100)
-                                                    Container(
-                                                      margin: EdgeInsets.only(
-                                                          left: 8),
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                        horizontal: 6,
-                                                        vertical: 2,
-                                                      ),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors
-                                                            .green.shade100,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                      ),
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Icon(
-                                                            Icons.check_circle,
-                                                            color: Colors
-                                                                .green.shade700,
-                                                            size: 14,
-                                                          ),
-                                                          SizedBox(width: 2),
-                                                          Text(
-                                                            "Completed",
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Colors
-                                                                  .green
-                                                                  .shade700,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 8),
-                                              Text(
-                                                "$completed/$totalSubtopics subtopics completed",
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Colors.grey.shade700,
-                                                ),
-                                              ),
-                                              SizedBox(height: 4),
-                                              Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.menu_book_outlined,
-                                                    size: 14,
-                                                    color: subjectColor
-                                                        .withOpacity(0.7),
-                                                  ),
-                                                  SizedBox(width: 4),
-                                                  Text(
-                                                    "${totalSubtopics} lessons available",
-                                                    style: TextStyle(
-                                                      fontSize: 13,
-                                                      color:
-                                                          Colors.grey.shade600,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        // Right arrow
-                                        Container(
-                                          width: 36,
-                                          height: 36,
-                                          decoration: BoxDecoration(
-                                            color:
-                                                subjectColor.withOpacity(0.1),
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Icon(
-                                            Icons.arrow_forward_ios,
-                                            size: 16,
-                                            color: subjectColor,
+                                        Icon(_getSubjectIcon(subject),
+                                            size: 18,
+                                            color: subjectColors[subject]),
+                                        SizedBox(width: 8),
+                                        Text(
+                                          subject,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight:
+                                                subject == selectedSubject
+                                                    ? FontWeight.bold
+                                                    : FontWeight.normal,
+                                            color: Colors.black,
                                           ),
                                         ),
                                       ],
                                     ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // Grade selection header
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+                    child: Text(
+                      "Select a Grade Level",
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.grey.shade800,
+                      ),
+                    ),
+                  ),
+
+                  // Grade cards list
+                  Expanded(
+                    child: grades.isEmpty
+                        ? Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.school_outlined,
+                                  size: 48,
+                                  color: Colors.grey.shade400,
+                                ),
+                                SizedBox(height: 16),
+                                Text(
+                                  "No grades available for $selectedSubject",
+                                  style: TextStyle(
+                                    color: Colors.grey.shade600,
+                                    fontStyle: FontStyle.italic,
                                   ),
                                 ),
-                              ),
-                            );
+                              ],
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: EdgeInsets.only(bottom: 20),
+                            itemCount: grades.length,
+                            itemBuilder: (context, index) {
+                              final gradeData = grades[index];
+                              final gradeLabel = gradeData['grade'];
+                              final units = gradeData['units'] as List;
 
-                            // Wrap only the first grade with showcase
-                            if (index == 0) {
-                              return Showcase(
-                                key: ShowcaseKeys.selectGradeKey,
-                                title: 'Select a Grade',
-                                description:
-                                    'Tap on any grade to start learning that curriculum.',
-                                child: gradeCard,
-                                disposeOnTap: true,
-                                onTargetClick: () {
-                                  widget.onPathwayRequested(
-                                      selectedSubject, gradeNumber);
-                                },
+                              // Calculate progress
+                              int totalSubtopics = 0;
+                              int completed = 0;
+
+                              for (var unit in units) {
+                                for (var sub in unit['subtopics']) {
+                                  totalSubtopics++;
+                                  String subId = sub['subtopic_id'];
+                                  if (userProgress[subId]?['isCompleted'] ==
+                                      true) {
+                                    completed++;
+                                  }
+                                }
+                              }
+
+                              final percent = totalSubtopics > 0
+                                  ? (completed / totalSubtopics * 100).round()
+                                  : 0;
+
+                              // Extract numerical grade value for sorting/display
+                              int gradeNumber = int.tryParse(gradeLabel
+                                      .replaceAll(RegExp(r'[^0-9]'), '')) ??
+                                  1;
+
+                              Widget gradeCard = Container(
+                                margin: EdgeInsets.fromLTRB(16, 8, 16, 8),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: subjectColor.withOpacity(0.1),
+                                      blurRadius: 6,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                  border: Border.all(
+                                    color: percent > 0
+                                        ? subjectColor.withOpacity(0.2)
+                                        : Colors.grey.shade200,
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Material(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(16),
+                                    onTap: () {
+                                      widget.onPathwayRequested(
+                                          selectedSubject, gradeNumber);
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.all(16),
+                                      child: Row(
+                                        children: [
+                                          // Progress circle
+                                          SizedBox(
+                                            width: 60,
+                                            height: 60,
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                // Background track
+                                                SizedBox(
+                                                  width: 60,
+                                                  height: 60,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    value: 1.0,
+                                                    strokeWidth: 6,
+                                                    backgroundColor:
+                                                        Colors.grey.shade200,
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                            Color>(
+                                                      Colors.transparent,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // Progress indicator
+                                                SizedBox(
+                                                  width: 60,
+                                                  height: 60,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    value: percent / 100,
+                                                    strokeWidth: 6,
+                                                    backgroundColor:
+                                                        Colors.transparent,
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                            Color>(
+                                                      subjectColor,
+                                                    ),
+                                                  ),
+                                                ),
+                                                // Center text
+                                                Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      "$percent%",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: subjectColor,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      "done",
+                                                      style: TextStyle(
+                                                        fontSize: 10,
+                                                        color: Colors
+                                                            .grey.shade600,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                          SizedBox(width: 16),
+
+                                          // Grade info
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                // Top row with grade label and arrow
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    // Grade label with badge
+                                                    Container(
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                        horizontal: 10,
+                                                        vertical: 4,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: subjectColor
+                                                            .withOpacity(0.1),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                      ),
+                                                      child: Text(
+                                                        gradeLabel,
+                                                        style: TextStyle(
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                          fontSize: 16,
+                                                          color: subjectColor,
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    // Arrow icon
+                                                    Icon(
+                                                      Icons.arrow_forward,
+                                                      color: subjectColor,
+                                                      size: 18,
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                SizedBox(height: 8),
+
+                                                // Progress and tap indicator in a row
+                                                Row(
+                                                  children: [
+                                                    // Progress text
+                                                    Expanded(
+                                                      child: Text(
+                                                        "$completed of $totalSubtopics lessons completed",
+                                                        style: TextStyle(
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .grey.shade700,
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    // Tap indicator - inline, no extra vertical space
+                                                    if (percent < 100)
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 8,
+                                                          vertical: 2,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: subjectColor
+                                                              .withOpacity(
+                                                                  0.08),
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(4),
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Icon(
+                                                              Icons.touch_app,
+                                                              color:
+                                                                  subjectColor,
+                                                              size: 12,
+                                                            ),
+                                                            SizedBox(width: 2),
+                                                            Text(
+                                                              "Tap to explore",
+                                                              style: TextStyle(
+                                                                fontSize: 11,
+                                                                color:
+                                                                    subjectColor,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      )
+                                                    else
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 8,
+                                                          vertical: 2,
+                                                        ),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors
+                                                              .green.shade100,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(4),
+                                                        ),
+                                                        child: Row(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .check_circle,
+                                                              color: Colors
+                                                                  .green
+                                                                  .shade700,
+                                                              size: 12,
+                                                            ),
+                                                            SizedBox(width: 2),
+                                                            Text(
+                                                              "Completed",
+                                                              style: TextStyle(
+                                                                fontSize: 11,
+                                                                color: Colors
+                                                                    .green
+                                                                    .shade700,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               );
-                            }
 
-                            return gradeCard;
-                          },
-                        ),
-                ),
-              ],
+                              // Wrap only the first grade with showcase
+                              if (index == 0) {
+                                return Showcase(
+                                  key: ShowcaseKeys.selectGradeKey,
+                                  title: 'Select a Grade',
+                                  description:
+                                      'Tap on any grade to start learning that curriculum.',
+                                  child: gradeCard,
+                                  disposeOnTap: true,
+                                  onTargetClick: () {
+                                    widget.onPathwayRequested(
+                                        selectedSubject, gradeNumber);
+                                  },
+                                );
+                              }
+
+                              return gradeCard;
+                            },
+                          ),
+                  ),
+                ],
+              ),
             ),
           );
         });
