@@ -61,14 +61,25 @@
     <key>CFBundleURLSchemes</key>
     <array>
       <string>fbla-learning-app</string>
+      <string>fb670076459305709</string>
     </array>
   </dict>
 </array>
-
+<key>FacebookAppID</key>
+<string>670076459305709</string>
+<key>FacebookClientToken</key>
+<string>aff723760a1c983ec7ec2e68a1b0a6a4</string>
+<key>FacebookDisplayName</key>
+<string>WorldWise</string>
     <!-- 🔥 Allow querying LinkedIn for deep linking -->
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <string>linkedin</string>
+            <string>instagram-stories</string>
+  <string>instagram</string> 
+  <string>fbapi</string>       
+  <string>fbauth2</string> 
+
     </array>
 
 </dict>

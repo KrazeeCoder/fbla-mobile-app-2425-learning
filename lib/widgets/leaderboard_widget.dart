@@ -205,7 +205,7 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
                 children: [
                   const SizedBox(width: 6),
                   Text(
-                    'Friend Leaderboard',
+                    'Leaderboard',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,

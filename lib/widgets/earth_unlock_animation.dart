@@ -8,10 +8,31 @@ import 'package:cross_file/cross_file.dart';
 import '../utils/share/achievement_image_generator.dart';
 import '../linkedin_post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:share_to_social/social/instgram.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
 import '../utils/audio/audio_manager.dart';
 import '../utils/audio/audio_integration.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+
+const MethodChannel _channel = MethodChannel('instagram_story');
+
+Future<void> shareToInstagramStoryIOS({
+  required String backgroundImagePath,
+  required String stickerImagePath,
+}) async {
+  try {
+    print("📤 Sharing to Instagram Story (iOS)");
+    print("Background: $backgroundImagePath");
+    print("Sticker: $stickerImagePath");
+
+    await _channel.invokeMethod('shareToInstagramStory', {
+      'backgroundImagePath': backgroundImagePath,
+      'stickerImagePath': stickerImagePath,
+    });
+  } on PlatformException catch (e) {
+    print("❌ Platform channel error: ${e.message}");
+  }
+}
 
 class EarthUnlockAnimation extends StatefulWidget {
   final int newLevel;
@@ -499,17 +520,31 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
         ),
       );
 
-      final String imagePath =
+      // 1. Generate the sticker image
+      final String stickerImagePath =
           await AchievementImageGenerator.captureAchievementImage(
         level: widget.newLevel,
         message: message,
       );
 
-      final file = File(imagePath);
-      if (!await file.exists()) throw Exception('Image not found');
+      final stickerFile = File(stickerImagePath);
+      if (!await stickerFile.exists())
+        throw Exception('Generated image not found');
 
-      // Share to Instagram using share_to_social package
-      await Instagram.share([imagePath]);
+      // 2. Copy logo asset to a temp file to get its absolute path
+      final byteData =
+          await rootBundle.load('assets/branding/WorlsWiseLogo.png');
+      final backgroundFile =
+          File('${(await getTemporaryDirectory()).path}/temp_background.png');
+      await backgroundFile.writeAsBytes(byteData.buffer.asUint8List());
+
+      final backgroundImagePath = backgroundFile.path;
+
+      // 3. Share using both paths
+      await shareToInstagramStoryIOS(
+        backgroundImagePath: backgroundImagePath,
+        stickerImagePath: stickerImagePath,
+      );
 
       AppLogger.i("Instagram Story share initiated");
     } catch (e) {

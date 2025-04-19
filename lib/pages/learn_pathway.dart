@@ -47,7 +47,6 @@ class _PathwayUIState extends State<PathwayUI> {
       backgroundColor: Colors.grey.shade50,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight + 15),
-        child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
             child: Container(
@@ -191,12 +190,12 @@ class _PathwayUIState extends State<PathwayUI> {
               ),
             ),
           ),
-        ),
+
       ),
       body: Column(
         children: [
           // Space to compensate for the floating AppBar - reduced
-          const SizedBox(height: 4),
+          const SizedBox(height: 0),
           Expanded(
             child: FutureBuilder<List<Map<String, dynamic>>>(
               future: _pathwayData,
@@ -281,7 +280,7 @@ class _PathwayUIState extends State<PathwayUI> {
 
                   return ListView.builder(
                     controller: _scrollController,
-                    padding: const EdgeInsets.symmetric(vertical: 24),
+                    padding: const EdgeInsets.only(top: 4, bottom: 24),
                     itemCount: steps.length,
                     itemBuilder: (context, index) {
                       final step = steps[index];
