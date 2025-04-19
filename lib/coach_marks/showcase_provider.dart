@@ -39,83 +39,110 @@ class ShowcaseService extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Start a showcase with custom keys
-  static void startCustomShowcase(BuildContext context, List<GlobalKey> keys) {
+  // Safely checks if a ShowCaseWidget is available in the context
+  static bool _isShowCaseWidgetAvailable(BuildContext context) {
+    try {
+      // This will throw an exception if ShowCaseWidget is not in the context
+      final showcaseState = ShowCaseWidget.of(context);
+      return showcaseState != null;
+    } catch (e) {
+      AppLogger.e('ShowCaseWidget not found in context: $e');
+      return false;
+    }
+  }
+
+  // Safely start a showcase with error handling
+  static void safeStartShowcase(BuildContext context, List<GlobalKey> keys) {
     if (keys.isEmpty) return;
 
-    try {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Get the ShowCaseWidgetState from the context
-        final ShowCaseWidgetState? showcaseWidget = ShowCaseWidget.of(context);
+    // Check if we have ShowCaseWidget in the context
+    if (!_isShowCaseWidgetAvailable(context)) {
+      AppLogger.w('ShowCaseWidget not available in context, showcase skipped');
+      return;
+    }
 
-        if (showcaseWidget != null) {
-          // Use the existing ShowCaseWidget
+    try {
+      // Delay to ensure widget tree is stable
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        try {
+          final showcaseWidget = ShowCaseWidget.of(context);
           showcaseWidget.startShowCase(keys);
-        } else {
-          debugPrint('Error: No ShowCaseWidget found in context hierarchy');
+          AppLogger.i('Showcase started successfully with ${keys.length} keys');
+        } catch (e) {
+          AppLogger.e('Error starting showcase in postFrameCallback: $e');
         }
       });
     } catch (e) {
-      debugPrint('Error starting custom showcase: $e');
+      AppLogger.e('Error setting up showcase: $e');
     }
+  }
+
+  // Start a showcase with custom keys
+  static void startCustomShowcase(BuildContext context, List<GlobalKey> keys) {
+    safeStartShowcase(context, keys);
   }
 
   // Start Home screen showcase
   void startHomeScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getHomeShowcaseKeys());
+    safeStartShowcase(context, ShowcaseKeys.getHomeShowcaseKeys());
+    AppLogger.i("Home screen showcase requested");
   }
 
   // Start Learn screen showcase
   void startLearnScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getLearnTabShowcaseKeys());
-    AppLogger.i("Starting Learn screen showcase");
+    safeStartShowcase(context, ShowcaseKeys.getLearnTabShowcaseKeys());
+    AppLogger.i("Learn screen showcase requested");
   }
 
   // Start Pathway step showcase
   void startPathwayScreenShowcase(BuildContext context) {
-    AppLogger.i("Starting Pathway screen showcase");
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getPathwayScreenShowcaseKeys());
+    safeStartShowcase(context, ShowcaseKeys.getPathwayScreenShowcaseKeys());
+    AppLogger.i("Pathway screen showcase requested");
   }
 
   // Start Subtopic screen showcase
   void startSubtopicScreenShowcase(BuildContext context) {
-    AppLogger.i("Starting Subtopic screen showcase");
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getSubtopicScreenShowcaseKeys());
+    safeStartShowcase(context, ShowcaseKeys.getSubtopicScreenShowcaseKeys());
+    AppLogger.i("Subtopic screen showcase requested");
   }
 
   // Start Game screen showcase
   void startGameScreenShowcase(BuildContext context) {
-    AppLogger.i("Starting Game screen showcase");
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getGameScreenShowcaseKeys());
+    safeStartShowcase(context, ShowcaseKeys.getGameScreenShowcaseKeys());
+    AppLogger.i("Game screen showcase requested");
   }
 
   // Start Pathway to Progress screen showcase
   void startPathwayToProgressScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(
+    safeStartShowcase(
         context, ShowcaseKeys.getPathwayToProgressScreenShowcaseKeys());
   }
 
+  // Start Progress screen showcase
   void startProgressScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getProgressScreenShowcaseKeys());
+    safeStartShowcase(context, ShowcaseKeys.getProgressScreenShowcaseKeys());
+    AppLogger.i("Progress screen showcase requested");
   }
 
+  // Start Settings screen showcase
   void startSettingsScreenShowcase(BuildContext context) {
     _isShowcaseActive = true;
     notifyListeners();
-    startCustomShowcase(context, ShowcaseKeys.getSettingsScreenShowcaseKeys());
+    safeStartShowcase(context, ShowcaseKeys.getSettingsScreenShowcaseKeys());
+    AppLogger.i("Settings screen showcase requested");
   }
 }

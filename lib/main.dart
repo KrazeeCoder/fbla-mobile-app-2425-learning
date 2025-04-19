@@ -20,6 +20,8 @@ import 'coach_marks/showcase_provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'providers/settings_provider.dart';
+import 'utils/audio/audio_integration.dart';
+import 'dart:async'; // Add this import for TimeoutException
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -27,6 +29,8 @@ void main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  AppLogger.i("WidgetsFlutterBinding initialized successfully");
 
   try {
     await Firebase.initializeApp(
@@ -41,6 +45,8 @@ void main() async {
       // Continue with the app even if ApiService initialization fails
     }
 
+    AppLogger.i("Firebase initialized successfully");
+
     // Initialize Remote Config
     final remoteConfig = FirebaseRemoteConfig.instance;
     await remoteConfig.setConfigSettings(RemoteConfigSettings(
@@ -49,7 +55,15 @@ void main() async {
     ));
 
     await remoteConfig.fetchAndActivate();
+    AppLogger.i("Remote config fetched and activated");
 
+    // Initialize audio system in background to prevent UI blocking
+    // Don't await this operation - let it complete asynchronously
+    Future.delayed(Duration.zero, () {
+      _initializeAudioWithTimeout();
+    });
+
+    // Continue with app startup regardless of audio initialization
     runApp(const MyApp());
   } catch (e) {
     print('Fatal error during app initialization: $e');
@@ -61,6 +75,25 @@ void main() async {
         ),
       ),
     ));
+  }
+}
+
+// Initialize audio with a timeout to prevent hanging
+Future<void> _initializeAudioWithTimeout() async {
+  try {
+    // Add a timeout to prevent hanging
+    await AudioIntegration.initialize().timeout(
+      const Duration(seconds: 5),
+      onTimeout: () {
+        AppLogger.w("Audio initialization timed out after 5 seconds");
+        throw TimeoutException("Audio initialization timed out");
+      },
+    );
+    AppLogger.i("Audio system initialized successfully");
+  } catch (e) {
+    AppLogger.e(
+        "Error initializing audio system, continuing without audio: $e");
+    // Audio will be disabled but app will continue running
   }
 }
 
@@ -253,12 +286,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
                                 Provider.of<ShowcaseService>(builderContext,
                                     listen: false);
                             if (!showcaseService.hasCompletedInitialShowcase) {
+                              // Use safer approach that handles errors gracefully
                               showcaseService
                                   .startHomeScreenShowcase(builderContext);
-                              AppLogger.i("Showcase started successfully");
+                              AppLogger.i("Showcase requested successfully");
                             }
                           } catch (e) {
-                            AppLogger.e("Error starting showcase: $e");
+                            AppLogger.e("Error requesting showcase: $e");
                           }
                         });
                       }

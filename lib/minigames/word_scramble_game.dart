@@ -11,6 +11,7 @@ import '../services/updateprogress.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
+import '../utils/game_launcher.dart';
 
 class WordScrambleGame extends StatefulWidget {
   final String subtopicId;
@@ -180,34 +181,45 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
   }
 
   void _goToNextLesson() async {
-    if (subtopicNav == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Unable to load next lesson. Please try again.")),
-      );
-      return;
-    }
+    try {
+      // Check if widget is still mounted before accessing context
+      if (!mounted) {
+        AppLogger.w("Widget not mounted during navigation attempt");
+        return;
+      }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SubtopicPage(
-          subtopic: subtopicNav?['nextSubtopic'],
-          subtopicId: subtopicNav?['nextSubtopicId'],
-          readingTitle: subtopicNav?['readingTitle'],
-          readingContent: subtopicNav?['readingContent'],
-          isCompleted: false,
-          subject: widget.subject,
-          grade: subtopicNav?['nextGrade'],
-          unitId: subtopicNav?['unitId'],
-          unitTitle: subtopicNav?['unitTitle'],
-          userId: widget.userId,
-          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
-          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
-          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
-        ),
-      ),
-    );
+      // Check for navigation data
+      if (widget.nextSubtopicId.isEmpty || widget.nextReadingContent.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Unable to load next lesson. Please try again.")),
+          );
+        }
+        return;
+      }
+
+      // Direct navigation to next lesson
+      navigateToNextLesson(
+        context: context,
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        unitTitle: widget.unitTitle,
+        nextSubtopicId: widget.nextSubtopicId,
+        nextSubtopicTitle: widget.nextSubtopicTitle,
+        nextReadingContent: widget.nextReadingContent,
+        userId: widget.userId,
+      );
+    } catch (e) {
+      AppLogger.e("Error navigating to next lesson: $e");
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("An error occurred. Please try again.")),
+        );
+      }
+    }
   }
 
   @override
@@ -568,7 +580,17 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
                 if (showSuccess)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 20),
-                    child: GameSuccessMessage(onNext: _goToNextLesson),
+                    child: GameSuccessMessage(
+                      onNext: _goToNextLesson,
+                      nextSubtopicId: widget.nextSubtopicId,
+                      nextSubtopicTitle: widget.nextSubtopicTitle,
+                      nextReadingContent: widget.nextReadingContent,
+                      subject: widget.subject,
+                      grade: widget.grade,
+                      unitId: widget.unitId,
+                      unitTitle: widget.unitTitle,
+                      userId: widget.userId,
+                    ),
                   ),
               ],
             ),

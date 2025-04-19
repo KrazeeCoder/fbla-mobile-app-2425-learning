@@ -10,6 +10,8 @@ import '../linkedin_post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:share_to_social/social/instgram.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
+import '../utils/audio/audio_manager.dart';
+import '../utils/audio/audio_integration.dart';
 
 class EarthUnlockAnimation extends StatefulWidget {
   final int newLevel;
@@ -27,6 +29,16 @@ class EarthUnlockAnimation extends StatefulWidget {
 
   static void show(BuildContext context, int newLevel, String subject,
       String subtopic, int totalXP) {
+    // Play the earth unlocked sound - only if audio is initialized
+    try {
+      AudioManager().playEarthUnlockedSound();
+    } catch (e) {
+      AppLogger.e("Error playing earth unlocked sound: $e");
+      // Continue showing dialog even if sound fails
+    }
+
+    AppLogger.i("showing dialog");
+
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -46,6 +58,7 @@ class EarthUnlockAnimation extends StatefulWidget {
 class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
   @override
   Widget build(BuildContext context) {
+    AppLogger.i('building dialog');
     return Dialog(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -185,7 +198,10 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                     icon: Icons.share_outlined,
                     label: "Share",
                     color: Colors.blue.shade600,
-                    onPressed: () => _shareToSystem(context),
+                    onPressed: () {
+                      AudioIntegration.handleButtonPress();
+                      _shareToSystem(context);
+                    },
                   ),
                   _buildActionButton(
                     context,
@@ -193,6 +209,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                     label: "Home",
                     color: Colors.amber.shade600,
                     onPressed: () {
+                      AudioIntegration.handleButtonPress();
                       Navigator.of(context).pop();
 
                       Navigator.of(context).pushAndRemoveUntil(
@@ -210,7 +227,10 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
             const SizedBox(height: 15),
 
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                AudioIntegration.handleButtonPress();
+                Navigator.of(context).pop();
+              },
               child: Text(
                 "CONTINUE",
                 style: TextStyle(
@@ -416,7 +436,8 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
 
       await postToLinkedIn(
         accessToken: token,
-        message: message, context: context,
+        message: message,
+        context: context,
       );
     } catch (e) {
       AppLogger.e("Error sharing to LinkedIn", error: e);

@@ -12,6 +12,10 @@ import '../services/updateprogress.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
 import 'package:provider/provider.dart';
+import '../utils/audio/audio_integration.dart';
+import '../utils/game_launcher.dart';
+import '../xp_manager.dart';
+import '../widgets/earth_unlock_animation.dart';
 
 class PuzzleScreen extends StatefulWidget {
   final String subtopicId;
@@ -368,33 +372,47 @@ class _PuzzleScreenState extends State<PuzzleScreen>
   }
 
   Future<void> _goToNextLesson() async {
-    if (subtopicNav == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Unable to load next lesson. Please try again.")),
+    try {
+      // Check if the widget is mounted before using context
+      if (!mounted) {
+        AppLogger.w("Widget not mounted during navigation");
+        return;
+      }
+
+      // Check if navigation data is available
+      if (widget.nextSubtopicId.isEmpty || widget.nextReadingContent.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Unable to load next lesson. Please try again.")),
+          );
+        }
+        AppLogger.e(
+            "Navigation data unavailable: nextSubtopicId=${widget.nextSubtopicId.isNotEmpty}, nextReadingContent=${widget.nextReadingContent.isNotEmpty}");
+        return;
+      }
+
+      // Direct navigation to next lesson
+      navigateToNextLesson(
+        context: context,
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        unitTitle: widget.unitTitle,
+        nextSubtopicId: widget.nextSubtopicId,
+        nextSubtopicTitle: widget.nextSubtopicTitle,
+        nextReadingContent: widget.nextReadingContent,
+        userId: widget.userId,
       );
-      return;
+    } catch (e) {
+      AppLogger.e("Error in _goToNextLesson: $e");
+      // Only show error if context is still valid
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("An error occurred. Please try again.")),
+        );
+      }
     }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SubtopicPage(
-          subtopic: subtopicNav?['nextSubtopicTitle'],
-          subtopicId: subtopicNav?['nextSubtopicId'],
-          readingTitle: subtopicNav?['nextReadingTitle'],
-          readingContent: subtopicNav?['nextReadingContent'],
-          isCompleted: false,
-          subject: widget.subject,
-          grade: subtopicNav?['nextGrade'],
-          unitId: subtopicNav?['nextUnitId'],
-          unitTitle: subtopicNav?['nextUnitTitle'],
-          userId: widget.userId,
-          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
-          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
-          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
-        ),
-      ),
-    );
   }
 
   Future<void> _onPuzzleCompleted() async {
@@ -405,20 +423,70 @@ class _PuzzleScreenState extends State<PuzzleScreen>
       _completionHandled = true;
     });
 
-    await handleGameCompletion(
-      context: context,
-      audioPlayer: _audioPlayer,
-      subtopicId: widget.subtopicId,
-      userId: widget.userId,
-      subject: widget.subject,
-      grade: widget.grade,
-      unitId: widget.unitId,
-      unitTitle: widget.unitTitle,
-      subtopicTitle: widget.subtopicTitle,
-      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'] ?? false,
-      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'] ?? false,
-      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'] ?? false,
-    );
+    // Use the new AudioIntegration instead of direct AudioPlayer
+    await AudioIntegration.handleGameComplete();
+
+    // Handle game completion to update progress and award XP
+    try {
+      // Update progress in Firebase
+      await markQuizAsCompleted(
+        subtopicId: widget.subtopicId,
+        marksEarned: 10,
+      );
+
+      await updateResumePoint(
+        userId: widget.userId,
+        subject: widget.subject,
+        grade: 'Grade ${widget.grade}',
+        unitId: widget.unitId,
+        unitName: widget.unitTitle,
+        subtopicId: widget.subtopicId,
+        subtopicName: widget.subtopicTitle,
+        actionType: 'game',
+        actionState: 'completed',
+      );
+
+      // Award XP
+      final xpManager = Provider.of<XPManager>(context, listen: false);
+      xpManager.addXP(10, onLevelUp: (newLevel) {
+        EarthUnlockAnimation.show(
+          context,
+          newLevel,
+          widget.subject,
+          widget.subtopicTitle,
+          xpManager.currentXP,
+        );
+      });
+
+      // Show completion dialog with option to go to next lesson
+      if (widget.nextSubtopicId.isNotEmpty) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: const Text('🎉 Puzzle Completed!'),
+            content: const Text(
+                'Great job! You\'ve completed this puzzle challenge.'),
+            actions: [
+              TextButton(
+                onPressed: _goToNextLesson,
+                child: const Text('CONTINUE TO NEXT LESSON'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        // If there's no next lesson, just show completion message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Puzzle completed! Great job!'),
+            duration: Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      AppLogger.e('Error during puzzle completion: $e');
+    }
 
     debugPrint('[Puzzle] : Quiz progress saved for ${widget.subtopicId}');
   }
@@ -674,7 +742,17 @@ class _PuzzleScreenState extends State<PuzzleScreen>
                         if (puzzleCompleted)
                           Container(
                             margin: const EdgeInsets.symmetric(horizontal: 16),
-                            child: GameSuccessMessage(onNext: _goToNextLesson),
+                            child: GameSuccessMessage(
+                              onNext: _goToNextLesson,
+                              nextSubtopicId: widget.nextSubtopicId,
+                              nextSubtopicTitle: widget.nextSubtopicTitle,
+                              nextReadingContent: widget.nextReadingContent,
+                              subject: widget.subject,
+                              grade: widget.grade,
+                              unitId: widget.unitId,
+                              unitTitle: widget.unitTitle,
+                              userId: widget.userId,
+                            ),
                           ),
 
                         if (!puzzleCompleted)

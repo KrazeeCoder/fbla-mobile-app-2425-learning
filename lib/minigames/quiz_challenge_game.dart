@@ -12,6 +12,7 @@ import '../widgets/subtopic_widget.dart';
 import '../utils/subTopicNavigation.dart';
 import 'dart:async';
 import '../widgets/gamesucesswidget.dart';
+import '../utils/game_launcher.dart';
 
 class QuizChallengeGame extends StatefulWidget {
   final String subtopicId;
@@ -328,34 +329,44 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
   }
 
   void _goToNextLesson() async {
-    if (subtopicNav == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Unable to load next lesson. Please try again.")),
-      );
-      return;
-    }
+    try {
+      // Check if widget is still mounted before using context
+      if (!mounted) {
+        AppLogger.w("Widget not mounted during navigation attempt");
+        return;
+      }
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SubtopicPage(
-          subtopic: subtopicNav?['nextSubtopic'],
-          subtopicId: subtopicNav?['nextSubtopicId'],
-          readingTitle: subtopicNav?['readingTitle'],
-          readingContent: subtopicNav?['readingContent'],
-          isCompleted: false,
-          subject: widget.subject,
-          grade: subtopicNav?['nextGrade'],
-          unitId: subtopicNav?['unitId'],
-          unitTitle: subtopicNav?['unitTitle'],
-          userId: widget.userId,
-          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
-          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
-          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
-        ),
-      ),
-    );
+      // Check if navigation data is available
+      if (widget.nextSubtopicId.isEmpty || widget.nextReadingContent.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Unable to load next lesson. Please try again.")),
+          );
+        }
+        return;
+      }
+
+      // Direct navigation to next lesson
+      navigateToNextLesson(
+        context: context,
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        unitTitle: widget.unitTitle,
+        nextSubtopicId: widget.nextSubtopicId,
+        nextSubtopicTitle: widget.nextSubtopicTitle,
+        nextReadingContent: widget.nextReadingContent,
+        userId: widget.userId,
+      );
+    } catch (e) {
+      AppLogger.e("Error navigating to next lesson from QuizChallengeGame: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("An error occurred. Please try again.")),
+        );
+      }
+    }
   }
 
   void activatePowerUp(String powerUp) {
@@ -479,7 +490,17 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 20),
                                   child: GameSuccessMessage(
-                                      onNext: _goToNextLesson),
+                                    onNext: _goToNextLesson,
+                                    nextSubtopicId: widget.nextSubtopicId,
+                                    nextSubtopicTitle: widget.nextSubtopicTitle,
+                                    nextReadingContent:
+                                        widget.nextReadingContent,
+                                    subject: widget.subject,
+                                    grade: widget.grade,
+                                    unitId: widget.unitId,
+                                    unitTitle: widget.unitTitle,
+                                    userId: widget.userId,
+                                  ),
                                 ),
                             ],
                           ),

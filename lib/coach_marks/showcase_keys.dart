@@ -6,6 +6,7 @@ class ShowcaseKeys {
   static final GlobalKey helpIconKey = GlobalKey(debugLabel: 'help_icon_key');
   static final GlobalKey pickUpLessonKey =
       GlobalKey(debugLabel: 'pick_up_lesson_key');
+  static final GlobalKey audioIconKey = GlobalKey(debugLabel: 'audio_icon_key');
 
   // Navigation Keys
   static final GlobalKey learnNavKey = GlobalKey(debugLabel: 'learn_nav_key');

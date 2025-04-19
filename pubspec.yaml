@@ -30,6 +30,7 @@ dependencies:
   flutter_svg: ^2.0.17
   firebase_storage: ^12.4.4
   audioplayers: ^6.4.0
+  just_audio: ^0.9.36
   showcaseview: ^4.0.1
   url_launcher: ^6.2.4
   logger: ^2.0.2
@@ -70,7 +71,7 @@ flutter:
     - assets/branding/name.svg
     - assets/homepage_design/left.svg
     - assets/homepage_design/right.svg
-    - assets/audio/congrats.mp3
+    - assets/audio/
     - assets/branding/earthpal_logo.png
     - assets/linkedin-icon.png
     - assets/Instagram_icon.png
@@ -78,3 +79,4 @@ flutter:
     - assets/login_options/google_logo.svg
     - assets/login_options/apple_logo.svg
     - assets/login_options/linkedin_logo.svg
+    - assets/audio/

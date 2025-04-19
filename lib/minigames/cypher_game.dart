@@ -11,6 +11,12 @@ import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
+import 'package:provider/provider.dart';
+import '../xp_manager.dart';
+import '../widgets/earth_unlock_animation.dart';
+import '../utils/audio/audio_integration.dart';
+import '../utils/app_logger.dart';
+import '../utils/game_launcher.dart';
 
 class CypherUI extends StatefulWidget {
   final String subtopicId;
@@ -171,111 +177,78 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     }
   }
 
-  Future<void> _goNextChapter() async {
-    if (subtopicNav == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Unable to load next lesson. Please try again.")),
-      );
-      return;
-    }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SubtopicPage(
-          subtopic: subtopicNav?['nextSubtopicTitle'],
-          subtopicId: subtopicNav?['nextSubtopicId'],
-          readingTitle: subtopicNav?['nextReadingTitle'],
-          readingContent: subtopicNav?['nextReadingContent'],
-          isCompleted: false,
-          subject: widget.subject,
-          grade: subtopicNav?['nextGrade'],
-          unitId: subtopicNav?['nextUnitId'],
-          unitTitle: subtopicNav?['nextUnitTitle'],
-          userId: widget.userId,
-          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
-          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
-          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
-        ),
-      ),
-    );
-  }
-
   Future<void> _handleGameCompletion() async {
     if (showSuccess ||
         quizQuestions.isEmpty ||
         correctAnswers.length < quizQuestions.length) {
       return;
     }
-    await handleGameCompletion(
-      context: context,
-      audioPlayer: _audioPlayer,
+
+    // Use new AudioIntegration instead of direct audio player
+    await AudioIntegration.handleGameComplete();
+
+    // Update progress
+    await markQuizAsCompleted(
       subtopicId: widget.subtopicId,
+      marksEarned: 10,
+    );
+
+    await updateResumePoint(
       userId: widget.userId,
       subject: widget.subject,
-      grade: widget.grade,
+      grade: 'Grade ${widget.grade}',
       unitId: widget.unitId,
-      unitTitle: widget.unitTitle,
-      subtopicTitle: widget.subtopicTitle,
-      lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
-      lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
-      lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
+      unitName: widget.unitTitle,
+      subtopicId: widget.subtopicId,
+      subtopicName: widget.subtopicTitle,
+      actionType: 'game',
+      actionState: 'completed',
     );
+
+    // Award XP
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+    xpManager.addXP(10, onLevelUp: (newLevel) {
+      EarthUnlockAnimation.show(
+        context,
+        newLevel,
+        widget.subject,
+        widget.subtopicTitle,
+        xpManager.currentXP,
+      );
+    });
 
     setState(() {
       showSuccess = true;
     });
   }
 
-  bool get isGameCompleted => correctAnswers.length == quizQuestions.length;
-/*
-  void _awardXPForCompletion(
-      BuildContext context, bool unitCompleted, bool gradeCompleted) {
+  void _goNextChapter() {
     try {
-      final xpManager = Provider.of<XPManager>(context, listen: false);
-      const int xpAmount = 10;
-
-      if (unitCompleted) {
-        // Award XP for completing the unit
-        xpAmount += 10;
-      }
-      if (gradeCompleted) {
-        // Award XP for completing the grade
-        xpAmount += 10;
+      // Check if widget is still mounted before using context
+      if (!mounted) {
+        AppLogger.w("Widget not mounted during navigation");
+        return;
       }
 
-      xpManager.addXP(xpAmount, onLevelUp: (level) {
-        _showEarthUnlockedAnimation(context, level);
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('+ $xpAmount XP earned!'),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
+      // Direct navigation to next lesson
+      navigateToNextLesson(
+        context: context,
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        unitTitle: widget.unitTitle,
+        nextSubtopicId: widget.nextSubtopicId,
+        nextSubtopicTitle: widget.nextSubtopicTitle,
+        nextReadingContent: widget.nextReadingContent,
+        userId: widget.userId,
       );
     } catch (e) {
-      AppLogger.e('Error awarding XP in Cypher Game', error: e);
+      // Log the error but allow the app to continue
+      AppLogger.e("Error navigating to next chapter: $e");
     }
   }
 
-  void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
-    final xpManager = Provider.of<XPManager>(context, listen: false);
-    final totalXP = xpManager.currentXP;
-
-    EarthUnlockAnimation.show(
-      context,
-      newLevel,
-      widget.subject,
-      widget.subtopicTitle,
-      totalXP,
-    );
-  }*/
+  bool get isGameCompleted => correctAnswers.length == quizQuestions.length;
 
   @override
   Widget build(BuildContext context) {
@@ -383,7 +356,18 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
               },
             ),
             const SizedBox(height: 30),
-            if (showSuccess) GameSuccessMessage(onNext: _goNextChapter),
+            if (showSuccess)
+              GameSuccessMessage(
+                onNext: _goNextChapter,
+                nextSubtopicId: widget.nextSubtopicId,
+                nextSubtopicTitle: widget.nextSubtopicTitle,
+                nextReadingContent: widget.nextReadingContent,
+                subject: widget.subject,
+                grade: widget.grade,
+                unitId: widget.unitId,
+                unitTitle: widget.unitTitle,
+                userId: widget.userId,
+              ),
           ],
         ),
       ),

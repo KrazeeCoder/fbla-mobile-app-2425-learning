@@ -12,6 +12,7 @@ import '../services/updateprogress.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
+import '../utils/game_launcher.dart';
 
 class RacingGame extends StatefulWidget {
   final String subtopicId;
@@ -185,7 +186,6 @@ class _RacingGameState extends State<RacingGame> {
       quizQuestions = questions;
       _showNextQuestion();
     });
-
   }
 
   /// Shows a formatted question matching the screenshot design
@@ -324,33 +324,44 @@ class _RacingGameState extends State<RacingGame> {
 
   /// Navigates to the next lesson with proper transitions
   Future<void> _goToNextLesson() async {
-    if (subtopicNav == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Unable to load next lesson. Please try again.")),
+    try {
+      // Check if widget is still mounted before using context
+      if (!mounted) {
+        AppLogger.w("Widget not mounted during navigation attempt");
+        return;
+      }
+
+      // Check if navigation data is available
+      if (widget.nextSubtopicId.isEmpty || widget.nextReadingContent.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Unable to load next lesson. Please try again.")),
+          );
+        }
+        return;
+      }
+
+      // Direct navigation to next lesson
+      navigateToNextLesson(
+        context: context,
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        unitTitle: widget.unitTitle,
+        nextSubtopicId: widget.nextSubtopicId,
+        nextSubtopicTitle: widget.nextSubtopicTitle,
+        nextReadingContent: widget.nextReadingContent,
+        userId: widget.userId,
       );
-      return;
+    } catch (e) {
+      AppLogger.e("Error navigating to next lesson from RacingGame: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("An error occurred. Please try again.")),
+        );
+      }
     }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SubtopicPage(
-          subtopic: subtopicNav?['nextSubtopic'],
-          subtopicId: subtopicNav?['nextSubtopicId'],
-          readingTitle: subtopicNav?['readingTitle'],
-          readingContent: subtopicNav?['readingContent'],
-          isCompleted: false,
-          subject: widget.subject,
-          grade: subtopicNav?['nextGrade'],
-          unitId: subtopicNav?['unitId'],
-          unitTitle: subtopicNav?['unitTitle'],
-          userId: widget.userId,
-          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
-          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
-          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
-        ),
-      ),
-    );
   }
 
   @override
@@ -415,7 +426,7 @@ class _RacingGameState extends State<RacingGame> {
 
           // Race Track (takes about 40% of screen)
           Expanded(
-            flex:3,
+            flex: 3,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: _buildRaceTrack(),
@@ -433,21 +444,33 @@ class _RacingGameState extends State<RacingGame> {
                     child: LayoutBuilder(
                       builder: (context, constraints) {
                         return ConstrainedBox(
-                          constraints: BoxConstraints(maxHeight: constraints.maxHeight),
+                          constraints:
+                              BoxConstraints(maxHeight: constraints.maxHeight),
                           child: _buildQuestionArea(),
                         );
                       },
                     ),
                   ),
-
                   if (_playerWon && _gameOver)
                     Padding(
                       padding: const EdgeInsets.only(top: 16.0),
                       child: GameSuccessMessage(
                         onNext: () {
-                          _awardXPForCompletion(context);
-                          _goToNextLesson();
+                          try {
+                            _awardXPForCompletion(context);
+                            _goToNextLesson();
+                          } catch (e) {
+                            AppLogger.e("Error during navigation: $e");
+                          }
                         },
+                        nextSubtopicId: widget.nextSubtopicId,
+                        nextSubtopicTitle: widget.nextSubtopicTitle,
+                        nextReadingContent: widget.nextReadingContent,
+                        subject: widget.subject,
+                        grade: widget.grade,
+                        unitId: widget.unitId,
+                        unitTitle: widget.unitTitle,
+                        userId: widget.userId,
                       ),
                     ),
                 ],

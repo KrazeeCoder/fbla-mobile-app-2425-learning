@@ -5,11 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:showcaseview/showcaseview.dart';
 import 'signup_screen.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
 import '/auth_utility.dart';
 import '/security.dart';
 import '../coach_marks/showcase_provider.dart';
+import '../utils/app_logger.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -39,25 +41,53 @@ class _SignInScreenState extends State<SignInScreen> {
         passwordController.text.trim(),
       );
 
-      if (user != null) {
+      if (user != null && mounted) {
         await setLoginUserKeys(user);
         final isNewUser = await _authService.isFirstLogin(user.uid);
         if (isNewUser) {
           Provider.of<ShowcaseService>(context, listen: false).resetShowcase();
         }
 
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => MainPage()));
+        navigateToMainPage();
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("Login failed: Invalid credentials.")));
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Login failed: Invalid credentials.")));
+        }
       }
     } catch (e) {
-      print("Login Error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Login failed: ${e.toString()}")));
+      AppLogger.e("Login Error: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("Login failed: ${e.toString()}")));
+      }
     }
-    setState(() => isLoading = false);
+    if (mounted) {
+      setState(() => isLoading = false);
+    }
+  }
+
+  void navigateToMainPage() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ShowCaseWidget(
+          builder: (context) => Builder(
+            builder: (context) => const MainPage(),
+          ),
+          onStart: (index, key) {
+            AppLogger.i("Showcase started with index: $index");
+          },
+          onComplete: (index, key) {
+            if (index == null) {
+              AppLogger.i("Showcase completed");
+              Provider.of<ShowcaseService>(context, listen: false)
+                  .markShowcaseComplete();
+            }
+          },
+        ),
+      ),
+    );
   }
 
   Future<void> signInWithLinkedIn() async {
@@ -176,9 +206,8 @@ class _SignInScreenState extends State<SignInScreen> {
       }
 
       if (mounted) {
-        print("➡️ Navigating to MainPage...");
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (_) => MainPage()));
+        AppLogger.i("LinkedIn sign-in successful, navigating to MainPage...");
+        navigateToMainPage();
       }
     } catch (e) {
       print("🚨 Exception during LinkedIn sign-in: $e");

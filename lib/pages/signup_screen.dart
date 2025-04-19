@@ -4,6 +4,8 @@ import '/auth_utility.dart';
 import 'signin_screen.dart';
 import '../coach_marks/showcase_provider.dart';
 import '../main.dart';
+import '../utils/app_logger.dart';
+import 'package:showcaseview/showcaseview.dart';
 
 class SignUpScreen extends StatefulWidget {
   @override
@@ -217,15 +219,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
       Provider.of<ShowcaseService>(context, listen: false).resetShowcase();
 
       if (mounted) {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (_) => const MainPage()),
-          (Route<dynamic> route) => false,
-        );
+        navigateToMainPage();
       }
     } else {
       _showSnackBar(result ?? "Registration failed");
     }
+  }
+
+  void navigateToMainPage() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ShowCaseWidget(
+          builder: (context) => Builder(
+            builder: (context) => const MainPage(),
+          ),
+          onStart: (index, key) {
+            AppLogger.i("Showcase started with index: $index");
+          },
+          onComplete: (index, key) {
+            if (index == null) {
+              AppLogger.i("Showcase completed");
+              Provider.of<ShowcaseService>(context, listen: false)
+                  .markShowcaseComplete();
+            }
+          },
+        ),
+      ),
+      (Route<dynamic> route) => false,
+    );
   }
 
   // Add a method to check username availability in real-time

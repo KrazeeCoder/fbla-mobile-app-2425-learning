@@ -12,6 +12,7 @@ import '../services/updateprogress.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
+import '../utils/game_launcher.dart';
 
 class MazeGame extends StatefulWidget {
   final String subtopicId;
@@ -427,33 +428,44 @@ class _MazeGameState extends State<MazeGame> {
 
   /// Navigates to the next lesson with proper transitions
   Future<void> _goToNextLesson() async {
-    if (subtopicNav == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text("Unable to load next lesson. Please try again.")),
+    try {
+      // Check if widget is still mounted before using context
+      if (!mounted) {
+        AppLogger.w("Widget not mounted during navigation attempt");
+        return;
+      }
+
+      // Check if navigation data is available
+      if (widget.nextSubtopicId.isEmpty || widget.nextReadingContent.isEmpty) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text("Unable to load next lesson. Please try again.")),
+          );
+        }
+        return;
+      }
+
+      // Direct navigation to next lesson
+      navigateToNextLesson(
+        context: context,
+        subject: widget.subject,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        unitTitle: widget.unitTitle,
+        nextSubtopicId: widget.nextSubtopicId,
+        nextSubtopicTitle: widget.nextSubtopicTitle,
+        nextReadingContent: widget.nextReadingContent,
+        userId: widget.userId,
       );
-      return;
+    } catch (e) {
+      AppLogger.e("Error navigating to next lesson from MazeGame: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("An error occurred. Please try again.")),
+        );
+      }
     }
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => SubtopicPage(
-          subtopic: subtopicNav?['nextSubtopicTitle'],
-          subtopicId: subtopicNav?['nextSubtopicId'],
-          readingTitle: subtopicNav?['nextReadingTitle'],
-          readingContent: subtopicNav?['nextReadingContent'],
-          isCompleted: false,
-          subject: widget.subject,
-          grade: subtopicNav?['nextGrade'],
-          unitId: subtopicNav?['nextUnitId'],
-          unitTitle: subtopicNav?['nextUnitTitle'],
-          userId: widget.userId,
-          lastSubtopicofGrade: subtopicNav?['isLastOfGrade'],
-          lastSubtopicofUnit: subtopicNav?['isLastOfUnit'],
-          lastSubtopicofSubject: subtopicNav?['isLastOfSubject'],
-        ),
-      ),
-    );
   }
 
   @override
@@ -536,7 +548,17 @@ class _MazeGameState extends State<MazeGame> {
           else if (showSuccess)
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: GameSuccessMessage(onNext: _goToNextLesson),
+              child: GameSuccessMessage(
+                onNext: _goToNextLesson,
+                nextSubtopicId: widget.nextSubtopicId,
+                nextSubtopicTitle: widget.nextSubtopicTitle,
+                nextReadingContent: widget.nextReadingContent,
+                subject: widget.subject,
+                grade: widget.grade,
+                unitId: widget.unitId,
+                unitTitle: widget.unitTitle,
+                userId: widget.userId,
+              ),
             )
           else
             // Show Arrow Controls when no question is active or game not completed

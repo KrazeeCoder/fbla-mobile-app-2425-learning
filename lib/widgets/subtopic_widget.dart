@@ -351,10 +351,6 @@ class _SubtopicPageState extends State<SubtopicPage> {
                             if (user != null) {
                               await _handleSubTopicCompletion(context);
 
-                              if (mounted) {
-                                Navigator.pop(context);
-                              }
-
                               AppLogger.i("Launching Puzzle Game");
 
                               // For showcase/tutorial path: always use puzzle game with tutorial
@@ -383,9 +379,6 @@ class _SubtopicPageState extends State<SubtopicPage> {
                               if (user != null) {
                                 await _handleSubTopicCompletion(context);
 
-                                if (mounted) {
-                                  Navigator.pop(context);
-                                }
                                 AppLogger.i("Launching Random Game");
 
                                 // For normal gameplay: use random game without tutorial
@@ -466,6 +459,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
     try {
       final xpManager = Provider.of<XPManager>(context, listen: false);
       xpManager.addXP(5, onLevelUp: (newLevel) {
+        AppLogger.i('added xp');
         showEarthUnlockedAnimation(
             context, newLevel, widget.subject, widget.subtopic);
       });
