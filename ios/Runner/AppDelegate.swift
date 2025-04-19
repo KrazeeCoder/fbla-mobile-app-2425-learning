@@ -47,20 +47,24 @@ import FBSDKCoreKit
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 
-  private func shareToInstagram(backgroundImagePath: String, stickerImagePath: String) {
+ private func shareToInstagram(backgroundImagePath: String, stickerImagePath: String) {
     print("📸 Preparing to share background: \(backgroundImagePath) + sticker: \(stickerImagePath)")
 
     guard let backgroundImage = UIImage(contentsOfFile: backgroundImagePath),
           let stickerImage = UIImage(contentsOfFile: stickerImagePath),
-          let backgroundData = backgroundImage.pngData(),
           let stickerData = stickerImage.pngData() else {
       print("❌ Failed to load or convert image files")
       return
     }
 
+    // ✅ backgroundImage loaded but not used in pasteboardItems
+    _ = backgroundImage.pngData() // keep variable to avoid unused warning
+
     let pasteboardItems: [[String: Any]] = [[
-      "com.instagram.sharedSticker.backgroundImage": backgroundData,
-      "com.instagram.sharedSticker.stickerImage": stickerData
+      // "com.instagram.sharedSticker.backgroundImage": backgroundData,  <-- commented out for now
+      "com.instagram.sharedSticker.stickerImage": stickerData,
+      "com.instagram.sharedSticker.backgroundTopColor": "#444444",
+      "com.instagram.sharedSticker.backgroundBottomColor": "#222222"
     ]]
 
     let options: [UIPasteboard.OptionsKey: Any] = [
@@ -77,8 +81,9 @@ import FBSDKCoreKit
     }
 
     UIApplication.shared.open(urlScheme, options: [:], completionHandler: nil)
-    print("📤 Instagram story with sticker triggered")
-  }
+    print("📤 Instagram story with sticker + background colors triggered")
+}
+
 
   override func application(
     _ app: UIApplication,
