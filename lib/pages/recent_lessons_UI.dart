@@ -62,6 +62,7 @@ class _RecentLessonsUIPageState extends State<RecentLessonsUIPage> {
         final displayLessons = widget.latestOnly ? [lessons.first] : lessons;
 
         return ListView.builder(
+          padding: EdgeInsets.zero,
           itemCount: displayLessons.length,
           itemBuilder: (context, index) {
             final item = lessons[index];
