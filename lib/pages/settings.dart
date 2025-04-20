@@ -10,6 +10,7 @@ import '/security.dart';
 import '../coach_marks/showcase_provider.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/custom_app_bar.dart';
 import '../providers/settings_provider.dart';
+import '../xp_manager.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -42,6 +43,21 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     _loadUserDetails();
+
+    // Add post-frame callback to listen for XP updates after build completes
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final xpManager = Provider.of<XPManager>(context, listen: false);
+      xpManager.addListener(_updateXPAndLevel);
+    });
+  }
+
+  void _updateXPAndLevel() {
+    if (!mounted) return;
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+    setState(() {
+      currentXP = xpManager.currentXP;
+      currentLevel = xpManager.currentLevel;
+    });
   }
 
   Future<void> _loadUserDetails() async {
@@ -51,8 +67,6 @@ class _SettingsPageState extends State<SettingsPage> {
     final doc = await _firestore.collection('users').doc(user.uid).get();
 
     setState(() {
-      currentLevel = doc['currentLevel'] ?? 0;
-      currentXP = doc['currentXP'] ?? 0;
       _usernameController.text = doc['username'] ?? '';
     });
 
@@ -66,6 +80,13 @@ class _SettingsPageState extends State<SettingsPage> {
         _profilePicUrlController.text = profilePicUrl;
       });
     }
+
+    // Get XP and level from XPManager
+    final xpManager = Provider.of<XPManager>(context, listen: false);
+    setState(() {
+      currentXP = xpManager.currentXP;
+      currentLevel = xpManager.currentLevel;
+    });
   }
 
   bool _validateUsernameFormat(String username) {
@@ -208,6 +229,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   void dispose() {
+    // Remove listener from XPManager
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (context.mounted) {
+        final xpManager = Provider.of<XPManager>(context, listen: false);
+        xpManager.removeListener(_updateXPAndLevel);
+      }
+    });
+
     _emailController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
@@ -391,14 +420,16 @@ class _SettingsPageState extends State<SettingsPage> {
                                     icon: Icons.star,
                                     iconColor: Colors.amber,
                                     label: "Level",
-                                    value: "$currentLevel",
+                                    value:
+                                        "${Provider.of<XPManager>(context).currentLevel}",
                                   ),
                                   const SizedBox(width: 20),
                                   _buildProgressItem(
                                     icon: Icons.flash_on,
                                     iconColor: Colors.orange,
                                     label: "XP",
-                                    value: "$currentXP",
+                                    value:
+                                        "${Provider.of<XPManager>(context).currentXP}",
                                   ),
                                 ],
                               ),

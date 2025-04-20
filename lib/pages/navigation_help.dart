@@ -40,7 +40,7 @@ class _NavigationHelpPageState extends State<NavigationHelpPage>
           tabs: const [
             Tab(
               icon: Icon(Icons.help_outline),
-              text: 'Guide',
+              text: 'Guide & Instructions',
             ),
             Tab(
               icon: Icon(Icons.chat_bubble_outline),
@@ -58,6 +58,17 @@ class _NavigationHelpPageState extends State<NavigationHelpPage>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                _buildSection(
+                  '🎯 Our Mission: Gamified Learning',
+                  'This app was designed based on the concept: "Design a mobile application that gamifies learning for subjects like math, science, history, or language arts, offering interactive quizzes, puzzles, and progress tracking." Here\'s how we bring that to life:',
+                  [
+                    '• 📚 Diverse Subjects: We cover Math, Science, History, and English Language Arts.',
+                    '• 🎮 Gamification: Earn XP, level up, and maintain streaks to stay motivated.',
+                    '• 🕹️ Interactive Practice: After lessons, test your knowledge with fun mini-games like quizzes, puzzles, cyphers, and more.',
+                    '• 📊 Progress Tracking: Monitor your achievements, XP, level, and lesson completion on the Progress tab.',
+                  ],
+                ),
+                const SizedBox(height: 24),
                 _buildSection(
                   'Main Navigation',
                   'The app has five main sections accessible through the bottom navigation bar:',

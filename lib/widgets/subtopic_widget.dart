@@ -55,6 +55,7 @@ class SubtopicPage extends StatefulWidget {
 class _SubtopicPageState extends State<SubtopicPage> {
   late bool _isCompleted;
   Map<String, dynamic>? subtopicNav;
+  bool _isLoading = false;
 
   @override
   void initState() {
@@ -159,9 +160,14 @@ class _SubtopicPageState extends State<SubtopicPage> {
             );
           },
         ),
-        title: Text(widget.subtopic),
-        backgroundColor: primaryGreen,
-        foregroundColor: Colors.white,
+        title: Text('Back to Previous Screen',
+            style: TextStyle(
+                fontSize: 16,
+                color: Colors.black54,
+                fontWeight: FontWeight.normal)),
+        backgroundColor: Colors.transparent,
+        titleSpacing: 0,
+        foregroundColor: Colors.black54,
         elevation: 0,
       ),
       body: Stack(
@@ -438,6 +444,21 @@ class _SubtopicPageState extends State<SubtopicPage> {
                               final user = FirebaseAuth.instance.currentUser;
 
                               if (user != null) {
+                                // Show loading state
+                                setState(() {
+                                  _isLoading = true;
+                                });
+
+                                // Pre-fetch navigation info before completion if not already loaded
+                                if (subtopicNav == null) {
+                                  subtopicNav = await getSubtopicNavigationInfo(
+                                    subject: widget.subject,
+                                    grade: widget.grade,
+                                    subtopicId: widget.subtopicId,
+                                  );
+                                }
+
+                                // Handle subtopic completion (includes XP award and possible level up)
                                 await _handleSubTopicCompletion(context);
 
                                 // If still mounted, launch the game
@@ -474,8 +495,25 @@ class _SubtopicPageState extends State<SubtopicPage> {
                               ),
                               elevation: 2,
                             ),
-                            child: const Text("Continue to Practice",
-                                style: TextStyle(fontSize: 16)),
+                            child: _isLoading
+                                ? Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        height: 20,
+                                        width: 20,
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2.0,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      const Text("Loading Game...",
+                                          style: TextStyle(fontSize: 16)),
+                                    ],
+                                  )
+                                : const Text("Continue to Practice",
+                                    style: TextStyle(fontSize: 16)),
                           ),
                         ),
                       ),
@@ -498,33 +536,36 @@ class _SubtopicPageState extends State<SubtopicPage> {
       _isCompleted = true;
     });
 
-    await markSubtopicAsCompleted(
-      subtopicId: widget.subtopicId,
-      subtopicTitle: widget.readingTitle,
-      unitTitle: widget.unitTitle,
-      grade: widget.grade,
-      unitId: widget.unitId,
-      subject: widget.subject,
-    );
-
-    await updateResumePoint(
-      userId: FirebaseAuth.instance.currentUser?.uid ?? '',
-      subject: widget.subject,
-      grade: 'Grade ${widget.grade}',
-      unitId: widget.unitId,
-      unitName: widget.unitTitle,
-      subtopicId: widget.subtopicId,
-      subtopicName: widget.subtopic,
-      actionType: 'content',
-      actionState: 'completed',
-    );
+    // Run Firebase operations in parallel for better performance
+    await Future.wait([
+      markSubtopicAsCompleted(
+        subtopicId: widget.subtopicId,
+        subtopicTitle: widget.readingTitle,
+        unitTitle: widget.unitTitle,
+        grade: widget.grade,
+        unitId: widget.unitId,
+        subject: widget.subject,
+      ),
+      updateResumePoint(
+        userId: FirebaseAuth.instance.currentUser?.uid ?? '',
+        subject: widget.subject,
+        grade: 'Grade ${widget.grade}',
+        unitId: widget.unitId,
+        unitName: widget.unitTitle,
+        subtopicId: widget.subtopicId,
+        subtopicName: widget.subtopic,
+        actionType: 'content',
+        actionState: 'completed',
+      ),
+    ]);
 
     // Award XP and handle level up
     try {
       final xpManager = Provider.of<XPManager>(context, listen: false);
 
       // Set a timeout to ensure we don't hang forever
-      Future.delayed(const Duration(seconds: 3), () {
+      // Reduced from 3 seconds to 1.5 seconds for faster response
+      Future.delayed(const Duration(milliseconds: 1500), () {
         if (!levelUpHandled && !levelUpCompleter.isCompleted) {
           levelUpHandled = true;
           levelUpCompleter.complete();
@@ -553,10 +594,12 @@ class _SubtopicPageState extends State<SubtopicPage> {
             // Mark that we're handling the level up
             levelUpHandled = true;
 
-            // Add a delay to wait for animation to complete
+            // Add a reasonable delay to wait for animation to complete
+            // Reduced from 300 seconds to 5 seconds with a safety check
             Future.delayed(const Duration(seconds: 300), () {
               if (!levelUpCompleter.isCompleted) {
                 levelUpCompleter.complete();
+                AppLogger.i("Level up animation completed or timed out");
               }
             });
           } catch (e) {
@@ -572,7 +615,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
         }
       });
 
-      // Show quick XP toast
+      // Show quick XP toast in parallel with other operations
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

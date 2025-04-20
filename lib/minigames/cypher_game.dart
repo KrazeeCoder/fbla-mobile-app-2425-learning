@@ -324,7 +324,8 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
               children: [
                 // Game context information
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 6.0, horizontal: 10.0),
                   margin: const EdgeInsets.only(bottom: 8.0),
                   decoration: BoxDecoration(
                     color: Colors.indigo.shade50,
@@ -334,7 +335,8 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.info_outline, color: Colors.indigo.shade700, size: 16),
+                      Icon(Icons.info_outline,
+                          color: Colors.indigo.shade700, size: 16),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
@@ -351,9 +353,6 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-
-
-
 
                 // Game instructions
                 if (!isGameCompleted)
@@ -392,7 +391,8 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                       builder: (context, constraints) {
                         double spacing = 12;
                         int itemCount = gameState.length;
-                        double availableWidth = constraints.maxWidth - (spacing * (itemCount - 1));
+                        double availableWidth =
+                            constraints.maxWidth - (spacing * (itemCount - 1));
                         double cardWidth = availableWidth / itemCount;
 
                         return Container(
@@ -428,7 +428,8 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                                           shadows: [
                                             Shadow(
                                               blurRadius: 2,
-                                              color: Colors.black.withOpacity(0.3),
+                                              color:
+                                                  Colors.black.withOpacity(0.3),
                                               offset: const Offset(1, 1),
                                             ),
                                           ],
@@ -440,7 +441,8 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                                             horizontal: 6, vertical: 2),
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.9),
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                         ),
                                         child: Text(
                                           "#${(item["questionIndex"] + 1)}",
@@ -464,7 +466,6 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                     );
                   },
                 ),
-
 
                 // Question Area with Navigation
                 Expanded(

@@ -31,76 +31,36 @@ Future<void> launchRandomGame({
   // Store a local reference to context to avoid BuildContext issues
   final BuildContext localContext = context;
 
-  // Play game start sound
-  try {
-    await AudioIntegration.handleGameStart();
-  } catch (e) {
-    AppLogger.e("Error playing game start sound, continuing: $e");
-    // Continue launching game even if sound fails
-  }
-
   try {
     if (!localContext.mounted) {
       AppLogger.e("Context not mounted in launchRandomGame");
       return;
     }
 
-    final games = [
-      RacingGame(
-        subject: subject,
-        grade: grade,
-        unitId: unitId,
-        unitTitle: unitTitle,
-        subtopicId: subtopicId,
-        subtopicTitle: subtopicTitle,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: userId,
-      ),
-      CypherUI(
-        subject: subject,
-        grade: grade,
-        unitId: unitId,
-        unitTitle: unitTitle,
-        subtopicId: subtopicId,
-        subtopicTitle: subtopicTitle,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: userId,
-      ),
-      QuizChallengeGame(
-        subject: subject,
-        grade: grade,
-        unitId: unitId,
-        unitTitle: unitTitle,
-        subtopicId: subtopicId,
-        subtopicTitle: subtopicTitle,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: userId,
-      ),
-      PuzzleScreen(
-        subject: subject,
-        grade: grade,
-        unitId: unitId,
-        unitTitle: unitTitle,
-        subtopicId: subtopicId,
-        subtopicTitle: subtopicTitle,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: userId,
-      )
+    // Instead of creating all game instances upfront, just choose a game type first
+    final gameTypes = [
+      'RacingGame',
+      'CypherUI',
+      'QuizChallengeGame',
+      'PuzzleScreen',
     ];
 
     // Add word scramble game for specific subjects
     if (subject.toLowerCase() == "history" ||
         subject.toLowerCase() == "english") {
-      games.add(
-        WordScrambleGame(
+      gameTypes.add('WordScrambleGame');
+    }
+
+    // Shuffle and select just one game type
+    gameTypes.shuffle();
+    final selectedGameType = gameTypes.first;
+
+    // Initialize only the selected game
+    Widget gameWidget;
+
+    switch (selectedGameType) {
+      case 'RacingGame':
+        gameWidget = RacingGame(
           subject: subject,
           grade: grade,
           unitId: unitId,
@@ -111,18 +71,91 @@ Future<void> launchRandomGame({
           nextSubtopicTitle: nextSubtopicTitle,
           nextReadingContent: nextReadingContent,
           userId: userId,
-        ),
-      );
+        );
+        break;
+      case 'CypherUI':
+        gameWidget = CypherUI(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+      case 'QuizChallengeGame':
+        gameWidget = QuizChallengeGame(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+      case 'PuzzleScreen':
+        gameWidget = PuzzleScreen(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+      case 'WordScrambleGame':
+        gameWidget = WordScrambleGame(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+      default:
+        // Fallback to quiz game if something goes wrong
+        gameWidget = QuizChallengeGame(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
     }
 
-    games.shuffle();
+    // Play game start sound in parallel with navigation
+    AudioIntegration.handleGameStart().catchError((e) {
+      AppLogger.e("Error playing game start sound, continuing: $e");
+    });
 
-    // Use pushReplacement to avoid back navigation issues
+    // Navigate to the selected game
     Navigator.pushReplacement(
       localContext,
       MaterialPageRoute(
-        builder: (context) => games.first,
-        settings: RouteSettings(name: 'Game_${games.first.runtimeType}'),
+        builder: (context) => gameWidget,
+        settings: RouteSettings(name: 'Game_$selectedGameType'),
       ),
     );
   } catch (e) {
@@ -295,76 +328,36 @@ Future<void> launchRandomGameFromPathway({
   // Store a local reference to context to avoid BuildContext issues
   final BuildContext localContext = context;
 
-  // Play game start sound
-  try {
-    await AudioIntegration.handleGameStart();
-  } catch (e) {
-    AppLogger.e("Error playing game start sound, continuing: $e");
-    // Continue launching game even if sound fails
-  }
-
   try {
     if (!localContext.mounted) {
       AppLogger.e("Context not mounted in launchRandomGame");
       return;
     }
 
-    final games = [
-      RacingGame(
-        subject: subject,
-        grade: grade,
-        unitId: unitId,
-        unitTitle: unitTitle,
-        subtopicId: subtopicId,
-        subtopicTitle: subtopicTitle,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: userId,
-      ),
-      CypherUI(
-        subject: subject,
-        grade: grade,
-        unitId: unitId,
-        unitTitle: unitTitle,
-        subtopicId: subtopicId,
-        subtopicTitle: subtopicTitle,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: userId,
-      ),
-      QuizChallengeGame(
-        subject: subject,
-        grade: grade,
-        unitId: unitId,
-        unitTitle: unitTitle,
-        subtopicId: subtopicId,
-        subtopicTitle: subtopicTitle,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: userId,
-      ),
-      PuzzleScreen(
-        subject: subject,
-        grade: grade,
-        unitId: unitId,
-        unitTitle: unitTitle,
-        subtopicId: subtopicId,
-        subtopicTitle: subtopicTitle,
-        nextSubtopicId: nextSubtopicId,
-        nextSubtopicTitle: nextSubtopicTitle,
-        nextReadingContent: nextReadingContent,
-        userId: userId,
-      )
+    // Instead of creating all game instances upfront, just choose a game type first
+    final gameTypes = [
+      'RacingGame',
+      'CypherUI',
+      'QuizChallengeGame',
+      'PuzzleScreen',
     ];
 
     // Add word scramble game for specific subjects
     if (subject.toLowerCase() == "history" ||
         subject.toLowerCase() == "english") {
-      games.add(
-        WordScrambleGame(
+      gameTypes.add('WordScrambleGame');
+    }
+
+    // Shuffle and select just one game type
+    gameTypes.shuffle();
+    final selectedGameType = gameTypes.first;
+
+    // Initialize only the selected game
+    Widget gameWidget;
+
+    switch (selectedGameType) {
+      case 'RacingGame':
+        gameWidget = RacingGame(
           subject: subject,
           grade: grade,
           unitId: unitId,
@@ -375,18 +368,91 @@ Future<void> launchRandomGameFromPathway({
           nextSubtopicTitle: nextSubtopicTitle,
           nextReadingContent: nextReadingContent,
           userId: userId,
-        ),
-      );
+        );
+        break;
+      case 'CypherUI':
+        gameWidget = CypherUI(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+      case 'QuizChallengeGame':
+        gameWidget = QuizChallengeGame(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+      case 'PuzzleScreen':
+        gameWidget = PuzzleScreen(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+      case 'WordScrambleGame':
+        gameWidget = WordScrambleGame(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+      default:
+        // Fallback to quiz game if something goes wrong
+        gameWidget = QuizChallengeGame(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
     }
 
-    games.shuffle();
+    // Play game start sound in parallel with navigation
+    AudioIntegration.handleGameStart().catchError((e) {
+      AppLogger.e("Error playing game start sound, continuing: $e");
+    });
 
-    // Use pushReplacement to avoid back navigation issues
+    // Use push for pathway navigation to allow going back
     Navigator.push(
       localContext,
       MaterialPageRoute(
-        builder: (context) => games.first,
-        settings: RouteSettings(name: 'Game_${games.first.runtimeType}'),
+        builder: (context) => gameWidget,
+        settings: RouteSettings(name: 'Game_$selectedGameType'),
       ),
     );
   } catch (e) {
