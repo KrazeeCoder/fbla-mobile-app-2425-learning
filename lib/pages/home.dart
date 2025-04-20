@@ -477,20 +477,32 @@ class _HomePageState extends State<HomePage> {
                             FirebaseAuth.instance.currentUser?.uid ?? '';
 
                         if (item.contentCompleted && !item.quizCompleted) {
-                          await launchRandomGame(
-                            context: context,
-                            subject: item.subject,
-                            grade: item.grade,
-                            unitId: item.unitId,
-                            unitTitle: item.unit,
-                            subtopicId: item.subtopicId,
-                            subtopicTitle: item.subtopic,
-                            nextSubtopicId: navData['nextSubtopicId'],
-                            nextSubtopicTitle: navData['nextSubtopicTitle'],
-                            nextReadingContent: navData['nextReadingContent'],
-                            userId: userId,
+                          // 🚫 Skip game launching in "Pick Up Where You Left Off"
+                          // Instead, go directly to review screen
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ShowCaseWidget(
+                                builder: (context) => SubtopicPage(
+                                  subtopic: item.subtopic,
+                                  subtopicId: item.subtopicId,
+                                  readingTitle: item.subtopic,
+                                  readingContent: navData['readingContent'] ?? '',
+                                  isCompleted: true,
+                                  subject: item.subject,
+                                  grade: item.grade,
+                                  unitId: item.unitId,
+                                  unitTitle: item.unit,
+                                  userId: userId,
+                                  lastSubtopicofUnit: navData['isLastOfUnit'],
+                                  lastSubtopicofGrade: navData['isLastOfGrade'],
+                                  lastSubtopicofSubject: navData['isLastOfSubject'],
+                                ),
+                              ),
+                            ),
                           );
-                        } else if (!item.contentCompleted) {
+                        }
+                        else if (!item.contentCompleted) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(

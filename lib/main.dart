@@ -189,70 +189,63 @@ class _AuthWrapperState extends State<AuthWrapper> {
   bool _showcaseTriggered = false;
 
   // 🆕 Helper function to build the FAB
-  FloatingActionWidget _buildShowcaseFab(BuildContext fabContext) {
+  FloatingActionWidget _buildShowcaseFab(BuildContext context) {
     return FloatingActionWidget(
-        left: 130,
-        top: 24,
-        width: 135, // Increased width for better visibility
-        height: 36, // Increased height for better tap target
-        child: Material(
-          elevation: 4,
-          color: Colors.transparent,
-          shadowColor: Colors.black45,
-          borderRadius: BorderRadius.circular(25),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.green.shade700, Colors.green.shade500],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: 40, // Adjust as needed for spacing below notch/status bar
+            right: 16,
+            child: Material(
+              elevation: 4,
+              color: Colors.transparent,
               borderRadius: BorderRadius.circular(25),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.2),
-                  blurRadius: 4,
-                  offset: const Offset(0, 2),
-                )
-              ],
-            ),
-            child: InkWell(
-              onTap: () {
-                // Dismiss the showcase
-                ShowCaseWidget.of(fabContext).dismiss();
-                // Mark as complete in the service
-                Provider.of<ShowcaseService>(fabContext, listen: false)
-                    .markShowcaseComplete();
-                AppLogger.i("Showcase dismissed and marked complete by FAB");
-              },
-              borderRadius: BorderRadius.circular(25),
-              child: const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.skip_next_rounded,
-                      size: 18,
-                      color: Colors.white,
-                    ),
-                    SizedBox(width: 4),
-                    Text(
-                      'Skip Tutorial',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.white,
-                      ),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade700,
+                  borderRadius: BorderRadius.circular(25),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 4,
+                      offset: Offset(0, 2),
                     ),
                   ],
+                ),
+                child: InkWell(
+                  onTap: () {
+                    ShowCaseWidget.of(context).dismiss();
+                    Provider.of<ShowcaseService>(context, listen: false)
+                        .markShowcaseComplete();
+                    AppLogger.i("Showcase skipped");
+                  },
+                  borderRadius: BorderRadius.circular(25),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.skip_next_rounded,
+                          color: Colors.white, size: 18),
+                      SizedBox(width: 6),
+                      Text(
+                        "Skip",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ));
+        ],
+      ),
+    );
   }
+
 
   Future<bool> checkUserStillExists(User user) async {
     try {
