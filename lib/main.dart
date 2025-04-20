@@ -1,4 +1,3 @@
-import 'package:fbla_mobile_2425_learning_app/minigames/cypher_game.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -21,7 +20,7 @@ import 'package:showcaseview/showcaseview.dart';
 import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'services/settings_service.dart';
 import 'managers/audio/audio_integration.dart';
-import 'dart:async'; // Add this import for TimeoutException
+import 'dart:async';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
