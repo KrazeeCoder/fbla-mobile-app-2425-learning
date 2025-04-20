@@ -3,7 +3,7 @@ import 'package:fbla_mobile_2425_learning_app/pages/recent_lessons_UI.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/chooseyourownlesson_UI.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/custom_app_bar.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
+import 'package:fbla_mobile_2425_learning_app/managers/coach_marks/showcase_keys.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart'; // Import PathwayUI
 
 // Define a callback type

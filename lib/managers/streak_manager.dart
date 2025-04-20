@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
-import 'progress_service.dart';
+import '../services/progress_service.dart';
 import '../utils/app_logger.dart';
 import 'dart:math' as math;
 

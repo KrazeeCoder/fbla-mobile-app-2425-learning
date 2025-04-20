@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/earth_unlock_animation.dart';
 import 'audio_manager.dart';
 import 'audio_assets.dart';
-import '../app_logger.dart';
+import '../../utils/app_logger.dart';
 import 'dart:async';
 import 'package:flutter/services.dart' show rootBundle;
 

@@ -11,10 +11,10 @@ import '../widgets/lessons.dart';
 import '../widgets/level_bar_homepage.dart';
 import '../widgets/recent_lessons_homepage.dart';
 import '../widgets/streak_homepage.dart';
-import '../widgets/subtopic_widget.dart';
+import 'subtopic_page.dart';
 import '../widgets/xp_debug_controls.dart';
-import '../xp_manager.dart';
-import '../coach_marks/showcase_keys.dart';
+import '../services/xp_service.dart';
+import '../managers/coach_marks/showcase_keys.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    final xpManager = Provider.of<XPManager>(context);
+    final xpManager = Provider.of<XPService>(context);
 
     // Build the list of earths from level 1 to currentLevel
     final currentLevel = xpManager.currentLevel;
@@ -487,7 +487,8 @@ class _HomePageState extends State<HomePage> {
                                   subtopic: item.subtopic,
                                   subtopicId: item.subtopicId,
                                   readingTitle: item.subtopic,
-                                  readingContent: navData['readingContent'] ?? '',
+                                  readingContent:
+                                      navData['readingContent'] ?? '',
                                   isCompleted: true,
                                   subject: item.subject,
                                   grade: item.grade,
@@ -496,13 +497,13 @@ class _HomePageState extends State<HomePage> {
                                   userId: userId,
                                   lastSubtopicofUnit: navData['isLastOfUnit'],
                                   lastSubtopicofGrade: navData['isLastOfGrade'],
-                                  lastSubtopicofSubject: navData['isLastOfSubject'],
+                                  lastSubtopicofSubject:
+                                      navData['isLastOfSubject'],
                                 ),
                               ),
                             ),
                           );
-                        }
-                        else if (!item.contentCompleted) {
+                        } else if (!item.contentCompleted) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(

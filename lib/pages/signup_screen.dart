@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '/auth_utility.dart';
+import '../services/auth_service.dart';
 import 'signin_screen.dart';
-import '../coach_marks/showcase_provider.dart';
+import '../managers/coach_marks/showcase_provider.dart';
 import '../main.dart';
 import '../utils/app_logger.dart';
 import 'package:showcaseview/showcaseview.dart';

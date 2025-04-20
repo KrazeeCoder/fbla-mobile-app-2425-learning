@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'utils/app_logger.dart';
+import '../utils/app_logger.dart';
 
-class XPManager extends ChangeNotifier {
+class XPService extends ChangeNotifier {
   int _currentXP = 0;
   int _currentLevel = 1;
   bool _isLoading = true;
@@ -28,7 +28,7 @@ class XPManager extends ChangeNotifier {
         (_maxXPForCurrentLevel - _minXPForCurrentLevel);
   }
 
-  XPManager() {
+  XPService() {
     _initUser();
   }
 

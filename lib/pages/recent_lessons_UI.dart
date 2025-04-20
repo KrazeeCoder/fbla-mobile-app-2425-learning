@@ -5,7 +5,7 @@ import '../services/progress_service.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
+import 'package:fbla_mobile_2425_learning_app/managers/coach_marks/showcase_keys.dart';
 
 class RecentLessonsUIPage extends StatefulWidget {
   final bool latestOnly;

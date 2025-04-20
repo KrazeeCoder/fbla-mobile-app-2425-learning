@@ -3,12 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_keys.dart';
-import '../jsonUtility.dart';
+import '../managers/coach_marks/showcase_keys.dart';
+import '../utils/jsonUtility.dart';
 import '../utils/app_logger.dart';
-import '../widgets/subtopic_widget.dart';
+import 'subtopic_page.dart';
 import '../utils/game_launcher.dart';
-import '../coach_marks/showcase_provider.dart';
+import '../managers/coach_marks/showcase_provider.dart';
 
 class PathwayUI extends StatefulWidget {
   final int grade;

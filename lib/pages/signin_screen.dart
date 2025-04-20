@@ -8,9 +8,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'signup_screen.dart';
 import 'package:fbla_mobile_2425_learning_app/main.dart';
-import '/auth_utility.dart';
-import '/security.dart';
-import '../coach_marks/showcase_provider.dart';
+import '../services/auth_service.dart';
+import '../utils/security.dart';
+import '../managers/coach_marks/showcase_provider.dart';
 import '../utils/app_logger.dart';
 
 class SignInScreen extends StatefulWidget {

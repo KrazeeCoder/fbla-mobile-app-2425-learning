@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 
 class EarthWidget extends StatefulWidget {
   const EarthWidget({super.key});
@@ -45,7 +45,7 @@ class _EarthWidgetState extends State<EarthWidget>
   @override
   Widget build(BuildContext context) {
     // Get the current level from XPManager
-    final xpManager = Provider.of<XPManager>(context);
+    final xpManager = Provider.of<XPService>(context);
 
     if (xpManager.isLoading) {
       return const CircularProgressIndicator();

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_keys.dart';
+import '../managers/coach_marks/showcase_keys.dart';
 import 'navigation_chatbot.dart';
 
 class NavigationHelpPage extends StatefulWidget {

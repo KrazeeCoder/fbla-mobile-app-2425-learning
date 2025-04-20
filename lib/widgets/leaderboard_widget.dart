@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../utils/app_logger.dart';
-import '../services/friends_manager.dart';
+import '../services/friends_service.dart';
 import 'add_friend_dialog.dart';
 
 enum LeaderboardType { allTime, daily }
@@ -89,7 +89,7 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
     final currentUsername = currentUserData['username'] ?? 'You';
     final currentUserXp = currentUserData['currentXP'] ?? 0;
     final currentUserLevel =
-        await FriendsManager.calculateLevelFromXP(currentUserXp);
+        await FriendsService.calculateLevelFromXP(currentUserXp);
 
     List<LeaderboardEntry> leaderboard = [
       LeaderboardEntry(
@@ -102,7 +102,7 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
     ];
 
     // Get friends info using FriendsManager
-    final friendsInfo = await FriendsManager.getAllFriendsInfo();
+    final friendsInfo = await FriendsService.getAllFriendsInfo();
     for (var friend in friendsInfo) {
       leaderboard.add(LeaderboardEntry(
         userId: friend['uid'],
@@ -135,7 +135,7 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
     final currentUsername = currentUserData['username'] ?? 'You';
 
     int currentUserCompletedToday =
-        await FriendsManager.getFriendDailyActivity(_currentUserId!);
+        await FriendsService.getFriendDailyActivity(_currentUserId!);
 
     List<LeaderboardEntry> leaderboard = [
       LeaderboardEntry(
@@ -147,10 +147,10 @@ class _LeaderboardWidgetState extends State<LeaderboardWidget> {
     ];
 
     // Get friends info using FriendsManager
-    final friendsInfo = await FriendsManager.getAllFriendsInfo();
+    final friendsInfo = await FriendsService.getAllFriendsInfo();
     for (var friend in friendsInfo) {
       final friendCompletedToday =
-          await FriendsManager.getFriendDailyActivity(friend['uid']);
+          await FriendsService.getFriendDailyActivity(friend['uid']);
       leaderboard.add(LeaderboardEntry(
         userId: friend['uid'],
         displayName: friend['username'],

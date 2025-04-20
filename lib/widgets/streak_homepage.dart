@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../services/streak_manager.dart';
+import '../managers/streak_manager.dart';
 import '../utils/app_logger.dart';
-import 'dart:math' as math;
 
 class StreakHomepage extends StatefulWidget {
   final String userId;

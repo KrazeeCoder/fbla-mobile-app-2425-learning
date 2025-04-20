@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import '../pages/lesson_chatbot.dart';
+import 'lesson_chatbot.dart';
 import '../services/updateprogress.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart' as url_launcher;
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 import '../utils/app_logger.dart';
 import '../utils/subTopicNavigation.dart';
 import '../utils/game_launcher.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_keys.dart';
-import '../coach_marks/showcase_provider.dart';
-import '../providers/settings_provider.dart';
+import '../managers/coach_marks/showcase_keys.dart';
+import '../managers/coach_marks/showcase_provider.dart';
+import '../services/settings_service.dart';
 import 'dart:async';
 import '../widgets/earth_unlock_animation.dart';
 
@@ -117,7 +117,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
     final Color darkGreen = Colors.green.shade800;
 
     // Get the font size from settings provider
-    final settingsProvider = Provider.of<SettingsProvider>(context);
+    final settingsProvider = Provider.of<SettingsService>(context);
     final double contentFontSize =
         settingsProvider.isLoading ? 14.0 : settingsProvider.fontSize;
 
@@ -561,7 +561,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
 
     // Award XP and handle level up
     try {
-      final xpManager = Provider.of<XPManager>(context, listen: false);
+      final xpManager = Provider.of<XPService>(context, listen: false);
 
       // Set a timeout to ensure we don't hang forever
       // Reduced from 3 seconds to 1.5 seconds for faster response

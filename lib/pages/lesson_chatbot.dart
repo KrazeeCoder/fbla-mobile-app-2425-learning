@@ -4,8 +4,8 @@ import 'package:dash_chat_2/dash_chat_2.dart' hide MessageOptions;
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'dart:math';
 
-import '../ai_utility.dart';
-import '../jsonUtility.dart';
+import '../services/ai_services.dart';
+import '../utils/jsonUtility.dart';
 
 // Message data class for the chat
 class ChatMessageData {

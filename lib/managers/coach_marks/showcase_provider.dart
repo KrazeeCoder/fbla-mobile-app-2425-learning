@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../utils/app_logger.dart';
+import '../../utils/app_logger.dart';
 import 'showcase_keys.dart';
 
 class ShowcaseService extends ChangeNotifier {

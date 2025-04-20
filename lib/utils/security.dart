@@ -6,17 +6,17 @@ import 'package:pointycastle/export.dart';
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'getkeys.dart'; // Your ApiService and UserSession implementation
+import '../services/encryption_service.dart'; // Your EncryptionService and UserSession implementation
 
 // Set user keys after login
 Future<void> setLoginUserKeys(User user) async {
   String? token = await user.getIdToken();
-  final apiService = ApiService.instance;
+  final encryptionService = EncryptionService.instance;
 
   final requestBodyForKey = {'token': token};
 
   final encryptionKey =
-      await apiService.getEncryptionKeyfromVault(requestBodyForKey);
+      await encryptionService.getEncryptionKeyfromVault(requestBodyForKey);
 
   UserSession.instance.initialize(
     uid: user.uid,
