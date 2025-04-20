@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
 
   String _getEarthAssetPath(int level) {
     if (level <= 0) return 'assets/earths/1.svg';
-    if (level >= 1 && level <= 5) return 'assets/earths/$level.svg';
+    if (level >= 1 && level <= 15) return 'assets/earths/$level.svg';
     return 'assets/earths/5.svg';
   }
 
@@ -101,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                       )
                     : Builder(builder: (context) {
                         final currentLevel = xpManager.currentLevel;
-                        final totalEarthLevels = 5;
+                        final totalEarthLevels = 15;
                         final List<String> earthImages = List.generate(
                           totalEarthLevels,
                           (index) => _getEarthAssetPath(index + 1),
@@ -624,10 +624,6 @@ class _HomePageState extends State<HomePage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                   side: BorderSide(color: Colors.grey.shade200, width: 1),
-                ),
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: XPDebugControls(),
                 ),
               ),
             ),

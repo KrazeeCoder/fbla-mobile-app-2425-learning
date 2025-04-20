@@ -43,7 +43,9 @@ Future<void> launchRandomGame({
       'CypherUI',
       'QuizChallengeGame',
       'PuzzleScreen',
+      'MazeGame',
     ];
+
 
     // Add word scramble game for specific subjects
     if (subject.toLowerCase() == "history" ||
@@ -129,6 +131,21 @@ Future<void> launchRandomGame({
           userId: userId,
         );
         break;
+      case 'MazeGame':
+        gameWidget = MazeGame(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        );
+        break;
+
       default:
         // Fallback to quiz game if something goes wrong
         gameWidget = QuizChallengeGame(
