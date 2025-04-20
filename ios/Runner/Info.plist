@@ -81,6 +81,8 @@
   <string>fbauth2</string> 
 
     </array>
+ <key>NSMicrophoneUsageDescription</key>
+    <string>This app may request microphone access to support accessibility and future voice features.</string>
 
 </dict>
 </plist>
