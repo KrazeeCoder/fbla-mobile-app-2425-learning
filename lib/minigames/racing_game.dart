@@ -416,33 +416,39 @@ class _RacingGameState extends State<RacingGame> {
       body: Column(
         children: [
           // Game context information
-          Container(
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-            margin: const EdgeInsets.only(bottom: 4.0, right: 4, left: 4),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: Colors.blue.shade200),
-            ),
-            child: Row(
-              children: [
-                Icon(Icons.info_outline, color: Colors.blue.shade700, size: 18),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
+          // 🔹 Scrollable Top Info Bar
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0, bottom: 4.0),
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.3)),
+              ),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Icon(Icons.info_outline, color: Theme.of(context).primaryColor, size: 16),
+                    const SizedBox(width: 6),
+                    Text(
+                      "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
+                      style: TextStyle(
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                      softWrap: false,
                     ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
+
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(
@@ -769,7 +775,7 @@ class _RacingGameState extends State<RacingGame> {
           child: Text(
             label,
             style: TextStyle(
-              fontSize: 10,
+              fontSize: 10.5,
               fontWeight: FontWeight.bold,
               color: color,
             ),

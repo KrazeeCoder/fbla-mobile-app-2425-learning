@@ -369,52 +369,79 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          "Quiz Challenge",
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 30,
-            letterSpacing: 1.2,
-            color: Colors.indigo.shade800,
-          ),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 1,
-        actions: [
-          Container(
-            margin: const EdgeInsets.only(right: 16),
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.green.shade50,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: Colors.green.shade200,
-                width: 1,
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(80),
+        child: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 1,
+          automaticallyImplyLeading: false, // We’ll manually add the back button
+          flexibleSpace: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  // 👈 Back button
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.black),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+
+                  const SizedBox(width: 8),
+
+                  // Title + Spacer + Progress
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Quiz Challenge",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 26,
+                            letterSpacing: 1.2,
+                            color: Colors.indigo.shade800,
+                          ),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.green.shade200,
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.check_circle,
+                                color: Colors.green.shade800,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                "$correctAnswers/$requiredCorrectAnswers",
+                                style: TextStyle(
+                                  color: Colors.green.shade800,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Colors.green.shade800,
-                  size: 18,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  "$correctAnswers/$requiredCorrectAnswers",
-                  style: TextStyle(
-                    color: Colors.green.shade800,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
           ),
-        ],
+        ),
       ),
+
+
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -450,6 +477,39 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
                         child: IntrinsicHeight(
                           child: Column(
                             children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+                                  decoration: BoxDecoration(
+                                    color: Colors.indigo.shade50,
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    border: Border.all(color: Colors.indigo.shade200),
+                                  ),
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.info_outline, color: Colors.indigo.shade700, size: 16),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
+                                          style: TextStyle(
+                                            fontSize: 10.5,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.indigo.shade700,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: false,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+
+
                               _buildStatusBar(),
                               _buildScoreDisplay(),
                               _buildQuestionCard(),
