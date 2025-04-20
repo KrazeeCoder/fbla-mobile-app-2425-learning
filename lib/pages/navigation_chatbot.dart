@@ -403,7 +403,7 @@ class _NavigationChatbotState extends State<NavigationChatbot> {
                 ),
               ],
             ),
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
             child: Row(
               children: [
                 Expanded(
@@ -439,7 +439,7 @@ class _NavigationChatbotState extends State<NavigationChatbot> {
                       filled: true,
                       fillColor: Colors.grey.shade50,
                       contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 12),
+                          horizontal: 24, vertical: 14),
                     ),
                     textCapitalization: TextCapitalization.sentences,
                     onSubmitted: (text) {

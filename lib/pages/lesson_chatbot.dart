@@ -327,7 +327,7 @@ class _ChatbotScreenState extends State<ChatbotScreen> {
 
   Widget _buildInputField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, 20),
       decoration: BoxDecoration(
         color: Colors.white,
         boxShadow: [
