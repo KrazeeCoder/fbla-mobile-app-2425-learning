@@ -415,6 +415,34 @@ class _RacingGameState extends State<RacingGame> {
       ),
       body: Column(
         children: [
+          // Game context information
+          Container(
+            padding:
+                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+            margin: const EdgeInsets.only(bottom: 4.0, right: 4, left: 4),
+            decoration: BoxDecoration(
+              color: Colors.blue.shade50,
+              borderRadius: BorderRadius.circular(8.0),
+              border: Border.all(color: Colors.blue.shade200),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.info_outline, color: Colors.blue.shade700, size: 18),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+          ),
           const Padding(
             padding: EdgeInsets.all(8.0),
             child: Text(

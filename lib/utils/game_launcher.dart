@@ -94,6 +94,18 @@ Future<void> launchRandomGame({
         nextReadingContent: nextReadingContent,
         userId: userId,
       ),
+      PuzzleScreen(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicId: subtopicId,
+        subtopicTitle: subtopicTitle,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: userId,
+      )
     ];
 
     // Add word scramble game for specific subjects
@@ -136,7 +148,7 @@ Future<void> launchRandomGame({
 }
 
 /// Launches the puzzle game (used for showcase/tutorial flow)
-Future<void> launchPuzzleGame({
+Future<void> launchMazeGame({
   required BuildContext context,
   required String subject,
   required int grade,
@@ -164,7 +176,7 @@ Future<void> launchPuzzleGame({
 
   try {
     if (!localContext.mounted) {
-      AppLogger.e("Context not mounted in launchPuzzleGame");
+      AppLogger.e("Context not mounted in launchMazeGame");
       return;
     }
 
@@ -172,7 +184,7 @@ Future<void> launchPuzzleGame({
       localContext,
       MaterialPageRoute(
         builder: (context) => ShowCaseWidget(
-          builder: (context) => PuzzleScreen(
+          builder: (context) => MazeGame(
             subject: subject,
             grade: grade,
             unitId: unitId,
@@ -185,7 +197,7 @@ Future<void> launchPuzzleGame({
             userId: userId,
           ),
         ),
-        settings: const RouteSettings(name: 'Game_PuzzleScreen'),
+        settings: const RouteSettings(name: 'Game_MazeGame'),
       ),
     );
   } catch (e) {
@@ -271,6 +283,141 @@ Future<void> navigateToNextLesson({
       ScaffoldMessenger.of(localContext).showSnackBar(
         const SnackBar(
             content: Text("Unable to load next lesson. Please try again.")),
+      );
+    }
+  }
+}
+
+/// Launches a random game from the available game list based on subject
+Future<void> launchRandomGameFromPathway({
+  required BuildContext context,
+  required String subject,
+  required int grade,
+  required int unitId,
+  required String unitTitle,
+  required String subtopicId,
+  required String subtopicTitle,
+  required String nextSubtopicId,
+  required String nextSubtopicTitle,
+  required String nextReadingContent,
+  required String userId,
+}) async {
+  AppLogger.i("Launching Random Game");
+
+  // Store a local reference to context to avoid BuildContext issues
+  final BuildContext localContext = context;
+
+  // Play game start sound
+  try {
+    await AudioIntegration.handleGameStart();
+  } catch (e) {
+    AppLogger.e("Error playing game start sound, continuing: $e");
+    // Continue launching game even if sound fails
+  }
+
+  try {
+    if (!localContext.mounted) {
+      AppLogger.e("Context not mounted in launchRandomGame");
+      return;
+    }
+
+    final games = [
+      RacingGame(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicId: subtopicId,
+        subtopicTitle: subtopicTitle,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: userId,
+      ),
+      CypherUI(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicId: subtopicId,
+        subtopicTitle: subtopicTitle,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: userId,
+      ),
+      MazeGame(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicId: subtopicId,
+        subtopicTitle: subtopicTitle,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: userId,
+      ),
+      QuizChallengeGame(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicId: subtopicId,
+        subtopicTitle: subtopicTitle,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: userId,
+      ),
+      PuzzleScreen(
+        subject: subject,
+        grade: grade,
+        unitId: unitId,
+        unitTitle: unitTitle,
+        subtopicId: subtopicId,
+        subtopicTitle: subtopicTitle,
+        nextSubtopicId: nextSubtopicId,
+        nextSubtopicTitle: nextSubtopicTitle,
+        nextReadingContent: nextReadingContent,
+        userId: userId,
+      )
+    ];
+
+    // Add word scramble game for specific subjects
+    if (subject.toLowerCase() == "history" ||
+        subject.toLowerCase() == "english") {
+      games.add(
+        WordScrambleGame(
+          subject: subject,
+          grade: grade,
+          unitId: unitId,
+          unitTitle: unitTitle,
+          subtopicId: subtopicId,
+          subtopicTitle: subtopicTitle,
+          nextSubtopicId: nextSubtopicId,
+          nextSubtopicTitle: nextSubtopicTitle,
+          nextReadingContent: nextReadingContent,
+          userId: userId,
+        ),
+      );
+    }
+
+    games.shuffle();
+
+    // Use pushReplacement to avoid back navigation issues
+    Navigator.push(
+      localContext,
+      MaterialPageRoute(
+        builder: (context) => games.first,
+        settings: RouteSettings(name: 'Game_${games.first.runtimeType}'),
+      ),
+    );
+  } catch (e) {
+    AppLogger.e("Error launching game: $e");
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error launching game: $e")),
       );
     }
   }

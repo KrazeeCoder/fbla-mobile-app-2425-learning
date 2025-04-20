@@ -139,20 +139,22 @@ class _RecentLessonsTabWidgetState extends State<RecentLessonsTabWidget> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => SubtopicPage(
-          subtopic: lesson['title'] ?? 'Lesson',
-          subtopicId: lesson['id'] ?? '',
-          readingTitle: lesson['title'] ?? 'Lesson',
-          readingContent: lesson['reading'] ?? '',
-          isCompleted: lesson['isCompleted'] ?? false,
-          subject: lesson['subject'] ?? '',
-          grade: gradeNumber,
-          unitId: lesson['unitId'] ?? 0,
-          unitTitle: lesson['unit'] ?? '',
-          userId: FirebaseAuth.instance.currentUser?.uid ?? '',
-          lastSubtopicofUnit: false,
-          lastSubtopicofGrade: false,
-          lastSubtopicofSubject: false,
+        builder: (context) => ShowCaseWidget(
+          builder: (context) => SubtopicPage(
+            subtopic: lesson['title'] ?? 'Lesson',
+            subtopicId: lesson['id'] ?? '',
+            readingTitle: lesson['title'] ?? 'Lesson',
+            readingContent: lesson['reading'] ?? '',
+            isCompleted: lesson['isCompleted'] ?? false,
+            subject: lesson['subject'] ?? '',
+            grade: gradeNumber,
+            unitId: lesson['unitId'] ?? 0,
+            unitTitle: lesson['unit'] ?? '',
+            userId: FirebaseAuth.instance.currentUser?.uid ?? '',
+            lastSubtopicofUnit: false,
+            lastSubtopicofGrade: false,
+            lastSubtopicofSubject: false,
+          ),
         ),
       ),
     ).then((_) {

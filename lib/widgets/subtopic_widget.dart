@@ -354,7 +354,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
                               AppLogger.i("Launching Puzzle Game");
 
                               // For showcase/tutorial path: always use puzzle game with tutorial
-                              await launchPuzzleGame(
+                              await launchMazeGame(
                                 context: context,
                                 subject: widget.subject,
                                 grade: widget.grade,

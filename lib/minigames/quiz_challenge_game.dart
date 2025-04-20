@@ -58,7 +58,7 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
   int incorrectAnswers = 0;
   int streak = 0;
   int maxStreak = 0;
-  int timeLeft = 15;
+  int timeLeft = 20; // Increased from 15 to make it more player-friendly
   int requiredCorrectAnswers = 7;
   Timer? _timer;
   bool showFeedback = false;
@@ -68,25 +68,14 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
   late AnimationController _animationController;
   late Animation<double> _animation;
 
-  // New game variables
-  int coins = 0;
-  int powerUps = 0;
-  bool isPowerUpActive = false;
-  Timer? powerUpTimer;
-  int comboMultiplier = 1;
-  int timeBonus = 0;
-  List<String> availablePowerUps = [
-    'Time Freeze',
-    'Double Points',
-    'Skip Question'
-  ];
-  String? activePowerUp;
+  // Game score tracking
+  int score = 0;
+  late AnimationController _scoreController;
+  late Animation<double> _scoreAnimation;
 
   // Animation controllers for game effects
-  late AnimationController _powerUpController;
-  late Animation<double> _powerUpAnimation;
-  late AnimationController _comboController;
-  late Animation<double> _comboAnimation;
+  late AnimationController _feedbackController;
+  late Animation<double> _feedbackAnimation;
 
   List<Color> backgroundColors = [
     Colors.blue.shade50,
@@ -96,6 +85,7 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
     Colors.teal.shade50,
   ];
   int currentColorIndex = 0;
+  int consecutiveCorrect = 0;
 
   @override
   void initState() {
@@ -123,26 +113,26 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
       ),
     );
 
-    // Initialize power-up animation
-    _powerUpController = AnimationController(
+    // Initialize score animation
+    _scoreController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-    _powerUpAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+    _scoreAnimation = Tween<double>(begin: 1.0, end: 1.5).animate(
       CurvedAnimation(
-        parent: _powerUpController,
+        parent: _scoreController,
         curve: Curves.elasticOut,
       ),
     );
 
-    // Initialize combo animation
-    _comboController = AnimationController(
+    // Initialize feedback animation
+    _feedbackController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 300),
     );
-    _comboAnimation = Tween<double>(begin: 1.0, end: 1.5).animate(
+    _feedbackAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
       CurvedAnimation(
-        parent: _comboController,
+        parent: _feedbackController,
         curve: Curves.elasticOut,
       ),
     );
@@ -151,11 +141,10 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
   @override
   void dispose() {
     _timer?.cancel();
-    powerUpTimer?.cancel();
     _audioPlayer.dispose();
     _animationController.dispose();
-    _powerUpController.dispose();
-    _comboController.dispose();
+    _scoreController.dispose();
+    _feedbackController.dispose();
     super.dispose();
   }
 
@@ -210,7 +199,7 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
   void startTimer() {
     _timer?.cancel();
     setState(() {
-      timeLeft = 15;
+      timeLeft = 20; // Increased time
     });
 
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
@@ -230,6 +219,7 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
   void handleTimeout() {
     setState(() {
       streak = 0;
+      consecutiveCorrect = 0;
       incorrectAnswers++;
       showFeedback = true;
       isAnswerCorrect = false;
@@ -252,33 +242,40 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
 
       if (correct) {
         // Calculate score with bonuses
-        int baseScore = 100;
-        int streakBonus = streak * 10;
-        int timeBonus = timeLeft * 2;
-        int comboBonus = comboMultiplier * 50;
+        int basePoints = 100;
+        int streakBonus = streak * 20;
+        int timeBonus = timeLeft * 5;
 
-        int totalScore =
-            (baseScore + streakBonus + timeBonus) * comboMultiplier;
-        coins += totalScore;
+        int pointsEarned = basePoints + streakBonus + timeBonus;
+        score += pointsEarned;
 
         correctAnswers++;
         streak++;
+        consecutiveCorrect++;
+
         if (streak > maxStreak) {
           maxStreak = streak;
         }
+
         _animationController
             .forward()
             .then((_) => _animationController.reverse());
-        _comboController.forward().then((_) => _comboController.reverse());
+        _scoreController.forward().then((_) => _scoreController.reverse());
+        _feedbackController
+            .forward()
+            .then((_) => _feedbackController.reverse());
       } else {
         streak = 0;
-        comboMultiplier = 1;
+        consecutiveCorrect = 0;
         incorrectAnswers++;
+        _feedbackController
+            .forward()
+            .then((_) => _feedbackController.reverse());
       }
     });
 
-    // Wait 1.5 seconds before moving to next question
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    // Wait before moving to next question (longer for incorrect answers)
+    Future.delayed(Duration(milliseconds: correct ? 1200 : 1800), () {
       moveToNextQuestion();
     });
   }
@@ -369,48 +366,6 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
     }
   }
 
-  void activatePowerUp(String powerUp) {
-    if (powerUps <= 0) return;
-
-    setState(() {
-      powerUps--;
-      activePowerUp = powerUp;
-      isPowerUpActive = true;
-    });
-
-    switch (powerUp) {
-      case 'Time Freeze':
-        _timer?.cancel();
-        powerUpTimer = Timer(const Duration(seconds: 5), () {
-          setState(() {
-            isPowerUpActive = false;
-            activePowerUp = null;
-          });
-          startTimer();
-        });
-        break;
-      case 'Double Points':
-        comboMultiplier = 2;
-        powerUpTimer = Timer(const Duration(seconds: 10), () {
-          setState(() {
-            comboMultiplier = 1;
-            isPowerUpActive = false;
-            activePowerUp = null;
-          });
-        });
-        break;
-      case 'Skip Question':
-        moveToNextQuestion();
-        setState(() {
-          isPowerUpActive = false;
-          activePowerUp = null;
-        });
-        break;
-    }
-
-    _powerUpController.forward().then((_) => _powerUpController.reverse());
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -470,7 +425,22 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
         ),
         child: SafeArea(
           child: currentQuestion == null
-              ? const Center(child: CircularProgressIndicator())
+              ? const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 20),
+                      Text(
+                        "Loading Quiz Challenge...",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
               : LayoutBuilder(
                   builder: (context, constraints) {
                     return SingleChildScrollView(
@@ -481,11 +451,9 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
                           child: Column(
                             children: [
                               _buildStatusBar(),
-                              _buildPowerUpBar(),
+                              _buildScoreDisplay(),
                               _buildQuestionCard(),
-                              Expanded(
-                                  child:
-                                      _buildAnswerOptions()), // <- dynamic height
+                              Expanded(child: _buildAnswerOptions()),
                               if (showSuccess)
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 20),
@@ -551,6 +519,37 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
             ),
           ),
 
+          // Progress indicator
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.purple.shade50,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: Colors.purple.shade200,
+                width: 1.5,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.quiz,
+                  color: Colors.purple.shade800,
+                  size: 18,
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  "${currentQuestionIndex + 1}/${quizQuestions.length}",
+                  style: TextStyle(
+                    color: Colors.purple.shade800,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                  ),
+                ),
+              ],
+            ),
+          ),
+
           // Streak
           ScaleTransition(
             scale: _animation,
@@ -584,110 +583,84 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
               ),
             ),
           ),
-
-          // Score
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            decoration: BoxDecoration(
-              color: Colors.purple.shade50,
-              borderRadius: BorderRadius.circular(15),
-              border: Border.all(
-                color: Colors.purple.shade200,
-                width: 1.5,
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.score,
-                  color: Colors.purple.shade800,
-                  size: 18,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  "${correctAnswers - incorrectAnswers}",
-                  style: TextStyle(
-                    color: Colors.purple.shade800,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );
   }
 
-  Widget _buildPowerUpBar() {
+  Widget _buildScoreDisplay() {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.monetization_on,
-                    color: Colors.amber.shade800,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    "$coins",
-                    style: TextStyle(
-                      color: Colors.amber.shade800,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                  ),
-                ],
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+      child: ScaleTransition(
+        scale: _scoreAnimation,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.amber.shade50,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: Colors.amber.shade300,
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.amber.withOpacity(0.2),
+                blurRadius: 4,
+                offset: const Offset(0, 2),
               ),
-              if (isPowerUpActive)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(
-                    color: Colors.purple.shade100,
-                    borderRadius: BorderRadius.circular(15),
-                    border: Border.all(
-                      color: Colors.purple.shade300,
-                      width: 1,
+            ],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.stars,
+                color: Colors.amber.shade800,
+                size: 24,
+              ),
+              const SizedBox(width: 8),
+              Text(
+                "Score: $score",
+                style: TextStyle(
+                  color: Colors.amber.shade900,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
+              ),
+              if (consecutiveCorrect >= 3)
+                Row(
+                  children: [
+                    const SizedBox(width: 12),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: Colors.red.shade100,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: Colors.red.shade300),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.whatshot,
+                              color: Colors.red.shade700, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            "HOT STREAK!",
+                            style: TextStyle(
+                              color: Colors.red.shade800,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        _getPowerUpIcon(activePowerUp!),
-                        color: Colors.purple.shade800,
-                        size: 18,
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        activePowerUp!,
-                        style: TextStyle(
-                          color: Colors.purple.shade800,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  ),
+                  ],
                 ),
             ],
           ),
-          const SizedBox(height: 8),
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: availablePowerUps
-                  .map((powerUp) => _buildPowerUpButton(powerUp))
-                  .toList(),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -745,17 +718,21 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
                 ),
               ),
               const SizedBox(height: 10),
-              if (showFeedback)
+              // Timer hint text
+              if (!showFeedback)
                 Container(
-                  margin: const EdgeInsets.only(top: 10),
-                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.only(top: 4),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
                   decoration: BoxDecoration(
-                    color: isAnswerCorrect
-                        ? Colors.green.shade100
-                        : Colors.red.shade100,
-                    borderRadius: BorderRadius.circular(10),
+                    color: timeLeft <= 5
+                        ? Colors.red.shade50
+                        : Colors.blue.shade50,
+                    borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: isAnswerCorrect ? Colors.green : Colors.red,
+                      color: timeLeft <= 5
+                          ? Colors.red.shade300
+                          : Colors.blue.shade200,
                       width: 1,
                     ),
                   ),
@@ -763,20 +740,63 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        isAnswerCorrect ? Icons.check_circle : Icons.cancel,
-                        color: isAnswerCorrect ? Colors.green : Colors.red,
+                        Icons.timer_outlined,
+                        size: 16,
+                        color: timeLeft <= 5
+                            ? Colors.red.shade700
+                            : Colors.blue.shade700,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Text(
-                        isAnswerCorrect ? "Correct!" : "Incorrect!",
+                        "Answer before time runs out!",
                         style: TextStyle(
-                          color: isAnswerCorrect
-                              ? Colors.green.shade800
-                              : Colors.red.shade800,
-                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          color: timeLeft <= 5
+                              ? Colors.red.shade700
+                              : Colors.blue.shade700,
                         ),
                       ),
                     ],
+                  ),
+                ),
+              if (showFeedback)
+                ScaleTransition(
+                  scale: _feedbackAnimation,
+                  child: Container(
+                    margin: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: isAnswerCorrect
+                          ? Colors.green.shade100
+                          : Colors.red.shade100,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(
+                        color: isAnswerCorrect ? Colors.green : Colors.red,
+                        width: 1,
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          isAnswerCorrect ? Icons.check_circle : Icons.cancel,
+                          color: isAnswerCorrect ? Colors.green : Colors.red,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          isAnswerCorrect
+                              ? "Correct! +${streak * 20 + timeLeft * 5 + 100} points"
+                              : "Incorrect!",
+                          style: TextStyle(
+                            color: isAnswerCorrect
+                                ? Colors.green.shade800
+                                : Colors.red.shade800,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
             ],
@@ -916,56 +936,5 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
         ),
       ),
     );
-  }
-
-  Widget _buildPowerUpButton(String powerUp) {
-    return ScaleTransition(
-      scale: _powerUpAnimation,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 8),
-        child: ElevatedButton(
-          onPressed: () => activatePowerUp(powerUp),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.purple.shade100,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-              side: BorderSide(color: Colors.purple.shade300, width: 2),
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                _getPowerUpIcon(powerUp),
-                color: Colors.purple.shade800,
-                size: 20,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                powerUp,
-                style: TextStyle(
-                  color: Colors.purple.shade800,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  IconData _getPowerUpIcon(String powerUp) {
-    switch (powerUp) {
-      case 'Time Freeze':
-        return Icons.timer_off;
-      case 'Double Points':
-        return Icons.star;
-      case 'Skip Question':
-        return Icons.skip_next;
-      default:
-        return Icons.help;
-    }
   }
 }

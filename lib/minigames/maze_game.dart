@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_keys.dart';
 import '../xp_manager.dart';
 import '../utils/app_logger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -475,145 +477,174 @@ class _MazeGameState extends State<MazeGame> {
         _handleMazeCompletion();
       });
     }
+    final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Maze Quiz Game")),
-      body: Column(
-        children: [
-          const Padding(
-            padding: EdgeInsets.all(10),
-            child: Text(
-              "🔹 Start from outside and enter the maze!\n"
-              "🔹 Reach the red goal outside the maze.\n"
-              "🔹 Answer questions at blue checkpoints 🌍.\n"
-              "🔹 Use the arrows to move!",
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-          ),
-
-          // Game Grid (Maze)
-          Expanded(
-            child: GridView.builder(
-              padding: const EdgeInsets.all(10),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: mazeSize,
-              ),
-              itemCount: mazeSize * mazeSize,
-              itemBuilder: (context, index) {
-                int x = index ~/ mazeSize;
-                int y = index % mazeSize;
-
-                // Decide the color for each cell
-                Color tileColor;
-                if (x == playerX && y == playerY) {
-                  // Player tile
-                  tileColor = Colors.blue;
-                } else if (x == goalX && y == goalY) {
-                  // Goal tile
-                  tileColor = Colors.red;
-                } else if (maze[x][y] == 1) {
-                  // IMPASSABLE WALL (Now Grey)
-                  tileColor = Colors.grey[800]!;
-                } else if (answeredCheckpoints.contains("$x-$y")) {
-                  // Already answered checkpoint
-                  tileColor = Colors.green.withOpacity(0.5);
-                } else if (checkpoints[x][y]) {
-                  // Unanswered checkpoint
-                  tileColor = Colors.blue.withOpacity(0.7);
-                } else {
-                  // Normal open path
-                  tileColor = Colors.white;
-                }
-
-                return Container(
-                  margin: const EdgeInsets.all(2),
-                  decoration: BoxDecoration(
-                    color: tileColor,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: (checkpoints[x][y] &&
-                          !answeredCheckpoints.contains("$x-$y"))
-                      ? const Center(
-                          child: Icon(Icons.public, color: Colors.white))
-                      : null,
-                );
+      appBar: AppBar(
+        title: const Text("Maze Quiz Game"),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: theme.primaryColor,
+        leading: Builder(
+          builder: (BuildContext context) {
+            AppLogger.i(context.mounted.toString());
+            return Showcase(
+              key: ShowcaseKeys.backFromGameKey,
+              title: 'Return to Previous Screen',
+              description: 'Tap here to go back to the previous screen',
+              onTargetClick: () {
+                Navigator.pop(context);
               },
-            ),
-          ),
-
-          // Show Question Box instead of Arrows when active
-          if (showQuestion)
-            _buildQuestionBox()
-          else if (showSuccess)
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: GameSuccessMessage(
-                onNext: _goToNextLesson,
-                nextSubtopicId: widget.nextSubtopicId,
-                nextSubtopicTitle: widget.nextSubtopicTitle,
-                nextReadingContent: widget.nextReadingContent,
-                subject: widget.subject,
-                grade: widget.grade,
-                unitId: widget.unitId,
-                unitTitle: widget.unitTitle,
-                userId: widget.userId,
+              disposeOnTap: true,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),
               ),
-            )
-          else
-            // Show Arrow Controls when no question is active or game not completed
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: Container(
-                width: MediaQuery.of(context).size.width *
-                    0.7, // Smaller outer box
-                padding:
-                    const EdgeInsets.all(8), // Reduced padding for compact size
-                decoration: BoxDecoration(
-                  color: Colors.green[100], // Light green background
-                  borderRadius:
-                      BorderRadius.circular(15), // More elegant corners
-                  border: Border.all(color: Colors.black, width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 6,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text(
-                      "Use arrows to move", // Simplified instruction
-                      style: TextStyle(color: Colors.grey, fontSize: 14),
-                    ),
-                    const SizedBox(height: 5),
-
-                    // Up Arrow (Centered)
-                    _arrowButton(
-                        Icons.keyboard_arrow_up, () => _movePlayer(-1, 0)),
-
-                    // Left Arrow + Down Arrow + Right Arrow (Aligned)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _arrowButton(Icons.keyboard_arrow_left,
-                            () => _movePlayer(0, -1)),
-                        const SizedBox(width: 5), // Space between arrows
-                        _arrowButton(
-                            Icons.keyboard_arrow_down, () => _movePlayer(1, 0)),
-                        const SizedBox(width: 5),
-                        _arrowButton(Icons.keyboard_arrow_right,
-                            () => _movePlayer(0, 1)),
-                      ],
-                    ),
-                  ],
-                ),
+            );
+          },
+        ),
+      ),
+      body: Showcase(
+        key: ShowcaseKeys.gameContentKey,
+        title: 'Maze Game',
+        description: 'Navigate through the maze to reach the goal',
+        child: Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.all(10),
+              child: Text(
+                "🔹 Start from outside and enter the maze!\n"
+                "🔹 Reach the red goal outside the maze.\n"
+                "🔹 Answer questions at blue checkpoints 🌍.\n"
+                "🔹 Use the arrows to move!",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
-        ],
+
+            // Game Grid (Maze)
+            Expanded(
+              child: GridView.builder(
+                padding: const EdgeInsets.all(10),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: mazeSize,
+                ),
+                itemCount: mazeSize * mazeSize,
+                itemBuilder: (context, index) {
+                  int x = index ~/ mazeSize;
+                  int y = index % mazeSize;
+
+                  // Decide the color for each cell
+                  Color tileColor;
+                  if (x == playerX && y == playerY) {
+                    // Player tile
+                    tileColor = Colors.blue;
+                  } else if (x == goalX && y == goalY) {
+                    // Goal tile
+                    tileColor = Colors.red;
+                  } else if (maze[x][y] == 1) {
+                    // IMPASSABLE WALL (Now Grey)
+                    tileColor = Colors.grey[800]!;
+                  } else if (answeredCheckpoints.contains("$x-$y")) {
+                    // Already answered checkpoint
+                    tileColor = Colors.green.withOpacity(0.5);
+                  } else if (checkpoints[x][y]) {
+                    // Unanswered checkpoint
+                    tileColor = Colors.blue.withOpacity(0.7);
+                  } else {
+                    // Normal open path
+                    tileColor = Colors.white;
+                  }
+
+                  return Container(
+                    margin: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                      color: tileColor,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: (checkpoints[x][y] &&
+                            !answeredCheckpoints.contains("$x-$y"))
+                        ? const Center(
+                            child: Icon(Icons.public, color: Colors.white))
+                        : null,
+                  );
+                },
+              ),
+            ),
+
+            // Show Question Box instead of Arrows when active
+            if (showQuestion)
+              _buildQuestionBox()
+            else if (showSuccess)
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: GameSuccessMessage(
+                  onNext: _goToNextLesson,
+                  nextSubtopicId: widget.nextSubtopicId,
+                  nextSubtopicTitle: widget.nextSubtopicTitle,
+                  nextReadingContent: widget.nextReadingContent,
+                  subject: widget.subject,
+                  grade: widget.grade,
+                  unitId: widget.unitId,
+                  unitTitle: widget.unitTitle,
+                  userId: widget.userId,
+                ),
+              )
+            else
+              // Show Arrow Controls when no question is active or game not completed
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Container(
+                  width: MediaQuery.of(context).size.width *
+                      0.7, // Smaller outer box
+                  padding: const EdgeInsets.all(
+                      8), // Reduced padding for compact size
+                  decoration: BoxDecoration(
+                    color: Colors.green[100], // Light green background
+                    borderRadius:
+                        BorderRadius.circular(15), // More elegant corners
+                    border: Border.all(color: Colors.black, width: 1),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 6,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text(
+                        "Use arrows to move", // Simplified instruction
+                        style: TextStyle(color: Colors.grey, fontSize: 14),
+                      ),
+                      const SizedBox(height: 5),
+
+                      // Up Arrow (Centered)
+                      _arrowButton(
+                          Icons.keyboard_arrow_up, () => _movePlayer(-1, 0)),
+
+                      // Left Arrow + Down Arrow + Right Arrow (Aligned)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          _arrowButton(Icons.keyboard_arrow_left,
+                              () => _movePlayer(0, -1)),
+                          const SizedBox(width: 5), // Space between arrows
+                          _arrowButton(Icons.keyboard_arrow_down,
+                              () => _movePlayer(1, 0)),
+                          const SizedBox(width: 5),
+                          _arrowButton(Icons.keyboard_arrow_right,
+                              () => _movePlayer(0, 1)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }

@@ -57,6 +57,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   Map<int, String> answeredQuestions = {};
   Set<int> correctAnswers = {};
   late AnimationController _revealController;
+  late AnimationController _bounceController;
   final AudioPlayer _audioPlayer = AudioPlayer();
   Map<String, dynamic>? subtopicNav;
 
@@ -79,11 +80,17 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
+
+    _bounceController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat(reverse: true);
   }
 
   @override
   void dispose() {
     _revealController.dispose();
+    _bounceController.dispose();
     super.dispose();
   }
 
@@ -253,7 +260,27 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     if (quizQuestions.isEmpty) {
-      return const Center(child: CircularProgressIndicator());
+      return Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.indigo),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                "Loading Cipher Game...",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo.shade700,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
     }
 
     final currentQuestion = quizQuestions[currentQuestionIndex];
@@ -264,111 +291,329 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Cipher Game'), centerTitle: true),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text(
-                "Question ${currentQuestionIndex + 1} / ${quizQuestions.length}",
-                style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Row(
+      appBar: AppBar(
+        title: Text(
+          'Cipher Game',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            color: Colors.indigo,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 2,
+        centerTitle: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(15),
+          ),
+        ),
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Colors.indigo.shade50, Colors.white],
+          ),
+        ),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
               children: [
-                IconButton(
-                  onPressed: previousQuestion,
-                  icon: const Icon(Icons.arrow_left),
-                  iconSize: 36,
-                  color: Colors.blueAccent,
-                ),
-                Expanded(
-                  child: MultipleChoiceQuestion(
-                    key: ValueKey(currentQuestionIndex),
-                    question: currentQuestion["question"],
-                    options: List<String>.from(currentQuestion["answers"]),
-                    correctAnswer: currentQuestion["correct_answer"],
-                    selectedAnswer: answeredQuestions[currentQuestionIndex],
-                    previouslyAnswered:
-                        answeredQuestions.containsKey(currentQuestionIndex),
-                    isCorrectlyAnswered:
-                        correctAnswers.contains(currentQuestionIndex),
-                    onAnswerSelected: (answer) {
-                      if (!correctAnswers.contains(currentQuestionIndex)) {
-                        onAnswerSelected(currentQuestionIndex, answer);
-                      }
-                    },
-                    questionTextStyle: const TextStyle(fontSize: 16),
+                // Game context information
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 12.0),
+                  margin: const EdgeInsets.only(bottom: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.indigo.shade50,
+                    borderRadius: BorderRadius.circular(8.0),
+                    border: Border.all(color: Colors.indigo.shade200),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.indigo.withOpacity(0.1),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                ),
-                IconButton(
-                  onPressed: nextQuestion,
-                  icon: const Icon(Icons.arrow_right),
-                  iconSize: 36,
-                  color: Colors.blueAccent,
-                ),
-              ],
-            ),
-            const SizedBox(height: 30),
-            AnimatedBuilder(
-              animation: _revealController,
-              builder: (context, _) {
-                return Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: gameState.map((item) {
-                    return AnimatedOpacity(
-                      duration: const Duration(milliseconds: 300),
-                      opacity: item["revealed"] ? 1.0 : 0.3,
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: item["revealed"]
-                              ? Colors.green[400]
-                              : Colors.grey[700],
-                          borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            BoxShadow(blurRadius: 8, offset: Offset(0, 4))
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              item["revealed"] ? item["letter"] : "_",
-                              style: const TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              (item["questionIndex"] + 1).toString(),
-                              style: const TextStyle(
-                                  fontSize: 16, color: Colors.white),
-                            ),
-                          ],
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline,
+                          color: Colors.indigo.shade700, size: 18),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.indigo.shade700,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
+                    ],
+                  ),
+                ),
+
+                // Progress Indicator
+                Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        spreadRadius: 1,
+                        blurRadius: 3,
+                        offset: const Offset(0, 1),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        "Question ${currentQuestionIndex + 1} of ${quizQuestions.length}",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.indigo.shade700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      LinearProgressIndicator(
+                        value:
+                            (currentQuestionIndex + 1) / quizQuestions.length,
+                        backgroundColor: Colors.grey.shade200,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.indigo.shade500),
+                        borderRadius: BorderRadius.circular(10),
+                        minHeight: 8,
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Game instructions
+                if (!isGameCompleted)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.amber.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.amber.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.lightbulb_outline,
+                            color: Colors.amber.shade700),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            "Answer all questions correctly to reveal the secret word!",
+                            style: TextStyle(
+                              color: Colors.amber.shade900,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                // Cipher Display
+                AnimatedBuilder(
+                  animation: _bounceController,
+                  builder: (context, _) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 12,
+                        runSpacing: 12,
+                        children: gameState.map((item) {
+                          double elevationValue = item["revealed"]
+                              ? 4.0
+                              : 2.0 + (_bounceController.value * 2.0);
+                          return Material(
+                            elevation: elevationValue,
+                            borderRadius: BorderRadius.circular(12),
+                            color: item["revealed"]
+                                ? Colors.green.shade500
+                                : Colors.indigo.shade600,
+                            child: Container(
+                              width: 60,
+                              height: 80,
+                              padding: const EdgeInsets.all(12),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    item["revealed"] ? item["letter"] : "?",
+                                    style: TextStyle(
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      shadows: [
+                                        Shadow(
+                                          blurRadius: 2,
+                                          color: Colors.black.withOpacity(0.3),
+                                          offset: const Offset(1, 1),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 2,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withOpacity(0.9),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Text(
+                                      "#${(item["questionIndex"] + 1).toString()}",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.bold,
+                                        color: item["revealed"]
+                                            ? Colors.green.shade700
+                                            : Colors.indigo.shade700,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
                     );
-                  }).toList(),
-                );
-              },
+                  },
+                ),
+
+                // Question Area with Navigation
+                Expanded(
+                  child: Card(
+                    elevation: 4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          // Previous button
+                          IconButton(
+                            onPressed: previousQuestion,
+                            icon: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: currentQuestionIndex > 0
+                                    ? Colors.indigo.shade100
+                                    : Colors.grey.shade200,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.arrow_back_ios_rounded,
+                                size: 24,
+                                color: currentQuestionIndex > 0
+                                    ? Colors.indigo
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ),
+
+                          // Question content
+                          Expanded(
+                            child: SingleChildScrollView(
+                              child: MultipleChoiceQuestion(
+                                key: ValueKey(currentQuestionIndex),
+                                question: currentQuestion["question"],
+                                options: List<String>.from(
+                                    currentQuestion["answers"]),
+                                correctAnswer:
+                                    currentQuestion["correct_answer"],
+                                selectedAnswer:
+                                    answeredQuestions[currentQuestionIndex],
+                                previouslyAnswered: answeredQuestions
+                                    .containsKey(currentQuestionIndex),
+                                isCorrectlyAnswered: correctAnswers
+                                    .contains(currentQuestionIndex),
+                                onAnswerSelected: (answer) {
+                                  if (!correctAnswers
+                                      .contains(currentQuestionIndex)) {
+                                    onAnswerSelected(
+                                        currentQuestionIndex, answer);
+                                  }
+                                },
+                                questionTextStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Next button
+                          IconButton(
+                            onPressed: nextQuestion,
+                            icon: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: currentQuestionIndex <
+                                        quizQuestions.length - 1
+                                    ? Colors.indigo.shade100
+                                    : Colors.grey.shade200,
+                                shape: BoxShape.circle,
+                              ),
+                              child: Icon(
+                                Icons.arrow_forward_ios_rounded,
+                                size: 24,
+                                color: currentQuestionIndex <
+                                        quizQuestions.length - 1
+                                    ? Colors.indigo
+                                    : Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 16),
+
+                // Success Message
+                if (showSuccess)
+                  AnimatedOpacity(
+                    opacity: showSuccess ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 500),
+                    child: GameSuccessMessage(
+                      onNext: _goNextChapter,
+                      nextSubtopicId: widget.nextSubtopicId,
+                      nextSubtopicTitle: widget.nextSubtopicTitle,
+                      nextReadingContent: widget.nextReadingContent,
+                      subject: widget.subject,
+                      grade: widget.grade,
+                      unitId: widget.unitId,
+                      unitTitle: widget.unitTitle,
+                      userId: widget.userId,
+                    ),
+                  ),
+              ],
             ),
-            const SizedBox(height: 30),
-            if (showSuccess)
-              GameSuccessMessage(
-                onNext: _goNextChapter,
-                nextSubtopicId: widget.nextSubtopicId,
-                nextSubtopicTitle: widget.nextSubtopicTitle,
-                nextReadingContent: widget.nextReadingContent,
-                subject: widget.subject,
-                grade: widget.grade,
-                unitId: widget.unitId,
-                unitTitle: widget.unitTitle,
-                userId: widget.userId,
-              ),
-          ],
+          ),
         ),
       ),
     );
