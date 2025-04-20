@@ -40,7 +40,7 @@ class XPDebugControls extends StatelessWidget {
                   _buildXPButton(context, 10, Colors.green.shade200),
                   _buildXPButton(context, 50, Colors.blue.shade200),
                   _buildXPButton(context, 100, Colors.purple.shade200),
-                  _buildXPButton(context, 500, Colors.orange.shade200),
+                  _buildXPButton(context, 5, Colors.orange.shade200),
                 ],
               ),
 

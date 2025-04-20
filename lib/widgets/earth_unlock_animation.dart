@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:showcaseview/showcaseview.dart';
+import '../coach_marks/showcase_provider.dart';
 import '../utils/share/achievement_image_generator.dart';
 import '../linkedin_post.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,6 +15,7 @@ import '../utils/audio/audio_manager.dart';
 import '../utils/audio/audio_integration.dart';
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 const MethodChannel _channel = MethodChannel('instagram_story');
 
@@ -235,7 +238,23 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
 
                       Navigator.of(context).pushAndRemoveUntil(
                         MaterialPageRoute(
-                          builder: (context) => const MainPage(initialTab: 0),
+                          builder: (context) => ShowCaseWidget(
+                            builder: (context) => Builder(
+                              builder: (context) => const MainPage(),
+                            ),
+                            onStart: (index, key) {
+                              AppLogger.i(
+                                  "Showcase started with index: $index");
+                            },
+                            onComplete: (index, key) {
+                              if (index == null) {
+                                AppLogger.i("Showcase completed");
+                                Provider.of<ShowcaseService>(context,
+                                        listen: false)
+                                    .markShowcaseComplete();
+                              }
+                            },
+                          ),
                         ),
                         (route) => false,
                       );

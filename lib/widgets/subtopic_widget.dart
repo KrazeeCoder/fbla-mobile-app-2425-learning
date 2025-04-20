@@ -13,6 +13,8 @@ import 'package:showcaseview/showcaseview.dart';
 import '../coach_marks/showcase_keys.dart';
 import '../coach_marks/showcase_provider.dart';
 import '../providers/settings_provider.dart';
+import 'dart:async';
+import '../widgets/earth_unlock_animation.dart';
 
 class SubtopicPage extends StatefulWidget {
   final String subtopic;
@@ -379,25 +381,29 @@ class _SubtopicPageState extends State<SubtopicPage> {
                               if (user != null) {
                                 await _handleSubTopicCompletion(context);
 
-                                AppLogger.i("Launching Random Game");
+                                // If still mounted, launch the game
+                                if (mounted) {
+                                  AppLogger.i("Launching Random Game");
 
-                                // For normal gameplay: use random game without tutorial
-                                await launchRandomGame(
-                                  context: context,
-                                  subject: widget.subject,
-                                  grade: widget.grade,
-                                  unitId: widget.unitId,
-                                  unitTitle: widget.unitTitle,
-                                  subtopicId: widget.subtopicId,
-                                  subtopicTitle: widget.readingTitle,
-                                  nextSubtopicId:
-                                      subtopicNav?['nextSubtopicId'] ?? "",
-                                  nextSubtopicTitle:
-                                      subtopicNav?['nextReadingTitle'] ?? "",
-                                  nextReadingContent:
-                                      subtopicNav?['nextReadingContent'] ?? "",
-                                  userId: widget.userId,
-                                );
+                                  // For normal gameplay: use random game without tutorial
+                                  await launchRandomGame(
+                                    context: context,
+                                    subject: widget.subject,
+                                    grade: widget.grade,
+                                    unitId: widget.unitId,
+                                    unitTitle: widget.unitTitle,
+                                    subtopicId: widget.subtopicId,
+                                    subtopicTitle: widget.readingTitle,
+                                    nextSubtopicId:
+                                        subtopicNav?['nextSubtopicId'] ?? "",
+                                    nextSubtopicTitle:
+                                        subtopicNav?['nextReadingTitle'] ?? "",
+                                    nextReadingContent:
+                                        subtopicNav?['nextReadingContent'] ??
+                                            "",
+                                    userId: widget.userId,
+                                  );
+                                }
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -425,6 +431,10 @@ class _SubtopicPageState extends State<SubtopicPage> {
   }
 
   Future _handleSubTopicCompletion(BuildContext context) async {
+    // Create a completer to wait for potential level up animation
+    final levelUpCompleter = Completer();
+    bool levelUpHandled = false;
+
     setState(() {
       _isCompleted = true;
     });
@@ -450,33 +460,82 @@ class _SubtopicPageState extends State<SubtopicPage> {
       actionState: 'completed',
     );
 
-    _awardXPForCompletion(context);
-
-    return; // Ensure the method always returns a Future
-  }
-
-  void _awardXPForCompletion(BuildContext context) {
+    // Award XP and handle level up
     try {
       final xpManager = Provider.of<XPManager>(context, listen: false);
-      xpManager.addXP(5, onLevelUp: (newLevel) {
-        AppLogger.i('added xp');
-        showEarthUnlockedAnimation(
-            context, newLevel, widget.subject, widget.subtopic);
+
+      // Set a timeout to ensure we don't hang forever
+      Future.delayed(const Duration(seconds: 300), () {
+        if (!levelUpHandled && !levelUpCompleter.isCompleted) {
+          levelUpHandled = true;
+          levelUpCompleter.complete();
+          AppLogger.i("No level up detected, continuing");
+        }
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('+ 5 XP earned!'),
-          backgroundColor: Colors.green,
-          duration: const Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating,
-          margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        ),
-      );
+      xpManager.addXP(5, onLevelUp: (newLevel) {
+        AppLogger.i('Player leveled up to $newLevel');
+
+        // Show the Earth unlock animation
+        if (mounted) {
+          try {
+            // Store current context for animation
+            final BuildContext currentContext = context;
+
+            // Show earth animation
+            EarthUnlockAnimation.show(
+              currentContext,
+              newLevel,
+              widget.subject,
+              widget.subtopic,
+              xpManager.currentXP,
+            );
+
+            // Mark that we're handling the level up
+            levelUpHandled = true;
+
+            // Add a delay to wait for animation to complete
+            Future.delayed(const Duration(seconds: 3), () {
+              if (!levelUpCompleter.isCompleted) {
+                levelUpCompleter.complete();
+              }
+            });
+          } catch (e) {
+            AppLogger.e("Error showing level up animation: $e");
+            if (!levelUpCompleter.isCompleted) {
+              levelUpCompleter.complete();
+            }
+          }
+        } else {
+          if (!levelUpCompleter.isCompleted) {
+            levelUpCompleter.complete();
+          }
+        }
+      });
+
+      // Show quick XP toast
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('+ 5 XP earned!'),
+            backgroundColor: Colors.green,
+            duration: const Duration(seconds: 1),
+            behavior: SnackBarBehavior.floating,
+            margin: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
+        );
+      }
     } catch (e) {
       AppLogger.e('Error awarding XP: $e');
+      if (!levelUpCompleter.isCompleted) {
+        levelUpCompleter.complete();
+      }
     }
+
+    // Wait for any level-up animation to complete before returning
+    await levelUpCompleter.future;
+    return;
   }
 }
