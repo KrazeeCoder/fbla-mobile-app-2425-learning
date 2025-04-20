@@ -183,7 +183,26 @@ class _LearnPageState extends State<LearnPage>
                             child: Showcase(
                               key: ShowcaseKeys.recentLessonTabKey,
                               title: 'Recent Lessons',
-                              description: 'View your recent lessons here.',
+                              description:
+                                  'View and continue your recent learning activities here. Quickly pick up where you left off!',
+                              titleTextStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 18.0,
+                              ),
+                              descTextStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0,
+                              ),
+                              tooltipBackgroundColor: Colors.green.shade700,
+                              overlayColor: Colors.black,
+                              overlayOpacity: 0.7,
+                              tooltipPadding: const EdgeInsets.all(16.0),
+                              targetPadding: const EdgeInsets.all(8.0),
+                              targetShapeBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              tooltipBorderRadius: BorderRadius.circular(10.0),
                               child: Center(
                                 child: Padding(
                                   padding:
@@ -224,8 +243,27 @@ class _LearnPageState extends State<LearnPage>
                             onTap: () => _switchTab(1),
                             child: Showcase(
                               key: ShowcaseKeys.chooseLessonTabKey,
-                              title: 'Choose Your Lesson',
-                              description: 'Choose your lesson here.',
+                              title: 'Browse Lessons',
+                              description:
+                                  'Explore all available subjects and grades. Find new learning material and expand your knowledge!',
+                              titleTextStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 18.0,
+                              ),
+                              descTextStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0,
+                              ),
+                              tooltipBackgroundColor: Colors.green.shade700,
+                              overlayColor: Colors.black,
+                              overlayOpacity: 0.7,
+                              tooltipPadding: const EdgeInsets.all(16.0),
+                              targetPadding: const EdgeInsets.all(8.0),
+                              targetShapeBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              tooltipBorderRadius: BorderRadius.circular(10.0),
                               onTargetClick: () {
                                 _switchTab(1);
                               },

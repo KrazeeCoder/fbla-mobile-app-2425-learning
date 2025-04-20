@@ -225,8 +225,27 @@ class _SettingsPageState extends State<SettingsPage> {
           ? const Center(child: CircularProgressIndicator())
           : Showcase(
               key: ShowcaseKeys.settingsScreenKey,
-              title: 'Settings',
-              description: 'This is the settings screen',
+              title: 'Settings & Preferences',
+              description:
+                  'Customize your app experience here! Update your profile, adjust learning preferences, and manage your account settings.',
+              titleTextStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 18.0,
+              ),
+              descTextStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 14.0,
+              ),
+              tooltipBackgroundColor: Colors.green.shade700,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.7,
+              tooltipPadding: const EdgeInsets.all(16.0),
+              targetPadding: const EdgeInsets.all(8.0),
+              targetShapeBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              tooltipBorderRadius: BorderRadius.circular(10.0),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import '../coach_marks/showcase_keys.dart';
 import '../jsonUtility.dart';
+import '../utils/app_logger.dart';
 import '../widgets/subtopic_widget.dart';
 import '../utils/game_launcher.dart';
 import '../coach_marks/showcase_provider.dart';
@@ -489,9 +490,27 @@ class _PathwayUIState extends State<PathwayUI> {
       key: key,
       child: Showcase(
         key: ShowcaseKeys.pathwayStepKey,
-        title: 'Pathway Step',
+        title: 'Learning Pathway Step',
         description:
-            'Tap here to view the lesson content or start the practice game.',
+            'This is your learning journey! Tap on any step to access lessons or practice games for that topic.',
+        titleTextStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+          fontSize: 18.0,
+        ),
+        descTextStyle: const TextStyle(
+          color: Colors.white,
+          fontSize: 14.0,
+        ),
+        tooltipBackgroundColor: Colors.green.shade700,
+        overlayColor: Colors.black,
+        overlayOpacity: 0.7,
+        tooltipPadding: const EdgeInsets.all(16.0),
+        targetPadding: const EdgeInsets.all(8.0),
+        targetShapeBorder: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        tooltipBorderRadius: BorderRadius.circular(10.0),
         onTargetClick: () {
           _handleStepTap(context, step, allSteps, title, isCompleted);
         },
@@ -674,6 +693,72 @@ class _PathwayUIState extends State<PathwayUI> {
     );
   }
 
+  // 🆕 Helper function to build the FAB
+  FloatingActionWidget _buildShowcaseFab(BuildContext fabContext) {
+    return FloatingActionWidget(
+        left: 130,
+        top: 24,
+        width: 135, // Increased width for better visibility
+        height: 36, // Increased height for better tap target
+        child: Material(
+          elevation: 4,
+          color: Colors.transparent,
+          shadowColor: Colors.black45,
+          borderRadius: BorderRadius.circular(25),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.green.shade700, Colors.green.shade500],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                )
+              ],
+            ),
+            child: InkWell(
+              onTap: () {
+                // Dismiss the showcase
+                ShowCaseWidget.of(fabContext).dismiss();
+                // Mark as complete in the service
+                Provider.of<ShowcaseService>(fabContext, listen: false)
+                    .markShowcaseComplete();
+                AppLogger.i("Showcase dismissed and marked complete by FAB");
+              },
+              borderRadius: BorderRadius.circular(25),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.skip_next_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Skip Tutorial',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ));
+  }
+
   Widget _buildTypeBadge(bool isSubtopic) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
@@ -746,6 +831,8 @@ class _PathwayUIState extends State<PathwayUI> {
           context,
           MaterialPageRoute(
             builder: (context) => ShowCaseWidget(
+              globalFloatingActionWidget:
+                  _buildShowcaseFab as FloatingActionBuilderCallback?,
               builder: (context) => SubtopicPage(
                 subtopic: title,
                 subtopicId: step["subId"] ?? "",

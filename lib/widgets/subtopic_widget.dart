@@ -122,9 +122,42 @@ class _SubtopicPageState extends State<SubtopicPage> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => Navigator.of(context).pop(),
+        leading: Builder(
+          builder: (BuildContext context) {
+            AppLogger.i(context.mounted.toString());
+            return Showcase(
+              key: ShowcaseKeys.backButtonKey,
+              title: 'Return to Pathway',
+              description:
+                  'Tap here to go back to the pathway screen and view your learning progress',
+              titleTextStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 18.0,
+              ),
+              descTextStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 14.0,
+              ),
+              tooltipBackgroundColor: Colors.green.shade700,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.7,
+              tooltipPadding: const EdgeInsets.all(16.0),
+              targetPadding: const EdgeInsets.all(8.0),
+              targetShapeBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              tooltipBorderRadius: BorderRadius.circular(10.0),
+              onTargetClick: () {
+                Navigator.pop(context);
+              },
+              disposeOnTap: true,
+              child: IconButton(
+                icon: const Icon(Icons.arrow_back_ios_new),
+                onPressed: () => Navigator.of(context).pop(),
+              ),
+            );
+          },
         ),
         title: Text(widget.subtopic),
         backgroundColor: primaryGreen,
@@ -191,7 +224,25 @@ class _SubtopicPageState extends State<SubtopicPage> {
                     key: ShowcaseKeys.contentKey,
                     title: 'Lesson Content',
                     description:
-                        'Read through the lesson material here. Content follows Common Core Standards.',
+                        'Read through this educational material that follows Common Core Standards. Scroll down to view all content.',
+                    titleTextStyle: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      fontSize: 18.0,
+                    ),
+                    descTextStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.0,
+                    ),
+                    tooltipBackgroundColor: Colors.green.shade700,
+                    overlayColor: Colors.black,
+                    overlayOpacity: 0.7,
+                    tooltipPadding: const EdgeInsets.all(16.0),
+                    targetPadding: const EdgeInsets.all(8.0),
+                    targetShapeBorder: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    tooltipBorderRadius: BorderRadius.circular(10.0),
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -322,7 +373,25 @@ class _SubtopicPageState extends State<SubtopicPage> {
                         key: ShowcaseKeys.chatIconKey,
                         title: 'Ask EarthPal',
                         description:
-                            'Need help understanding? Tap here to ask our AI assistant, EarthPal.',
+                            'Need help understanding the lesson? Tap here to chat with our AI assistant for personalized explanations.',
+                        titleTextStyle: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          fontSize: 18.0,
+                        ),
+                        descTextStyle: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14.0,
+                        ),
+                        tooltipBackgroundColor: Colors.green.shade700,
+                        overlayColor: Colors.black,
+                        overlayOpacity: 0.7,
+                        tooltipPadding: const EdgeInsets.all(16.0),
+                        targetPadding: const EdgeInsets.all(8.0),
+                        targetShapeBorder: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        tooltipBorderRadius: BorderRadius.circular(10.0),
                         child: FloatingActionButton(
                           onPressed: () {
                             Navigator.push(
@@ -345,35 +414,25 @@ class _SubtopicPageState extends State<SubtopicPage> {
                           key: ShowcaseKeys.continueToPracticeKey,
                           title: 'Continue to Practice',
                           description:
-                              'Finished reading? Tap here to mark as complete and practice with a mini-game!',
-                          disposeOnTap: true,
-                          onTargetClick: () async {
-                            final user = FirebaseAuth.instance.currentUser;
-
-                            if (user != null) {
-                              await _handleSubTopicCompletion(context);
-
-                              AppLogger.i("Launching Puzzle Game");
-
-                              // For showcase/tutorial path: always use puzzle game with tutorial
-                              await launchMazeGame(
-                                context: context,
-                                subject: widget.subject,
-                                grade: widget.grade,
-                                unitId: widget.unitId,
-                                unitTitle: widget.unitTitle,
-                                subtopicId: widget.subtopicId,
-                                subtopicTitle: widget.readingTitle,
-                                nextSubtopicId:
-                                    subtopicNav?['nextSubtopicId'] ?? "",
-                                nextSubtopicTitle:
-                                    subtopicNav?['nextReadingTitle'] ?? "",
-                                nextReadingContent:
-                                    subtopicNav?['nextReadingContent'] ?? "",
-                                userId: widget.userId,
-                              );
-                            }
-                          },
+                              'Ready to test your knowledge? Tap here to mark this lesson complete and practice what you\'ve learned with an interactive mini-game!',
+                          titleTextStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18.0,
+                          ),
+                          descTextStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                          ),
+                          tooltipBackgroundColor: Colors.green.shade700,
+                          overlayColor: Colors.black,
+                          overlayOpacity: 0.7,
+                          tooltipPadding: const EdgeInsets.all(16.0),
+                          targetPadding: const EdgeInsets.all(8.0),
+                          targetShapeBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          tooltipBorderRadius: BorderRadius.circular(10.0),
                           child: ElevatedButton(
                             onPressed: () async {
                               final user = FirebaseAuth.instance.currentUser;

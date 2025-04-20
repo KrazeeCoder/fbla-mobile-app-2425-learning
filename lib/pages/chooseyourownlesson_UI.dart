@@ -579,9 +579,28 @@ class _ChooseLessonUIPageState extends State<ChooseLessonUIPage>
                               if (index == 0) {
                                 return Showcase(
                                   key: ShowcaseKeys.selectGradeKey,
-                                  title: 'Select a Grade',
+                                  title: 'Choose Your Grade Level',
                                   description:
-                                      'Tap on any grade to start learning that curriculum.',
+                                      'Select the grade level you want to learn. Each grade contains subject-specific lessons tailored to your learning journey.',
+                                  titleTextStyle: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 18.0,
+                                  ),
+                                  descTextStyle: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14.0,
+                                  ),
+                                  tooltipBackgroundColor: Colors.green.shade700,
+                                  overlayColor: Colors.black,
+                                  overlayOpacity: 0.7,
+                                  tooltipPadding: const EdgeInsets.all(16.0),
+                                  targetPadding: const EdgeInsets.all(8.0),
+                                  targetShapeBorder: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12.0),
+                                  ),
+                                  tooltipBorderRadius:
+                                      BorderRadius.circular(10.0),
                                   child: gradeCard,
                                   disposeOnTap: true,
                                   onTargetClick: () {

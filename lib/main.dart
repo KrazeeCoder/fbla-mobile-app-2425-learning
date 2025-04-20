@@ -191,32 +191,65 @@ class _AuthWrapperState extends State<AuthWrapper> {
   // 🆕 Helper function to build the FAB
   FloatingActionWidget _buildShowcaseFab(BuildContext fabContext) {
     return FloatingActionWidget(
-        left: 20,
-        top: 20,
-        width: 60,
-        height: 30,
-        child: FloatingActionButton(
-          onPressed: () {
-            // Dismiss the showcase
-            ShowCaseWidget.of(fabContext).dismiss();
-            // Mark as complete in the service
-            Provider.of<ShowcaseService>(fabContext, listen: false)
-                .markShowcaseComplete();
-            AppLogger.i("Showcase dismissed and marked complete by FAB");
-          },
-          tooltip: 'Skip Tutorial',
-          mini: true, // Optional: make it smaller
-          backgroundColor: Colors.green,
-          foregroundColor: Colors.white,
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.skip_next_rounded, size: 18),
-              SizedBox(width: 2),
-              Text('Skip',
-                  style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-            ],
+        left: 130,
+        top: 24,
+        width: 135, // Increased width for better visibility
+        height: 36, // Increased height for better tap target
+        child: Material(
+          elevation: 4,
+          color: Colors.transparent,
+          shadowColor: Colors.black45,
+          borderRadius: BorderRadius.circular(25),
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.green.shade700, Colors.green.shade500],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  blurRadius: 4,
+                  offset: const Offset(0, 2),
+                )
+              ],
+            ),
+            child: InkWell(
+              onTap: () {
+                // Dismiss the showcase
+                ShowCaseWidget.of(fabContext).dismiss();
+                // Mark as complete in the service
+                Provider.of<ShowcaseService>(fabContext, listen: false)
+                    .markShowcaseComplete();
+                AppLogger.i("Showcase dismissed and marked complete by FAB");
+              },
+              borderRadius: BorderRadius.circular(25),
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.skip_next_rounded,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 4),
+                    Text(
+                      'Skip Tutorial',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
         ));
   }
@@ -337,6 +370,18 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _selectedIndex = index;
       AppLogger.i("Selected index: $_selectedIndex");
+
+      // If navigating to home tab (index 0), check if we need to complete the tutorial
+      if (index == 0) {
+        AppLogger.i("Navigating to home tab");
+        // Check if the tutorial is flagged as ready to complete
+        final showcaseService =
+            Provider.of<ShowcaseService>(context, listen: false);
+        if (showcaseService.completeTutorialPending) {
+          // Complete the tutorial when returning to home screen
+          showcaseService.checkAndCompleteTutorial();
+        }
+      }
     });
   }
 
@@ -353,11 +398,27 @@ class _MainPageState extends State<MainPage> {
         BottomNavigationBarItem(
           icon: Showcase(
             key: ShowcaseKeys.homeNavKey,
-            title: 'Home',
-            description: 'Return to the main home screen.',
-            child: const Icon(Icons.home),
+            title: 'Home Tab',
+            description:
+                'Return to the main home screen with all your learning stats and recent lessons.',
+            titleTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
+            descTextStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+            tooltipBackgroundColor: Colors.green.shade700,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.7,
+            tooltipPadding: const EdgeInsets.all(16.0),
             targetPadding:
                 EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
+            targetShapeBorder: const CircleBorder(),
+            tooltipBorderRadius: BorderRadius.circular(10.0),
+            child: const Icon(Icons.home),
             onTargetClick: () {
               _onItemTapped(0);
             },
@@ -368,11 +429,27 @@ class _MainPageState extends State<MainPage> {
         BottomNavigationBarItem(
           icon: Showcase(
             key: ShowcaseKeys.learnNavKey,
-            title: 'Learn',
-            description: 'Access new lessons and review recent topics here.',
-            child: const Icon(Icons.menu_book),
+            title: 'Learn Tab',
+            description:
+                'Tap here to explore new lessons and subjects. This is where your learning journey begins!',
+            titleTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
+            descTextStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+            tooltipBackgroundColor: Colors.green.shade700,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.7,
+            tooltipPadding: const EdgeInsets.all(16.0),
             targetPadding:
                 EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
+            targetShapeBorder: const CircleBorder(),
+            tooltipBorderRadius: BorderRadius.circular(10.0),
+            child: const Icon(Icons.menu_book),
             onTargetClick: () {
               _onItemTapped(1);
               final showcaseService =
@@ -388,11 +465,27 @@ class _MainPageState extends State<MainPage> {
         BottomNavigationBarItem(
           icon: Showcase(
             key: ShowcaseKeys.progressNavKey,
-            title: 'Progress',
-            description: 'Track your learning streaks and overall progress.',
-            child: const Icon(Icons.bar_chart),
+            title: 'Progress Tab',
+            description:
+                'Monitor your learning journey! View your activity streaks, achievements, and completed lessons here.',
+            titleTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
+            descTextStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+            tooltipBackgroundColor: Colors.green.shade700,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.7,
+            tooltipPadding: const EdgeInsets.all(16.0),
             targetPadding:
                 EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
+            targetShapeBorder: const CircleBorder(),
+            tooltipBorderRadius: BorderRadius.circular(10.0),
+            child: const Icon(Icons.bar_chart),
             onTargetClick: () {
               _onItemTapped(2);
               final showcaseService =
@@ -408,8 +501,26 @@ class _MainPageState extends State<MainPage> {
         BottomNavigationBarItem(
           icon: Showcase(
             key: ShowcaseKeys.settingsNavKey,
-            title: 'Settings',
-            description: 'Adjust app settings and manage your profile.',
+            title: 'Settings Tab',
+            description:
+                'Personalize your learning experience! Adjust app settings, manage your profile, and customize preferences here.',
+            titleTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
+            descTextStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+            tooltipBackgroundColor: Colors.green.shade700,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.7,
+            tooltipPadding: const EdgeInsets.all(16.0),
+            targetPadding:
+                EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 25),
+            targetShapeBorder: const CircleBorder(),
+            tooltipBorderRadius: BorderRadius.circular(10.0),
             child: const Icon(Icons.settings),
             onTargetClick: () {
               _onItemTapped(3);

@@ -7,9 +7,12 @@ import 'showcase_keys.dart';
 class ShowcaseService extends ChangeNotifier {
   bool _hasCompletedInitialShowcase = false;
   bool _isShowcaseActive = false;
+  bool _completeTutorialPending =
+      false; // Flag to indicate tutorial completion is pending
 
   bool get hasCompletedInitialShowcase => _hasCompletedInitialShowcase;
   bool get isShowcaseActive => _isShowcaseActive;
+  bool get completeTutorialPending => _completeTutorialPending;
 
   // Key for shared preferences
   static const String _showcaseCompletedKey = 'showcase_completed';
@@ -18,6 +21,7 @@ class ShowcaseService extends ChangeNotifier {
   Future<void> initialize() async {
     final prefs = await SharedPreferences.getInstance();
     _hasCompletedInitialShowcase = prefs.getBool(_showcaseCompletedKey) ?? true;
+    _completeTutorialPending = false;
     notifyListeners();
   }
 
@@ -25,15 +29,37 @@ class ShowcaseService extends ChangeNotifier {
   Future<void> markShowcaseComplete() async {
     _hasCompletedInitialShowcase = true;
     _isShowcaseActive = false;
+    _completeTutorialPending = false;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_showcaseCompletedKey, true);
     notifyListeners();
+    AppLogger.i("markshowcasecompleted called");
+  }
+
+  // Flag the tutorial as ready to be completed when user returns to home screen
+  void markTutorialReadyToComplete() {
+    if (!_hasCompletedInitialShowcase) {
+      _completeTutorialPending = true;
+      notifyListeners();
+      AppLogger.i(
+          "Tutorial marked as ready to complete when user returns to home");
+    }
+  }
+
+  // Check and mark tutorial as complete if flagged and user is on home screen
+  void checkAndCompleteTutorial() {
+    if (_completeTutorialPending && !_hasCompletedInitialShowcase) {
+      AppLogger.i(
+          "Completing tutorial as user has returned to home after pathway to progress");
+      markShowcaseComplete();
+    }
   }
 
   // Reset showcase (for testing)
   Future<void> resetShowcase() async {
     _hasCompletedInitialShowcase = false;
     _isShowcaseActive = false;
+    _completeTutorialPending = false;
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_showcaseCompletedKey, false);
     notifyListeners();
@@ -128,6 +154,12 @@ class ShowcaseService extends ChangeNotifier {
     notifyListeners();
     safeStartShowcase(
         context, ShowcaseKeys.getPathwayToProgressScreenShowcaseKeys());
+
+    // This is the last step of the tutorial flow, so flag it as ready to complete
+    // We don't mark it completed yet because we want it to be marked when the user returns to home
+    markTutorialReadyToComplete();
+    AppLogger.i(
+        "Pathway to Progress showcase requested - final step of tutorial");
   }
 
   // Start Progress screen showcase

@@ -34,6 +34,8 @@ class ShowcaseKeys {
   static final GlobalKey chatIconKey = GlobalKey(debugLabel: 'chat_icon_key');
   static final GlobalKey continueToPracticeKey =
       GlobalKey(debugLabel: 'continue_to_practice_key');
+  static final GlobalKey backButtonKey =
+      GlobalKey(debugLabel: 'back_button_key');
 
   // practice screen keys
   static final GlobalKey gameContentKey =
@@ -77,6 +79,7 @@ class ShowcaseKeys {
         contentKey, // content in subtopic screen
         chatIconKey, // chat icon in subtopic screen
         continueToPracticeKey, // continue to practice button in subtopic screen
+        backButtonKey, // back button in subtopic screen
       ];
 
   static List<GlobalKey> getGameScreenShowcaseKeys() => [

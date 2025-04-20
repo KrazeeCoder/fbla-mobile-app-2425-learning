@@ -174,7 +174,24 @@ class _CustomAppBarState extends State<CustomAppBar>
           Showcase(
             key: ShowcaseKeys.audioIconKey,
             title: 'Sound Controls',
-            description: 'Toggle app sounds and music on or off',
+            description:
+                'Toggle app sounds and music on or off with this button. Sound enhances your learning experience!',
+            titleTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
+            descTextStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+            tooltipBackgroundColor: Colors.green.shade700,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.7,
+            tooltipPadding: const EdgeInsets.all(16.0),
+            targetPadding: const EdgeInsets.all(8.0),
+            targetShapeBorder: const CircleBorder(),
+            tooltipBorderRadius: BorderRadius.circular(10.0),
             child: IconButton(
               icon: AnimatedCrossFade(
                 firstChild: const Icon(
@@ -198,9 +215,27 @@ class _CustomAppBarState extends State<CustomAppBar>
           const SizedBox(width: 8),
           Showcase(
             key: ShowcaseKeys.helpIconKey,
-            title: 'Help',
+            title: 'Need Help?',
             description:
-                'Use the help button to get help with navigating WorldWise',
+                'Access helpful tips and guides about the app. Tap here anytime you need assistance with navigating WorldWise.',
+            titleTextStyle: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              fontSize: 18.0,
+            ),
+            descTextStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14.0,
+            ),
+            tooltipBackgroundColor: Colors.green.shade700,
+            overlayColor: Colors.black,
+            overlayOpacity: 0.7,
+            tooltipPadding: const EdgeInsets.all(16.0),
+            targetPadding: const EdgeInsets.all(8.0),
+            targetShapeBorder: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            tooltipBorderRadius: BorderRadius.circular(10.0),
             child: TextButton(
               onPressed: () {
                 // Apply haptic feedback for navigation

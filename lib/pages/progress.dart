@@ -124,8 +124,27 @@ class _ProgressPageState extends State<ProgressPage>
                         // Streak and Stats Cards
                         Showcase(
                           key: ShowcaseKeys.progressStatsKey,
-                          title: 'Streak and Stats',
-                          description: 'This is the streak and stats card',
+                          title: 'Your Learning Stats',
+                          description:
+                              'Track your current streak and level. The longer your streak, the more points you earn!',
+                          titleTextStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18.0,
+                          ),
+                          descTextStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                          ),
+                          tooltipBackgroundColor: Colors.green.shade700,
+                          overlayColor: Colors.black,
+                          overlayOpacity: 0.7,
+                          tooltipPadding: const EdgeInsets.all(16.0),
+                          targetPadding: const EdgeInsets.all(8.0),
+                          targetShapeBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          tooltipBorderRadius: BorderRadius.circular(10.0),
                           child: Row(
                             children: [
                               // Streak Card - 50%
@@ -164,7 +183,26 @@ class _ProgressPageState extends State<ProgressPage>
                         Showcase(
                           key: ShowcaseKeys.progressLeaderboardKey,
                           title: 'Leaderboard',
-                          description: 'This is the leaderboard',
+                          description:
+                              'See how you rank against other learners. Challenge yourself to climb the leaderboard!',
+                          titleTextStyle: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            fontSize: 18.0,
+                          ),
+                          descTextStyle: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14.0,
+                          ),
+                          tooltipBackgroundColor: Colors.green.shade700,
+                          overlayColor: Colors.black,
+                          overlayOpacity: 0.7,
+                          tooltipPadding: const EdgeInsets.all(16.0),
+                          targetPadding: const EdgeInsets.all(8.0),
+                          targetShapeBorder: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          tooltipBorderRadius: BorderRadius.circular(10.0),
                           child: const LeaderboardWidget(),
                         ),
                         const SizedBox(height: 20),
@@ -189,8 +227,27 @@ class _ProgressPageState extends State<ProgressPage>
                         Expanded(
                           child: Showcase(
                             key: ShowcaseKeys.progressRecentActivityKey,
-                            title: 'Recent Lessons',
-                            description: 'This is your recent activity',
+                            title: 'Recent Activity',
+                            description:
+                                'View your learning history here. See what lessons you\'ve completed and where you left off.',
+                            titleTextStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18.0,
+                            ),
+                            descTextStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                            ),
+                            tooltipBackgroundColor: Colors.green.shade700,
+                            overlayColor: Colors.black,
+                            overlayOpacity: 0.7,
+                            tooltipPadding: const EdgeInsets.all(16.0),
+                            targetPadding: const EdgeInsets.all(8.0),
+                            targetShapeBorder: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            tooltipBorderRadius: BorderRadius.circular(10.0),
                             child: Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,

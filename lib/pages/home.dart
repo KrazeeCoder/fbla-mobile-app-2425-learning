@@ -399,8 +399,27 @@ class _HomePageState extends State<HomePage> {
             // Enhanced Recent Lesson Card
             Showcase(
               key: ShowcaseKeys.pickUpLessonKey,
+              title: 'Continue Learning',
               description:
-                  'Tap on a lesson to continue learning from where you left off.',
+                  'Pick up right where you left off! Tap on a lesson to continue your learning journey.',
+              titleTextStyle: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                fontSize: 18.0,
+              ),
+              descTextStyle: const TextStyle(
+                color: Colors.white,
+                fontSize: 14.0,
+              ),
+              tooltipBackgroundColor: Colors.green.shade700,
+              overlayColor: Colors.black,
+              overlayOpacity: 0.7,
+              tooltipPadding: const EdgeInsets.all(16.0),
+              targetPadding: const EdgeInsets.all(8.0),
+              targetShapeBorder: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              tooltipBorderRadius: BorderRadius.circular(10.0),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: FutureBuilder<List<UserProgress>>(
