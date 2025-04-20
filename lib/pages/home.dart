@@ -436,7 +436,14 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
 
-                    final item = snapshot.data!.first;
+                    // Find the first incomplete lesson, or fall back to the most recent one
+                    UserProgress item;
+                    final incompleteLesson = snapshot.data!.firstWhere(
+                      (lesson) =>
+                          !lesson.contentCompleted || !lesson.quizCompleted,
+                      orElse: () => snapshot.data!.first,
+                    );
+                    item = incompleteLesson;
 
                     return RecentSingleLessonCard(
                       lesson: item,
@@ -468,21 +475,24 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => SubtopicPage(
-                                subtopic: item.subtopic,
-                                subtopicId: item.subtopicId,
-                                readingTitle: item.subtopic,
-                                readingContent: navData['readingContent'] ?? '',
-                                isCompleted: false,
-                                subject: item.subject,
-                                grade: item.grade,
-                                unitId: item.unitId,
-                                unitTitle: item.unit,
-                                userId: userId,
-                                lastSubtopicofUnit: navData['isLastOfUnit'],
-                                lastSubtopicofGrade: navData['isLastOfGrade'],
-                                lastSubtopicofSubject:
-                                    navData['isLastOfSubject'],
+                              builder: (context) => ShowCaseWidget(
+                                builder: (context) => SubtopicPage(
+                                  subtopic: item.subtopic,
+                                  subtopicId: item.subtopicId,
+                                  readingTitle: item.subtopic,
+                                  readingContent:
+                                      navData['readingContent'] ?? '',
+                                  isCompleted: false,
+                                  subject: item.subject,
+                                  grade: item.grade,
+                                  unitId: item.unitId,
+                                  unitTitle: item.unit,
+                                  userId: userId,
+                                  lastSubtopicofUnit: navData['isLastOfUnit'],
+                                  lastSubtopicofGrade: navData['isLastOfGrade'],
+                                  lastSubtopicofSubject:
+                                      navData['isLastOfSubject'],
+                                ),
                               ),
                             ),
                           );
@@ -501,24 +511,26 @@ class _HomePageState extends State<HomePage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => SubtopicPage(
-                                          subtopic: item.subtopic,
-                                          subtopicId: item.subtopicId,
-                                          readingTitle: item.subtopic,
-                                          readingContent:
-                                              navData['readingContent'] ?? '',
-                                          isCompleted: true,
-                                          subject: item.subject,
-                                          grade: item.grade,
-                                          unitId: item.unitId,
-                                          unitTitle: item.unit,
-                                          userId: userId,
-                                          lastSubtopicofUnit:
-                                              navData['isLastOfUnit'],
-                                          lastSubtopicofGrade:
-                                              navData['isLastOfGrade'],
-                                          lastSubtopicofSubject:
-                                              navData['isLastOfSubject'],
+                                        builder: (context) => ShowCaseWidget(
+                                          builder: (context) => SubtopicPage(
+                                            subtopic: item.subtopic,
+                                            subtopicId: item.subtopicId,
+                                            readingTitle: item.subtopic,
+                                            readingContent:
+                                                navData['readingContent'] ?? '',
+                                            isCompleted: true,
+                                            subject: item.subject,
+                                            grade: item.grade,
+                                            unitId: item.unitId,
+                                            unitTitle: item.unit,
+                                            userId: userId,
+                                            lastSubtopicofUnit:
+                                                navData['isLastOfUnit'],
+                                            lastSubtopicofGrade:
+                                                navData['isLastOfGrade'],
+                                            lastSubtopicofSubject:
+                                                navData['isLastOfSubject'],
+                                          ),
                                         ),
                                       ),
                                     );
@@ -531,26 +543,29 @@ class _HomePageState extends State<HomePage> {
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (_) => SubtopicPage(
-                                          subtopic:
-                                              navData['nextSubtopicTitle'],
-                                          subtopicId: navData['nextSubtopicId'],
-                                          readingTitle:
-                                              navData['nextReadingTitle'],
-                                          readingContent:
-                                              navData['nextReadingContent'],
-                                          isCompleted: false,
-                                          subject: item.subject,
-                                          grade: item.grade,
-                                          unitId: navData['nextUnitId'],
-                                          unitTitle: navData['nextUnitTitle'],
-                                          userId: userId,
-                                          lastSubtopicofUnit:
-                                              navData['isLastOfUnit'],
-                                          lastSubtopicofGrade:
-                                              navData['isLastOfGrade'],
-                                          lastSubtopicofSubject:
-                                              navData['isLastOfSubject'],
+                                        builder: (context) => ShowCaseWidget(
+                                          builder: (context) => SubtopicPage(
+                                            subtopic:
+                                                navData['nextSubtopicTitle'],
+                                            subtopicId:
+                                                navData['nextSubtopicId'],
+                                            readingTitle:
+                                                navData['nextReadingTitle'],
+                                            readingContent:
+                                                navData['nextReadingContent'],
+                                            isCompleted: false,
+                                            subject: item.subject,
+                                            grade: item.grade,
+                                            unitId: navData['nextUnitId'],
+                                            unitTitle: navData['nextUnitTitle'],
+                                            userId: userId,
+                                            lastSubtopicofUnit:
+                                                navData['isLastOfUnit'],
+                                            lastSubtopicofGrade:
+                                                navData['isLastOfGrade'],
+                                            lastSubtopicofSubject:
+                                                navData['isLastOfSubject'],
+                                          ),
                                         ),
                                       ),
                                     );
