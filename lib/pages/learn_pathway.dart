@@ -47,8 +47,13 @@ class _PathwayUIState extends State<PathwayUI> {
       backgroundColor: Colors.grey.shade50,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(kToolbarHeight + 15),
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+        child: Container(
+          padding: EdgeInsets.only(
+            top: MediaQuery.of(context).padding.top, // Status bar padding
+            left: 16,
+            right: 16,
+          ),
+          color: Colors.transparent, // Keep background clean
           child: Container(
             height: kToolbarHeight + 12,
             decoration: BoxDecoration(
@@ -67,7 +72,7 @@ class _PathwayUIState extends State<PathwayUI> {
                   const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
               child: Row(
                 children: [
-                  // Back Button
+                  // 🔙 Back Button
                   IconButton(
                     icon: const Icon(Icons.arrow_back_ios_new,
                         color: Colors.white),
@@ -75,27 +80,26 @@ class _PathwayUIState extends State<PathwayUI> {
                     tooltip:
                         MaterialLocalizations.of(context).backButtonTooltip,
                   ),
-                  // Icon and Title - Simplified
+
+                  // 🎓 Icon Circle
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.3),
                       shape: BoxShape.circle,
                     ),
-                    child: const Icon(
-                      Icons.school,
-                      color: Colors.white,
-                      size: 22,
-                    ),
+                    child:
+                        const Icon(Icons.school, color: Colors.white, size: 22),
                   ),
                   const SizedBox(width: 12),
+
+                  // 🏷 Title Section
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Grade and Subject - Main focus with enhanced styling and better contrast
                         Row(
                           children: [
                             Text(
@@ -147,7 +151,6 @@ class _PathwayUIState extends State<PathwayUI> {
                           ],
                         ),
                         const SizedBox(height: 4),
-                        // Learning Pathway - Secondary text
                         Text(
                           'Learning Pathway',
                           style: TextStyle(
@@ -159,7 +162,8 @@ class _PathwayUIState extends State<PathwayUI> {
                       ],
                     ),
                   ),
-                  // Info Button
+
+                  // ℹ️ Info Icon
                   Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: Container(
@@ -171,7 +175,6 @@ class _PathwayUIState extends State<PathwayUI> {
                         icon: const Icon(Icons.info_outline,
                             color: Colors.white, size: 20),
                         onPressed: () {
-                          // Show info about the learning pathway
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
