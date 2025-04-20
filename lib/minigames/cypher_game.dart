@@ -324,81 +324,36 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
               children: [
                 // Game context information
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 8.0, horizontal: 12.0),
+                  padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
                   margin: const EdgeInsets.only(bottom: 8.0),
                   decoration: BoxDecoration(
                     color: Colors.indigo.shade50,
                     borderRadius: BorderRadius.circular(8.0),
                     border: Border.all(color: Colors.indigo.shade200),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.indigo.withOpacity(0.1),
-                        blurRadius: 4,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Icon(Icons.info_outline,
-                          color: Colors.indigo.shade700, size: 18),
-                      const SizedBox(width: 8),
+                      Icon(Icons.info_outline, color: Colors.indigo.shade700, size: 16),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
                           style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w600,
                             color: Colors.indigo.shade700,
                           ),
-                          maxLines: 1,
                           overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
                         ),
                       ),
                     ],
                   ),
                 ),
 
-                // Progress Indicator
-                Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.2),
-                        spreadRadius: 1,
-                        blurRadius: 3,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        "Question ${currentQuestionIndex + 1} of ${quizQuestions.length}",
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.indigo.shade700,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      LinearProgressIndicator(
-                        value:
-                            (currentQuestionIndex + 1) / quizQuestions.length,
-                        backgroundColor: Colors.grey.shade200,
-                        valueColor: AlwaysStoppedAnimation<Color>(
-                            Colors.indigo.shade500),
-                        borderRadius: BorderRadius.circular(10),
-                        minHeight: 8,
-                      ),
-                    ],
-                  ),
-                ),
+
+
 
                 // Game instructions
                 if (!isGameCompleted)
@@ -429,77 +384,87 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
                   ),
 
                 // Cipher Display
+                // Cipher Display (Responsive & Overflow-Proof)
                 AnimatedBuilder(
                   animation: _bounceController,
                   builder: (context, _) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 20),
-                      child: Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 12,
-                        runSpacing: 12,
-                        children: gameState.map((item) {
-                          double elevationValue = item["revealed"]
-                              ? 4.0
-                              : 2.0 + (_bounceController.value * 2.0);
-                          return Material(
-                            elevation: elevationValue,
-                            borderRadius: BorderRadius.circular(12),
-                            color: item["revealed"]
-                                ? Colors.green.shade500
-                                : Colors.indigo.shade600,
-                            child: Container(
-                              width: 60,
-                              height: 80,
-                              padding: const EdgeInsets.all(12),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    item["revealed"] ? item["letter"] : "?",
-                                    style: TextStyle(
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white,
-                                      shadows: [
-                                        Shadow(
-                                          blurRadius: 2,
-                                          color: Colors.black.withOpacity(0.3),
-                                          offset: const Offset(1, 1),
+                    return LayoutBuilder(
+                      builder: (context, constraints) {
+                        double spacing = 12;
+                        int itemCount = gameState.length;
+                        double availableWidth = constraints.maxWidth - (spacing * (itemCount - 1));
+                        double cardWidth = availableWidth / itemCount;
+
+                        return Container(
+                          margin: const EdgeInsets.symmetric(vertical: 20),
+                          child: Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: spacing,
+                            runSpacing: 12,
+                            children: gameState.map((item) {
+                              double elevationValue = item["revealed"]
+                                  ? 4.0
+                                  : 2.0 + (_bounceController.value * 2.0);
+
+                              return Material(
+                                elevation: elevationValue,
+                                borderRadius: BorderRadius.circular(12),
+                                color: item["revealed"]
+                                    ? Colors.green.shade500
+                                    : Colors.indigo.shade600,
+                                child: Container(
+                                  width: cardWidth.clamp(45.0, 70.0),
+                                  height: 80,
+                                  padding: const EdgeInsets.all(8),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        item["revealed"] ? item["letter"] : "?",
+                                        style: TextStyle(
+                                          fontSize: 28,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                          shadows: [
+                                            Shadow(
+                                              blurRadius: 2,
+                                              color: Colors.black.withOpacity(0.3),
+                                              offset: const Offset(1, 1),
+                                            ),
+                                          ],
                                         ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(height: 4),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8,
-                                      vertical: 2,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.white.withOpacity(0.9),
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    child: Text(
-                                      "#${(item["questionIndex"] + 1).toString()}",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold,
-                                        color: item["revealed"]
-                                            ? Colors.green.shade700
-                                            : Colors.indigo.shade700,
                                       ),
-                                    ),
+                                      const SizedBox(height: 4),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 6, vertical: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.9),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Text(
+                                          "#${(item["questionIndex"] + 1)}",
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: item["revealed"]
+                                                ? Colors.green.shade700
+                                                : Colors.indigo.shade700,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        );
+                      },
                     );
                   },
                 ),
+
 
                 // Question Area with Navigation
                 Expanded(

@@ -230,12 +230,12 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
           "Word Scramble",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 30,
+            fontSize: 20,
             letterSpacing: 1.2,
             color: Colors.green.shade800,
           ),
         ),
-        centerTitle: true,
+        centerTitle: false,
         backgroundColor: Colors.white,
         elevation: 1,
         actions: [
@@ -284,6 +284,38 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // 🔹 Horizontally Scrollable Info Bar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(8.0),
+                      border: Border.all(color: Colors.blue.shade100),
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Icon(Icons.info_outline, size: 16, color: Colors.blue),
+                          const SizedBox(width: 6),
+                          Text(
+                            "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
+                            style: TextStyle(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.blue.shade800,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 // Game Title and Instructions
                 Container(
                   margin:
