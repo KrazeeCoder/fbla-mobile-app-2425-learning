@@ -487,7 +487,8 @@ class _HomePageState extends State<HomePage> {
                                   subtopic: item.subtopic,
                                   subtopicId: item.subtopicId,
                                   readingTitle: item.subtopic,
-                                  readingContent: navData['readingContent'] ?? '',
+                                  readingContent:
+                                      navData['readingContent'] ?? '',
                                   isCompleted: true,
                                   subject: item.subject,
                                   grade: item.grade,
@@ -496,13 +497,13 @@ class _HomePageState extends State<HomePage> {
                                   userId: userId,
                                   lastSubtopicofUnit: navData['isLastOfUnit'],
                                   lastSubtopicofGrade: navData['isLastOfGrade'],
-                                  lastSubtopicofSubject: navData['isLastOfSubject'],
+                                  lastSubtopicofSubject:
+                                      navData['isLastOfSubject'],
                                 ),
                               ),
                             ),
                           );
-                        }
-                        else if (!item.contentCompleted) {
+                        } else if (!item.contentCompleted) {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
