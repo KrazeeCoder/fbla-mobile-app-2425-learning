@@ -465,7 +465,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
       final xpManager = Provider.of<XPManager>(context, listen: false);
 
       // Set a timeout to ensure we don't hang forever
-      Future.delayed(const Duration(seconds: 300), () {
+      Future.delayed(const Duration(seconds: 3), () {
         if (!levelUpHandled && !levelUpCompleter.isCompleted) {
           levelUpHandled = true;
           levelUpCompleter.complete();
@@ -495,7 +495,7 @@ class _SubtopicPageState extends State<SubtopicPage> {
             levelUpHandled = true;
 
             // Add a delay to wait for animation to complete
-            Future.delayed(const Duration(seconds: 3), () {
+            Future.delayed(const Duration(seconds: 300), () {
               if (!levelUpCompleter.isCompleted) {
                 levelUpCompleter.complete();
               }

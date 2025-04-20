@@ -206,23 +206,36 @@ class AudioManager {
         _soundEffectPlayer == null) return;
 
     try {
+      // Create a separate instance for each sound effect to avoid interrupting ongoing sounds
+      final effectPlayer = AudioPlayer();
+      effectPlayer.setVolume(_isSoundEffectsEnabled ? _soundEffectsVolume : 0);
+
       // Set asset with timeout
-      await _soundEffectPlayer!.setAsset(assetPath).timeout(
+      await effectPlayer.setAsset(assetPath).timeout(
         const Duration(seconds: 2),
         onTimeout: () {
           AppLogger.w("Setting sound effect asset timed out: $assetPath");
+          effectPlayer.dispose();
           throw TimeoutException("Setting sound effect timed out");
         },
       );
 
       // Play with timeout
-      await _soundEffectPlayer!.play().timeout(
+      await effectPlayer.play().timeout(
         const Duration(seconds: 2),
         onTimeout: () {
           AppLogger.w("Playing sound effect timed out");
+          effectPlayer.dispose();
           throw TimeoutException("Playing sound effect timed out");
         },
       );
+
+      // Listen for completion to dispose the player
+      effectPlayer.playerStateStream.listen((state) {
+        if (state.processingState == ProcessingState.completed) {
+          effectPlayer.dispose();
+        }
+      });
     } catch (e) {
       AppLogger.e('Error playing sound effect', error: e);
     }
@@ -345,7 +358,7 @@ class AudioManager {
     // Handle background music player without awaiting each operation
     if (_isMusicEnabled && _backgroundMusicPlayer != null) {
       AppLogger.i("Enabling background music");
-      _backgroundMusicPlayer!.setVolume(_musicVolume * 0.8);
+      _backgroundMusicPlayer!.setVolume(_musicVolume * 0.6);
 
       // If not already playing, start playback
       if (!(_backgroundMusicPlayer!.playing)) {

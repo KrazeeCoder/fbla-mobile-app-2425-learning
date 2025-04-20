@@ -127,7 +127,7 @@ class AudioIntegration {
     try {
       await AudioManager().playLevelCompleteSound();
     } catch (e) {
-      print("Error playing level complete sound");
+      AppLogger.e("Error playing level complete sound: $e");
     }
   }
 
@@ -138,7 +138,7 @@ class AudioIntegration {
     try {
       await AudioManager().playSubtopicCompleteSound();
     } catch (e) {
-      print("Error playing subtopic complete sound");
+      AppLogger.e("Error playing subtopic complete sound: $e");
     }
   }
 
@@ -149,7 +149,7 @@ class AudioIntegration {
     try {
       await AudioManager().playGameStartSound();
     } catch (e) {
-      print("Error playing game start sound");
+      AppLogger.e("Error playing game start sound: $e");
     }
   }
 
@@ -160,7 +160,7 @@ class AudioIntegration {
     try {
       await AudioManager().playGameCompleteSound();
     } catch (e) {
-      print("Error playing game complete sound");
+      AppLogger.e("Error playing game complete sound: $e");
     }
   }
 }
