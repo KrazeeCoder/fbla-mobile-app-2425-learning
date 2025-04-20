@@ -6,15 +6,15 @@ import 'dart:math';
 import 'dart:convert';
 import 'package:flutter/services.dart';
 import '../widgets/cypher_question.dart';
-import '../widgets/subtopic_widget.dart';
+import '../pages/subtopic_page.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
 import 'package:provider/provider.dart';
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 import '../widgets/earth_unlock_animation.dart';
-import '../utils/audio/audio_integration.dart';
+import '../managers/audio/audio_integration.dart';
 import '../utils/app_logger.dart';
 import '../utils/game_launcher.dart';
 
@@ -213,7 +213,7 @@ class _CypherUIState extends State<CypherUI> with TickerProviderStateMixin {
     );
 
     // Award XP
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
     xpManager.addXP(10, onLevelUp: (newLevel) {
       EarthUnlockAnimation.show(
         context,

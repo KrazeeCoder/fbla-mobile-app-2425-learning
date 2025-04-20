@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_keys.dart';
-import '/auth_utility.dart';
+import '../managers/coach_marks/showcase_keys.dart';
+import '../services/auth_service.dart';
 import 'signin_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
-import '/security.dart';
-import '../coach_marks/showcase_provider.dart';
+import '../utils/security.dart';
+import '../managers/coach_marks/showcase_provider.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/custom_app_bar.dart';
-import '../providers/settings_provider.dart';
-import '../xp_manager.dart';
+import '../services/settings_service.dart';
+import '../services/xp_service.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -46,14 +46,14 @@ class _SettingsPageState extends State<SettingsPage> {
 
     // Add post-frame callback to listen for XP updates after build completes
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final xpManager = Provider.of<XPManager>(context, listen: false);
+      final xpManager = Provider.of<XPService>(context, listen: false);
       xpManager.addListener(_updateXPAndLevel);
     });
   }
 
   void _updateXPAndLevel() {
     if (!mounted) return;
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
     setState(() {
       currentXP = xpManager.currentXP;
       currentLevel = xpManager.currentLevel;
@@ -82,7 +82,7 @@ class _SettingsPageState extends State<SettingsPage> {
     }
 
     // Get XP and level from XPManager
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
     setState(() {
       currentXP = xpManager.currentXP;
       currentLevel = xpManager.currentLevel;
@@ -232,7 +232,7 @@ class _SettingsPageState extends State<SettingsPage> {
     // Remove listener from XPManager
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (context.mounted) {
-        final xpManager = Provider.of<XPManager>(context, listen: false);
+        final xpManager = Provider.of<XPService>(context, listen: false);
         xpManager.removeListener(_updateXPAndLevel);
       }
     });
@@ -247,7 +247,7 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final settingsProvider = Provider.of<SettingsProvider>(context);
+    final settingsProvider = Provider.of<SettingsService>(context);
 
     return Scaffold(
       body: isLoading || settingsProvider.isLoading
@@ -421,7 +421,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     iconColor: Colors.amber,
                                     label: "Level",
                                     value:
-                                        "${Provider.of<XPManager>(context).currentLevel}",
+                                        "${Provider.of<XPService>(context).currentLevel}",
                                   ),
                                   const SizedBox(width: 20),
                                   _buildProgressItem(
@@ -429,7 +429,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                     iconColor: Colors.orange,
                                     label: "XP",
                                     value:
-                                        "${Provider.of<XPManager>(context).currentXP}",
+                                        "${Provider.of<XPService>(context).currentXP}",
                                   ),
                                 ],
                               ),

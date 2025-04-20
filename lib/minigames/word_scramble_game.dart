@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 import '../utils/app_logger.dart';
 import '../widgets/earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
-import '../widgets/subtopic_widget.dart';
+import '../pages/subtopic_page.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
 import '../utils/game_launcher.dart';
@@ -286,9 +286,11 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
               children: [
                 // 🔹 Horizontally Scrollable Info Bar
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 12.0),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 6.0, horizontal: 10.0),
                     decoration: BoxDecoration(
                       color: Colors.blue.shade50,
                       borderRadius: BorderRadius.circular(8.0),
@@ -299,7 +301,8 @@ class _WordScrambleGameState extends State<WordScrambleGame> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          const Icon(Icons.info_outline, size: 16, color: Colors.blue),
+                          const Icon(Icons.info_outline,
+                              size: 16, color: Colors.blue),
                           const SizedBox(width: 6),
                           Text(
                             "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",

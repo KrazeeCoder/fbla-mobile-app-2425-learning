@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn.dart';
 import 'package:fbla_mobile_2425_learning_app/pages/learn_pathway.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:fbla_mobile_2425_learning_app/coach_marks/showcase_keys.dart';
-import '../coach_marks/showcase_provider.dart';
+import 'package:fbla_mobile_2425_learning_app/managers/coach_marks/showcase_keys.dart';
+import '../managers/coach_marks/showcase_provider.dart';
 import 'package:provider/provider.dart';
 import '../utils/app_logger.dart';
 

@@ -11,10 +11,10 @@ import '../widgets/lessons.dart';
 import '../widgets/level_bar_homepage.dart';
 import '../widgets/recent_lessons_homepage.dart';
 import '../widgets/streak_homepage.dart';
-import '../widgets/subtopic_widget.dart';
+import 'subtopic_page.dart';
 import '../widgets/xp_debug_controls.dart';
-import '../xp_manager.dart';
-import '../coach_marks/showcase_keys.dart';
+import '../services/xp_service.dart';
+import '../managers/coach_marks/showcase_keys.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    final xpManager = Provider.of<XPManager>(context);
+    final xpManager = Provider.of<XPService>(context);
 
     // Build the list of earths from level 1 to currentLevel
     final currentLevel = xpManager.currentLevel;

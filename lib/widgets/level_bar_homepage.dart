@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 
 class LevelBarHomepage extends StatelessWidget {
   const LevelBarHomepage({super.key});
@@ -8,7 +8,7 @@ class LevelBarHomepage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Access XPManager from provider
-    final xpManager = Provider.of<XPManager>(context);
+    final xpManager = Provider.of<XPService>(context);
     final theme = Theme.of(context);
 
     // Show loading indicator while data is loading

@@ -3,12 +3,12 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 import '../utils/app_logger.dart';
 import '../widgets/earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
-import '../widgets/subtopic_widget.dart';
+import '../pages/subtopic_page.dart';
 import '../utils/subTopicNavigation.dart';
 import 'dart:async';
 import '../widgets/gamesucesswidget.dart';
@@ -374,7 +374,8 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
         child: AppBar(
           backgroundColor: Colors.white,
           elevation: 1,
-          automaticallyImplyLeading: false, // We’ll manually add the back button
+          automaticallyImplyLeading:
+              false, // We’ll manually add the back button
           flexibleSpace: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -403,7 +404,8 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
                             color: Colors.green.shade50,
                             borderRadius: BorderRadius.circular(20),
@@ -440,8 +442,6 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
           ),
         ),
       ),
-
-
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -478,20 +478,26 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 8),
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 6.0, horizontal: 10.0),
                                   decoration: BoxDecoration(
                                     color: Colors.indigo.shade50,
                                     borderRadius: BorderRadius.circular(8.0),
-                                    border: Border.all(color: Colors.indigo.shade200),
+                                    border: Border.all(
+                                        color: Colors.indigo.shade200),
                                   ),
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.horizontal,
                                     child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
-                                        Icon(Icons.info_outline, color: Colors.indigo.shade700, size: 16),
+                                        Icon(Icons.info_outline,
+                                            color: Colors.indigo.shade700,
+                                            size: 16),
                                         const SizedBox(width: 6),
                                         Text(
                                           "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
@@ -508,8 +514,6 @@ class _QuizChallengeGameState extends State<QuizChallengeGame>
                                   ),
                                 ),
                               ),
-
-
                               _buildStatusBar(),
                               _buildScoreDisplay(),
                               _buildQuestionCard(),

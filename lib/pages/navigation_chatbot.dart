@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
-import '../ai_utility.dart';
+import '../services/ai_services.dart';
 
 class ChatMessage {
   final String text;

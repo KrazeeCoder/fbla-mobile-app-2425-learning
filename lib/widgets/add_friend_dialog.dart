@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/friends_manager.dart';
+import '../services/friends_service.dart';
 
 class AddFriendDialog extends StatefulWidget {
   const AddFriendDialog({super.key});
@@ -122,7 +122,7 @@ class _AddFriendDialogState extends State<AddFriendDialog> {
                   onChanged: (value) async {
                     if (value.length >= 3) {
                       setState(() => isSearching = true);
-                      final results = await FriendsManager.searchUsers(value);
+                      final results = await FriendsService.searchUsers(value);
                       setState(() {
                         searchResults = results;
                         isSearching = false;
@@ -268,7 +268,7 @@ class _AddFriendDialogState extends State<AddFriendDialog> {
                               trailing: ElevatedButton.icon(
                                 onPressed: () async {
                                   final success =
-                                      await FriendsManager.addFriend(
+                                      await FriendsService.addFriend(
                                           user['uid']);
                                   if (success && mounted) {
                                     Navigator.pop(context);

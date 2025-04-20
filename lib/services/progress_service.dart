@@ -2,8 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/user_progress_model.dart';
 import '../utils/app_logger.dart';
 
+// This service is for interacting with user progress data in Firestore.
 class ProgressService {
+  // Firestore instance used for retrieving progress data.
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Retrieves the most recent lesson progress entries for a user
   static Future<List<UserProgress>> fetchRecentLessons(String userId,
       {bool latest = false}) async {
     try {
@@ -25,7 +29,7 @@ class ProgressService {
         }
       });
 
-      // Sort by lastAccessed descending
+      // Sort entries by lastAccessed in descending order
       progressList.sort((a, b) =>
           b.lastAccessed?.compareTo(a.lastAccessed ?? DateTime(0)) ?? 0);
 
@@ -41,7 +45,7 @@ class ProgressService {
     }
   }
 
-  // Returns total number of completed subtopics for a given user
+  /// Counts the total completed subtopics for a user
   static Future<int> getTotalSubtopicsCompleted(String userId) async {
     try {
       final snapshot =
@@ -65,15 +69,16 @@ class ProgressService {
     }
   }
 
+  // Calculates the user's level and total points based on XP
   static Future<Map<String, dynamic>> calculateLevelAndPoints(
       String uid) async {
     try {
-      // Get user's currentXP directly from the users collection
+      // Retrieve user's total XP from the 'users' collection
       final userDoc = await _firestore.collection('users').doc(uid).get();
       final userData = userDoc.data() ?? {};
       final int totalPoints = (userData['currentXP'] as num?)?.toInt() ?? 0;
 
-      // Find user level from level_master
+      // Query 'level_master' to determine the appropriate level
       final levelQuery = await _firestore
           .collection('level_master')
           .where('minimum_point', isLessThanOrEqualTo: totalPoints)
@@ -81,7 +86,7 @@ class ProgressService {
           .limit(1)
           .get();
 
-      int currentLevel = 1; // Default to level 1
+      int currentLevel = 1;
       if (levelQuery.docs.isNotEmpty) {
         currentLevel = levelQuery.docs.first.data()['Level'] ?? 1;
       }
@@ -96,7 +101,7 @@ class ProgressService {
     }
   }
 
-  // Fetch all user progress data
+  // Retrieves all progress entries for a user.
   static Future<Map<String, dynamic>> getUserProgress(String userId) async {
     try {
       final snapshot =

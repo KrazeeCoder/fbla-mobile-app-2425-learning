@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 
-import 'jsonUtility.dart';
+import '../utils/jsonUtility.dart';
 
 const apiKey = "AIzaSyB6cpbKGMdZeY8p28TRRPzzkFRUzMjG_SQ";
 

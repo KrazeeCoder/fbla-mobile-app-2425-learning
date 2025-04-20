@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SettingsProvider extends ChangeNotifier {
+class SettingsService extends ChangeNotifier {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -15,7 +15,7 @@ class SettingsProvider extends ChangeNotifier {
   double get fontSize => _fontSize;
   bool get isLoading => _isLoading;
 
-  SettingsProvider() {
+  SettingsService() {
     loadSettings();
   }
 

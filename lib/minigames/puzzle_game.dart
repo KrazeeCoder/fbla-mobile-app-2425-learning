@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_keys.dart';
-import '../coach_marks/showcase_provider.dart';
+import '../managers/coach_marks/showcase_keys.dart';
+import '../managers/coach_marks/showcase_provider.dart';
 import '../utils/app_logger.dart';
-import '../widgets/subtopic_widget.dart';
+import '../pages/subtopic_page.dart';
 import '../services/updateprogress.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
 import 'package:provider/provider.dart';
-import '../utils/audio/audio_integration.dart';
+import '../managers/audio/audio_integration.dart';
 import '../utils/game_launcher.dart';
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 import '../widgets/earth_unlock_animation.dart';
 
 class PuzzleScreen extends StatefulWidget {
@@ -488,7 +488,7 @@ class _PuzzleScreenState extends State<PuzzleScreen>
       );
 
       // Award XP
-      final xpManager = Provider.of<XPManager>(context, listen: false);
+      final xpManager = Provider.of<XPService>(context, listen: false);
       xpManager.addXP(10, onLevelUp: (newLevel) {
         EarthUnlockAnimation.show(
           context,
@@ -514,53 +514,57 @@ class _PuzzleScreenState extends State<PuzzleScreen>
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'Puzzle Challenge',
-          style: TextStyle(
-            color: theme.primaryColor,
-            fontWeight: FontWeight.bold,
+        appBar: AppBar(
+          title: Text(
+            'Puzzle Challenge',
+            style: TextStyle(
+              color: theme.primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          centerTitle: true,
+          elevation: 1,
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: theme.primaryColor),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
           ),
         ),
-        centerTitle: true,
-        elevation: 1,
-        backgroundColor: Colors.white,
-        iconTheme: IconThemeData(color: theme.primaryColor),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              theme.primaryColor.withOpacity(0.1),
-              theme.scaffoldBackgroundColor,
-            ],
+        body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                theme.primaryColor.withOpacity(0.1),
+                theme.scaffoldBackgroundColor,
+              ],
+            ),
           ),
-        ),
-        child: Column(
+          child: Column(
             children: [
-        // 🔹 Top Info Bar (Copied from Cipher Game)
+              // 🔹 Top Info Bar (Copied from Cipher Game)
               // 🔹 Scrollable Top Info Bar
               Padding(
-                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0, bottom: 4.0),
+                padding: const EdgeInsets.only(
+                    left: 16.0, right: 16.0, top: 12.0, bottom: 4.0),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 6.0, horizontal: 10.0),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                    border: Border.all(
+                        color: Theme.of(context).primaryColor.withOpacity(0.3)),
                   ),
                   child: SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Icon(Icons.info_outline, color: Theme.of(context).primaryColor, size: 16),
+                        Icon(Icons.info_outline,
+                            color: Theme.of(context).primaryColor, size: 16),
                         const SizedBox(width: 6),
                         Text(
                           "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",
@@ -579,351 +583,374 @@ class _PuzzleScreenState extends State<PuzzleScreen>
               ),
 
               // 🔹 Main Puzzle Content
-      Expanded(
-        child: quizQuestions.isEmpty
-            ? const Center(child: CircularProgressIndicator())
-            : SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                const SizedBox(height: 20),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    color: theme.primaryColor.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    puzzleCompleted
-                        ? '🎉 Puzzle Completed!'
-                        : 'Complete the Puzzle!',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: theme.primaryColor,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Instructions
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 5,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Theme(
-                    data: Theme.of(context).copyWith(
-                      dividerColor: Colors.transparent,
-                    ),
-                    child: ExpansionTile(
-                      initiallyExpanded: true,
-                      title: Row(
-                        children: [
-                          Icon(
-                            Icons.info_outline,
-                            color: theme.primaryColor,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            'How to Play',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: theme.primaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                      children: [
-                        Padding(
-                          padding:
-                          const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              Expanded(
+                child: quizQuestions.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : SingleChildScrollView(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildInstructionStep(
-                                '1. Click on a puzzle piece to answer a question',
-                                Icons.touch_app,
-                                theme,
-                              ),
-                              _buildInstructionStep(
-                                '2. Answer correctly to unlock the piece',
-                                Icons.check_circle,
-                                theme,
-                              ),
-                              _buildInstructionStep(
-                                '3. Drag and drop pieces to complete the puzzle',
-                                Icons.drag_indicator,
-                                theme,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30),
-
-                // Puzzle Grid
-                Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Puzzle Board',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: theme.primaryColor,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
-                        width: pieceSize * 3,
-                        height: pieceSize * 3,
-                        child: GridView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3),
-                          itemCount: 9,
-                          itemBuilder: (context, index) {
-                            final placedIndex = placedMap[index];
-                            return DragTarget<int>(
-                              onAccept: (pieceIndex) {
-                                setState(() {
-                                  placedMap[index] = pieceIndex;
-                                });
-                                _checkPuzzleCompletion();
-                              },
-                              onWillAccept: (pieceIndex) =>
-                              pieceIndex == index,
-                              builder: (context, _, __) {
-                                return Container(
-                                  margin: const EdgeInsets.all(2),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: placedIndex != null
-                                          ? theme.primaryColor
-                                          : Colors.grey.shade300,
-                                      width: 2,
-                                    ),
-                                    borderRadius:
-                                    BorderRadius.circular(8),
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      SizedBox(
-                                        width: pieceSize,
-                                        height: pieceSize,
-                                        child: placedIndex != null
-                                            ? PuzzlePiece(
-                                            imagePath: selectedImage,
-                                            index: placedIndex,
-                                            size: pieceSize)
-                                            : Container(
-                                          decoration: BoxDecoration(
-                                            color: Colors
-                                                .grey.shade100,
-                                            borderRadius:
-                                            BorderRadius
-                                                .circular(6),
-                                          ),
-                                        ),
-                                      ),
-                                      if (placedIndex == null)
-                                        Center(
-                                          child: Icon(
-                                            Icons.add_circle_outline,
-                                            color: theme.primaryColor
-                                                .withOpacity(0.3),
-                                            size: 30,
-                                          ),
-                                        ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 40),
-
-                if (puzzleCompleted)
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    child: GameSuccessMessage(
-                      onNext: _goToNextLesson,
-                      nextSubtopicId: widget.nextSubtopicId,
-                      nextSubtopicTitle: widget.nextSubtopicTitle,
-                      nextReadingContent: widget.nextReadingContent,
-                      subject: widget.subject,
-                      grade: widget.grade,
-                      unitId: widget.unitId,
-                      unitTitle: widget.unitTitle,
-                      userId: widget.userId,
-                    ),
-                  ),
-
-                if (!puzzleCompleted)
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.1),
-                          blurRadius: 10,
-                          offset: const Offset(0, 5),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Available Pieces',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: theme.primaryColor,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Wrap(
-                          spacing: 20,
-                          runSpacing: 20,
-                          children: _shuffledIndices.map((index) {
-                            if (placedMap.containsValue(index))
-                              return const SizedBox.shrink();
-
-                            return answered[index]
-                                ? Draggable<int>(
-                              data: index,
-                              feedback: Material(
-                                color: Colors.transparent,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: theme.primaryColor
-                                            .withOpacity(0.3),
-                                        blurRadius: 10,
-                                        spreadRadius: 2,
-                                      ),
-                                    ],
-                                  ),
-                                  child: PuzzlePiece(
-                                      imagePath: selectedImage,
-                                      index: index,
-                                      size: pieceSize),
+                              const SizedBox(height: 20),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 12,
                                 ),
-                              ),
-                              childWhenDragging: PuzzlePiece(
-                                imagePath: selectedImage,
-                                index: index,
-                                opacity: 0.5,
-                                size: pieceSize,
-                              ),
-                              child: Stack(
-                                children: [
-                                  GlowingPuzzlePiece(
-                                    imagePath: selectedImage,
-                                    index: index,
-                                    controller: _glowController,
-                                    size: pieceSize,
-                                  ),
-                                  Positioned(
-                                    top: 8,
-                                    right: 8,
-                                    child: Icon(
-                                      Icons.drag_indicator,
-                                      color: theme.primaryColor,
-                                      size: 24,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                                : GestureDetector(
-                              onTap: () =>
-                                  _showQuestionDialog(index),
-                              child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: theme.primaryColor
-                                        .withOpacity(0.3),
-                                    width: 2,
-                                  ),
-                                  borderRadius:
-                                  BorderRadius.circular(10),
+                                  color: theme.primaryColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(20),
                                 ),
-                                child: Stack(
-                                  children: [
-                                    PuzzlePiece(
-                                      imagePath: selectedImage,
-                                      index: index,
-                                      opacity: 0.5,
-                                      size: pieceSize,
+                                child: Text(
+                                  puzzleCompleted
+                                      ? '🎉 Puzzle Completed!'
+                                      : 'Complete the Puzzle!',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                    color: theme.primaryColor,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+
+                              // Instructions
+                              Container(
+                                margin:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 2),
                                     ),
-                                    Positioned(
-                                      top: 8,
-                                      right: 8,
-                                      child: Icon(
-                                        Icons.question_mark,
+                                  ],
+                                ),
+                                child: Theme(
+                                  data: Theme.of(context).copyWith(
+                                    dividerColor: Colors.transparent,
+                                  ),
+                                  child: ExpansionTile(
+                                    initiallyExpanded: true,
+                                    title: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.info_outline,
+                                          color: theme.primaryColor,
+                                          size: 20,
+                                        ),
+                                        const SizedBox(width: 8),
+                                        Text(
+                                          'How to Play',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: theme.primaryColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            16, 0, 16, 16),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            _buildInstructionStep(
+                                              '1. Click on a puzzle piece to answer a question',
+                                              Icons.touch_app,
+                                              theme,
+                                            ),
+                                            _buildInstructionStep(
+                                              '2. Answer correctly to unlock the piece',
+                                              Icons.check_circle,
+                                              theme,
+                                            ),
+                                            _buildInstructionStep(
+                                              '3. Drag and drop pieces to complete the puzzle',
+                                              Icons.drag_indicator,
+                                              theme,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 30),
+
+                              // Puzzle Grid
+                              Container(
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 5),
+                                    ),
+                                  ],
+                                ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Puzzle Board',
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
                                         color: theme.primaryColor,
-                                        size: 24,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 16),
+                                    SizedBox(
+                                      width: pieceSize * 3,
+                                      height: pieceSize * 3,
+                                      child: GridView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        gridDelegate:
+                                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 3),
+                                        itemCount: 9,
+                                        itemBuilder: (context, index) {
+                                          final placedIndex = placedMap[index];
+                                          return DragTarget<int>(
+                                            onAccept: (pieceIndex) {
+                                              setState(() {
+                                                placedMap[index] = pieceIndex;
+                                              });
+                                              _checkPuzzleCompletion();
+                                            },
+                                            onWillAccept: (pieceIndex) =>
+                                                pieceIndex == index,
+                                            builder: (context, _, __) {
+                                              return Container(
+                                                margin: const EdgeInsets.all(2),
+                                                decoration: BoxDecoration(
+                                                  border: Border.all(
+                                                    color: placedIndex != null
+                                                        ? theme.primaryColor
+                                                        : Colors.grey.shade300,
+                                                    width: 2,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: Stack(
+                                                  children: [
+                                                    SizedBox(
+                                                      width: pieceSize,
+                                                      height: pieceSize,
+                                                      child: placedIndex != null
+                                                          ? PuzzlePiece(
+                                                              imagePath:
+                                                                  selectedImage,
+                                                              index:
+                                                                  placedIndex,
+                                                              size: pieceSize)
+                                                          : Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade100,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            6),
+                                                              ),
+                                                            ),
+                                                    ),
+                                                    if (placedIndex == null)
+                                                      Center(
+                                                        child: Icon(
+                                                          Icons
+                                                              .add_circle_outline,
+                                                          color: theme
+                                                              .primaryColor
+                                                              .withOpacity(0.3),
+                                                          size: 30,
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
+                                              );
+                                            },
+                                          );
+                                        },
                                       ),
                                     ),
                                   ],
                                 ),
                               ),
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    ],
-    ),
-    ));
 
+                              const SizedBox(height: 40),
+
+                              if (puzzleCompleted)
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 16),
+                                  child: GameSuccessMessage(
+                                    onNext: _goToNextLesson,
+                                    nextSubtopicId: widget.nextSubtopicId,
+                                    nextSubtopicTitle: widget.nextSubtopicTitle,
+                                    nextReadingContent:
+                                        widget.nextReadingContent,
+                                    subject: widget.subject,
+                                    grade: widget.grade,
+                                    unitId: widget.unitId,
+                                    unitTitle: widget.unitTitle,
+                                    userId: widget.userId,
+                                  ),
+                                ),
+
+                              if (!puzzleCompleted)
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.1),
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 5),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        'Available Pieces',
+                                        style: TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.bold,
+                                          color: theme.primaryColor,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      Wrap(
+                                        spacing: 20,
+                                        runSpacing: 20,
+                                        children: _shuffledIndices.map((index) {
+                                          if (placedMap.containsValue(index))
+                                            return const SizedBox.shrink();
+
+                                          return answered[index]
+                                              ? Draggable<int>(
+                                                  data: index,
+                                                  feedback: Material(
+                                                    color: Colors.transparent,
+                                                    child: Container(
+                                                      decoration: BoxDecoration(
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: theme
+                                                                .primaryColor
+                                                                .withOpacity(
+                                                                    0.3),
+                                                            blurRadius: 10,
+                                                            spreadRadius: 2,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      child: PuzzlePiece(
+                                                          imagePath:
+                                                              selectedImage,
+                                                          index: index,
+                                                          size: pieceSize),
+                                                    ),
+                                                  ),
+                                                  childWhenDragging:
+                                                      PuzzlePiece(
+                                                    imagePath: selectedImage,
+                                                    index: index,
+                                                    opacity: 0.5,
+                                                    size: pieceSize,
+                                                  ),
+                                                  child: Stack(
+                                                    children: [
+                                                      GlowingPuzzlePiece(
+                                                        imagePath:
+                                                            selectedImage,
+                                                        index: index,
+                                                        controller:
+                                                            _glowController,
+                                                        size: pieceSize,
+                                                      ),
+                                                      Positioned(
+                                                        top: 8,
+                                                        right: 8,
+                                                        child: Icon(
+                                                          Icons.drag_indicator,
+                                                          color: theme
+                                                              .primaryColor,
+                                                          size: 24,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                )
+                                              : GestureDetector(
+                                                  onTap: () =>
+                                                      _showQuestionDialog(
+                                                          index),
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      border: Border.all(
+                                                        color: theme
+                                                            .primaryColor
+                                                            .withOpacity(0.3),
+                                                        width: 2,
+                                                      ),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10),
+                                                    ),
+                                                    child: Stack(
+                                                      children: [
+                                                        PuzzlePiece(
+                                                          imagePath:
+                                                              selectedImage,
+                                                          index: index,
+                                                          opacity: 0.5,
+                                                          size: pieceSize,
+                                                        ),
+                                                        Positioned(
+                                                          top: 8,
+                                                          right: 8,
+                                                          child: Icon(
+                                                            Icons.question_mark,
+                                                            color: theme
+                                                                .primaryColor,
+                                                            size: 24,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                        }).toList(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+              ),
+            ],
+          ),
+        ));
   }
 
   Widget _buildInstructionStep(String text, IconData icon, ThemeData theme) {

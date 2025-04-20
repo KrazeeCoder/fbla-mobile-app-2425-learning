@@ -1,17 +1,15 @@
-// TODO: Add a graph of the user's progress over time possibly
-// TODO: Add a leaderboard feature with friends and possibly daily leaderboard too
-
 import 'package:fbla_mobile_2425_learning_app/services/progress_service.dart';
 import 'package:fbla_mobile_2425_learning_app/widgets/recent_lessons_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_keys.dart';
+import '../managers/coach_marks/showcase_keys.dart';
 import '../utils/app_logger.dart';
 import '../widgets/custom_app_bar.dart';
-import '../services/streak_manager.dart';
+import '../managers/streak_manager.dart';
 import '../widgets/leaderboard_widget.dart';
 
+// The progress page displays user achievements, stats, and learning history
 class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
 
@@ -19,19 +17,24 @@ class ProgressPage extends StatefulWidget {
   State<ProgressPage> createState() => _ProgressPageState();
 }
 
+// Manages progress page state and animations, using a provider to fetch data
 class _ProgressPageState extends State<ProgressPage>
     with SingleTickerProviderStateMixin {
+  // User progress metrics
   int streak = 0;
   int level = 0;
   int subtopicsCompleted = 0;
   Map<String, dynamic> userProgress = {};
   bool _isLoading = true;
+
+  // Animation controllers for smooth UI transitions
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
+    // Setup fade-in animation for a polished appearance
     _animationController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 800),
@@ -52,6 +55,7 @@ class _ProgressPageState extends State<ProgressPage>
     super.dispose();
   }
 
+  // Retrieves user progress metrics in parallel
   Future<void> fetchProgressData() async {
     setState(() => _isLoading = true);
 
@@ -59,14 +63,14 @@ class _ProgressPageState extends State<ProgressPage>
       final uid = FirebaseAuth.instance.currentUser?.uid;
       if (uid == null) return;
 
-      // Get all progress data in parallel for efficiency
+      // Fetch multiple chunks of data at same time to minimize latency
       final progressFuture = ProgressService.getUserProgress(uid);
       final subtopicsCompletedFuture =
           ProgressService.getTotalSubtopicsCompleted(uid);
       final levelDataFuture = ProgressService.calculateLevelAndPoints(uid);
       final streakFuture = StreakManager.getCurrentStreak(uid);
 
-      // Wait for all futures to complete
+      // Wait for all parallel requests to complete
       final results = await Future.wait([
         progressFuture,
         subtopicsCompletedFuture,
@@ -74,6 +78,7 @@ class _ProgressPageState extends State<ProgressPage>
         streakFuture
       ]);
 
+      // Update state with fetched user metrics
       userProgress = results[0] as Map<String, dynamic>;
       subtopicsCompleted = results[1] as int;
       final levelData = results[2] as Map<String, dynamic>;
@@ -107,7 +112,7 @@ class _ProgressPageState extends State<ProgressPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // Header section with title
+                        // Page title with branded styling
                         Padding(
                           padding: const EdgeInsets.only(bottom: 16.0),
                           child: Text(
@@ -121,7 +126,7 @@ class _ProgressPageState extends State<ProgressPage>
                           ),
                         ),
 
-                        // Streak and Stats Cards
+                        // User stats section, shows streak and achievement metrics
                         Showcase(
                           key: ShowcaseKeys.progressStatsKey,
                           title: 'Your Learning Stats',
@@ -147,14 +152,14 @@ class _ProgressPageState extends State<ProgressPage>
                           tooltipBorderRadius: BorderRadius.circular(10.0),
                           child: Row(
                             children: [
-                              // Streak Card - 50%
+                              // Daily streak card
                               Expanded(
                                 flex: 2,
                                 child: _buildStreakCard(),
                               ),
                               const SizedBox(width: 12),
 
-                              // Stats Cards - 50%
+                              // Achievement metrics, showing level and completed subtopics
                               Expanded(
                                 flex: 2,
                                 child: Column(
@@ -179,7 +184,7 @@ class _ProgressPageState extends State<ProgressPage>
                           ),
                         ),
 
-                        // Leaderboard Section
+                        // Leaderboard section, shows how user ranks against friends
                         Showcase(
                           key: ShowcaseKeys.progressLeaderboardKey,
                           title: 'Leaderboard',
@@ -207,7 +212,7 @@ class _ProgressPageState extends State<ProgressPage>
                         ),
                         const SizedBox(height: 20),
 
-                        // Recent Activity
+                        // Recent Activity section, shows historical data
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -223,7 +228,7 @@ class _ProgressPageState extends State<ProgressPage>
                         ),
                         const SizedBox(height: 12),
 
-                        // Recent Lessons - takes remaining vertical space
+                        // Recent Lessons section, shows recent lessons completed
                         Expanded(
                           child: Showcase(
                             key: ShowcaseKeys.progressRecentActivityKey,
@@ -361,6 +366,7 @@ class _ProgressPageState extends State<ProgressPage>
   }
 }
 
+// Stat card, shows a label and value with an icon
 class _StatCard extends StatelessWidget {
   final String label;
   final String value;
@@ -376,6 +382,7 @@ class _StatCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Card styling with consistent visual cues for different stats
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
@@ -392,6 +399,7 @@ class _StatCard extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // Colored icon badge for visual identification
           Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
@@ -405,6 +413,7 @@ class _StatCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
+          // Emphasize value with larger font than label for hierarchy
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

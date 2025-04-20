@@ -4,12 +4,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 import '../utils/app_logger.dart';
 import '../widgets/earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
-import '../widgets/subtopic_widget.dart';
+import '../pages/subtopic_page.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
 import '../utils/game_launcher.dart';
@@ -261,7 +261,7 @@ class _RacingGameState extends State<RacingGame> {
   void _awardXPForCompletion(BuildContext context) {
     try {
       // Access the XP manager
-      final xpManager = Provider.of<XPManager>(context, listen: false);
+      final xpManager = Provider.of<XPService>(context, listen: false);
 
       // Award XP for game completion
       final int xpAmount = 10; // Base XP for game completion
@@ -291,7 +291,7 @@ class _RacingGameState extends State<RacingGame> {
 
   /// Show custom level up animation with earth unlocked
   void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
     final totalXP = xpManager.currentXP;
 
     EarthUnlockAnimation.show(
@@ -418,20 +418,24 @@ class _RacingGameState extends State<RacingGame> {
           // Game context information
           // 🔹 Scrollable Top Info Bar
           Padding(
-            padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 12.0, bottom: 4.0),
+            padding: const EdgeInsets.only(
+                left: 16.0, right: 16.0, top: 12.0, bottom: 4.0),
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 6.0, horizontal: 10.0),
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8.0),
-                border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.3)),
+                border: Border.all(
+                    color: Theme.of(context).primaryColor.withOpacity(0.3)),
               ),
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(Icons.info_outline, color: Theme.of(context).primaryColor, size: 16),
+                    Icon(Icons.info_outline,
+                        color: Theme.of(context).primaryColor, size: 16),
                     const SizedBox(width: 6),
                     Text(
                       "Grade ${widget.grade} | ${widget.unitTitle} | ${widget.subtopicTitle}",

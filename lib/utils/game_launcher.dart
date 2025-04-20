@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_provider.dart';
+import '../managers/coach_marks/showcase_provider.dart';
 import '../minigames/racing_game.dart';
 import '../minigames/cypher_game.dart';
 import '../minigames/maze_game.dart';
@@ -8,9 +8,9 @@ import '../minigames/puzzle_game.dart';
 import '../minigames/quiz_challenge_game.dart';
 import '../minigames/word_scramble_game.dart';
 import 'package:provider/provider.dart';
-import '../widgets/subtopic_widget.dart';
+import '../pages/subtopic_page.dart';
 import 'app_logger.dart';
-import 'audio/audio_integration.dart';
+import '../managers/audio/audio_integration.dart';
 
 /// Launches a random game from the available game list based on subject
 Future<void> launchRandomGame({
@@ -45,7 +45,6 @@ Future<void> launchRandomGame({
       'PuzzleScreen',
       'MazeGame',
     ];
-
 
     // Add word scramble game for specific subjects
     if (subject.toLowerCase() == "history" ||

@@ -3,24 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
-import 'coach_marks/showcase_keys.dart';
+import 'managers/coach_marks/showcase_keys.dart';
 import 'pages/home.dart';
 import 'pages/progress.dart';
 import 'pages/learn.dart';
 import 'pages/settings.dart';
 import 'firebase_options.dart';
 import 'pages/signin_screen.dart';
-import '/security.dart';
-import 'package:fbla_mobile_2425_learning_app/getkeys.dart';
-import 'xp_manager.dart';
+import 'utils/security.dart';
+import 'package:fbla_mobile_2425_learning_app/services/encryption_service.dart';
+import 'services/xp_service.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'coach_marks/showcase_provider.dart';
+import 'managers/coach_marks/showcase_provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
-import 'providers/settings_provider.dart';
-import 'utils/audio/audio_integration.dart';
+import 'services/settings_service.dart';
+import 'managers/audio/audio_integration.dart';
 import 'dart:async'; // Add this import for TimeoutException
 
 void main() async {
@@ -39,10 +39,10 @@ void main() async {
 
     // Try to initialize the API service, but continue even if it fails
     try {
-      await ApiService.initialize();
+      await EncryptionService.initialize();
     } catch (e) {
-      print('Warning: Could not initialize ApiService: $e');
-      // Continue with the app even if ApiService initialization fails
+      print('Warning: Could not initialize EncryptionService: $e');
+      // Continue with the app even if EncryptionService initialization fails
     }
 
     AppLogger.i("Firebase initialized successfully");
@@ -150,9 +150,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => XPManager()),
+        ChangeNotifierProvider(create: (_) => XPService()),
         ChangeNotifierProvider.value(value: showcaseService),
-        ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => SettingsService()),
       ],
       child: MaterialApp(
         title: 'WorldWise',
@@ -201,7 +201,8 @@ class _AuthWrapperState extends State<AuthWrapper> {
               color: Colors.transparent,
               borderRadius: BorderRadius.circular(25),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.green.shade700,
                   borderRadius: BorderRadius.circular(25),
@@ -245,7 +246,6 @@ class _AuthWrapperState extends State<AuthWrapper> {
       ),
     );
   }
-
 
   Future<bool> checkUserStillExists(User user) async {
     try {

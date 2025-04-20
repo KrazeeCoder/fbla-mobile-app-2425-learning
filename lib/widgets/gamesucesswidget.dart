@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/app_logger.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../widgets/subtopic_widget.dart';
+import '../pages/subtopic_page.dart';
 
 class GameSuccessMessage extends StatefulWidget {
   final VoidCallback onNext;

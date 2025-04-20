@@ -4,14 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_keys.dart';
-import '../xp_manager.dart';
+import '../managers/coach_marks/showcase_keys.dart';
+import '../services/xp_service.dart';
 import '../utils/app_logger.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../widgets/earth_unlock_animation.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../services/updateprogress.dart';
-import '../widgets/subtopic_widget.dart';
+import '../pages/subtopic_page.dart';
 import '../utils/subTopicNavigation.dart';
 import '../widgets/gamesucesswidget.dart';
 import '../utils/game_launcher.dart';
@@ -366,7 +366,7 @@ class _MazeGameState extends State<MazeGame> {
   void _awardXPForCompletion(BuildContext context) {
     try {
       // Access the XP manager
-      final xpManager = Provider.of<XPManager>(context, listen: false);
+      final xpManager = Provider.of<XPService>(context, listen: false);
 
       // Award XP for game completion
       final int xpAmount = 10; // Base XP for game completion
@@ -396,7 +396,7 @@ class _MazeGameState extends State<MazeGame> {
 
   /// Show custom level up animation with earth unlocked
   void _showEarthUnlockedAnimation(BuildContext context, int newLevel) {
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
     final totalXP = xpManager.currentXP;
 
     EarthUnlockAnimation.show(

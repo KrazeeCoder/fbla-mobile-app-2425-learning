@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../xp_manager.dart';
+import '../services/xp_service.dart';
 
 /// Debug widget for testing XP and level progression
 /// Only use during development, remove before final release
@@ -9,7 +9,7 @@ class XPDebugControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
 
     return ExpansionTile(
       title: const Text(
@@ -118,7 +118,7 @@ class XPDebugControls extends StatelessWidget {
   }
 
   Future<void> _addXP(BuildContext context, int amount) async {
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
     final levelUp = await xpManager.addXP(amount);
     if (levelUp) {
       xpManager.showLevelUpAnimation(context, xpManager.currentLevel);
@@ -129,7 +129,7 @@ class XPDebugControls extends StatelessWidget {
   Future<void> _jumpToLevel(BuildContext context, int targetLevel) async {
     // This is a hacky way to force a specific level for testing
     // We directly modify the Firestore document for testing purposes
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
 
     // First, determine how much XP we need
     // For demonstration, we'll use a simple formula: level * 100

@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:audioplayers/audioplayers.dart';
-import '../xp_manager.dart';
+import 'xp_service.dart';
 import '../widgets/earth_unlock_animation.dart';
 import '../utils/app_logger.dart';
 
@@ -275,7 +275,7 @@ void awardXPForCompletion({
   required String subtopicTitle,
 }) {
   try {
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
 
     int xpAmount = 10;
     if (unitCompleted) xpAmount += 10;
@@ -309,7 +309,7 @@ void awardXPForCompletion({
 void showEarthUnlockedAnimation(
     BuildContext context, int newLevel, String subject, String subtopic) {
   try {
-    final xpManager = Provider.of<XPManager>(context, listen: false);
+    final xpManager = Provider.of<XPService>(context, listen: false);
     final totalXP = xpManager.currentXP;
 
     EarthUnlockAnimation.show(

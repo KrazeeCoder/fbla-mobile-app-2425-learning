@@ -1,15 +1,13 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'audio_assets.dart';
-import '../app_logger.dart';
+import '../../utils/app_logger.dart';
 import 'dart:async';
 
-/// Manages all audio in the application including background music and sound effects.
-/// Uses a singleton pattern to ensure only one instance exists throughout the app.
+/// This manager handles audio in the app, including background music and sound effects
 class AudioManager {
-  // Singleton instance
+  // Uses a singleton pattern to ensure only one instance exists throughout the app
   static final AudioManager _instance = AudioManager._internal();
   factory AudioManager() => _instance;
   AudioManager._internal();
@@ -18,11 +16,11 @@ class AudioManager {
   AudioPlayer? _backgroundMusicPlayer;
   AudioPlayer? _soundEffectPlayer;
 
-  // Track initialization state
+  // Track init state
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
 
-  // Settings
+  // Audio settings
   bool _isMusicEnabled = true;
   bool _isSoundEffectsEnabled = true;
   double _musicVolume = 0.5;
@@ -36,12 +34,12 @@ class AudioManager {
   double get musicVolume => _musicVolume;
   double get soundEffectsVolume => _soundEffectsVolume;
 
-  /// Initialize the audio manager and load saved preferences
+  // Initialize the audio manager and load saved preferences
   Future<void> initialize() async {
     if (_isInitialized) return;
 
     try {
-      // Create audio players with a timeout
+      // Create audio players with a timeout to prevent blocking
       await Future(() async {
         _backgroundMusicPlayer = AudioPlayer();
         _soundEffectPlayer = AudioPlayer();
@@ -60,7 +58,7 @@ class AudioManager {
       _soundEffectPlayer
           ?.setVolume(_isSoundEffectsEnabled ? _soundEffectsVolume : 0);
 
-      // Loop background music by default with a timeout
+      // Loop background music by default with a timeout to prevent blocking
       await Future(() async {
         _backgroundMusicPlayer?.setLoopMode(LoopMode.all);
       }).timeout(
@@ -117,8 +115,7 @@ class AudioManager {
     }
   }
 
-  /// Play background music
-  /// [assetPath] defaults to the main background music if not specified
+  // Play background music
   Future<void> playBackgroundMusic({String? assetPath}) async {
     if (!_isInitialized || !_isMusicEnabled || _backgroundMusicPlayer == null)
       return;

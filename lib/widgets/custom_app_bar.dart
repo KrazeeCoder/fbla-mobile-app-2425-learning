@@ -2,9 +2,9 @@ import 'package:fbla_mobile_2425_learning_app/pages/navigation_help.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:showcaseview/showcaseview.dart';
-import '../coach_marks/showcase_keys.dart';
-import '../utils/audio/audio_manager.dart';
-import '../utils/audio/audio_integration.dart';
+import '../managers/coach_marks/showcase_keys.dart';
+import '../managers/audio/audio_manager.dart';
+import '../managers/audio/audio_integration.dart';
 import '../utils/app_logger.dart';
 
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
