@@ -5,7 +5,7 @@ import 'audio_assets.dart';
 import '../../utils/app_logger.dart';
 import 'dart:async';
 
-/// This manager handles audio in the app, including background music and sound effects
+// This manager handles audio in the app, including background music and sound effects
 class AudioManager {
   // Uses a singleton pattern to ensure only one instance exists throughout the app
   static final AudioManager _instance = AudioManager._internal();
