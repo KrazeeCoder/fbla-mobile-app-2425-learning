@@ -403,7 +403,7 @@ class _NavigationChatbotState extends State<NavigationChatbot> {
                 ),
               ],
             ),
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 20),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
             child: Row(
               children: [
                 Expanded(
