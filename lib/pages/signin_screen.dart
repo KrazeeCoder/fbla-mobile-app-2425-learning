@@ -426,12 +426,8 @@ class _SignInScreenState extends State<SignInScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          _socialIcon('assets/login_options/google_logo.svg',
-                              onTap: () {}),
                           _socialIcon('assets/login_options/linkedin_logo.svg',
                               onTap: signInWithLinkedIn),
-                          _socialIcon('assets/login_options/apple_logo.svg',
-                              onTap: () {}),
                         ],
                       ),
                     ],

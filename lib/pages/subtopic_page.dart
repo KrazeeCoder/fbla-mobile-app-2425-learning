@@ -160,13 +160,24 @@ class _SubtopicPageState extends State<SubtopicPage> {
             );
           },
         ),
-        title: Text('Back to Previous Screen',
-            style: TextStyle(
+        leadingWidth: 36, // Slightly increased from 30 to create more space
+        title: Padding(
+          padding:
+              const EdgeInsets.only(left: 4), // Add a small padding for spacing
+          child: const Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              'Back to Previous Screen',
+              style: TextStyle(
                 fontSize: 16,
                 color: Colors.black54,
-                fontWeight: FontWeight.normal)),
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+          ),
+        ),
         backgroundColor: Colors.transparent,
-        titleSpacing: 0,
+        titleSpacing: 0, // Keep this at 0
         foregroundColor: Colors.black54,
         elevation: 0,
       ),
