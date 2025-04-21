@@ -588,25 +588,14 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
         GestureDetector(
           onTap: onTap,
           child: Container(
-            width: 60, // Fixed outer size
-            height: 60,
-            padding: const EdgeInsets.all(10), // Padding around image
+            width: 50,
+            height: 50,
             decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: ClipOval(
-              child: Image.asset(
-                assetPath,
-                fit: BoxFit.contain, // Scales the image to fit nicely
-              ),
+            child: Image.asset(
+              assetPath,
+              fit: BoxFit.contain,
             ),
           ),
         ),

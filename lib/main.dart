@@ -194,7 +194,7 @@ class _AuthWrapperState extends State<AuthWrapper> {
         children: [
           Positioned(
             top: 40, // Adjust as needed for spacing below notch/status bar
-            right: 16,
+            left: 16,
             child: Material(
               elevation: 4,
               color: Colors.transparent,

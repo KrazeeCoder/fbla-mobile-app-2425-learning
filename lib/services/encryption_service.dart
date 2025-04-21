@@ -49,8 +49,9 @@ class EncryptionService {
     return _instance;
   }
 
-  // Generates HMAC SHA-256 signature for the given payload.
-  String generateHMACSignature(Map<String, dynamic> body) {
+  // Generates HMAC SHA-256 signature
+  String generateHMACSignature
+      (Map<String, dynamic> body) {
     final payload = jsonEncode(body);
     final hmac = Hmac(sha256, utf8.encode(hmacSecret));
     final digest = hmac.convert(utf8.encode(payload));

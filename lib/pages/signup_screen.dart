@@ -222,7 +222,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
         navigateToMainPage();
       }
     } else {
-      _showSnackBar(result ?? "Registration failed");
+      // Clean up the error message by removing the Firebase prefix
+      String cleanError = result ?? "Registration failed";
+      if (cleanError.contains("firebase")) {
+        cleanError = cleanError.split("]").last.trim();
+      }
+      _showSnackBar(cleanError);
     }
   }
 

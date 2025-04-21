@@ -104,137 +104,35 @@ class _ProgressPageState extends State<ProgressPage>
           ? const Center(child: CircularProgressIndicator())
           : FadeTransition(
               opacity: _fadeAnimation,
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0, vertical: 12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Page title with branded styling
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 16.0),
-                          child: Text(
-                            'Your Progress',
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: primaryColor,
-                              letterSpacing: 0.5,
-                            ),
-                          ),
-                        ),
-
-                        // User stats section, shows streak and achievement metrics
-                        Showcase(
-                          key: ShowcaseKeys.progressStatsKey,
-                          title: 'Your Learning Stats',
-                          description:
-                              'Track your current streak and level. The longer your streak, the more points you earn!',
-                          titleTextStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 18.0,
-                          ),
-                          descTextStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                          ),
-                          tooltipBackgroundColor: Colors.green.shade700,
-                          overlayColor: Colors.black,
-                          overlayOpacity: 0.7,
-                          tooltipPadding: const EdgeInsets.all(16.0),
-                          targetPadding: const EdgeInsets.all(8.0),
-                          targetShapeBorder: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          tooltipBorderRadius: BorderRadius.circular(10.0),
-                          child: Row(
-                            children: [
-                              // Daily streak card
-                              Expanded(
-                                flex: 2,
-                                child: _buildStreakCard(),
-                              ),
-                              const SizedBox(width: 12),
-
-                              // Achievement metrics, showing level and completed subtopics
-                              Expanded(
-                                flex: 2,
-                                child: Column(
-                                  children: [
-                                    _StatCard(
-                                      label: "Level",
-                                      value: "$level",
-                                      icon: Icons.star_rounded,
-                                      color: Colors.amber.shade600,
-                                    ),
-                                    const SizedBox(height: 8),
-                                    _StatCard(
-                                      label: "Completed",
-                                      value: "$subtopicsCompleted",
-                                      icon: Icons.check_circle_rounded,
-                                      color: Colors.green.shade600,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Leaderboard section, shows how user ranks against friends
-                        Showcase(
-                          key: ShowcaseKeys.progressLeaderboardKey,
-                          title: 'Leaderboard',
-                          description:
-                              'See how you rank against other learners. Challenge yourself to climb the leaderboard!',
-                          titleTextStyle: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            fontSize: 18.0,
-                          ),
-                          descTextStyle: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 14.0,
-                          ),
-                          tooltipBackgroundColor: Colors.green.shade700,
-                          overlayColor: Colors.black,
-                          overlayOpacity: 0.7,
-                          tooltipPadding: const EdgeInsets.all(16.0),
-                          targetPadding: const EdgeInsets.all(8.0),
-                          targetShapeBorder: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          tooltipBorderRadius: BorderRadius.circular(10.0),
-                          child: const LeaderboardWidget(),
-                        ),
-                        const SizedBox(height: 20),
-
-                        // Recent Activity section, shows historical data
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Recent Activity',
+              child: SingleChildScrollView(
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0, vertical: 12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Page title with branded styling
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 16.0),
+                            child: Text(
+                              'Your Progress',
                               style: TextStyle(
-                                fontSize: 18,
+                                fontSize: 24,
                                 fontWeight: FontWeight.bold,
                                 color: primaryColor,
+                                letterSpacing: 0.5,
                               ),
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
+                          ),
 
-                        // Recent Lessons section, shows recent lessons completed
-                        Expanded(
-                          child: Showcase(
-                            key: ShowcaseKeys.progressRecentActivityKey,
-                            title: 'Recent Activity',
+                          // User stats section, shows streak and achievement metrics
+                          Showcase(
+                            key: ShowcaseKeys.progressStatsKey,
+                            title: 'Your Learning Stats',
                             description:
-                                'View your learning history here. See what lessons you\'ve completed and where you left off.',
+                                'Track your current streak and level. The longer your streak, the more points you earn!',
                             titleTextStyle: const TextStyle(
                               fontWeight: FontWeight.bold,
                               color: Colors.white,
@@ -253,32 +151,139 @@ class _ProgressPageState extends State<ProgressPage>
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             tooltipBorderRadius: BorderRadius.circular(10.0),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(16),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.08),
-                                    blurRadius: 12,
-                                    spreadRadius: 1,
-                                    offset: const Offset(0, 2),
+                            child: Row(
+                              children: [
+                                // Daily streak card
+                                Expanded(
+                                  flex: 2,
+                                  child: _buildStreakCard(),
+                                ),
+                                const SizedBox(width: 12),
+
+                                // Achievement metrics, showing level and completed subtopics
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    children: [
+                                      _StatCard(
+                                        label: "Level",
+                                        value: "$level",
+                                        icon: Icons.star_rounded,
+                                        color: Colors.amber.shade600,
+                                      ),
+                                      const SizedBox(height: 8),
+                                      _StatCard(
+                                        label: "Completed",
+                                        value: "$subtopicsCompleted",
+                                        icon: Icons.check_circle_rounded,
+                                        color: Colors.green.shade600,
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                ),
+                              ],
+                            ),
+                          ),
+
+                          // Leaderboard section, shows how user ranks against friends
+                          Showcase(
+                            key: ShowcaseKeys.progressLeaderboardKey,
+                            title: 'Leaderboard',
+                            description:
+                                'See how you rank against other learners. Challenge yourself to climb the leaderboard!',
+                            titleTextStyle: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              fontSize: 18.0,
+                            ),
+                            descTextStyle: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.0,
+                            ),
+                            tooltipBackgroundColor: Colors.green.shade700,
+                            overlayColor: Colors.black,
+                            overlayOpacity: 0.7,
+                            tooltipPadding: const EdgeInsets.all(16.0),
+                            targetPadding: const EdgeInsets.all(8.0),
+                            targetShapeBorder: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            tooltipBorderRadius: BorderRadius.circular(10.0),
+                            child: const LeaderboardWidget(),
+                          ),
+                          const SizedBox(height: 20),
+
+                          // Recent Activity section, shows historical data
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Recent Activity',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: primaryColor,
+                                ),
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16),
-                                child: RecentLessonsTabWidget(
-                                  userProgress: userProgress,
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+
+                          // Recent Lessons section, shows recent lessons completed
+                          Container(
+                            height:
+                                400, // Added fixed height for recent lessons section
+                            child: Showcase(
+                              key: ShowcaseKeys.progressRecentActivityKey,
+                              title: 'Recent Activity',
+                              description:
+                                  'View your learning history here. See what lessons you\'ve completed and where you left off.',
+                              titleTextStyle: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                                fontSize: 18.0,
+                              ),
+                              descTextStyle: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 14.0,
+                              ),
+                              tooltipBackgroundColor: Colors.green.shade700,
+                              overlayColor: Colors.black,
+                              overlayOpacity: 0.7,
+                              tooltipPadding: const EdgeInsets.all(16.0),
+                              targetPadding: const EdgeInsets.all(8.0),
+                              targetShapeBorder: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              tooltipBorderRadius: BorderRadius.circular(10.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.08),
+                                      blurRadius: 12,
+                                      spreadRadius: 1,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: RecentLessonsTabWidget(
+                                    userProgress: userProgress,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                          const SizedBox(height: 20), // Added bottom padding
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
     );
