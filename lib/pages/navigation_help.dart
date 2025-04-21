@@ -54,7 +54,7 @@ class _NavigationHelpPageState extends State<NavigationHelpPage>
         children: [
           // Guide Tab
           SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
