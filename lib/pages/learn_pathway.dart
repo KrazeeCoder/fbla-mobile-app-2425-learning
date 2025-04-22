@@ -696,9 +696,9 @@ class _PathwayUIState extends State<PathwayUI> {
   // 🆕 Helper function to build the FAB
   FloatingActionWidget _buildShowcaseFab(BuildContext fabContext) {
     return FloatingActionWidget(
-        left: 130,
-        top: 24,
-        width: 135, // Increased width for better visibility
+        right: 16,
+        top: 40,
+        width: 90, // Increased width for better visibility
         height: 36, // Increased height for better tap target
         child: Material(
           elevation: 4,
@@ -744,7 +744,7 @@ class _PathwayUIState extends State<PathwayUI> {
                     ),
                     SizedBox(width: 4),
                     Text(
-                      'Skip Tutorial',
+                      'Skip',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,

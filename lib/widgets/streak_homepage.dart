@@ -64,22 +64,23 @@ class _StreakHomepageState extends State<StreakHomepage>
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4), // reduced vertical
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: _currentStreak > 0
               ? [
-                  const Color(0xFFFF6B00).withOpacity(0.1),
-                  const Color(0xFFFF8A00).withOpacity(0.1),
-                ]
+            const Color(0xFFFF6B00).withOpacity(0.1),
+            const Color(0xFFFF8A00).withOpacity(0.1),
+          ]
               : [
-                  Colors.grey.shade100,
-                  Colors.grey.shade200,
-                ],
+            Colors.grey.shade100,
+            Colors.grey.shade200,
+          ],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -100,177 +101,174 @@ class _StreakHomepageState extends State<StreakHomepage>
       ),
       child: _isLoading
           ? const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6B00)),
-              ),
-            )
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFF6B00)),
+        ),
+      )
           : Row(
-              children: [
-                // Animated Flame Icon
-                AnimatedBuilder(
-                  animation: _flameAnimation,
-                  builder: (context, child) {
-                    return Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        gradient: _currentStreak > 0
-                            ? LinearGradient(
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                                colors: [
-                                  const Color(0xFFFF6B00).withOpacity(0.12),
-                                  const Color(0xFFFF8A00).withOpacity(0.08),
-                                ],
-                              )
-                            : null,
-                        color:
-                            _currentStreak == 0 ? Colors.grey.shade200 : null,
-                        shape: BoxShape.circle,
-                        boxShadow: _currentStreak > 0
-                            ? [
-                                BoxShadow(
-                                  color:
-                                      const Color(0xFFFF6B00).withOpacity(0.2),
-                                  blurRadius: 8,
-                                  spreadRadius: 1,
-                                ),
-                              ]
-                            : null,
+        children: [
+          // Animated Flame Icon (slightly smaller)
+          AnimatedBuilder(
+            animation: _flameAnimation,
+            builder: (context, child) {
+              return Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  gradient: _currentStreak > 0
+                      ? LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      const Color(0xFFFF6B00).withOpacity(0.12),
+                      const Color(0xFFFF8A00).withOpacity(0.08),
+                    ],
+                  )
+                      : null,
+                  color: _currentStreak == 0 ? Colors.grey.shade200 : null,
+                  shape: BoxShape.circle,
+                  boxShadow: _currentStreak > 0
+                      ? [
+                    BoxShadow(
+                      color: const Color(0xFFFF6B00).withOpacity(0.2),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                    ),
+                  ]
+                      : null,
+                ),
+                child: Center(
+                  child: Transform.translate(
+                    offset: Offset(0, -2 * _flameAnimation.value),
+                    child: Transform.scale(
+                      scale: 1.0 + (_flameAnimation.value * 0.05),
+                      child: Icon(
+                        Icons.local_fire_department,
+                        color: _currentStreak > 0
+                            ? const Color.fromARGB(255, 255, 94, 0)
+                            : Colors.grey,
+                        size: 26, // slightly smaller
                       ),
-                      child: Center(
-                        child: Transform.translate(
-                          offset: Offset(0, -2 * _flameAnimation.value),
-                          child: Transform.scale(
-                            scale: 1.0 + (_flameAnimation.value * 0.05),
-                            child: Icon(
-                              Icons.local_fire_department,
-                              color: _currentStreak > 0
-                                  ? const Color.fromARGB(255, 255, 94, 0)
-                                  : Colors.grey,
-                              size: 28,
-                            ),
+                    ),
+                  ),
+                ),
+              );
+            },
+          ),
+          const SizedBox(width: 16),
+          // Streak Info
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _currentStreak == 0 ? "Start Your Streak" : "🔥 Streak",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: _currentStreak > 0
+                        ? const Color(0xFFFF6B00)
+                        : Colors.grey.shade600,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2), // reduced from 4
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  spacing: 8,
+                  children: [
+                    Text(
+                      _currentStreak == 0
+                          ? "Complete a lesson today"
+                          : "$_currentStreak ${_currentStreak == 1 ? 'day' : 'days'}",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        foreground: Paint()
+                          ..shader = _currentStreak > 0
+                              ? const LinearGradient(
+                            colors: [
+                              Color(0xFFFF6B00),
+                              Color(0xFFFF8A00),
+                            ],
+                          ).createShader(
+                            const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0),
+                          )
+                              : LinearGradient(
+                            colors: [
+                              Colors.grey.shade600,
+                              Colors.grey.shade400,
+                            ],
+                          ).createShader(
+                            const Rect.fromLTWH(0.0, 0.0, 200.0, 70.0),
                           ),
+                      ),
+                    ),
+                    if (_currentStreak > 0)
+                      Text(
+                        "• ${_currentStreak ~/ 7} ${_currentStreak ~/ 7 == 1 ? 'week' : 'weeks'}",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
                         ),
                       ),
-                    );
-                  },
+                  ],
                 ),
-                const SizedBox(width: 16),
-                // Streak Info
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+              ],
+            ),
+          ),
+          // Streak Progress Circle (height reduced)
+          if (_currentStreak > 0)
+            Container(
+              width: 52,
+              height: 60, // was 68
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: const Color(0xFFFF6B00).withOpacity(0.2),
+                  width: 2,
+                ),
+              ),
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: CircularProgressIndicator(
+                      value: (_currentStreak % 7) / 7,
+                      backgroundColor: Colors.grey.shade200,
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                          Color(0xFFFF6B00)),
+                      strokeWidth: 4,
+                    ),
+                  ),
+                  Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _currentStreak == 0 ? "Start Your Streak" : "🔥 Streak",
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: _currentStreak > 0
-                              ? const Color(0xFFFF6B00)
-                              : Colors.grey.shade600,
-                          fontWeight: FontWeight.w600,
+                        "${_currentStreak % 7}/7",
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFF6B00),
                         ),
                       ),
-                      const SizedBox(height: 4),
-                      Wrap(
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 8,
-                        children: [
-                          Text(
-                            _currentStreak == 0
-                                ? "Complete a lesson today"
-                                : "$_currentStreak ${_currentStreak == 1 ? 'day' : 'days'}",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              foreground: Paint()
-                                ..shader = _currentStreak > 0
-                                    ? const LinearGradient(
-                                        colors: [
-                                          Color(0xFFFF6B00),
-                                          Color(0xFFFF8A00),
-                                        ],
-                                      ).createShader(
-                                        const Rect.fromLTWH(
-                                            0.0, 0.0, 200.0, 70.0),
-                                      )
-                                    : LinearGradient(
-                                        colors: [
-                                          Colors.grey.shade600,
-                                          Colors.grey.shade400,
-                                        ],
-                                      ).createShader(
-                                        const Rect.fromLTWH(
-                                            0.0, 0.0, 200.0, 70.0),
-                                      ),
-                            ),
-                          ),
-                          if (_currentStreak > 0)
-                            Text(
-                              "• ${_currentStreak ~/ 7} ${_currentStreak ~/ 7 == 1 ? 'week' : 'weeks'}",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                        ],
+                      Text(
+                        "days",
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
                     ],
                   ),
-                ),
-                // Streak Progress
-                if (_currentStreak > 0)
-                  Container(
-                    width: 56,
-                    height: 68,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: const Color(0xFFFF6B00).withOpacity(0.2),
-                        width: 2,
-                      ),
-                    ),
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: [
-                        SizedBox(
-                          width: 55,
-                          height: 55,
-                          child: CircularProgressIndicator(
-                            value: (_currentStreak % 7) / 7,
-                            backgroundColor: Colors.grey.shade200,
-                            valueColor: const AlwaysStoppedAnimation<Color>(
-                                Color(0xFFFF6B00)),
-                            strokeWidth: 4,
-                          ),
-                        ),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "${_currentStreak % 7}/7",
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFFF6B00),
-                              ),
-                            ),
-                            Text(
-                              "days",
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-              ],
+                ],
+              ),
             ),
+        ],
+      ),
     );
   }
+
 }
