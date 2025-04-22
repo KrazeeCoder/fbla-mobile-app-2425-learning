@@ -160,22 +160,34 @@ class _HomePageState extends State<HomePage> {
                                           showDialog(
                                             context: context,
                                             builder: (context) => Dialog(
-                                              insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+                                              insetPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20),
                                               shape: RoundedRectangleBorder(
-                                                borderRadius: BorderRadius.circular(20),
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
                                               ),
                                               child: Container(
                                                 width: double.infinity,
-                                                padding: const EdgeInsets.only(left: 20, right: 12, top: 20, bottom: 20), // more left-heavy
+                                                padding: const EdgeInsets.only(
+                                                    left: 20,
+                                                    right: 12,
+                                                    top: 20,
+                                                    bottom:
+                                                        20), // more left-heavy
                                                 child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  crossAxisAlignment: CrossAxisAlignment.start, // aligns all children to left
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .start, // aligns all children to left
                                                   children: [
                                                     const Text(
                                                       "🌍 Level Up Tip!",
                                                       style: TextStyle(
                                                         fontSize: 22,
-                                                        fontWeight: FontWeight.bold,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                       ),
                                                     ),
                                                     const SizedBox(height: 16),
@@ -183,17 +195,19 @@ class _HomePageState extends State<HomePage> {
                                                       "Keep exploring to level up your Earth!",
                                                       style: TextStyle(
                                                         fontSize: 16,
-                                                        fontWeight: FontWeight.w600,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                       ),
                                                       softWrap: false,
-                                                      overflow: TextOverflow.visible,
+                                                      overflow:
+                                                          TextOverflow.visible,
                                                     ),
                                                     const SizedBox(height: 12),
                                                     const Text(
                                                       "📘 Complete readings\n"
-                                                          "🎮 Play games\n"
-                                                          "🎯 Master quizzes\n"
-                                                          "🏆 Earn XP and unlock new planets!",
+                                                      "🎮 Play games\n"
+                                                      "🎯 Master quizzes\n"
+                                                      "🏆 Earn XP and unlock new planets!",
                                                       style: TextStyle(
                                                         fontSize: 15,
                                                         height: 1.5,
@@ -201,21 +215,37 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                     const SizedBox(height: 24),
                                                     Align(
-                                                      alignment: Alignment.centerRight,
+                                                      alignment:
+                                                          Alignment.centerRight,
                                                       child: TextButton(
-                                                        onPressed: () => Navigator.pop(context),
-                                                        style: TextButton.styleFrom(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                                                          backgroundColor: const Color(0xFF4CAF50),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(12),
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      20,
+                                                                  vertical: 10),
+                                                          backgroundColor:
+                                                              const Color(
+                                                                  0xFF4CAF50),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
                                                           ),
                                                         ),
                                                         child: const Text(
                                                           "Got it! 🚀",
                                                           style: TextStyle(
                                                             color: Colors.white,
-                                                            fontWeight: FontWeight.w600,
+                                                            fontWeight:
+                                                                FontWeight.w600,
                                                             fontSize: 16,
                                                           ),
                                                         ),
@@ -226,10 +256,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                           );
-
                                         },
-
-
                                         child: SvgPicture.asset(
                                           earthImages[index],
                                           height: screenHeight * 0.22,
@@ -237,7 +264,6 @@ class _HomePageState extends State<HomePage> {
                                           fit: BoxFit.contain,
                                         ),
                                       );
-
 
                                       if (isLocked) {
                                         earthVisual = Container(
@@ -373,31 +399,37 @@ class _HomePageState extends State<HomePage> {
                             ValueListenableBuilder<int>(
                               valueListenable: _currentPageNotifier,
                               builder: (context, currentPage, child) {
-                                final isNotAtCurrentLevel =
-                                    currentPage != (currentLevel - 1).clamp(0, totalEarthLevels - 1);
+                                final isNotAtCurrentLevel = currentPage !=
+                                    (currentLevel - 1)
+                                        .clamp(0, totalEarthLevels - 1);
 
                                 return AnimatedPositioned(
                                   duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
-                                  top: isNotAtCurrentLevel ? 8 : -60, // Slides in from top
+                                  top: isNotAtCurrentLevel
+                                      ? 8
+                                      : -60, // Slides in from top
                                   right: 10, // 🔁 changed from left: to right:
                                   child: Material(
                                     elevation: 3,
                                     borderRadius: BorderRadius.circular(20),
-                                    color: Color(0xFF37474F), // Blue-gray tone, clean and modern
-
+                                    color: Color(
+                                        0xFF37474F), // Blue-gray tone, clean and modern
 
                                     child: InkWell(
                                       borderRadius: BorderRadius.circular(20),
                                       onTap: () {
                                         _pageController.animateToPage(
-                                          (currentLevel - 1).clamp(0, totalEarthLevels - 1),
-                                          duration: const Duration(milliseconds: 600),
+                                          (currentLevel - 1)
+                                              .clamp(0, totalEarthLevels - 1),
+                                          duration:
+                                              const Duration(milliseconds: 600),
                                           curve: Curves.easeInOut,
                                         );
                                       },
                                       child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 6),
                                         child: const Text(
                                           'Back to my level',
                                           style: TextStyle(
@@ -410,11 +442,8 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ),
                                 );
-
                               },
                             ),
-
-
                           ],
                         );
                       }),
@@ -474,8 +503,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                     maxLines: 1,
                   ),
-
-
                 ],
               ),
             ),
@@ -509,12 +536,12 @@ class _HomePageState extends State<HomePage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: FutureBuilder<List<UserProgress>>(
-                  future: ProgressService.fetchRecentLessons(user?.uid ?? "",
-                      latest: true),
+                  future: ProgressService.getHardcodedUserProgress(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
-                        child: Padding( //padding
+                        child: Padding(
+                          //padding
                           padding: EdgeInsets.all(24.0),
                           child: CircularProgressIndicator(),
                         ),
@@ -557,6 +584,7 @@ class _HomePageState extends State<HomePage> {
                           subject: item.subject,
                           grade: item.grade,
                           subtopicId: item.subtopicId,
+                          hardcoded: true,
                         );
 
                         final userId =
