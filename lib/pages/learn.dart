@@ -280,7 +280,7 @@ class _LearnPageState extends State<LearnPage>
                                         size: 16,
                                         color: _selectedTabIndex == 1
                                             ? primaryColor
-                                            : Colors.grey.shade600,
+                                            : Colors.grey.shade800,
                                       ),
                                       const SizedBox(width: 6),
                                       Text(
@@ -288,7 +288,7 @@ class _LearnPageState extends State<LearnPage>
                                         style: TextStyle(
                                           color: _selectedTabIndex == 1
                                               ? primaryColor
-                                              : Colors.grey.shade600,
+                                              : Colors.grey.shade800,
                                           fontWeight: _selectedTabIndex == 1
                                               ? FontWeight.bold
                                               : FontWeight.normal,

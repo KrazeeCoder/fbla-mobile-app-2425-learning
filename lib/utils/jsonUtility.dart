@@ -10,4 +10,3 @@ Future<Map<String, dynamic>> loadJsonData() async {
 
   return jsonData;
 }
-

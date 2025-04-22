@@ -230,7 +230,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                     context,
                     icon: Icons.home_outlined,
                     label: "Home",
-                    color: Colors.amber.shade600,
+                    color: Colors.green.shade900,
                     onPressed: () {
                       AudioIntegration.handleButtonPress();
                       Navigator.of(context).pop();
