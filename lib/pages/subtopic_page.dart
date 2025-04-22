@@ -451,52 +451,60 @@ class _SubtopicPageState extends State<SubtopicPage> {
                           ),
                           tooltipBorderRadius: BorderRadius.circular(10.0),
                           child: ElevatedButton(
-                            onPressed: () async {
-                              final user = FirebaseAuth.instance.currentUser;
+                            onPressed: widget.subtopicId == 'g11_bio_1'
+                                ? () {
+                                    // Do nothing — button is disabled for this subtopic
+                                  }
+                                : () async {
+                                    final user =
+                                        FirebaseAuth.instance.currentUser;
 
-                              if (user != null) {
-                                // Show loading state
-                                setState(() {
-                                  _isLoading = true;
-                                });
+                                    if (user != null) {
+                                      // Show loading state
+                                      setState(() {
+                                        _isLoading = true;
+                                      });
 
-                                // Pre-fetch navigation info before completion if not already loaded
-                                if (subtopicNav == null) {
-                                  subtopicNav = await getSubtopicNavigationInfo(
-                                    subject: widget.subject,
-                                    grade: widget.grade,
-                                    subtopicId: widget.subtopicId,
-                                  );
-                                }
+                                      // Pre-fetch navigation info before completion if not already loaded
+                                      if (subtopicNav == null) {
+                                        subtopicNav =
+                                            await getSubtopicNavigationInfo(
+                                          subject: widget.subject,
+                                          grade: widget.grade,
+                                          subtopicId: widget.subtopicId,
+                                        );
+                                      }
 
-                                // Handle subtopic completion (includes XP award and possible level up)
-                                await _handleSubTopicCompletion(context);
+                                      // Handle subtopic completion (includes XP award and possible level up)
+                                      await _handleSubTopicCompletion(context);
 
-                                // If still mounted, launch the game
-                                if (mounted) {
-                                  AppLogger.i("Launching Random Game");
+                                      // If still mounted, launch the game
+                                      if (mounted) {
+                                        AppLogger.i("Launching Random Game");
 
-                                  // For normal gameplay: use random game without tutorial
-                                  await launchRandomGame(
-                                    context: context,
-                                    subject: widget.subject,
-                                    grade: widget.grade,
-                                    unitId: widget.unitId,
-                                    unitTitle: widget.unitTitle,
-                                    subtopicId: widget.subtopicId,
-                                    subtopicTitle: widget.readingTitle,
-                                    nextSubtopicId:
-                                        subtopicNav?['nextSubtopicId'] ?? "",
-                                    nextSubtopicTitle:
-                                        subtopicNav?['nextReadingTitle'] ?? "",
-                                    nextReadingContent:
-                                        subtopicNav?['nextReadingContent'] ??
-                                            "",
-                                    userId: widget.userId,
-                                  );
-                                }
-                              }
-                            },
+                                        // For normal gameplay: use random game without tutorial
+                                        await launchRandomGame(
+                                          context: context,
+                                          subject: widget.subject,
+                                          grade: widget.grade,
+                                          unitId: widget.unitId,
+                                          unitTitle: widget.unitTitle,
+                                          subtopicId: widget.subtopicId,
+                                          subtopicTitle: widget.readingTitle,
+                                          nextSubtopicId:
+                                              subtopicNav?['nextSubtopicId'] ??
+                                                  "",
+                                          nextSubtopicTitle: subtopicNav?[
+                                                  'nextReadingTitle'] ??
+                                              "",
+                                          nextReadingContent: subtopicNav?[
+                                                  'nextReadingContent'] ??
+                                              "",
+                                          userId: widget.userId,
+                                        );
+                                      }
+                                    }
+                                  },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: primaryGreen,
                               foregroundColor: Colors.white,
