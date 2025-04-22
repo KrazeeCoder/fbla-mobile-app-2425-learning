@@ -514,7 +514,7 @@ class _HomePageState extends State<HomePage> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
-                        child: Padding(
+                        child: Padding( //padding
                           padding: EdgeInsets.all(24.0),
                           child: CircularProgressIndicator(),
                         ),
