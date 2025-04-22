@@ -334,6 +334,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Header
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
@@ -357,6 +358,8 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                         ],
                       ),
                     ),
+
+                    // Preview Image
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: Container(
@@ -380,6 +383,8 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                         ),
                       ),
                     ),
+
+                    // Message Text
                     Padding(
                       padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                       child: Text(
@@ -391,22 +396,22 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                         ),
                       ),
                     ),
+
+                    // Centered Icon Row
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 20),
+                      padding: const EdgeInsets.only(bottom: 20, top: 4),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const SizedBox(width: 20),
                           _buildSocialIcon(
                             assetPath: 'assets/Instagram_icon.png',
                             label: 'Insta Story',
                             onTap: () async {
                               Navigator.pop(context);
-                              await _handleInstagramStoryShare(
-                                  context, message);
+                              await _handleInstagramStoryShare(context, message);
                             },
                           ),
-                          const SizedBox(width: 20),
+                          const SizedBox(width: 24),
                           _buildSocialIcon(
                             assetPath: 'assets/linkedin-icon.png',
                             label: 'LinkedIn',
@@ -415,14 +420,13 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
                               await _handleLinkedInShare(context, message);
                             },
                           ),
-                          const SizedBox(width: 20),
+                          const SizedBox(width: 24),
                           _buildSocialIcon(
                             assetPath: 'assets/share-icon.png',
                             label: 'Share',
                             onTap: () async {
                               Navigator.pop(context);
-                              await _handleImageShare(
-                                  context, message, 'System');
+                              await _handleImageShare(context, message, 'System');
                             },
                           ),
                         ],
@@ -437,6 +441,7 @@ class _EarthUnlockAnimationState extends State<EarthUnlockAnimation> {
       },
     );
   }
+
 
   Future<String?> getLinkedInToken() async {
     final prefs = await SharedPreferences.getInstance();

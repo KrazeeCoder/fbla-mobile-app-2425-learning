@@ -5,8 +5,35 @@ Future<Map<String, dynamic>> getSubtopicNavigationInfo({
   required String subject,
   required int grade,
   required String subtopicId,
+  bool hardcoded = false,
 }) async {
-  final String jsonString = await rootBundle.loadString('assets/content.json');
+  final String jsonString;
+  if (hardcoded) {
+    return {
+      // Current subtopic info
+      'readingContent':
+          "### 🧬 The Blueprint of Life — DNA Structure and Function\n\n**DNA (Deoxyribonucleic Acid)** is the molecule that holds the genetic instructions for all living organisms.\n\n- **Structure:** DNA is shaped like a double helix — imagine a twisted ladder.\n- **Components:**\n  - Sugar-phosphate backbone (the sides of the ladder)\n  - Nitrogenous bases (the rungs): Adenine (A), Thymine (T), Cytosine (C), Guanine (G)\n\n**Base Pairing Rules:**\n- Adenine (A) pairs with Thymine (T)\n- Cytosine (C) pairs with Guanine (G)\n\n**Why is DNA Important?**\n- Stores genetic information.\n- Controls cell growth, repair, and reproduction.\n- Passes traits from parents to offspring.\n\n**Fun Fact:**\nIf you stretched out all the DNA in one human cell, it would be about 2 meters long!",
+      'readingTitle': "The Blueprint of Life",
+
+      // Next subtopic info
+      'nextSubtopicId': "g11_bio_2",
+      'nextSubtopicTitle': "Genes and Chromosomes",
+      'nextReadingContent':
+          "Genes are segments of DNA that code for proteins and determine traits. Chromosomes are structures made of DNA that carry genes.",
+      'nextReadingTitle': "From DNA to Traits",
+
+      'nextUnitId': 1,
+      'nextUnitTitle': "Biology: Genetics and Human Systems",
+
+      // Position flags
+      'isLastOfUnit': false,
+      'isLastOfGrade': false,
+      'isLastOfSubject': false,
+      'nextGrade': 11,
+    };
+  } else {
+    jsonString = await rootBundle.loadString('assets/content.json');
+  }
   final Map<String, dynamic> data = json.decode(jsonString);
 
   final List<Map<String, dynamic>> flatList = [];
@@ -95,6 +122,4 @@ Future<Map<String, dynamic>> getSubtopicNavigationInfo({
     'isLastOfSubject': isLastOfSubject,
     'nextGrade': isLastOfGrade ? nextGrade : grade,
   };
-
-
 }

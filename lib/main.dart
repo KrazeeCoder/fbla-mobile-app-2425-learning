@@ -528,7 +528,7 @@ class _MainPageState extends State<MainPage> {
         ),
       ],
       currentIndex: _selectedIndex,
-      selectedItemColor: Colors.deepPurple,
+      selectedItemColor: Color(0xFF0D47A1),
       unselectedItemColor: Colors.grey,
       onTap: _onItemTapped,
       type: BottomNavigationBarType.fixed, // Ensure labels are always visible

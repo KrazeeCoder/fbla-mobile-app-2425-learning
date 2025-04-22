@@ -7,11 +7,9 @@ class LevelBarHomepage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Access XPManager from provider
     final xpManager = Provider.of<XPService>(context);
     final theme = Theme.of(context);
 
-    // Show loading indicator while data is loading
     if (xpManager.isLoading) {
       return const Center(
         child: Padding(
@@ -21,45 +19,36 @@ class LevelBarHomepage extends StatelessWidget {
       );
     }
 
-    // Calculate XP remaining until next level
     final int currentXP = xpManager.currentXP;
-    final int minXP = xpManager.minXPForCurrentLevel;
     final int maxXP = xpManager.maxXPForCurrentLevel;
     final int xpRemaining = maxXP - currentXP;
-
-    // Calculate progress for the progress bar
     final double progressValue = xpManager.levelProgress;
 
     return Padding(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6), // reduced from 10
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Level Badge + XP Remaining Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Row(
                 children: [
                   Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // reduced vertical
                     decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFF3A8C44), // Deeper green
-                          Color(0xFF4CAF50), // Material green
-                        ],
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF3A8C44), Color(0xFF4CAF50)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(14),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF3A8C44).withOpacity(0.3),
-                          blurRadius: 4,
-                          offset: const Offset(0, 2),
+                          color: const Color(0xFF3A8C44).withOpacity(0.3),
+                          blurRadius: 3,
+                          offset: const Offset(0, 1),
                         ),
                       ],
                     ),
@@ -67,27 +56,27 @@ class LevelBarHomepage extends StatelessWidget {
                       "Level ${xpManager.currentLevel}",
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 16,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 8), // slightly reduced
                   Icon(
                     Icons.emoji_events_outlined,
                     color: theme.colorScheme.primary.withOpacity(0.8),
-                    size: 22,
+                    size: 21,
                   ),
                 ],
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3), // reduced vertical
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.85),
+                  color: Colors.white.withOpacity(0.9),
                   borderRadius: BorderRadius.circular(10),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withOpacity(0.04),
                       blurRadius: 2,
                       offset: const Offset(0, 1),
                     ),
@@ -95,9 +84,8 @@ class LevelBarHomepage extends StatelessWidget {
                 ),
                 child: Text(
                   "$xpRemaining XP to level up",
-                  style: TextStyle(
-                    color: Color(
-                        0xFF2E7D32), // Deep green that matches the level badge
+                  style: const TextStyle(
+                    color: Color(0xFF2E7D32),
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
                   ),
@@ -105,19 +93,16 @@ class LevelBarHomepage extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12.0),
+          const SizedBox(height: 8), // was 10
+          // Progress Bar
           Stack(
             children: [
-              // Background Container with Gradient
               Container(
-                height: 14,
+                height: 13,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   gradient: LinearGradient(
-                    colors: [
-                      Colors.grey.shade200,
-                      Colors.grey.shade100,
-                    ],
+                    colors: [Colors.grey.shade200, Colors.grey.shade100],
                     begin: Alignment.centerLeft,
                     end: Alignment.centerRight,
                   ),
@@ -130,27 +115,22 @@ class LevelBarHomepage extends StatelessWidget {
                   ],
                 ),
               ),
-              // Progress Bar with Animated Gradient
               SizedBox(
-                height: 14,
+                height: 13,
                 child: FractionallySizedBox(
                   widthFactor: progressValue,
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      gradient: LinearGradient(
-                        colors: [
-                          Color(0xFF4CAF50), // Material Design green
-                          Color(0xFF8BC34A), // Material Design light green
-                          Color(0xFF4CAF50), // Material Design green
-                        ],
-                        stops: const [0.0, 0.5, 1.0],
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFF4CAF50), Color(0xFF8BC34A), Color(0xFF4CAF50)],
+                        stops: [0.0, 0.5, 1.0],
                         begin: Alignment.centerLeft,
                         end: Alignment.centerRight,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: Color(0xFF4CAF50).withOpacity(0.3),
+                          color: const Color(0xFF4CAF50).withOpacity(0.3),
                           blurRadius: 1,
                           offset: const Offset(0, 1),
                         ),
@@ -161,25 +141,25 @@ class LevelBarHomepage extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 6),
-          // XP Display with enhanced styling
+          const SizedBox(height: 4), // was 6
+          // XP Label Row
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
                 "$currentXP XP",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF388E3C), // Material green 700
+                  color: Color(0xFF388E3C),
                 ),
               ),
               Text(
                 "$maxXP XP",
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF388E3C), // Material green 700
+                  color: Color(0xFF388E3C),
                 ),
               ),
             ],

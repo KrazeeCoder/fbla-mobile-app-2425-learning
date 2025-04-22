@@ -7,6 +7,29 @@ class ProgressService {
   // Firestore instance used for retrieving progress data.
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
+  static Future<List<UserProgress>> getHardcodedUserProgress() async {
+    return [
+      UserProgress(
+        subject: 'Science',
+        grade: 11,
+        unit: 'Biology: Genetics and Human Systems',
+        unitId: 1,
+        subtopic: 'DNA Structure and Function',
+        subtopicId: 'g11_bio_1',
+        contentCompleted: false,
+        quizCompleted: false,
+        isCompleted: false,
+        marksEarned: 5,
+        lastAccessed: DateTime.now().subtract(Duration(hours: 12)),
+        contentCompletedAt: DateTime.now().subtract(Duration(days: 1)),
+        quizCompletedAt: null,
+        startedAt: DateTime.now().subtract(Duration(days: 2)),
+        lastActivityType: 'reading',
+        updatedAt: DateTime.now(),
+      ),
+    ];
+  }
+
   // Retrieves the most recent lesson progress entries for a user
   static Future<List<UserProgress>> fetchRecentLessons(String userId,
       {bool latest = false}) async {

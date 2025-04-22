@@ -1,7 +1,9 @@
+import 'package:fbla_mobile_2425_learning_app/pages/learn.dart';
 import 'package:fbla_mobile_2425_learning_app/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import '../main.dart';
 import '../models/user_progress_model.dart';
 import '../services/progress_service.dart';
 import '../utils/game_launcher.dart';
@@ -66,7 +68,7 @@ class _HomePageState extends State<HomePage> {
                   // Keep the outer container for styling
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(16),
@@ -88,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                     child: const LevelBarHomepage(),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
                 // Earth Widget Section - Don't modify the Earth widget logic
                 xpManager.isLoading
                     ? Center(
@@ -121,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                         return Stack(
                           children: [
                             SizedBox(
-                              height: screenHeight * 0.42,
+                              height: screenHeight * 0.34,
                               width: screenWidth,
                               child: PageView.builder(
                                 controller: _pageController,
@@ -153,17 +155,120 @@ class _HomePageState extends State<HomePage> {
                                       value =
                                           (1.2 - (value * 0.5)).clamp(0.6, 1.2);
 
-                                      Widget earthVisual = SvgPicture.asset(
-                                        earthImages[index],
-                                        height: screenHeight * 0.3,
-                                        width: screenHeight * 0.3,
-                                        fit: BoxFit.contain,
+                                      Widget earthVisual = GestureDetector(
+                                        onTap: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) => Dialog(
+                                              insetPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20),
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(20),
+                                              ),
+                                              child: Container(
+                                                width: double.infinity,
+                                                padding: const EdgeInsets.only(
+                                                    left: 20,
+                                                    right: 12,
+                                                    top: 20,
+                                                    bottom:
+                                                        20), // more left-heavy
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment
+                                                          .start, // aligns all children to left
+                                                  children: [
+                                                    const Text(
+                                                      "🌍 Level Up Tip!",
+                                                      style: TextStyle(
+                                                        fontSize: 22,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 16),
+                                                    const Text(
+                                                      "Keep exploring to level up your Earth!",
+                                                      style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                      ),
+                                                      softWrap: false,
+                                                      overflow:
+                                                          TextOverflow.visible,
+                                                    ),
+                                                    const SizedBox(height: 12),
+                                                    const Text(
+                                                      "📘 Complete readings\n"
+                                                      "🎮 Play games\n"
+                                                      "🎯 Master quizzes\n"
+                                                      "🏆 Earn XP and unlock new planets!",
+                                                      style: TextStyle(
+                                                        fontSize: 15,
+                                                        height: 1.5,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(height: 24),
+                                                    Align(
+                                                      alignment:
+                                                          Alignment.centerRight,
+                                                      child: TextButton(
+                                                        onPressed: () =>
+                                                            Navigator.pop(
+                                                                context),
+                                                        style: TextButton
+                                                            .styleFrom(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      20,
+                                                                  vertical: 10),
+                                                          backgroundColor:
+                                                              const Color(
+                                                                  0xFF4CAF50),
+                                                          shape:
+                                                              RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        12),
+                                                          ),
+                                                        ),
+                                                        child: const Text(
+                                                          "Got it! 🚀",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: 16,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: SvgPicture.asset(
+                                          earthImages[index],
+                                          height: screenHeight * 0.22,
+                                          width: screenHeight * 0.22,
+                                          fit: BoxFit.contain,
+                                        ),
                                       );
 
                                       if (isLocked) {
                                         earthVisual = Container(
-                                          height: screenHeight * 0.3,
-                                          width: screenHeight * 0.3,
+                                          height: screenHeight * 0.22,
+                                          width: screenHeight * 0.22,
                                           decoration: BoxDecoration(
                                             color: Colors.grey.shade200,
                                             shape: BoxShape.circle,
@@ -292,35 +397,28 @@ class _HomePageState extends State<HomePage> {
                             ),
                             // "Back to current level" FAB that appears when not on current level
                             ValueListenableBuilder<int>(
-                                valueListenable: _currentPageNotifier,
-                                builder: (context, currentPage, child) {
-                                  // Check if the current page differs from currentLevel
-                                  final isNotAtCurrentLevel = currentPage !=
-                                      (currentLevel - 1)
-                                          .clamp(0, totalEarthLevels - 1);
+                              valueListenable: _currentPageNotifier,
+                              builder: (context, currentPage, child) {
+                                final isNotAtCurrentLevel = currentPage !=
+                                    (currentLevel - 1)
+                                        .clamp(0, totalEarthLevels - 1);
 
-                                  return AnimatedPositioned(
-                                    duration: const Duration(milliseconds: 300),
-                                    curve: Curves.easeInOut,
-                                    bottom: isNotAtCurrentLevel
-                                        ? 20
-                                        : -60, // Slide in when needed, hide when not
-                                    right: 20,
-                                    child: FloatingActionButton.extended(
-                                      heroTag: "backToCurrentLevel",
-                                      backgroundColor: Color(0xFF4CAF50),
-                                      foregroundColor: Colors.white,
-                                      elevation: 4,
-                                      label: const Text(
-                                        'Back to my level',
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      icon: const Icon(Icons.home_rounded,
-                                          size: 18),
-                                      onPressed: () {
-                                        // Scroll back to current level
+                                return AnimatedPositioned(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                  top: isNotAtCurrentLevel
+                                      ? 8
+                                      : -60, // Slides in from top
+                                  right: 10, // 🔁 changed from left: to right:
+                                  child: Material(
+                                    elevation: 3,
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: Color(
+                                        0xFF37474F), // Blue-gray tone, clean and modern
+
+                                    child: InkWell(
+                                      borderRadius: BorderRadius.circular(20),
+                                      onTap: () {
                                         _pageController.animateToPage(
                                           (currentLevel - 1)
                                               .clamp(0, totalEarthLevels - 1),
@@ -329,11 +427,23 @@ class _HomePageState extends State<HomePage> {
                                           curve: Curves.easeInOut,
                                         );
                                       },
-                                      tooltip: 'Back to current level',
-                                      isExtended: true,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 6),
+                                        child: const Text(
+                                          'Back to my level',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  );
-                                }),
+                                  ),
+                                );
+                              },
+                            ),
                           ],
                         );
                       }),
@@ -358,9 +468,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
 
-            const SizedBox(height: 24),
+            const SizedBox(height: 12),
 
             // Recent Lessons Section with improved styling
+            const SizedBox(height: 4),
+
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -380,21 +492,22 @@ class _HomePageState extends State<HomePage> {
                       size: 24,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: 4),
                   const Text(
                     'Pick Up Where You Left Off',
                     style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 0.5,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
                       color: Colors.black87,
+                      overflow: TextOverflow.ellipsis,
                     ),
+                    maxLines: 1,
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 16),
+            const SizedBox(height: 5),
 
             // Enhanced Recent Lesson Card
             Showcase(
@@ -423,12 +536,12 @@ class _HomePageState extends State<HomePage> {
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: FutureBuilder<List<UserProgress>>(
-                  future: ProgressService.fetchRecentLessons(user?.uid ?? "",
-                      latest: true),
+                  future: ProgressService.getHardcodedUserProgress(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(
                         child: Padding(
+                          //padding
                           padding: EdgeInsets.all(24.0),
                           child: CircularProgressIndicator(),
                         ),
@@ -471,14 +584,13 @@ class _HomePageState extends State<HomePage> {
                           subject: item.subject,
                           grade: item.grade,
                           subtopicId: item.subtopicId,
+                          hardcoded: true,
                         );
 
                         final userId =
                             FirebaseAuth.instance.currentUser?.uid ?? '';
 
                         if (item.contentCompleted && !item.quizCompleted) {
-                          // 🚫 Skip game launching in "Pick Up Where You Left Off"
-                          // Instead, go directly to review screen
                           Navigator.push(
                             context,
                             MaterialPageRoute(

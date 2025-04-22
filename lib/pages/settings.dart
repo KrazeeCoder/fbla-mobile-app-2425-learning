@@ -447,7 +447,7 @@ class _SettingsPageState extends State<SettingsPage> {
                                 SwitchListTile(
                                   title: const Text("Stay On Track"),
                                   subtitle: const Text(
-                                      "Receive reminders to complete your learning goals"),
+                                      "When on, you’ll follow topics in order. Turn off to explore freely."),
                                   value: settingsProvider.stayOnTrack,
                                   onChanged: (val) =>
                                       settingsProvider.updateStayOnTrack(val),
