@@ -215,7 +215,7 @@ class _LearnPageState extends State<LearnPage>
                                         size: 16,
                                         color: _selectedTabIndex == 0
                                             ? primaryColor
-                                            : Colors.grey.shade600,
+                                            : Colors.grey.shade800,
                                       ),
                                       const SizedBox(width: 6),
                                       Text(

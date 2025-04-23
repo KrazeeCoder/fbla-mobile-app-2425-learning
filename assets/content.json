@@ -156,197 +156,146 @@
           "grade": "Grade 2",
           "units": [
             {
-              "unit": "Operations and Algebraic Thinking",
+              "unit": "Represent and Solve Problems",
               "unit_id": 1,
               "subtopics": [
                 {
-                  "subtopic": "Addition and Subtraction Within 100",
-                  "subtopic_id": "bfc1c5ac-ae9a-47c9-b213-3b89c3b6f001",
+                  "subtopic": "Solving Addition Word Problems",
+                  "subtopic_id": "g2m1",
                   "reading": {
-                    "title": "Addition and Subtraction Within 100",
-                    "content": "### Adding and Subtracting Within 100\n\nWhen we add or subtract two-digit numbers, we work with place value.\n\n**Adding Numbers:**\n1. Add the ones digits\n2. Add the tens digits\n3. Combine the results\n\n**Example:**\n45 + 32 = ?\n- Ones: 5 + 2 = 7\n- Tens: 40 + 30 = 70\n- Total: 70 + 7 = 77\n\n**Subtracting Numbers:**\n1. Subtract the ones digits\n2. Subtract the tens digits\n3. Combine the results\n\n**Example:**\n87 - 25 = ?\n- Ones: 7 - 5 = 2\n- Tens: 80 - 20 = 60\n- Total: 60 + 2 = 62"
+                    "title": "Word Problem Strategies",
+                    "content": "### What Are Addition Word Problems?\nAddition word problems tell a story where we need to combine or add numbers together. They use key words like:\n- **Join together**\n- **In all**\n- **Total**\n- **Combined**\n\n### How to Solve Addition Word Problems:\n1. **Read** the problem carefully\n2. **Identify** what we're adding (objects, people, animals)\n3. **Find** the numbers we need to add\n4. **Write** an equation using numbers and the + sign\n5. **Solve** the equation\n\n### Example 1:\nMaria has 5 red crayons and 7 blue crayons. How many crayons does she have in all?\n- What we're adding: **crayons**\n- Numbers to add: **5 and 7**\n- Equation: **5 + 7 = 12**\n- Answer: **Maria has 12 crayons in all.**\n\n### Example 2:\nThere are 8 children on the playground. Then 6 more children join them. How many children are on the playground now?\n- What we're adding: **children**\n- Numbers to add: **8 and 6**\n- Equation: **8 + 6 = 14**\n- Answer: **There are 14 children on the playground.**\n\n### Using Pictures to Solve Problems:\nDrawing can help us solve word problems:\n1. Draw the first amount (e.g., 5 circles for 5 apples)\n2. Draw the second amount (e.g., 3 more circles for 3 more apples)\n3. Count all the circles to find the total\n\n### Addition with Unknown Numbers:\nSometimes we know the total but not one of the parts:\n- Sam has 7 stickers. How many more does he need to have 10 stickers?\n- Equation: 7 + ? = 10\n- Solution: 10 - 7 = 3, so he needs 3 more stickers"
                   },
-                  "quizPool": [2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010]
+                  "quizPool": [
+                    1111,
+                    1112,
+                    1113,
+                    1114,
+                    1115
+                  ]
                 },
                 {
-                  "subtopic": "Word Problems with Addition and Subtraction",
-                  "subtopic_id": "bbcb9e39-4f1b-4a6d-8bc3-1c4517a2f0d0",
+                  "subtopic": "Adding Three Numbers",
+                  "subtopic_id": "g2m2",
                   "reading": {
-                    "title": "Solving Word Problems",
-                    "content": "### Solving Addition and Subtraction Word Problems\n\nWord problems tell a story that we need to solve using math.\n\n**Steps to Solve:**\n1. Read the problem carefully\n2. Identify what you know\n3. Decide if you need to add or subtract\n4. Solve the problem\n5. Check if your answer makes sense\n\n**Addition Example:**\nSam has 45 stickers. His friend gives him 28 more stickers. How many stickers does Sam have now?\n- We know: Sam has 45 stickers and gets 28 more\n- Operation: Addition (45 + 28)\n- Answer: 73 stickers\n\n**Subtraction Example:**\nEmma had 63 crayons. She gave 19 crayons to her brother. How many crayons does Emma have left?\n- We know: Emma had 63 crayons and gave away 19\n- Operation: Subtraction (63 - 19)\n- Answer: 44 crayons"
+                    "title": "Triple Number Addition",
+                    "content": "### Adding Three Numbers at Once\nWhen we need to add three numbers together, we can use special strategies to make it easier.\n\n### Strategy 1: Make a Ten\nLook for pairs of numbers that add up to 10. This makes adding easier!\n\n**Example:**\n4 + 6 + 5 = ?\n- First, find numbers that make 10: 4 + 6 = 10\n- Then add the remaining number: 10 + 5 = 15\n- Answer: 4 + 6 + 5 = 15\n\n### Strategy 2: Add in Any Order\nYou can add numbers in any order and get the same sum. This is called the **commutative** and **associative** properties.\n\n**Example:**\n3 + 8 + 2 = ?\n- It might be easier to add: 3 + 2 + 8\n- First: 3 + 2 = 5\n- Then: 5 + 8 = 13\n- Answer: 3 + 8 + 2 = 13\n\n### Strategy 3: Use Doubles\nIf you see a double (like 4 + 4), use your knowledge of doubles to add quickly.\n\n**Example:**\n4 + 4 + 3 = ?\n- Double fact: 4 + 4 = 8\n- Then: 8 + 3 = 11\n- Answer: 4 + 4 + 3 = 11\n\n### Real-Life Example:\nTom has 5 red marbles, 7 blue marbles, and 3 green marbles. How many marbles does he have altogether?\n- Add in the easiest order: 5 + 3 + 7\n- First: 5 + 3 = 8 (easier to work with)\n- Then: 8 + 7 = 15\n- Tom has 15 marbles altogether.\n\n### Visual Method:\nDrawing pictures or using blocks can help you see all three groups and count the total."
                   },
-                  "quizPool": [2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020]
-                },
-                {
-                  "subtopic": "Even and Odd Numbers",
-                  "subtopic_id": "ca232c18-d8ac-41d2-aab3-4ec09dbaaf71",
-                  "reading": {
-                    "title": "Understanding Even and Odd Numbers",
-                    "content": "### Even and Odd Numbers\n\n**Even Numbers:**\n- Can be divided equally into groups of 2\n- End with 0, 2, 4, 6, or 8\n- Examples: 2, 4, 6, 8, 10, 12, 14, 16, 18, 20\n\n**Odd Numbers:**\n- Cannot be divided equally into groups of 2\n- End with 1, 3, 5, 7, or 9\n- Examples: 1, 3, 5, 7, 9, 11, 13, 15, 17, 19\n\n**How to Tell if a Number is Even or Odd:**\nLook at the ones digit (the last digit):\n- If it's 0, 2, 4, 6, or 8, the number is even\n- If it's 1, 3, 5, 7, or 9, the number is odd\n\n**Fun Fact:** When you add two even numbers, you get an even number. When you add two odd numbers, you get an even number. When you add an even and an odd number, you get an odd number."
-                  },
-                  "quizPool": [2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030]
-                },
-                {
-                  "subtopic": "Working with Equal Groups",
-                  "subtopic_id": "e33a58a3-d35c-4e59-9a1c-11b57f2dc9d8",
-                  "reading": {
-                    "title": "Understanding Equal Groups",
-                    "content": "### Working with Equal Groups\n\nEqual groups have the same number of objects in each group.\n\n**Finding the Total:**\n- Count the number of groups\n- Count how many items are in each group\n- Add or multiply to find the total\n\n**Example:**\nIf you have 4 baskets with 5 apples in each basket, how many apples do you have?\n- 4 groups (baskets) with 5 items (apples) each\n- 5 + 5 + 5 + 5 = 20 apples\n- Or: 4 × 5 = 20 apples\n\n**Creating Equal Groups:**\nTo divide items into equal groups:\n1. Count the total items\n2. Decide how many groups you want\n3. Share items equally among the groups\n\n**Example:**\nYou have 10 cookies and want to share them equally between 2 friends.\n- 10 ÷ 2 = 5\n- Each friend gets 5 cookies"
-                  },
-                  "quizPool": [2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]
+                  "quizPool": [
+                    1121,
+                    1122,
+                    1123,
+                    1124,
+                    1125
+                  ]
                 }
               ]
             },
             {
-              "unit": "Number and Operations in Base Ten",
+              "unit": "Operations Properties",
               "unit_id": 2,
               "subtopics": [
                 {
-                  "subtopic": "Understanding Place Value",
-                  "subtopic_id": "60d9a558-4107-4ab5-9cd4-43852e048210",
+                  "subtopic": "Commutative & Associative Properties",
+                  "subtopic_id": "g2m3",
                   "reading": {
-                    "title": "Understanding Place Value",
-                    "content": "### Place Value Up to 1,000\n\nPlace value tells us the value of each digit based on its position.\n\n**Place Values:**\n- Ones (rightmost digit)\n- Tens (second digit from right)\n- Hundreds (third digit from right)\n\n**Examples:**\nIn the number 352:\n- 2 is in the ones place (worth 2 ones = 2)\n- 5 is in the tens place (worth 5 tens = 50)\n- 3 is in the hundreds place (worth 3 hundreds = 300)\n- So 352 = 300 + 50 + 2\n\nIn the number 607:\n- 7 is in the ones place (worth 7)\n- 0 is in the tens place (worth 0)\n- 6 is in the hundreds place (worth 600)\n- So 607 = 600 + 0 + 7 = 607"
+                    "title": "Number Partner Secrets",
+                    "content": "### The Magic of Changing Order (Commutative Property)\nThe commutative property tells us that we can add numbers in any order and get the same answer!\n\n**Examples:**\n- 3 + 5 = 8 and 5 + 3 = 8\n- 4 + 7 = 11 and 7 + 4 = 11\n\n### Why Is This Helpful?\nThis property helps us solve problems more easily. We can start with the larger number to count on:\n- Instead of 2 + 9, think 9 + 2\n- Start at 9 and count up 2 more: 10, 11\n\n### Grouping Numbers Differently (Associative Property)\nThe associative property means we can group numbers in different ways when adding three or more numbers.\n\n**Example:**\n(2 + 3) + 4 = 2 + (3 + 4)\n- (2 + 3) + 4 = 5 + 4 = 9\n- 2 + (3 + 4) = 2 + 7 = 9\n\n### Why Is This Helpful?\nThis property helps us make easier number combinations like tens:\n\n**Example:**\n8 + 7 + 2 = ?\n- Regrouping: 8 + 2 + 7\n- (8 + 2) + 7 = 10 + 7 = 17\n\n### Fun Activities to Try:\n1. **Number Hunt:** Find different pairs that make the same sum\n2. **Number Chains:** Find different ways to group three numbers\n\n### Remember:\n- Addition can be done in any order (commutative)\n- Addition can be grouped in different ways (associative)\n- Both properties help us add numbers more easily!"
                   },
-                  "quizPool": [2041, 2042, 2043, 2044, 2045, 2046, 2047, 2048, 2049, 2050]
+                  "quizPool": [
+                    1131,
+                    1132,
+                    1133,
+                    1134,
+                    1135
+                  ]
                 },
                 {
-                  "subtopic": "Reading and Writing Numbers to 1,000",
-                  "subtopic_id": "f41430f3-24d2-4c2f-93cd-85b3ea88a09c",
+                  "subtopic": "Subtraction as Missing Addends",
+                  "subtopic_id": "g2m4",
                   "reading": {
-                    "title": "Reading and Writing Numbers to 1,000",
-                    "content": "### Reading and Writing Three-Digit Numbers\n\n**Reading Numbers:**\nWhen reading a three-digit number:\n1. Read the hundreds digit followed by the word \"hundred\"\n2. Read the tens and ones digits together\n\n**Examples:**\n- 245: Two hundred forty-five\n- 307: Three hundred seven\n- 890: Eight hundred ninety\n- 500: Five hundred\n\n**Writing Numbers in Different Forms:**\n\n**Standard Form:** The regular way we write numbers with digits (like 376)\n\n**Word Form:** Writing the number using words (three hundred seventy-six)\n\n**Expanded Form:** Writing the number as a sum of hundreds, tens, and ones\n- 376 = 300 + 70 + 6"
+                    "title": "The Subtraction Connection",
+                    "content": "### The Addition-Subtraction Connection\nSubtraction and addition are connected! Every subtraction problem can be thought of as a missing addend problem.\n\n### What Is a Missing Addend?\nA missing addend is the number we need to add to get to a certain sum.\n\n**Example:**\n5 + ? = 12\nThe missing addend is 7 because 5 + 7 = 12\n\n### Connecting to Subtraction:\nThe missing addend (7) is the same as the answer to a subtraction problem:\n12 - 5 = 7\n\n### Thinking About Subtraction as Addition:\nWhen we see: 10 - 4 = ?\nWe can think: 4 + ? = 10\n\n**Examples:**\n- 9 - 3 = ? → Think: 3 + ? = 9 → Answer: 6\n- 15 - 8 = ? → Think: 8 + ? = 15 → Answer: 7\n\n### Why This Helps:\n1. Sometimes it's easier to think about what number to add\n2. It helps with mental math strategies\n3. It builds a stronger understanding of how addition and subtraction are related\n\n### Real-Life Example:\nJamie has $7 but needs $10 to buy a toy. How much more money does Jamie need?\n\nWe can solve this two ways:\n- Subtraction: $10 - $7 = $3\n- Missing addend: $7 + ? = $10 → $3\n\n### Fact Families:\nAdd and subtract with the same numbers to see the relationship:\n- 6 + 5 = 11\n- 5 + 6 = 11\n- 11 - 5 = 6\n- 11 - 6 = 5"
                   },
-                  "quizPool": [2051, 2052, 2053, 2054, 2055, 2056, 2057, 2058, 2059, 2060]
-                },
-                {
-                  "subtopic": "Comparing Three-Digit Numbers",
-                  "subtopic_id": "72c18983-8033-4ce4-8b0a-96c2232e143d",
-                  "reading": {
-                    "title": "Comparing Three-Digit Numbers",
-                    "content": "### Comparing Numbers up to 1,000\n\nWhen comparing three-digit numbers, we use the symbols:\n- > means \"greater than\"\n- < means \"less than\"\n- = means \"equal to\"\n\n**Steps to Compare Numbers:**\n1. Compare the hundreds digits first\n2. If the hundreds digits are the same, compare the tens digits\n3. If the tens digits are also the same, compare the ones digits\n\n**Examples:**\n\n**Comparing 354 and 278:**\n- Compare hundreds: 3 hundreds vs 2 hundreds\n- 3 > 2, so 354 > 278\n\n**Comparing 462 and 489:**\n- Compare hundreds: Both have 4 hundreds\n- Compare tens: 6 tens vs 8 tens\n- 6 < 8, so 462 < 489\n\n**Comparing 735 and 731:**\n- Compare hundreds: Both have 7 hundreds\n- Compare tens: Both have 3 tens\n- Compare ones: 5 > 1\n- So 735 > 731"
-                  },
-                  "quizPool": [2061, 2062, 2063, 2064, 2065, 2066, 2067, 2068, 2069, 2070]
-                },
-                {
-                  "subtopic": "Skip Counting",
-                  "subtopic_id": "d99d7f61-76ef-4a0e-9487-76444741e0d1",
-                  "reading": {
-                    "title": "Skip Counting",
-                    "content": "### Skip Counting by 5s, 10s, and 100s\n\nSkip counting means counting by numbers other than 1.\n\n**Skip Counting by 5s:**\n5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60...\n- Notice: The ones digit follows the pattern 5, 0, 5, 0...\n\n**Skip Counting by 10s:**\n10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110...\n- Notice: The ones digit is always 0, and the tens digit increases by 1\n\n**Skip Counting by 100s:**\n100, 200, 300, 400, 500, 600, 700, 800, 900, 1000...\n- Notice: The hundreds digit increases by 1 each time\n\n**Why Skip Counting Helps:**\n- It helps us recognize patterns in numbers\n- It's the foundation for multiplication\n- It makes counting large groups faster"
-                  },
-                  "quizPool": [2071, 2072, 2073, 2074, 2075, 2076, 2077, 2078, 2079, 2080]
-                },
-                {
-                  "subtopic": "Adding and Subtracting 10 and 100",
-                  "subtopic_id": "b4c91e45-29de-4302-bdad-3f1638cf7cd3",
-                  "reading": {
-                    "title": "Adding and Subtracting 10 and 100",
-                    "content": "### Adding and Subtracting 10 and 100\n\n**Adding 10 to a Number:**\n- When you add 10 to a number, the tens digit increases by 1\n- The hundreds and ones digits stay the same\n\n**Examples:**\n- 45 + 10 = 55\n- 273 + 10 = 283\n- 908 + 10 = 918\n\n**Subtracting 10 from a Number:**\n- When you subtract 10 from a number, the tens digit decreases by 1\n- The hundreds and ones digits stay the same\n\n**Examples:**\n- 78 - 10 = 68\n- 354 - 10 = 344\n- 600 - 10 = 590\n\n**Adding 100 to a Number:**\n- When you add 100 to a number, the hundreds digit increases by 1\n- The tens and ones digits stay the same\n\n**Examples:**\n- 256 + 100 = 356\n- 742 + 100 = 842\n\n**Subtracting 100 from a Number:**\n- When you subtract 100 from a number, the hundreds digit decreases by 1\n- The tens and ones digits stay the same\n\n**Examples:**\n- 475 - 100 = 375\n- 900 - 100 = 800"
-                  },
-                  "quizPool": [2081, 2082, 2083, 2084, 2085, 2086, 2087, 2088, 2089, 2090]
+                  "quizPool": [
+                    1141,
+                    1142,
+                    1143,
+                    1144,
+                    1145
+                  ]
                 }
               ]
             },
             {
-              "unit": "Measurement and Data",
+              "unit": "Fluency within 20",
               "unit_id": 3,
               "subtopics": [
                 {
-                  "subtopic": "Measuring Length",
-                  "subtopic_id": "afc2d5bb-ae9a-48c9-b213-4b89c3b6f002",
+                  "subtopic": "Counting Strategies",
+                  "subtopic_id": "g2m5",
                   "reading": {
-                    "title": "Measuring Length",
-                    "content": "### Measuring Length with Standard Units\n\n**Units of Measurement:**\n- **Inches (in)** and **feet (ft)** - Standard units in the United States\n- **Centimeters (cm)** and **meters (m)** - Metric units used worldwide\n\n**Choosing the Right Tool:**\n- Rulers - For small objects (inches or centimeters)\n- Yard/meter sticks - For medium lengths\n- Tape measures - For longer distances\n\n**How to Measure:**\n1. Line up one end of the object with zero on the ruler\n2. See where the other end stops on the ruler\n3. Read the number on the scale\n\n**Converting Units:**\n- 1 foot = 12 inches\n- 1 meter = 100 centimeters\n\n**Example:**\nA pencil might be 7 inches or about 18 centimeters long."
+                    "title": "Smart Counting Methods",
+                    "content": "### Counting On Strategy\n**Counting on** is a mental math strategy where you start with the larger number and count up from there. It's faster than counting all numbers from the beginning.\n\n**Example:**\n6 + 3 = ?\n- Start with 6 (the larger number)\n- Count on 3 more: \"7, 8, 9\"\n- Answer: 6 + 3 = 9\n\n### When to Use Counting On:\n- When one number is much larger than the other\n- When you're comfortable counting from any starting point\n\n**Example:**\n24 + 2 = ?\n- Start with 24\n- Count on 2 more: \"25, 26\"\n- Answer: 24 + 2 = 26\n\n### Counting Back Strategy\n**Counting back** works well for subtraction. Start with the larger number and count backward.\n\n**Example:**\n8 - 3 = ?\n- Start with 8\n- Count back 3: \"7, 6, 5\"\n- Answer: 8 - 3 = 5\n\n### Counting by Groups\nCounting by 2s, 5s, or 10s helps us count larger collections quickly.\n\n**Examples:**\n- Counting by 2s: 2, 4, 6, 8, 10...\n- Counting by 5s: 5, 10, 15, 20...\n- Counting by 10s: 10, 20, 30, 40...\n\n### Using a Number Line\nA number line helps us visualize counting on and back:\n- To add: Jump forward on the number line\n- To subtract: Jump backward on the number line\n\n### Tips for Better Counting:\n1. Practice counting forward and backward from different starting points\n2. Use fingers to keep track of how many you've counted\n3. Look for patterns in numbers as you count"
                   },
-                  "quizPool": [2091, 2092, 2093, 2094, 2095, 2096, 2097, 2098, 2099, 2100]
+                  "quizPool": [
+                    1151,
+                    1152,
+                    1153,
+                    1154,
+                    1155
+                  ]
                 },
                 {
-                  "subtopic": "Estimating Lengths",
-                  "subtopic_id": "cbc8ae39-4f1b-5a6d-9bc3-2c4517a2f0d1",
+                  "subtopic": "Fact Fluency",
+                  "subtopic_id": "g2m6",
                   "reading": {
-                    "title": "Estimating Lengths",
-                    "content": "### Estimating Length\n\nEstimating means making a good guess about a measurement without actually measuring.\n\n**Why We Estimate:**\n- To check if our exact measurements are reasonable\n- When we don't need an exact measurement\n- When we don't have measuring tools available\n\n**How to Estimate Lengths:**\n1. Use objects with known lengths as references\n2. Compare the object to your reference\n3. Make your best guess\n\n**Reference Objects:**\n- Your thumb width is about 1 inch\n- A dollar bill is about 6 inches long\n- A paper clip is about 1 inch long\n- Your arm span is close to your height\n\n**Example:**\nIf you know your pencil is about 7 inches long, you can estimate that three pencils laid end-to-end would be about 21 inches."
+                    "title": "Number Fact Mastery",
+                    "content": "### What Is Math Fact Fluency?\nMath fact fluency means knowing addition and subtraction facts quickly and correctly without having to count or use strategies that take a long time.\n\n### Addition Facts to Master (within 10)\n| Addition | Facts to Know |\n|---------|-------------|\n| +0 | 0+1=1, 0+2=2, 0+3=3, etc. |\n| +1 | 1+1=2, 1+2=3, 1+3=4, etc. |\n| +2 | 2+2=4, 2+3=5, 2+4=6, etc. |\n| Doubles | 1+1=2, 2+2=4, 3+3=6, 4+4=8, 5+5=10 |\n| Make 10 | 1+9=10, 2+8=10, 3+7=10, 4+6=10, 5+5=10 |\n\n### Strategies to Solve Addition Facts\n\n1. **Making 10 Strategy**\n   When adding 8+5:\n   - Take 2 from 5 to make 10 with the 8 (8+2=10)\n   - Add remaining 3: 10+3=13\n   - Answer: 8+5=13\n\n2. **Doubles Strategy**\n   When adding 6+7:\n   - Think of it as 6+6+1\n   - 6+6=12, then 12+1=13\n   - Answer: 6+7=13\n\n3. **Decomposing Numbers**\n   When adding 9+6:\n   - Break 6 into 1+5\n   - Add 9+1=10, then 10+5=15\n   - Answer: 9+6=15\n\n### Subtraction Facts and Strategies\n\n1. **Think Addition**\n   For 12-8=?\n   - Think: 8+?=12\n   - Answer: 8+4=12, so 12-8=4\n\n2. **Count Back**\n   For 10-3=?\n   - Start at 10, count back 3: \"9, 8, 7\"\n   - Answer: 10-3=7\n\n3. **Use Fact Families**\n   If you know 6+7=13, then you also know:\n   - 7+6=13\n   - 13-6=7\n   - 13-7=6\n\n### Practice Makes Perfect\nTry these activities to improve fact fluency:\n1. Flashcards\n2. Number games\n3. Fact triangles\n4. Math fact songs or rhymes\n5. Regular practice (even 5 minutes per day helps!)"
                   },
-                  "quizPool": [2101, 2102, 2103, 2104, 2105, 2106, 2107, 2108, 2109, 2110]
-                },
-                {
-                  "subtopic": "Telling Time",
-                  "subtopic_id": "da232c18-e8ac-42d2-bab3-5ec09dbaaf72",
-                  "reading": {
-                    "title": "Telling Time",
-                    "content": "### Telling Time to the Nearest 5 Minutes\n\n**Parts of a Clock:**\n- **Hour hand:** The shorter hand that points to the hour\n- **Minute hand:** The longer hand that points to the minutes\n- **Clock face:** Numbered from 1 to 12\n\n**Reading the Clock:**\n1. Look at where the hour hand is pointing\n2. Look at where the minute hand is pointing\n3. The minute hand moves in increments of 5 minutes around the clock\n\n**Minute Hand Positions:**\n- When pointing to 12: 0 minutes (o'clock)\n- When pointing to 1: 5 minutes\n- When pointing to 2: 10 minutes\n- When pointing to 3: 15 minutes (quarter past)\n- When pointing to 4: 20 minutes\n- When pointing to 5: 25 minutes\n- When pointing to 6: 30 minutes (half past)\n- When pointing to 7: 35 minutes\n- When pointing to 8: 40 minutes\n- When pointing to 9: 45 minutes (quarter to)\n- When pointing to 10: 50 minutes\n- When pointing to 11: 55 minutes\n\n**Examples:**\n- Hour hand near 3, minute hand at 4: 3:20\n- Hour hand just past 7, minute hand at 9: 7:45 (or quarter to 8)"
-                  },
-                  "quizPool": [2111, 2112, 2113, 2114, 2115, 2116, 2117, 2118, 2119, 2120]
-                },
-                {
-                  "subtopic": "Money",
-                  "subtopic_id": "e43a58a3-e35c-5e59-9a1c-12b57f2dc9d9",
-                  "reading": {
-                    "title": "Counting Money",
-                    "content": "### Counting Money\n\n**Coins and Their Values:**\n- **Penny:** 1¢ (0.01 dollar)\n- **Nickel:** 5¢ (0.05 dollar)\n- **Dime:** 10¢ (0.10 dollar)\n- **Quarter:** 25¢ (0.25 dollar)\n\n**Paper Money:**\n- **$1 bill:** 100¢ or 1 dollar\n- **$5 bill:** 500¢ or 5 dollars\n- **$10 bill:** 1,000¢ or 10 dollars\n\n**How to Count Money:**\n1. Start with the highest value coins/bills\n2. Group same-value coins together\n3. Add up the total\n\n**Example:**\nIf you have 2 quarters, 3 dimes, 1 nickel, and 4 pennies:\n- Quarters: 25¢ × 2 = 50¢\n- Dimes: 10¢ × 3 = 30¢\n- Nickel: 5¢ × 1 = 5¢\n- Pennies: 1¢ × 4 = 4¢\n- Total: 50¢ + 30¢ + 5¢ + 4¢ = 89¢"
-                  },
-                  "quizPool": [2121, 2122, 2123, 2124, 2125, 2126, 2127, 2128, 2129, 2130]
-                },
-                {
-                  "subtopic": "Picture and Bar Graphs",
-                  "subtopic_id": "70d9a558-5107-5ab5-9cd4-53852e048211",
-                  "reading": {
-                    "title": "Understanding Graphs",
-                    "content": "### Reading and Creating Graphs\n\n**Picture Graphs:**\n- Use pictures or symbols to represent data\n- Each picture stands for a specific quantity\n- A key tells what each picture represents\n\n**Bar Graphs:**\n- Use bars of different heights to show quantities\n- Longer bars represent larger numbers\n- Shorter bars represent smaller numbers\n\n**Parts of a Graph:**\n- **Title:** Tells what the graph is about\n- **Labels:** Tell what each axis represents\n- **Scale:** Shows the units being measured\n- **Key:** Explains what symbols represent (in picture graphs)\n\n**Reading a Graph:**\n1. Read the title to understand what's being shown\n2. Look at the labels to understand what's being measured\n3. Compare the heights of bars or count the pictures\n\n**Example:**\nA bar graph showing favorite fruits might have bars of different heights for apples, bananas, and oranges. If the apple bar reaches 8, it means 8 students chose apples as their favorite fruit."
-                  },
-                  "quizPool": [2131, 2132, 2133, 2134, 2135, 2136, 2137, 2138, 2139, 2140]
+                  "quizPool": [
+                    1161,
+                    1162,
+                    1163,
+                    1164,
+                    1165
+                  ]
                 }
               ]
             },
             {
-              "unit": "Geometry",
+              "unit": "Equation Relationships",
               "unit_id": 4,
               "subtopics": [
                 {
-                  "subtopic": "Recognizing and Drawing Shapes",
-                  "subtopic_id": "f51430f3-34d2-5c2f-93cd-95b3ea88a09d",
+                  "subtopic": "Understanding Equality",
+                  "subtopic_id": "g2m7",
                   "reading": {
-                    "title": "Recognizing and Drawing Shapes",
-                    "content": "### Understanding 2D Shapes\n\n**Common 2D Shapes:**\n- **Triangle:** 3 sides, 3 angles\n- **Square:** 4 equal sides, 4 right angles\n- **Rectangle:** 4 sides, 4 right angles, opposite sides equal\n- **Circle:** Round shape, same distance from center to any point on the circle\n- **Pentagon:** 5 sides, 5 angles\n- **Hexagon:** 6 sides, 6 angles\n\n**Attributes of Shapes:**\n- **Sides:** The lines that make up a shape\n- **Angles:** Where two sides meet\n- **Vertices:** The corners or points where sides meet\n\n**Drawing Shapes:**\n1. Count how many sides you need\n2. Draw each side with a ruler if needed\n3. Make sure to connect all sides properly\n\n**Example:**\nTo draw a pentagon, you need 5 equal sides that connect to form 5 vertices."
+                    "title": "The Balanced Scale",
+                    "content": "### What Does the Equal Sign Mean?\nThe equal sign (=) means \"the same amount as\" or \"balanced.\" Think of it like a scale where both sides need to have the same value.\n\n### Equal vs. Not Equal\n**Equal (=)**: Both sides have the same value\n**Not Equal (≠)**: The sides have different values\n\n### Examples of Equal Expressions:\n- 5 + 3 = 8 (both sides equal 8)\n- 4 + 4 = 6 + 2 (both sides equal a value of 8)\n- 7 = 3 + 4 (the left side equals the right side)\n- 10 - 5 = 2 + 3 (both sides equal 5)\n\n### Examples of Not Equal Expressions:\n- 3 + 4 ≠ 9 (left side is 7, right side is 9)\n- 5 + 2 ≠ 5 + 3 (left side is 7, right side is 8)\n\n### True or False?\nWe can determine if an equation is true or false by checking if both sides are equal:\n\n**True Equations:**\n- 3 + 2 = 5 ✓\n- 8 - 3 = 5 ✓\n- 4 + 3 = 6 + 1 ✓\n\n**False Equations:**\n- 3 + 3 = 5 ✗\n- 7 - 2 = 4 ✗\n- 5 + 1 = 7 - 2 ✗ (left is 6, right is 5)\n\n### The Equal Sign in Different Positions\nThe equal sign doesn't always come at the end of a problem:\n- 3 + 4 = 7 (traditional format)\n- 7 = 3 + 4 (equal sign in middle)\n- 2 + 5 = 3 + 4 (operations on both sides)\n\n### Balancing Equations\nThink of equations like a balance scale:\n- If you add to one side, you must add the same to the other side\n- If you take away from one side, you must take the same from the other side\n\n### Real-Life Equality Examples:\n- If you have 3 apples and get 2 more, you have the same amount as someone who has 5 apples\n- Trading a $5 bill for five $1 bills gives you an equal amount of money"
                   },
-                  "quizPool": [2141, 2142, 2143, 2144, 2145, 2146, 2147, 2148, 2149, 2150]
+                  "quizPool": [
+                    1171,
+                    1172,
+                    1173,
+                    1174,
+                    1175
+                  ]
                 },
                 {
-                  "subtopic": "Partitioning Shapes",
-                  "subtopic_id": "82c18983-9033-5ce4-9b0a-a6c2232e143e",
+                  "subtopic": "Finding Unknown Numbers",
+                  "subtopic_id": "g2m8",
                   "reading": {
-                    "title": "Partitioning Shapes",
-                    "content": "### Dividing Shapes into Equal Parts\n\n**Partitioning** means dividing a shape into equal parts.\n\n**Types of Equal Parts:**\n- **Halves:** 2 equal parts, each is 1/2 of the whole\n- **Thirds:** 3 equal parts, each is 1/3 of the whole\n- **Fourths/Quarters:** 4 equal parts, each is 1/4 of the whole\n\n**Important Concepts:**\n- The parts must be **equal in size**\n- More equal parts mean each part is smaller\n- The whole is still the same no matter how many equal parts it has\n\n**Ways to Partition:**\n- Dividing rectangles with horizontal or vertical lines\n- Dividing circles like a pizza with lines from the center\n- Dividing squares into triangles by connecting opposite corners\n\n**Example:**\nIf you divide a rectangle into 4 equal parts, each part is one-fourth (1/4) of the whole rectangle."
+                    "title": "Mystery Number Puzzles",
+                    "content": "### What are Unknown Numbers in Equations?\nSometimes in an equation, one number is missing or unknown. We use a symbol like □, △, or ? to represent the mystery number. Our job is to find what number should go there to make the equation true.\n\n### Types of Equations with Unknowns:\n1. **Unknown Result**: 3 + 4 = □\n2. **Unknown Addend**: 5 + □ = 9\n3. **Unknown Start**: □ - 3 = 4\n\n### Solving for Unknown Result\nWhen the answer is unknown, we perform the operation.\n\n**Example 1:**\n7 + 2 = □\n- Add the numbers: 7 + 2 = 9\n- The unknown is 9\n\n**Example 2:**\n10 - 6 = □\n- Subtract the numbers: 10 - 6 = 4\n- The unknown is 4\n\n### Solving for Unknown Addend\nWhen the second number is unknown, we can think about what needs to be added to the first number.\n\n**Example 1:**\n6 + □ = 10\n- Ask: \"6 plus what equals 10?\"\n- 6 + 4 = 10\n- The unknown is 4\n\n**Example 2:**\n8 + □ = 15\n- Think: \"What plus 8 equals 15?\"\n- 15 - 8 = 7\n- The unknown is 7\n\n### Solving for Unknown Start\nWhen the first number is unknown, we work backward.\n\n**Example 1:**\n□ - 5 = 7\n- Ask: \"What number minus 5 equals 7?\"\n- 7 + 5 = 12\n- The unknown is 12\n\n**Example 2:**\n□ + 3 = 10\n- Think: \"What plus 3 equals 10?\"\n- 10 - 3 = 7\n- The unknown is 7\n\n### Using Fact Families to Solve Unknowns\nFact families can help us find unknown numbers.\n\n**Example:**\nFor the fact family 3, 5, and 8:\n- 3 + 5 = 8\n- 5 + 3 = 8\n- 8 - 3 = 5\n- 8 - 5 = 3\n\nIf we see: □ - 5 = 3, we know □ = 8 from the fact family.\n\n### Real-Life Unknown Number Problems:\n- Emma has 12 stickers and gives some away. Now she has 7 stickers. How many did she give away? (12 - □ = 7, so □ = 5)\n- James has 4 toy cars and gets some more for his birthday. Now he has 10 cars. How many did he get? (4 + □ = 10, so □ = 6)"
                   },
-                  "quizPool": [2151, 2152, 2153, 2154, 2155, 2156, 2157, 2158, 2159, 2160]
-                },
-                {
-                  "subtopic": "3D Shapes",
-                  "subtopic_id": "d5c91e45-39de-5302-cdad-4f1638cf7cd4",
-                  "reading": {
-                    "title": "Understanding 3D Shapes",
-                    "content": "### Exploring Three-Dimensional Shapes\n\n**Common 3D Shapes:**\n- **Cube:** 6 square faces, 8 vertices, 12 edges\n- **Rectangular Prism:** 6 rectangular faces, 8 vertices, 12 edges\n- **Sphere:** Round 3D shape like a ball, no faces, vertices, or edges\n- **Cylinder:** 2 circular faces, no vertices, 2 edges\n- **Cone:** 1 circular face, 1 vertex, 1 edge\n\n**Parts of 3D Shapes:**\n- **Faces:** The flat surfaces of the shape\n- **Edges:** Where two faces meet (the lines)\n- **Vertices:** Where edges meet (the corners)\n\n**Real-Life Examples:**\n- Cube: Dice, sugar cube\n- Rectangular Prism: Book, cereal box\n- Sphere: Ball, globe\n- Cylinder: Can of soup, paper towel roll\n- Cone: Ice cream cone, traffic cone\n\n**Building 3D Shapes:**\nYou can build 3D shapes using nets, which are flat patterns that fold to make the shape."
-                  },
-                  "quizPool": [2161, 2162, 2163, 2164, 2165, 2166, 2167, 2168, 2169, 2170]
-                },
-                {
-                  "subtopic": "Equal Shares",
-                  "subtopic_id": "afc1c5ac-be9a-58c9-c213-5b89c3b6f003",
-                  "reading": {
-                    "title": "Understanding Equal Shares",
-                    "content": "### Working with Equal Shares\n\n**What Are Equal Shares?**\nEqual shares are parts of a whole that are exactly the same size.\n\n**Important Vocabulary:**\n- **Whole:** The complete shape before dividing\n- **Half:** One of two equal parts (1/2)\n- **Third:** One of three equal parts (1/3)\n- **Fourth/Quarter:** One of four equal parts (1/4)\n\n**Describing Parts of a Whole:**\n- **Fraction:** A number that represents part of a whole\n- **Numerator:** The top number that tells how many parts we have\n- **Denominator:** The bottom number that tells how many equal parts in the whole\n\n**Different Ways to Make Equal Shares:**\nThere are many ways to divide shapes into equal parts:\n- Rectangles can be divided horizontally, vertically, or in a grid\n- Circles can be divided like pizza slices\n\n**Example:**\nA rectangle can be divided into fourths by:\n- Making 4 equal rectangles (2 rows of 2)\n- Making 4 equal rectangles (1 row of 4)\n- Making 4 equal triangles from the center\n\nAll these methods create fourths, but the shapes look different!"
-                  },
-                  "quizPool": [2171, 2172, 2173, 2174, 2175, 2176, 2177, 2178, 2179, 2180]
-                },
-                {
-                  "subtopic": "Rows and Columns",
-                  "subtopic_id": "cbc9ae39-5f1b-6a6d-abc3-3c4517a2f0d2",
-                  "reading": {
-                    "title": "Understanding Rows and Columns",
-                    "content": "### Organizing Objects in Rows and Columns\n\n**What Are Rows and Columns?**\n- **Rows:** Horizontal arrangements (side to side) ➡️\n- **Columns:** Vertical arrangements (up and down) ⬇️\n\n**Arrays:**\nAn array is a way to arrange objects in equal rows and columns.\n\n**Parts of an Array:**\n- **Row:** Objects arranged horizontally\n- **Column:** Objects arranged vertically\n- **Total:** The total number of objects in the array\n\n**Finding the Total:**\n- Count the number of rows\n- Count the number of columns\n- Multiply: Rows × Columns = Total Objects\n\n**Example:**\nIf you arrange 15 cubes in 3 rows with 5 cubes in each row:\n- 3 rows\n- 5 columns\n- 3 × 5 = 15 total cubes\n\n**Real-Life Examples:**\n- Egg cartons: 2 rows of 6 eggs\n- Calendar: Multiple rows of 7 days\n- Classroom seats: Rows and columns of desks"
-                  },
-                  "quizPool": [2181, 2182, 2183, 2184, 2185, 2186, 2187, 2188, 2189, 2190]
+                  "quizPool": [
+                    1181,
+                    1182,
+                    1183,
+                    1184,
+                    1185
+                  ]
                 }
               ]
             }
@@ -356,200 +305,146 @@
           "grade": "Grade 3",
           "units": [
             {
-              "unit": "Number Sense",
+              "unit": "Represent and Solve Problems",
               "unit_id": 1,
               "subtopics": [
                 {
-                  "subtopic": "Place Value and Comparing Numbers",
-                  "subtopic_id": "grade_3_1_1",
+                  "subtopic": "Solving Addition Word Problems",
+                  "subtopic_id": "g3m1",
                   "reading": {
-                    "title": "Understanding Place Value",
-                    "content": "Learn how to identify the value of each digit in a number, and how to compare large numbers using place value."
+                    "title": "Word Problem Strategies",
+                    "content": "### What Are Addition Word Problems?\nAddition word problems tell a story where we need to combine or add numbers together. They use key words like:\n- **Join together**\n- **In all**\n- **Total**\n- **Combined**\n\n### How to Solve Addition Word Problems:\n1. **Read** the problem carefully\n2. **Identify** what we're adding (objects, people, animals)\n3. **Find** the numbers we need to add\n4. **Write** an equation using numbers and the + sign\n5. **Solve** the equation\n\n### Example 1:\nMaria has 5 red crayons and 7 blue crayons. How many crayons does she have in all?\n- What we're adding: **crayons**\n- Numbers to add: **5 and 7**\n- Equation: **5 + 7 = 12**\n- Answer: **Maria has 12 crayons in all.**\n\n### Example 2:\nThere are 8 children on the playground. Then 6 more children join them. How many children are on the playground now?\n- What we're adding: **children**\n- Numbers to add: **8 and 6**\n- Equation: **8 + 6 = 14**\n- Answer: **There are 14 children on the playground.**\n\n### Using Pictures to Solve Problems:\nDrawing can help us solve word problems:\n1. Draw the first amount (e.g., 5 circles for 5 apples)\n2. Draw the second amount (e.g., 3 more circles for 3 more apples)\n3. Count all the circles to find the total\n\n### Addition with Unknown Numbers:\nSometimes we know the total but not one of the parts:\n- Sam has 7 stickers. How many more does he need to have 10 stickers?\n- Equation: 7 + ? = 10\n- Solution: 10 - 7 = 3, so he needs 3 more stickers"
                   },
-                  "quizPool": [3001, 3002, 3003]
+                  "quizPool": [
+                    1111,
+                    1112,
+                    1113,
+                    1114,
+                    1115
+                  ]
                 },
                 {
-                  "subtopic": "Odd and Even Numbers",
-                  "subtopic_id": "grade_3_1_2",
+                  "subtopic": "Adding Three Numbers",
+                  "subtopic_id": "g3m2",
                   "reading": {
-                    "title": "Exploring Odd and Even Numbers",
-                    "content": "This subtopic explains how to determine if a number is odd or even and why it matters in patterns and math operations."
+                    "title": "Triple Number Addition",
+                    "content": "### Adding Three Numbers at Once\nWhen we need to add three numbers together, we can use special strategies to make it easier.\n\n### Strategy 1: Make a Ten\nLook for pairs of numbers that add up to 10. This makes adding easier!\n\n**Example:**\n4 + 6 + 5 = ?\n- First, find numbers that make 10: 4 + 6 = 10\n- Then add the remaining number: 10 + 5 = 15\n- Answer: 4 + 6 + 5 = 15\n\n### Strategy 2: Add in Any Order\nYou can add numbers in any order and get the same sum. This is called the **commutative** and **associative** properties.\n\n**Example:**\n3 + 8 + 2 = ?\n- It might be easier to add: 3 + 2 + 8\n- First: 3 + 2 = 5\n- Then: 5 + 8 = 13\n- Answer: 3 + 8 + 2 = 13\n\n### Strategy 3: Use Doubles\nIf you see a double (like 4 + 4), use your knowledge of doubles to add quickly.\n\n**Example:**\n4 + 4 + 3 = ?\n- Double fact: 4 + 4 = 8\n- Then: 8 + 3 = 11\n- Answer: 4 + 4 + 3 = 11\n\n### Real-Life Example:\nTom has 5 red marbles, 7 blue marbles, and 3 green marbles. How many marbles does he have altogether?\n- Add in the easiest order: 5 + 3 + 7\n- First: 5 + 3 = 8 (easier to work with)\n- Then: 8 + 7 = 15\n- Tom has 15 marbles altogether.\n\n### Visual Method:\nDrawing pictures or using blocks can help you see all three groups and count the total."
                   },
-                  "quizPool": [3004, 3005, 3006]
-                },
-                {
-                  "subtopic": "Rounding Numbers",
-                  "subtopic_id": "grade_3_1_3",
-                  "reading": {
-                    "title": "Rounding to the Nearest Ten and Hundred",
-                    "content": "Learn how to round numbers to make estimates and solve problems more quickly and easily."
-                  },
-                  "quizPool": [3007, 3008, 3009]
+                  "quizPool": [
+                    1121,
+                    1122,
+                    1123,
+                    1124,
+                    1125
+                  ]
                 }
               ]
             },
             {
-              "unit": "Addition and Subtraction",
+              "unit": "Operations Properties",
               "unit_id": 2,
               "subtopics": [
                 {
-                  "subtopic": "Adding 3-digit Numbers",
-                  "subtopic_id": "grade_3_2_1",
+                  "subtopic": "Commutative & Associative Properties",
+                  "subtopic_id": "g3m3",
                   "reading": {
-                    "title": "Mastering 3-Digit Addition",
-                    "content": "This subtopic teaches how to add large numbers using regrouping and place value strategies."
+                    "title": "Number Partner Secrets",
+                    "content": "### The Magic of Changing Order (Commutative Property)\nThe commutative property tells us that we can add numbers in any order and get the same answer!\n\n**Examples:**\n- 3 + 5 = 8 and 5 + 3 = 8\n- 4 + 7 = 11 and 7 + 4 = 11\n\n### Why Is This Helpful?\nThis property helps us solve problems more easily. We can start with the larger number to count on:\n- Instead of 2 + 9, think 9 + 2\n- Start at 9 and count up 2 more: 10, 11\n\n### Grouping Numbers Differently (Associative Property)\nThe associative property means we can group numbers in different ways when adding three or more numbers.\n\n**Example:**\n(2 + 3) + 4 = 2 + (3 + 4)\n- (2 + 3) + 4 = 5 + 4 = 9\n- 2 + (3 + 4) = 2 + 7 = 9\n\n### Why Is This Helpful?\nThis property helps us make easier number combinations like tens:\n\n**Example:**\n8 + 7 + 2 = ?\n- Regrouping: 8 + 2 + 7\n- (8 + 2) + 7 = 10 + 7 = 17\n\n### Fun Activities to Try:\n1. **Number Hunt:** Find different pairs that make the same sum\n2. **Number Chains:** Find different ways to group three numbers\n\n### Remember:\n- Addition can be done in any order (commutative)\n- Addition can be grouped in different ways (associative)\n- Both properties help us add numbers more easily!"
                   },
-                  "quizPool": [3010, 3011, 3012]
+                  "quizPool": [
+                    1131,
+                    1132,
+                    1133,
+                    1134,
+                    1135
+                  ]
                 },
                 {
-                  "subtopic": "Subtracting 3-digit Numbers",
-                  "subtopic_id": "grade_3_2_2",
+                  "subtopic": "Subtraction as Missing Addends",
+                  "subtopic_id": "g3m4",
                   "reading": {
-                    "title": "Mastering 3-Digit Subtraction",
-                    "content": "Learn how to subtract large numbers, including when regrouping (borrowing) is needed."
+                    "title": "The Subtraction Connection",
+                    "content": "### The Addition-Subtraction Connection\nSubtraction and addition are connected! Every subtraction problem can be thought of as a missing addend problem.\n\n### What Is a Missing Addend?\nA missing addend is the number we need to add to get to a certain sum.\n\n**Example:**\n5 + ? = 12\nThe missing addend is 7 because 5 + 7 = 12\n\n### Connecting to Subtraction:\nThe missing addend (7) is the same as the answer to a subtraction problem:\n12 - 5 = 7\n\n### Thinking About Subtraction as Addition:\nWhen we see: 10 - 4 = ?\nWe can think: 4 + ? = 10\n\n**Examples:**\n- 9 - 3 = ? → Think: 3 + ? = 9 → Answer: 6\n- 15 - 8 = ? → Think: 8 + ? = 15 → Answer: 7\n\n### Why This Helps:\n1. Sometimes it's easier to think about what number to add\n2. It helps with mental math strategies\n3. It builds a stronger understanding of how addition and subtraction are related\n\n### Real-Life Example:\nJamie has $7 but needs $10 to buy a toy. How much more money does Jamie need?\n\nWe can solve this two ways:\n- Subtraction: $10 - $7 = $3\n- Missing addend: $7 + ? = $10 → $3\n\n### Fact Families:\nAdd and subtract with the same numbers to see the relationship:\n- 6 + 5 = 11\n- 5 + 6 = 11\n- 11 - 5 = 6\n- 11 - 6 = 5"
                   },
-                  "quizPool": [3013, 3014, 3015]
-                },
-                {
-                  "subtopic": "Word Problems with Addition and Subtraction",
-                  "subtopic_id": "grade_3_2_3",
-                  "reading": {
-                    "title": "Solving Real-World Addition and Subtraction Problems",
-                    "content": "Practice solving real-life math problems using addition and subtraction strategies."
-                  },
-                  "quizPool": [3016, 3017, 3018]
+                  "quizPool": [
+                    1141,
+                    1142,
+                    1143,
+                    1144,
+                    1145
+                  ]
                 }
               ]
             },
             {
-              "unit": "Multiplication and Division",
+              "unit": "Fluency within 20",
               "unit_id": 3,
               "subtopics": [
                 {
-                  "subtopic": "Understanding Multiplication",
-                  "subtopic_id": "grade_3_3_1",
+                  "subtopic": "Counting Strategies",
+                  "subtopic_id": "g3m5",
                   "reading": {
-                    "title": "Introduction to Multiplication",
-                    "content": "Learn how multiplication means repeated addition and how to use arrays and groups to visualize it."
+                    "title": "Smart Counting Methods",
+                    "content": "### Counting On Strategy\n**Counting on** is a mental math strategy where you start with the larger number and count up from there. It's faster than counting all numbers from the beginning.\n\n**Example:**\n6 + 3 = ?\n- Start with 6 (the larger number)\n- Count on 3 more: \"7, 8, 9\"\n- Answer: 6 + 3 = 9\n\n### When to Use Counting On:\n- When one number is much larger than the other\n- When you're comfortable counting from any starting point\n\n**Example:**\n24 + 2 = ?\n- Start with 24\n- Count on 2 more: \"25, 26\"\n- Answer: 24 + 2 = 26\n\n### Counting Back Strategy\n**Counting back** works well for subtraction. Start with the larger number and count backward.\n\n**Example:**\n8 - 3 = ?\n- Start with 8\n- Count back 3: \"7, 6, 5\"\n- Answer: 8 - 3 = 5\n\n### Counting by Groups\nCounting by 2s, 5s, or 10s helps us count larger collections quickly.\n\n**Examples:**\n- Counting by 2s: 2, 4, 6, 8, 10...\n- Counting by 5s: 5, 10, 15, 20...\n- Counting by 10s: 10, 20, 30, 40...\n\n### Using a Number Line\nA number line helps us visualize counting on and back:\n- To add: Jump forward on the number line\n- To subtract: Jump backward on the number line\n\n### Tips for Better Counting:\n1. Practice counting forward and backward from different starting points\n2. Use fingers to keep track of how many you've counted\n3. Look for patterns in numbers as you count"
                   },
-                  "quizPool": [3019, 3020, 3021]
+                  "quizPool": [
+                    1151,
+                    1152,
+                    1153,
+                    1154,
+                    1155
+                  ]
                 },
                 {
-                  "subtopic": "Understanding Division",
-                  "subtopic_id": "grade_3_3_2",
+                  "subtopic": "Fact Fluency",
+                  "subtopic_id": "g3m6",
                   "reading": {
-                    "title": "What is Division?",
-                    "content": "Explore division as sharing and grouping, and learn how it relates to multiplication."
+                    "title": "Number Fact Mastery",
+                    "content": "### What Is Math Fact Fluency?\nMath fact fluency means knowing addition and subtraction facts quickly and correctly without having to count or use strategies that take a long time.\n\n### Addition Facts to Master (within 10)\n| Addition | Facts to Know |\n|---------|-------------|\n| +0 | 0+1=1, 0+2=2, 0+3=3, etc. |\n| +1 | 1+1=2, 1+2=3, 1+3=4, etc. |\n| +2 | 2+2=4, 2+3=5, 2+4=6, etc. |\n| Doubles | 1+1=2, 2+2=4, 3+3=6, 4+4=8, 5+5=10 |\n| Make 10 | 1+9=10, 2+8=10, 3+7=10, 4+6=10, 5+5=10 |\n\n### Strategies to Solve Addition Facts\n\n1. **Making 10 Strategy**\n   When adding 8+5:\n   - Take 2 from 5 to make 10 with the 8 (8+2=10)\n   - Add remaining 3: 10+3=13\n   - Answer: 8+5=13\n\n2. **Doubles Strategy**\n   When adding 6+7:\n   - Think of it as 6+6+1\n   - 6+6=12, then 12+1=13\n   - Answer: 6+7=13\n\n3. **Decomposing Numbers**\n   When adding 9+6:\n   - Break 6 into 1+5\n   - Add 9+1=10, then 10+5=15\n   - Answer: 9+6=15\n\n### Subtraction Facts and Strategies\n\n1. **Think Addition**\n   For 12-8=?\n   - Think: 8+?=12\n   - Answer: 8+4=12, so 12-8=4\n\n2. **Count Back**\n   For 10-3=?\n   - Start at 10, count back 3: \"9, 8, 7\"\n   - Answer: 10-3=7\n\n3. **Use Fact Families**\n   If you know 6+7=13, then you also know:\n   - 7+6=13\n   - 13-6=7\n   - 13-7=6\n\n### Practice Makes Perfect\nTry these activities to improve fact fluency:\n1. Flashcards\n2. Number games\n3. Fact triangles\n4. Math fact songs or rhymes\n5. Regular practice (even 5 minutes per day helps!)"
                   },
-                  "quizPool": [3022, 3023, 3024]
-                },
-                {
-                  "subtopic": "Multiplication and Division Facts",
-                  "subtopic_id": "grade_3_3_3",
-                  "reading": {
-                    "title": "Memorizing Math Facts",
-                    "content": "Practice multiplication and division facts up to 10 to become faster and more confident."
-                  },
-                  "quizPool": [3025, 3026, 3027]
+                  "quizPool": [
+                    1161,
+                    1162,
+                    1163,
+                    1164,
+                    1165
+                  ]
                 }
               ]
             },
             {
-              "unit": "Fractions",
+              "unit": "Equation Relationships",
               "unit_id": 4,
               "subtopics": [
                 {
-                  "subtopic": "Understanding Fractions",
-                  "subtopic_id": "grade_3_4_1",
+                  "subtopic": "Understanding Equality",
+                  "subtopic_id": "g3m7",
                   "reading": {
-                    "title": "What Are Fractions?",
-                    "content": "Learn how to describe parts of a whole and how to write and read basic fractions."
+                    "title": "The Balanced Scale",
+                    "content": "### What Does the Equal Sign Mean?\nThe equal sign (=) means \"the same amount as\" or \"balanced.\" Think of it like a scale where both sides need to have the same value.\n\n### Equal vs. Not Equal\n**Equal (=)**: Both sides have the same value\n**Not Equal (≠)**: The sides have different values\n\n### Examples of Equal Expressions:\n- 5 + 3 = 8 (both sides equal 8)\n- 4 + 4 = 6 + 2 (both sides equal a value of 8)\n- 7 = 3 + 4 (the left side equals the right side)\n- 10 - 5 = 2 + 3 (both sides equal 5)\n\n### Examples of Not Equal Expressions:\n- 3 + 4 ≠ 9 (left side is 7, right side is 9)\n- 5 + 2 ≠ 5 + 3 (left side is 7, right side is 8)\n\n### True or False?\nWe can determine if an equation is true or false by checking if both sides are equal:\n\n**True Equations:**\n- 3 + 2 = 5 ✓\n- 8 - 3 = 5 ✓\n- 4 + 3 = 6 + 1 ✓\n\n**False Equations:**\n- 3 + 3 = 5 ✗\n- 7 - 2 = 4 ✗\n- 5 + 1 = 7 - 2 ✗ (left is 6, right is 5)\n\n### The Equal Sign in Different Positions\nThe equal sign doesn't always come at the end of a problem:\n- 3 + 4 = 7 (traditional format)\n- 7 = 3 + 4 (equal sign in middle)\n- 2 + 5 = 3 + 4 (operations on both sides)\n\n### Balancing Equations\nThink of equations like a balance scale:\n- If you add to one side, you must add the same to the other side\n- If you take away from one side, you must take the same from the other side\n\n### Real-Life Equality Examples:\n- If you have 3 apples and get 2 more, you have the same amount as someone who has 5 apples\n- Trading a $5 bill for five $1 bills gives you an equal amount of money"
                   },
-                  "quizPool": [3028, 3029, 3030]
+                  "quizPool": [
+                    1171,
+                    1172,
+                    1173,
+                    1174,
+                    1175
+                  ]
                 },
                 {
-                  "subtopic": "Comparing Fractions",
-                  "subtopic_id": "grade_3_4_2",
+                  "subtopic": "Finding Unknown Numbers",
+                  "subtopic_id": "g3m8",
                   "reading": {
-                    "title": "Which Fraction is Bigger?",
-                    "content": "Use number lines and pictures to compare fractions and understand more and less."
+                    "title": "Mystery Number Puzzles",
+                    "content": "### What are Unknown Numbers in Equations?\nSometimes in an equation, one number is missing or unknown. We use a symbol like □, △, or ? to represent the mystery number. Our job is to find what number should go there to make the equation true.\n\n### Types of Equations with Unknowns:\n1. **Unknown Result**: 3 + 4 = □\n2. **Unknown Addend**: 5 + □ = 9\n3. **Unknown Start**: □ - 3 = 4\n\n### Solving for Unknown Result\nWhen the answer is unknown, we perform the operation.\n\n**Example 1:**\n7 + 2 = □\n- Add the numbers: 7 + 2 = 9\n- The unknown is 9\n\n**Example 2:**\n10 - 6 = □\n- Subtract the numbers: 10 - 6 = 4\n- The unknown is 4\n\n### Solving for Unknown Addend\nWhen the second number is unknown, we can think about what needs to be added to the first number.\n\n**Example 1:**\n6 + □ = 10\n- Ask: \"6 plus what equals 10?\"\n- 6 + 4 = 10\n- The unknown is 4\n\n**Example 2:**\n8 + □ = 15\n- Think: \"What plus 8 equals 15?\"\n- 15 - 8 = 7\n- The unknown is 7\n\n### Solving for Unknown Start\nWhen the first number is unknown, we work backward.\n\n**Example 1:**\n□ - 5 = 7\n- Ask: \"What number minus 5 equals 7?\"\n- 7 + 5 = 12\n- The unknown is 12\n\n**Example 2:**\n□ + 3 = 10\n- Think: \"What plus 3 equals 10?\"\n- 10 - 3 = 7\n- The unknown is 7\n\n### Using Fact Families to Solve Unknowns\nFact families can help us find unknown numbers.\n\n**Example:**\nFor the fact family 3, 5, and 8:\n- 3 + 5 = 8\n- 5 + 3 = 8\n- 8 - 3 = 5\n- 8 - 5 = 3\n\nIf we see: □ - 5 = 3, we know □ = 8 from the fact family.\n\n### Real-Life Unknown Number Problems:\n- Emma has 12 stickers and gives some away. Now she has 7 stickers. How many did she give away? (12 - □ = 7, so □ = 5)\n- James has 4 toy cars and gets some more for his birthday. Now he has 10 cars. How many did he get? (4 + □ = 10, so □ = 6)"
                   },
-                  "quizPool": [3031, 3032, 3033]
-                },
-                {
-                  "subtopic": "Equivalent Fractions",
-                  "subtopic_id": "grade_3_4_3",
-                  "reading": {
-                    "title": "Finding Equal Fractions",
-                    "content": "Explore how different fractions can mean the same amount and how to find them."
-                  },
-                  "quizPool": [3034, 3035, 3036]
-                }
-              ]
-            },
-            {
-              "unit": "Measurement",
-              "unit_id": 5,
-              "subtopics": [
-                {
-                  "subtopic": "Measuring Length",
-                  "subtopic_id": "grade_3_5_1",
-                  "reading": {
-                    "title": "Inches, Feet, and Meters",
-                    "content": "Learn how to measure objects using standard units of length."
-                  },
-                  "quizPool": [3037, 3038, 3039]
-                },
-                {
-                  "subtopic": "Telling Time",
-                  "subtopic_id": "grade_3_5_2",
-                  "reading": {
-                    "title": "Reading Clocks",
-                    "content": "Practice reading analog and digital clocks and figuring out elapsed time."
-                  },
-                  "quizPool": [3040, 3041, 3042]
-                },
-                {
-                  "subtopic": "Understanding Mass and Volume",
-                  "subtopic_id": "grade_3_5_3",
-                  "reading": {
-                    "title": "Measuring Weight and Liquid",
-                    "content": "Learn to measure the mass and volume of objects in both metric and customary units."
-                  },
-                  "quizPool": [3043, 3044, 3045]
-                }
-              ]
-            },
-            {
-              "unit": "Geometry",
-              "unit_id": 6,
-              "subtopics": [
-                {
-                  "subtopic": "Identifying 2D Shapes",
-                  "subtopic_id": "grade_3_6_1",
-                  "reading": {
-                    "title": "Exploring Shapes",
-                    "content": "Learn to recognize and name basic 2D shapes like triangles, rectangles, and hexagons."
-                  },
-                  "quizPool": [3046, 3047, 3048]
-                },
-                {
-                  "subtopic": "Attributes of Shapes",
-                  "subtopic_id": "grade_3_6_2",
-                  "reading": {
-                    "title": "Sides, Angles, and Symmetry",
-                    "content": "Understand the properties that make shapes similar or different."
-                  },
-                  "quizPool": [3049, 3050, 3051]
-                },
-                {
-                  "subtopic": "Understanding Area and Perimeter",
-                  "subtopic_id": "grade_3_6_3",
-                  "reading": {
-                    "title": "Measuring Shapes",
-                    "content": "Learn how to find the area and perimeter of simple shapes using multiplication and addition."
-                  },
-                  "quizPool": [3052, 3053, 3054]
+                  "quizPool": [
+                    1181,
+                    1182,
+                    1183,
+                    1184,
+                    1185
+                  ]
                 }
               ]
             }
@@ -739,7 +634,7 @@
                   "subtopic_id": "grade_5_1_1",
                   "reading": {
                     "title": "Understanding Decimal Place Value",
-                    "content": "### Place Value with Decimals\n\nDecimals are numbers with parts smaller than one. Each digit after the decimal point has a special place value.\n\n**Decimal places:**\n- Tenths (0.1)\n- Hundredths (0.01)\n- Thousandths (0.001)\n\n**Example:**\nIn the number **3.472**:\n- 4 is in the tenths place\n- 7 is in the hundredths place\n- 2 is in the thousandths place\n\n**Tip:** Each place to the right is ten times smaller!"
+                    "content": "### 🔢 Place Value with Decimals\n\nDecimals are numbers with parts smaller than one. Each digit after the decimal point represents a fractional part based on powers of ten.\n\n**Key Concepts:**\n- **Tenths** (0.1)\n- **Hundredths** (0.01)\n- **Thousandths** (0.001)\n\n**Detailed Example:**\n> 4.926 → `9` is tenths, `2` is hundredths, `6` is thousandths.\n\n**Practice Problems:**\n1. Identify the place values of digits in 5.608.\n2. What digit is in the hundredths place of 7.305?\n\n> 💡 **Tip:** Label each digit to avoid mistakes."
                   },
                   "quizPool": [15111, 15112, 15113, 15114, 15115]
                 },
@@ -748,7 +643,7 @@
                   "subtopic_id": "grade_5_1_2",
                   "reading": {
                     "title": "Compare and Round Decimals",
-                    "content": "### Comparing and Rounding Decimals\n\nTo compare decimals, line up the digits by place value.\n\n**Steps:**\n1. Compare from left to right.\n2. Add zeros if needed to make decimals the same length.\n\n**Example:**\n0.56 > 0.506 (because 6 > 0 in hundredths)\n\nTo **round**:\n- Look at the digit one place to the right.\n- If it’s 5 or more, round up.\n- If it’s 4 or less, round down."
+                    "content": "### 🔍 Comparing and Rounding Decimals\n\nTo compare decimals:\n1. Align digits by place value.\n2. Compare from left to right, adding zeros if needed.\n\n**Comparison Example:**\n`0.56 > 0.506` because 6 (hundredths) > 0.\n\nTo round decimals:\n1. Identify the rounding place.\n2. Look at the next digit: if **≥5** round up; if **<5** round down.\n\n**Rounding Example:**\nRound 3.14159 to the nearest hundredth → **3.14**\n\n**Practice Problems:**\n1. Compare 0.72 and 0.726.\n2. Round 4.678 to the nearest tenth.\n3. Round 9.995 to two decimal places.\n\n> 💡 **Tip:** Always use zeros to keep alignment clear."
                   },
                   "quizPool": [15121, 15122, 15123, 15124, 15125]
                 },
@@ -757,7 +652,7 @@
                   "subtopic_id": "grade_5_1_3",
                   "reading": {
                     "title": "Add and Subtract Decimals",
-                    "content": "### Adding and Subtracting Decimals\n\n**Steps:**\n1. Line up the decimal points.\n2. Add zeros to match place values if needed.\n3. Add or subtract like normal.\n\n**Example:**\n2.45 + 1.3 → Line up decimals: 2.45 + 1.30 = 3.75\n\n**Tip:** Always line up the decimal points!"
+                    "content": "### ➕➖ Adding and Subtracting Decimals\n\n**Steps:**\n1. Align decimal points.\n2. Add zeros for missing places.\n3. Add or subtract across columns.\n\n**Worked Example:**\n```\n  7.4\n+ 2.35\n----\n  9.75\n```\n\n**Real‑World Example:**\nIf you spend $12.75 and $3.60, total = **$16.35**.\n\n**Practice Problems:**\n1. 5.678 + 3.4 = ?\n2. 10.0 – 4.256 = ?\n\n> 💡 **Tip:** Check your work by estimating first."
                   },
                   "quizPool": [15131, 15132, 15133, 15134, 15135]
                 }
@@ -772,7 +667,7 @@
                   "subtopic_id": "grade_5_2_1",
                   "reading": {
                     "title": "Add and Subtract Fractions",
-                    "content": "### Adding and Subtracting Fractions\n\n**Same Denominator:**\n- Add or subtract the numerators.\n- Keep the denominator the same.\n\n**Different Denominator:**\n1. Find a common denominator.\n2. Rewrite the fractions.\n3. Add or subtract.\n\n**Example:**\n1/4 + 1/2 → Find common denominator (4): 1/4 + 2/4 = 3/4"
+                    "content": "### ➕➖ Adding and Subtracting Fractions\n\n**Same Denominator:** add/subtract numerators; keep denominator.\n**Different Denominators:** find a common denominator, convert fractions, then add/subtract numerators.\n\n**Example 1:**\n1/3 + 2/5 = 5/15 + 6/15 = **11/15**\n\n**Example 2:**\n3/4 – 1/8 = 6/8 – 1/8 = **5/8**\n\n**Practice Problems:**\n1. 3/8 + 1/4 = ?\n2. 5/6 – 1/3 = ?\n\n> 💡 **Tip:** Simplify your answers."
                   },
                   "quizPool": [15211, 15212, 15213, 15214, 15215]
                 },
@@ -781,7 +676,7 @@
                   "subtopic_id": "grade_5_2_2",
                   "reading": {
                     "title": "Multiply Fractions",
-                    "content": "### Multiplying Fractions\n\n**Steps:**\n1. Multiply the numerators.\n2. Multiply the denominators.\n3. Simplify if needed.\n\n**Example:**\n2/3 × 4/5 = (2×4)/(3×5) = 8/15\n\n**Tip:** No need for a common denominator when multiplying!"
+                    "content": "### ✖️ Multiplying Fractions\n\nMultiply the numerators and denominators; simplify early by canceling common factors.\n\n**Example:**\n2/3 × 4/5 = **8/15**\n\n**Practice Problems:**\n1. 2/3 × 3/7 = ?\n2. 4/9 × 9/16 = ?\n\n> 💡 **Tip:** Cancel before multiplying to keep numbers small."
                   },
                   "quizPool": [15221, 15222, 15223, 15224, 15225]
                 },
@@ -790,7 +685,7 @@
                   "subtopic_id": "grade_5_2_3",
                   "reading": {
                     "title": "Divide Fractions",
-                    "content": "### Dividing Fractions\n\n**Steps:**\n1. Keep the first fraction.\n2. Flip the second fraction (reciprocal).\n3. Multiply.\n\n**Example:**\n1/2 ÷ 3/4 → 1/2 × 4/3 = 4/6 = 2/3\n\n**Tip:** Flip it and multiply!"
+                    "content": "### ➗ Dividing Fractions\n\nUse Keep–Flip–Multiply: \n1. Keep the first fraction.\n2. Flip the second (reciprocal).\n3. Multiply and simplify.\n\n**Example:**\n1/2 ÷ 3/4 = 1/2 × 4/3 = **2/3**\n\n**Practice Problems:**\n1. 5/6 ÷ 1/2 = ?\n2. 2/5 ÷ 3/4 = ?\n\n> 💡 **Tip:** Convert to improper fractions for ease."
                   },
                   "quizPool": [15231, 15232, 15233, 15234, 15235]
                 }
@@ -805,7 +700,7 @@
                   "subtopic_id": "grade_5_3_1",
                   "reading": {
                     "title": "What is Volume?",
-                    "content": "### Understanding Volume\n\n**Volume** is the amount of space something takes up.\n\n**Formula for a rectangular prism:**\nVolume = length × width × height\n\n**Units:** cubic units (cm³, in³)\n\n**Example:**\nA box that’s 2 cm × 3 cm × 4 cm = 24 cm³"
+                    "content": "### 📦 Understanding Volume\n\nVolume is the space a 3D object occupies.\n\n**Formula:**\n`V = length × width × height`\n\n**Example:**\nA box 4cm × 5cm × 6cm → **V = 120cm³**\n\n**Practice Problems:**\n1. Find V of a box 3cm × 7cm × 2cm.\n2. If V = 60cm³ and length = 3cm, width = 4cm, find height.\n\n> 💡 **Tip:** Use consistent units for all dimensions."
                   },
                   "quizPool": [15311, 15312, 15313, 15314, 15315]
                 },
@@ -814,7 +709,7 @@
                   "subtopic_id": "grade_5_3_2",
                   "reading": {
                     "title": "Use Volume Formulas",
-                    "content": "### Using Formulas for Volume\n\nYou can use **formulas** to find the volume of boxes.\n\n**Formula:**\nVolume = base area × height\n\n**Example:**\nBase area = 12 cm², height = 5 cm → Volume = 12 × 5 = 60 cm³"
+                    "content": "### 📐 Using Volume Formulas\n\nDifferent shapes use different formulas: \n- **Cylinder:** V = πr²h\n- **Cone:** V = (1/3)πr²h\n\n**Example:**\nCylinder with r = 2cm, h = 5cm → **V = 20π cm³**\n\n**Practice Problems:**\n1. Cylinder r = 3cm, h = 7cm → V = ?\n2. Cone r = 2cm, h = 9cm → V = ?\n\n> 💡 **Tip:** Use π ≈ 3.14 for quick estimates."
                   },
                   "quizPool": [15321, 15322, 15323, 15324, 15325]
                 },
@@ -823,7 +718,7 @@
                   "subtopic_id": "grade_5_3_3",
                   "reading": {
                     "title": "Volume in Real Life",
-                    "content": "### Real-World Measurement Problems\n\n**You might use volume to:**\n- Find how much water a tank holds\n- Fill a box with blocks\n\n**Example:**\nIf a pool is 10 ft long, 5 ft wide, and 4 ft deep:\nVolume = 10 × 5 × 4 = 200 ft³"
+                    "content": "### 🌍 Real-World Measurement Problems\n\nApply volume and measurement to real scenarios.\n\n**Example:**\nA fish tank 2m × 1m × 0.5m → **V = 1m³ (1000 L)**\n\n**Practice Problems:**\n1. Water tank 3m × 2m × 1.5m → V in liters?\n2. Soil in planter 0.5m × 0.4m × 0.3m → V in m³?\n\n> 💡 **Tip:** Convert m³ to liters by multiplying by 1000."
                   },
                   "quizPool": [15331, 15332, 15333, 15334, 15335]
                 }
@@ -838,7 +733,7 @@
                   "subtopic_id": "grade_5_4_1",
                   "reading": {
                     "title": "Classify Two-Dimensional Figures",
-                    "content": "### Classifying Two-Dimensional Figures\n\nA **two-dimensional figure** has only length and width. These include triangles, quadrilaterals, and more.\n\n**Classification is based on:**\n- Number of sides\n- Lengths of sides\n- Angles\n\n**Example types:**\n- **Triangles**: Equilateral, Isosceles, Scalene\n- **Quadrilaterals**: Squares, Rectangles, Rhombuses, Trapezoids\n\n**Tip:** Shapes can belong to more than one group!"
+                    "content": "### 🔺🔷 Classifying Two-Dimensional Figures\n\nShapes classified by sides, angles, and symmetry.\n\n**Examples:**\n- **Square:** 4 equal sides, 4 right angles\n- **Trapezoid:** at least one pair of parallel sides\n\n**Practice Problems:**\n1. Name a shape with 3 sides and 3 acute angles.\n2. Classify a quadrilateral with equal sides but no right angles.\n\n> 💡 **Tip:** Draw and label each shape for clarity."
                   },
                   "quizPool": [15411, 15412, 15413, 15414, 15415]
                 },
@@ -847,7 +742,7 @@
                   "subtopic_id": "grade_5_4_2",
                   "reading": {
                     "title": "Learn About Angles",
-                    "content": "### Understanding Angles\n\nAn **angle** is formed when two rays meet at a point called the **vertex**.\n\n**Types of angles:**\n- **Acute**: Less than 90°\n- **Right**: Exactly 90°\n- **Obtuse**: Between 90° and 180°\n- **Straight**: Exactly 180°\n\n**Tip:** Use a protractor to measure angles!"
+                    "content": "### 📐 Understanding Angles\n\nAn angle is formed by two rays meeting at a vertex.\n\n**Types:**\n- **Acute:** <90°\n- **Right:** =90°\n- **Obtuse:** >90° and <180°\n- **Straight:** =180°\n\n**Practice Problems:**\n1. Identify the type of a 130° angle.\n2. Measure an angle using a protractor in a diagram.\n\n> 💡 **Tip:** Align the protractor's center with the vertex."
                   },
                   "quizPool": [15421, 15422, 15423, 15424, 15425]
                 },
@@ -856,7 +751,7 @@
                   "subtopic_id": "grade_5_4_3",
                   "reading": {
                     "title": "Intro to Coordinate Geometry",
-                    "content": "### Coordinate Geometry\n\nYou can locate points on a grid using ordered pairs (**x, y**).\n\n**Steps:**\n1. Go across the x-axis (left or right).\n2. Then go up or down the y-axis.\n\n**Example:**\nPoint (3, 2) → move 3 right, then 2 up.\n\n**Tip:** The grid is called the **coordinate plane**!"
+                    "content": "### 📍 Coordinate Geometry\n\nUse **ordered pairs** (x, y) to locate points on a grid.\n\n**Example:**\nPlot A(1,2) and B(4,5); draw segment AB.\n\n**Practice Problems:**\n1. Plot (–3,1) and (2,–2). What is the midpoint?\n2. Graph points (0,0), (0,4), (5,4). Identify the shape.\n\n> 💡 **Tip:** Draw axes with equal scaling."
                   },
                   "quizPool": [15431, 15432, 15433, 15434, 15435]
                 }
@@ -871,7 +766,7 @@
                   "subtopic_id": "grade_5_5_1",
                   "reading": {
                     "title": "Explore Numerical Patterns",
-                    "content": "### Numerical Patterns\n\nA **numerical pattern** is a sequence of numbers that follows a rule.\n\n**Examples:**\n- Add 3 each time: 2, 5, 8, 11, 14\n- Multiply by 2 each time: 1, 2, 4, 8, 16\n\n**Tip:** Look at how numbers change to find the rule."
+                    "content": "### 🔢 Numerical Patterns\n\nA sequence of numbers that follows a specific rule.\n\n**Examples:**\n- Add 3: 2, 5, 8, 11...\n- Multiply by 2: 1, 2, 4, 8...\n\n**Practice Problems:**\n1. Determine the next term: 3, 6, 12, 24,...\n2. Find the rule for 4, 9, 14, 19,...\n\n> 💡 **Tip:** Use differences for arithmetic and ratios for geometric patterns."
                   },
                   "quizPool": [15511, 15512, 15513, 15514, 15515]
                 },
@@ -880,7 +775,7 @@
                   "subtopic_id": "grade_5_5_2",
                   "reading": {
                     "title": "Graph a Pattern",
-                    "content": "### Graphing Patterns\n\nYou can graph patterns on a **coordinate grid** to see how numbers relate.\n\n**Example:**\nIf y = 2x:\n- (1,2), (2,4), (3,6)\n\nPlot these points and you’ll see a straight line!\n\n**Tip:** Graphs help us understand number relationships visually."
+                    "content": "### 📈 Graphing Patterns\n\nPlot points (x, y) to see how values change.\n\n**Example:** y = x – 1; points: (0, –1), (1, 0), (2, 1).\n\n**Practice Problems:**\n1. Graph y = 2x + 3; what is y when x = –1?\n2. Find the slope of the line through (1, 5) and (3, 9).\n\n> 💡 **Tip:** Label axes and points clearly."
                   },
                   "quizPool": [15521, 15522, 15523, 15524, 15525]
                 },
@@ -889,7 +784,7 @@
                   "subtopic_id": "grade_5_5_3",
                   "reading": {
                     "title": "Write Rules for Patterns",
-                    "content": "### Writing and Interpreting Rules\n\nUse expressions to describe patterns using variables.\n\n**Example:**\nIf you add 5 each time: Rule = y = 5x\n\n**To interpret a rule:**\n- Plug in values for x\n- Solve for y\n\n**Tip:** Rules help predict the next numbers in a pattern."
+                    "content": "### 🧮 Writing and Interpreting Rules\n\nUse algebraic expressions to describe patterns.\n\n**Example:** y = 3x + 2; if x = 4, then y = 14.\n\n**Practice Problems:**\n1. Write the rule for 5, 10, 15, ...\n2. Given y = 2x², find y when x = 3.\n\n> 💡 **Tip:** Test your rule with multiple terms."
                   },
                   "quizPool": [15531, 15532, 15533, 15534, 15535]
                 }

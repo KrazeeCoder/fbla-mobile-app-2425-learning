@@ -1,0 +1,167 @@
+[
+      {
+        "unit": "Decimals",
+        "unit_id": 1,
+        "subtopics": [
+          {
+            "subtopic": "Place Value with Decimals",
+            "subtopic_id": "grade_5_1_1",
+            "reading": {
+              "title": "Understanding Decimal Place Value",
+              "content": "### 🔢 Place Value with Decimals\n\nDecimals are numbers with parts smaller than one. Each digit after the decimal point represents a fractional part based on powers of ten.\n\n**Key Concepts:**\n- **Tenths** (0.1)\n- **Hundredths** (0.01)\n- **Thousandths** (0.001)\n\n**Detailed Example:**\n> 4.926 → `9` is tenths, `2` is hundredths, `6` is thousandths.\n\n**Practice Problems:**\n1. Identify the place values of digits in 5.608.\n2. What digit is in the hundredths place of 7.305?\n\n> 💡 **Tip:** Label each digit to avoid mistakes."
+            },
+            "quizPool": [15111, 15112, 15113, 15114, 15115]
+          },
+          {
+            "subtopic": "Comparing and Rounding Decimals",
+            "subtopic_id": "grade_5_1_2",
+            "reading": {
+              "title": "Compare and Round Decimals",
+              "content": "### 🔍 Comparing and Rounding Decimals\n\nTo compare decimals:\n1. Align digits by place value.\n2. Compare from left to right, adding zeros if needed.\n\n**Comparison Example:**\n`0.56 > 0.506` because 6 (hundredths) > 0.\n\nTo round decimals:\n1. Identify the rounding place.\n2. Look at the next digit: if **≥5** round up; if **<5** round down.\n\n**Rounding Example:**\nRound 3.14159 to the nearest hundredth → **3.14**\n\n**Practice Problems:**\n1. Compare 0.72 and 0.726.\n2. Round 4.678 to the nearest tenth.\n3. Round 9.995 to two decimal places.\n\n> 💡 **Tip:** Always use zeros to keep alignment clear."
+            },
+            "quizPool": [15121, 15122, 15123, 15124, 15125]
+          },
+          {
+            "subtopic": "Adding and Subtracting Decimals",
+            "subtopic_id": "grade_5_1_3",
+            "reading": {
+              "title": "Add and Subtract Decimals",
+              "content": "### ➕➖ Adding and Subtracting Decimals\n\n**Steps:**\n1. Align decimal points.\n2. Add zeros for missing places.\n3. Add or subtract across columns.\n\n**Worked Example:**\n```\n  7.4\n+ 2.35\n----\n  9.75\n```\n\n**Real‑World Example:**\nIf you spend $12.75 and $3.60, total = **$16.35**.\n\n**Practice Problems:**\n1. 5.678 + 3.4 = ?\n2. 10.0 – 4.256 = ?\n\n> 💡 **Tip:** Check your work by estimating first."
+            },
+            "quizPool": [15131, 15132, 15133, 15134, 15135]
+          }
+        ]
+      },
+      {
+        "unit": "Operations with Fractions",
+        "unit_id": 2,
+        "subtopics": [
+          {
+            "subtopic": "Adding and Subtracting Fractions",
+            "subtopic_id": "grade_5_2_1",
+            "reading": {
+              "title": "Add and Subtract Fractions",
+              "content": "### ➕➖ Adding and Subtracting Fractions\n\n**Same Denominator:** add/subtract numerators; keep denominator.\n**Different Denominators:** find a common denominator, convert fractions, then add/subtract numerators.\n\n**Example 1:**\n1/3 + 2/5 = 5/15 + 6/15 = **11/15**\n\n**Example 2:**\n3/4 – 1/8 = 6/8 – 1/8 = **5/8**\n\n**Practice Problems:**\n1. 3/8 + 1/4 = ?\n2. 5/6 – 1/3 = ?\n\n> 💡 **Tip:** Simplify your answers."
+            },
+            "quizPool": [15211, 15212, 15213, 15214, 15215]
+          },
+          {
+            "subtopic": "Multiplying Fractions",
+            "subtopic_id": "grade_5_2_2",
+            "reading": {
+              "title": "Multiply Fractions",
+              "content": "### ✖️ Multiplying Fractions\n\nMultiply the numerators and denominators; simplify early by canceling common factors.\n\n**Example:**\n2/3 × 4/5 = **8/15**\n\n**Practice Problems:**\n1. 2/3 × 3/7 = ?\n2. 4/9 × 9/16 = ?\n\n> 💡 **Tip:** Cancel before multiplying to keep numbers small."
+            },
+            "quizPool": [15221, 15222, 15223, 15224, 15225]
+          },
+          {
+            "subtopic": "Dividing Fractions",
+            "subtopic_id": "grade_5_2_3",
+            "reading": {
+              "title": "Divide Fractions",
+              "content": "### ➗ Dividing Fractions\n\nUse Keep–Flip–Multiply: \n1. Keep the first fraction.\n2. Flip the second (reciprocal).\n3. Multiply and simplify.\n\n**Example:**\n1/2 ÷ 3/4 = 1/2 × 4/3 = **2/3**\n\n**Practice Problems:**\n1. 5/6 ÷ 1/2 = ?\n2. 2/5 ÷ 3/4 = ?\n\n> 💡 **Tip:** Convert to improper fractions for ease."
+            },
+            "quizPool": [15231, 15232, 15233, 15234, 15235]
+          }
+        ]
+      },
+      {
+        "unit": "Volume and Measurement",
+        "unit_id": 3,
+        "subtopics": [
+          {
+            "subtopic": "Understanding Volume",
+            "subtopic_id": "grade_5_3_1",
+            "reading": {
+              "title": "What is Volume?",
+              "content": "### 📦 Understanding Volume\n\nVolume is the space a 3D object occupies.\n\n**Formula:**\n`V = length × width × height`\n\n**Example:**\nA box 4cm × 5cm × 6cm → **V = 120cm³**\n\n**Practice Problems:**\n1. Find V of a box 3cm × 7cm × 2cm.\n2. If V = 60cm³ and length = 3cm, width = 4cm, find height.\n\n> 💡 **Tip:** Use consistent units for all dimensions."
+            },
+            "quizPool": [15311, 15312, 15313, 15314, 15315]
+          },
+          {
+            "subtopic": "Using Formulas for Volume",
+            "subtopic_id": "grade_5_3_2",
+            "reading": {
+              "title": "Use Volume Formulas",
+              "content": "### 📐 Using Volume Formulas\n\nDifferent shapes use different formulas: \n- **Cylinder:** V = πr²h\n- **Cone:** V = (1/3)πr²h\n\n**Example:**\nCylinder with r = 2cm, h = 5cm → **V = 20π cm³**\n\n**Practice Problems:**\n1. Cylinder r = 3cm, h = 7cm → V = ?\n2. Cone r = 2cm, h = 9cm → V = ?\n\n> 💡 **Tip:** Use π ≈ 3.14 for quick estimates."
+            },
+            "quizPool": [15321, 15322, 15323, 15324, 15325]
+          },
+          {
+            "subtopic": "Real-World Measurement Problems",
+            "subtopic_id": "grade_5_3_3",
+            "reading": {
+              "title": "Volume in Real Life",
+              "content": "### 🌍 Real-World Measurement Problems\n\nApply volume and measurement to real scenarios.\n\n**Example:**\nA fish tank 2m × 1m × 0.5m → **V = 1m³ (1000 L)**\n\n**Practice Problems:**\n1. Water tank 3m × 2m × 1.5m → V in liters?\n2. Soil in planter 0.5m × 0.4m × 0.3m → V in m³?\n\n> 💡 **Tip:** Convert m³ to liters by multiplying by 1000."
+            },
+            "quizPool": [15331, 15332, 15333, 15334, 15335]
+          }
+        ]
+      },
+      {
+        "unit": "Geometry",
+        "unit_id": 4,
+        "subtopics": [
+          {
+            "subtopic": "Classifying Two-Dimensional Figures",
+            "subtopic_id": "grade_5_4_1",
+            "reading": {
+              "title": "Classify Two-Dimensional Figures",
+              "content": "### 🔺🔷 Classifying Two-Dimensional Figures\n\nShapes classified by sides, angles, and symmetry.\n\n**Examples:**\n- **Square:** 4 equal sides, 4 right angles\n- **Trapezoid:** at least one pair of parallel sides\n\n**Practice Problems:**\n1. Name a shape with 3 sides and 3 acute angles.\n2. Classify a quadrilateral with equal sides but no right angles.\n\n> 💡 **Tip:** Draw and label each shape for clarity."
+            },
+            "quizPool": [15411, 15412, 15413, 15414, 15415]
+          },
+          {
+            "subtopic": "Understanding Angles",
+            "subtopic_id": "grade_5_4_2",
+            "reading": {
+              "title": "Learn About Angles",
+              "content": "### 📐 Understanding Angles\n\nAn angle is formed by two rays meeting at a vertex.\n\n**Types:**\n- **Acute:** <90°\n- **Right:** =90°\n- **Obtuse:** >90° and <180°\n- **Straight:** =180°\n\n**Practice Problems:**\n1. Identify the type of a 130° angle.\n2. Measure an angle using a protractor in a diagram.\n\n> 💡 **Tip:** Align the protractor's center with the vertex."
+            },
+            "quizPool": [15421, 15422, 15423, 15424, 15425]
+          },
+          {
+            "subtopic": "Coordinate Geometry",
+            "subtopic_id": "grade_5_4_3",
+            "reading": {
+              "title": "Intro to Coordinate Geometry",
+              "content": "### 📍 Coordinate Geometry\n\nUse **ordered pairs** (x, y) to locate points on a grid.\n\n**Example:**\nPlot A(1,2) and B(4,5); draw segment AB.\n\n**Practice Problems:**\n1. Plot (–3,1) and (2,–2). What is the midpoint?\n2. Graph points (0,0), (0,4), (5,4). Identify the shape.\n\n> 💡 **Tip:** Draw axes with equal scaling."
+            },
+            "quizPool": [15431, 15432, 15433, 15434, 15435]
+          }
+        ]
+      },
+      {
+        "unit": "Patterns and Relationships",
+        "unit_id": 5,
+        "subtopics": [
+          {
+            "subtopic": "Numerical Patterns",
+            "subtopic_id": "grade_5_5_1",
+            "reading": {
+              "title": "Explore Numerical Patterns",
+              "content": "### 🔢 Numerical Patterns\n\nA sequence of numbers that follows a specific rule.\n\n**Examples:**\n- Add 3: 2, 5, 8, 11...\n- Multiply by 2: 1, 2, 4, 8...\n\n**Practice Problems:**\n1. Determine the next term: 3, 6, 12, 24,...\n2. Find the rule for 4, 9, 14, 19,...\n\n> 💡 **Tip:** Use differences for arithmetic and ratios for geometric patterns."
+            },
+            "quizPool": [15511, 15512, 15513, 15514, 15515]
+          },
+          {
+            "subtopic": "Graphing Patterns",
+            "subtopic_id": "grade_5_5_2",
+            "reading": {
+              "title": "Graph a Pattern",
+              "content": "### 📈 Graphing Patterns\n\nPlot points (x, y) to see how values change.\n\n**Example:** y = x – 1; points: (0, –1), (1, 0), (2, 1).\n\n**Practice Problems:**\n1. Graph y = 2x + 3; what is y when x = –1?\n2. Find the slope of the line through (1, 5) and (3, 9).\n\n> 💡 **Tip:** Label axes and points clearly."
+            },
+            "quizPool": [15521, 15522, 15523, 15524, 15525]
+          },
+          {
+            "subtopic": "Writing and Interpreting Rules",
+            "subtopic_id": "grade_5_5_3",
+            "reading": {
+              "title": "Write Rules for Patterns",
+              "content": "### 🧮 Writing and Interpreting Rules\n\nUse algebraic expressions to describe patterns.\n\n**Example:** y = 3x + 2; if x = 4, then y = 14.\n\n**Practice Problems:**\n1. Write the rule for 5, 10, 15, ...\n2. Given y = 2x², find y when x = 3.\n\n> 💡 **Tip:** Test your rule with multiple terms."
+            },
+            "quizPool": [15531, 15532, 15533, 15534, 15535]
+          }
+        ]
+      }           
+    ]
