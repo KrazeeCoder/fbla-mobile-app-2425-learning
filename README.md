@@ -1,9 +1,9 @@
-# WorldWise: Interactive Learning Platform 🌍📚
+# WorldWise: Gamified Learning Platform 🌍📚
 
 <div align="center">
   <img src="assets/branding/WorlsWiseLogo.png" alt="WorldWise Logo" width="200"/>
   <br>
-  <p><i>Empowering global learning through interactive educational experiences</i></p>
+  <p><i>Empowering education through gamified learning experiences</i></p>
 </div>
 
 [![Flutter Version](https://img.shields.io/badge/Flutter-^3.5.0-blue.svg)](https://flutter.dev/)
@@ -170,5 +170,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
   <p>Made with ❤️ by the WorldWise Team</p>
-  <p>© 2023-2024 WorldWise Learning, Inc. All rights reserved.</p>
+  <p>© 2024-2025 WorldWise Learning, Inc. All rights reserved.</p>
 </div>
